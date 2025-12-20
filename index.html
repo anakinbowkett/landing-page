@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracktion - Get the Highest Grade or Money Back</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: white;
+            color: #111827;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            z-index: 50;
+            border-bottom: 1px solid #f3f4f6;
+            overflow: visible;
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding-right: 2rem;
+            height: 5rem;
+            overflow: visible;
+        }
+
+        .nav-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            margin-left: 0;
+        }
+
+        .logo-gmm {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+            flex-shrink: 0;
+            display: block;
+        }
+
+        .brand-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-left: 1rem;
+            color: #111827;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-shrink: 0;
+        }
+
+        .nav-link {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: #374151;
+            text-decoration: none;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: #111827;
+        }
+
+        .nav-cta {
+            background: #1d7fe2;
+            color: white;
+            padding: 0.625rem 1.5rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 15px -3px rgba(29, 127, 226, 0.3);
+            white-space: nowrap;
+        }
+
+        .nav-cta:hover {
+            background: #1565c0;
+            transform: scale(1.05);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 1rem 5rem;
+        }
+
+        .hero-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .hero-title {
+            font-size: 3.75rem;
+            font-weight: 700;
+            line-height: 1.1;
+            color: #111827;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #4b5563;
+        }
+
+        .hero-cta {
+            background: #1d7fe2;
+            color: white;
+            padding: 1.25rem 2.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 20px 25px -5px rgba(29, 127, 226, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: fit-content;
+        }
+
+        .hero-cta:hover {
+            background: #1565c0;
+            transform: scale(1.05);
+        }
+
+        .hero-cta svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Slot Animation */
+        .slot-container {
+            position: relative;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            overflow: hidden;
+            padding-top: 1.5rem;
+        }
+
+        #carousel {
+            font-size: 1.875rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        #carouselLogo {
+            height: 5rem;
+            object-fit: contain;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes slotSpinUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-30px); opacity: 0; }
+        }
+
+        @keyframes slotSpinDown {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .slot-spinning {
+            animation: slotSpinUp 0.05s ease-out forwards, slotSpinDown 0.05s ease-in 0.05s forwards;
+        }
+
+        /* Dashboard */
+        .dashboard-wrapper {
+            width: 100%;
+            max-width: 36rem;
+            margin: 0 auto;
+        }
+
+        .dashboard {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .dashboard:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(29, 127, 226, 0.35);
+        }
+
+        .dashboard img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 1rem;
+            background: white;
+        }
+
+        .features-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6rem;
+        }
+
+        .feature {
+            display: grid;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .feature-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .feature-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .feature-description {
+            font-size: 1.125rem;
+            color: #4b5563;
+            line-height: 1.75;
+        }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .feature-list svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: #1d7fe2;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .feature-list span {
+            color: #374151;
+        }
+
+        /* GIF Window */
+        .gif-window {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .gif-window:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 60px -15px rgba(29, 127, 226, 0.35);
+        }
+
+        .gif-window-header {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #d1d5db;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .window-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #eab308; }
+        .dot-green { background: #22c55e; }
+
+        .gif-content {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 1rem;
+            background: white;
+        }
+
+        .cta-container {
+            max-width: 56rem;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .cta-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #111827;
+            white-space: nowrap;
+        }
+
+        .cta-button {
+            background: #1d7fe2;
+            color: white;
+            padding: 1.25rem 3rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 20px 25px -5px rgba(29, 127, 226, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+        }
+
+        .cta-button:hover {
+            background: #1565c0;
+            transform: scale(1.05);
+        }
+
+        .cta-button svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        /* Trustpilot Widget */
+        .trustpilot-widget {
+            padding-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .trustpilot-card {
+            background: white;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            max-width: 28rem;
+            width: 100%;
+        }
+
+        .trustpilot-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .trustpilot-header span {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .stars {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .star {
+            width: 1.5rem;
+            height: 1.5rem;
+            fill: #22c55e;
+        }
+
+        .star-small {
+            width: 1rem;
+            height: 1rem;
+            fill: #22c55e;
+        }
+
+        .trustpilot-reviews {
+            font-size: 0.875rem;
+            color: #4b5563;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .trustpilot-reviews span {
+            font-weight: 600;
+        }
+
+        .trustpilot-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .trustpilot-logo {
+            width: 5rem;
+            height: 1.5rem;
+        }
+
+        .trustpilot-logo text {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            fill: #00B67A;
+        }
+
+        .stars-small {
+            display: flex;
+            gap: 0.125rem;
+        }
+
+        /* Mobile Responsive */
+        @media (min-width: 1024px) {
+            .hero-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .feature {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .feature-reverse .feature-content {
+                order: 1;
+            }
+
+            .feature-reverse .gif-window {
+                order: 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.25rem;
+            }
+
+            .feature-title {
+                font-size: 2rem;
+            }
+
+            .cta-title {
+                font-size: 1.5rem;
+                white-space: normal;
+            }
+
+            .gif-content {
+                height: 210px;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .nav-container {
+                padding-right: 0.75rem;
+                padding-left: 0.75rem;
+                height: 3.5rem;
+                overflow: visible;
+                position: relative;
+            }
+
+            .logo-container {
+                position: absolute;
+                left: -3rem;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 100;
+                overflow: visible;
+            }
+
+            .logo-gmm {
+                height: 30px;
+                margin-left: 60px;
+                margin-right: -60px;
+                content: url('https://i.postimg.cc/PJkMDKs9/MATHS-MASTERY-LOGO-IPHONE.jpg');
+            }
+
+            .brand-text {
+                display: none;
+            }
+
+            .nav-links {
+                gap: 0.5rem;
+                margin-left: auto;
+                position: absolute;
+                right: 0.75rem;
+            }
+
+            .nav-link {
+                font-size: 0.75rem;
+            }
+
+            .nav-cta {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            .hero {
+                padding: 4rem 1rem 2.5rem;
+            }
+
+            .hero-title {
+                font-size: 1.875rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .hero-cta {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.875rem;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .slot-container {
+                height: 48px;
+                justify-content: center;
+            }
+
+            #carousel {
+                font-size: 1.125rem;
+                line-height: 1.5rem;
+            }
+
+            #carouselText {
+                display: block;
+                text-align: center;
+                width: 100%;
+            }
+
+            @keyframes slotSpinUpMobile {
+                0% { transform: translateY(0); opacity: 1; }
+                100% { transform: translateY(-20px); opacity: 0; }
+            }
+
+            @keyframes slotSpinDownMobile {
+                0% { transform: translateY(20px); opacity: 0; }
+                100% { transform: translateY(0); opacity: 1; }
+            }
+
+            .slot-spinning {
+                animation: slotSpinUpMobile 0.05s ease-out forwards, slotSpinDownMobile 0.05s ease-in 0.05s forwards;
+            }
+        }
+    </style>
+</head>
+ <body>
+
+<!-- Navigation -->
+<nav>
+    <div class="nav-container">
+        <div class="nav-flex">
+            <div class="logo-container">
+                <img 
+                    src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" 
+                    alt="GMM Logo"
+                    class="logo-gmm"
+                >
+                <span class="brand-text">GCSE Maths Mastery</span>
+            </div>
+
+            <div class="nav-links">
+                <a href="#faq" class="nav-link">FAQ</a>
+                <button class="nav-cta">Sign in</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1 class="hero-title">One mission: Get you maths GCSE success or your money back.</h1>
+            <p class="hero-subtitle">The all-inclusive GCSE Maths learning platform.</p>
+
+            <button class="hero-cta">
+                <span>Sign up for free</span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                </svg>
+            </button>
+
+            <div class="slot-container">
+                <div id="carousel">
+                    <span id="carouselText">For the home learners</span>
+                    <img id="carouselLogo" src="" class="hidden">
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-wrapper">
+            <div class="dashboard">
+                <img src="https://i.postimg.cc/rsDNPpp0/Screenshot-2025-12-02-at-19-29-48.png" alt="Dashboard">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="features-container">
+
+        <!-- Feature 1 -->
+        <div class="feature">
+            <div class="gif-window">
+                <div class="gif-window-header">
+                    <div class="window-dot dot-red"></div>
+                    <div class="window-dot dot-yellow"></div>
+                    <div class="window-dot dot-green"></div>
+                </div>
+                <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="Feature 1" class="gif-content">
+            </div>
+            <div class="feature-content">
+                <h2 class="feature-title">Interactive Lectures</h2>
+                <p class="feature-description">
+                    Familiarise with exam format and learn with quick videos and instant multiple choice quizzes that track your progress and break every problem down into simple steps
+                </p>
+                <ul class="feature-list">
+                    <li>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Real-time progress tracking</span>
+                    </li>
+                    <li>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Adaptive difficulty levels</span>
+                    </li>
+                    <li>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Instant answer check</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature feature-reverse">
+            <div class="feature-content">
+                <h2 class="feature-title">Flashtiles</h2>
+                <p class="feature-description">
+                    Build exam confidence through flashtiles practice that covers all syllabus difficulties, with every question backed by a clear, worked answer just a tap away.
+                </p>
+                <ul class="feature-list">
+                    <li>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Exam-style questions</span>
+                    </li>
+                    <li>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Custom revision Decks</span>
+                    </li>
+                    <li>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Self-confidence rating</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="gif-window">
+                <div class="gif-window-header">
+                    <div class="window-dot dot-red"></div>
+                    <div class="window-dot dot-yellow"></div>
+                    <div class="window-dot dot-green"></div>
+                </div>
+                <img src="https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif" alt="Feature 2" class="gif-content">
+            </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature">
+            <div class="gif-window">
+                <div class="gif-window-header">
+                    <div class="window-dot dot-red"></div>
+                    <div class="window-dot dot-yellow"></div>
+                    <div class="window-dot dot-green"></div>
+                </div>
+                <img src="https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif" alt="Feature 3" class="gif-content">
+            </div>
+            <div class="feature-content">
+                <h2 class="feature-title">Quizzes</h2>
+                <p class="feature-description">
+                    Compete live against other students in quiz battles—get 1000 Mastery Miles for each mark, then attack: steal miles, freeze opponents, knock them down the leaderboard, or keep playing.
+                </p>
+                <ul class="feature-list">
+                    <li>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Quickfire questions</span>
+                    </li>
+                    <li>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Instant answer check</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="feature feature-reverse">
+            <div class="feature-content">
+                <h2 class="feature-title">Past Papers</h2>
+                <p class="feature-description">
+                    Practice with real GCSE exam questions and get instant analytics showing your strengths and weaknesses after every paper, plus complete topic coverage for all papers, ensuring you've practiced every possible topic.
+                </p>
+                <ul class="feature-list">
+                    <li>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Performance dashboards</span>
+                    </li>
+                    <li>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Strength & weakness analysis</span>
+                    </li>
+                    <li>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Predicted grade calculator</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="gif-window">
+                <div class="gif-window-header">
+                    <div class="window-dot dot-red"></div>
+                    <div class="window-dot dot-yellow"></div>
+                    <div class="window-dot dot-green"></div>
+                </div>
+                <img src="https://media.giphy.com/media/3oKIPEqDGUULpEU0aQ/giphy.gif" alt="Feature 4" class="gif-content">
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="cta-container">
+        <h2 class="cta-title">Confusion to Confidence at your fingertips</h2>
+        
+        <button class="cta-button">
+            <span>Sign up for free</span>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+            </svg>
+        </button>
+
+        <!-- Trustpilot Widget -->
+        <div class="trustpilot-widget">
+            <div class="trustpilot-card">
+                <div class="trustpilot-header">
+                    <span>Excellent</span>
+                    <div class="stars">
+                        <svg class="star" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg class="star" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg class="star" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg class="star" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <svg class="star" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="trustpilot-reviews">
+                    Based on <span>2,847</span> reviews
+                </div>
+                <div class="trustpilot-footer">
+                    <svg class="trustpilot-logo" viewBox="0 0 80 24" fill="none">
+                        <text x="0" y="18">Trustpilot</text>
+                    </svg>
+                    <div class="stars-
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
