@@ -1058,12 +1058,12 @@ window.navigateToLecture = function(topicNum, sectionIndex, sectionTitle) {
   console.log('Navigate called:', topicNum, sectionIndex, sectionTitle);
   
   const lectureURLs = {
-    '1': {
-      '0': 'https://0-product-of-prime-factors-and-index-form.vercel.app/',
-      '1': 'https://1-highest-common-factor.vercel.app/',
-      '2': 'https://2-lowest-common-multiple.vercel.app/'
-    }
-  };
+  '1': {
+    '0': '/lectures/0-product-of-prime-factors/',
+    '1': '/lectures/1-highest-common-factor/',
+    '2': '/lectures/2-lowest-common-multiple/'
+  }
+};
   
   const url = lectureURLs[topicNum]?.[sectionIndex];
   
