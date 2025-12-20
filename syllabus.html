@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foundation Tier - GCSE Maths</title>
+<!-- ADD SUPABASE HERE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background-color: white;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    body::-webkit-scrollbar,
+    .expanded-card::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    body,
+    .expanded-card {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background-color: white;
+      min-height: 100vh;
+    }
+
+    /* Tab Content Visibility Styles */
+    .tab-content {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .tab-content.hidden {
+      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .tab-content:not(.hidden) {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Header section */
+    .header-section {
+      padding: 0;
+      border-bottom: none;
+    }
+
+    /* Navigation */
+    .nav-tabs {
+      display: flex;
+      gap: 0;
+    }
+
+    .nav-tab {
+      padding: 20px 24px;
+      color: #6b7280;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .nav-tab::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #1a1a1a, #666);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-tab:hover {
+      color: #1a1a1a;
+      background-color: #f9f9f9;
+    }
+
+    .nav-tab.active {
+      color: #1a1a1a;
+      background-color: white;
+    }
+
+    .nav-tab.active::after {
+      width: 100%;
+    }
+
+    /* Course info section */
+    .course-info {
+      padding: 40px 32px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .course-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 32px;
+    }
+
+    .course-details {
+      flex: 1;
+    }
+
+    .course-title {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+
+    .course-subtitle {
+      font-size: 16px;
+      color: #6b7280;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* Topics Section */
+    .topics-section {
+      padding: 40px 32px;
+      font-family: 'Crimson Text', serif;
+    }
+
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+      width: 100%;
+    }
+
+    .topic-card {
+      background: white;
+      border: 1px solid #d4d4d4;
+      border-radius: 12px;
+      padding: 32px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      box-sizing: border-box;
+    }
+
+    .topic-card:hover {
+      border-color: #a0a0a0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .topic-title {
+      font-size: 26px;
+      font-weight: 600;
+      color: #000000;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .topic-number {
+      font-size: 26px;
+      font-weight: 600;
+      color: #999;
+      letter-spacing: -0.02em;
+    }
+
+    /* Expanded card overlay */
+    .expanded-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      display: none;
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0);
+      transition: background 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .expanded-overlay.active {
+      display: block;
+      pointer-events: all;
+      background: rgba(0, 0, 0, 0.65);
+    }
+
+    .expanded-card {
+      position: fixed;
+      background: white;
+      border: 1px solid #d4d4d4;
+      border-radius: 12px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+      z-index: 1001;
+      opacity: 0;
+      transform: scale(0.92) translateZ(0);
+      transition: all 0.65s cubic-bezier(0.19, 1, 0.22, 1);
+      overflow: hidden;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-sizing: border-box;
+      will-change: transform, opacity, left, top, width;
+    }
+
+    .expanded-card.animating {
+      opacity: 1;
+      transform: scale(1) translateZ(0);
+    }
+
+    .expanded-card-header {
+      padding: 40px;
+      border-bottom: 1px solid #e8e8e8;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: #f5f5f5;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      font-size: 20px;
+      color: #666;
+    }
+
+    .close-btn:hover {
+      background: #e8e8e8;
+      color: #000;
+    }
+
+    .expanded-title {
+      font-size: 36px;
+      font-weight: 600;
+      color: #000000;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+
+    .expanded-number {
+      font-size: 36px;
+      font-weight: 600;
+      color: #999;
+      letter-spacing: -0.02em;
+    }
+
+    .accordion-content {
+      padding: 0 40px 40px;
+    }
+
+    .accordion-item {
+      border-bottom: 1px solid #e8e8e8;
+      overflow: hidden;
+    }
+
+    .accordion-item:last-child {
+      border-bottom: none;
+    }
+
+    .accordion-header {
+      padding: 24px 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .accordion-header:hover {
+      color: #666;
+    }
+
+    .accordion-header h3 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .accordion-icon {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .accordion-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.4s ease;
+      padding: 0;
+    }
+
+    .accordion-body.open {
+      max-height: 1000px;
+      padding-bottom: 24px;
+    }
+
+    .accordion-body p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .action-btn {
+      background: #000000;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-family: 'Crimson Text', serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      max-width: 120px;
+    }
+
+    .action-btn:hover {
+      background: #2a2a2a;
+      transform: translateY(-1px);
+    }
+
+    .action-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Past Papers Section */
+    .papers-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin-top: 0;
+    }
+
+    .paper-main-card {
+      background: white;
+      border: 1px solid #d4d4d4;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+    }
+
+    .paper-main-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .paper-main-header {
+      margin-bottom: 28px;
+    }
+
+    .paper-main-title {
+      font-size: 26px;
+      font-weight: 600;
+      color: #000000;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+      font-family: 'Crimson Text', serif;
+    }
+
+    .paper-main-description {
+      font-size: 15px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    .paper-content-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+    }
+
+    .paper-nav-btn {
+      background: #f5f5f5;
+      border: 1px solid #e5e5e5;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #666;
+      flex-shrink: 0;
+    }
+
+    .paper-nav-btn:hover:not(:disabled) {
+      background: #e8e8e8;
+      border-color: #d4d4d4;
+      color: #000;
+      transform: scale(1.05);
+    }
+
+    .paper-nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .paper-content-carousel {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+      touch-action: pan-y;
+    }
+
+    .paper-content-card {
+      background: #fafafa;
+      border: 1px solid #e8e8e8;
+      border-radius: 10px;
+      padding: 28px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      opacity: 0;
+      transform: translateX(20px);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .paper-content-card.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: all;
+      position: relative;
+    }
+
+    .paper-content-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1a1a1a;
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+      font-family: 'Crimson Text', serif;
+    }
+
+    .paper-info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .paper-info-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      color: #444;
+    }
+
+    .paper-info-row svg {
+      flex-shrink: 0;
+      color: #666;
+    }
+
+    .paper-action-btn {
+      background: #000000;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 22px;
+      font-family: 'Crimson Text', serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-block;
+    }
+
+    .paper-action-btn:hover {
+      background: #2a2a2a;
+      transform: translateY(-1px);
+    }
+
+    .paper-action-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Dot indicators for mobile */
+    .carousel-dots {
+      display: none;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #d4d4d4;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .carousel-dot.active {
+      background: #1a1a1a;
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .container { 
+        margin: 0; 
+      }
+      
+      .course-info, .topics-section, .tab-content { 
+        padding-left: 20px; 
+        padding-right: 20px; 
+      }
+      
+      .course-header { 
+        flex-direction: column; 
+        gap: 20px; 
+      }
+      
+      .nav-tabs { 
+        overflow-x: auto; 
+        -webkit-overflow-scrolling: touch; 
+      }
+      
+      .nav-tab { 
+        white-space: nowrap; 
+      }
+      
+      .topics-grid { 
+        grid-template-columns: 1fr; 
+        gap: 16px; 
+        margin-top: 32px; 
+      }
+      
+      .expanded-card-header { 
+        padding: 32px 24px; 
+      }
+      
+      .accordion-content { 
+        padding: 0 24px 32px; 
+      }
+
+      /* Mobile paper carousel adjustments */
+      .paper-nav-btn {
+        display: none;
+      }
+
+      .paper-content-wrapper {
+        gap: 0;
+      }
+
+      .paper-content-carousel {
+        overflow: visible;
+        margin: 0 -32px;
+        padding: 0 32px;
+      }
+
+      .carousel-dots {
+        display: flex;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .container { 
+        padding-left: 80px; 
+        padding-right: 80px; 
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .container { 
+        padding-left: 40px; 
+        padding-right: 40px; 
+      }
+    }
+
+
+/* Lecture Progress Bar Styles */
+.lecture-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.lecture-progress-bar {
+  width: 120px;
+  height: 6px;
+  background-color: #f2f2f2;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+}
+
+.progress-correct {
+  height: 100%;
+  background-color: #54d3ab;
+  transition: width 0.3s ease;
+}
+
+.progress-partial {
+  height: 100%;
+  background-color: #f7b84b;
+  transition: width 0.3s ease;
+}
+
+.progress-incorrect {
+  height: 100%;
+  background-color: #e16280;
+  transition: width 0.3s ease;
+}
+
+.progress-stats {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+
+
+
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-section">
+    </div>
+
+    <div class="course-info">
+      <div class="course-header">
+        <div class="course-details">
+          <h1 class="course-title">Foundation Tier</h1>
+          <p class="course-subtitle">
+            Question repeats from the past AQA, EDEXCEL and OCR Foundation Tier Examinations
+          </p>
+        </div>
+      </div>
+
+      <div class="nav-tabs">
+        <a class="nav-tab active" data-tab="lectures-content">Lectures & Quiz</a>
+        <a class="nav-tab" data-tab="flash-content">Flashtiles</a>
+        <a class="nav-tab" data-tab="papers-content">Past Papers</a>
+      </div>
+    </div>
+
+    <div id="lectures-content" class="tab-content">
+      <div class="topics-section">
+        <div class="topics-grid">
+          <div class="topic-card" data-topic="1" data-title="Number">
+            <div class="topic-title">
+              <span class="topic-number">1</span>
+              <span>Number</span>
+            </div>
+          </div>
+          <div class="topic-card" data-topic="2" data-title="Algebra">
+            <div class="topic-title">
+              <span class="topic-number">2</span>
+              <span>Algebra</span>
+            </div>
+          </div>
+          <div class="topic-card" data-topic="3" data-title="Graphs">
+            <div class="topic-title">
+              <span class="topic-number">3</span>
+              <span>Graphs</span>
+            </div>
+          </div>
+          <div class="topic-card" data-topic="4" data-title="Ratio">
+            <div class="topic-title">
+              <span class="topic-number">4</span>
+              <span>Ratio</span>
+            </div>
+          </div>
+          <div class="topic-card" data-topic="5" data-title="Geometry">
+            <div class="topic-title">
+              <span class="topic-number">5</span>
+              <span>Geometry</span>
+            </div>
+          </div>
+          <div class="topic-card" data-topic="6" data-title="Trigonometry">
+            <div class="topic-title">
+              <span class="topic-number">6</span>
+              <span>Trigonometry</span>
+            </div>
+          </div>
+          <div class="topic-card" data-topic="7" data-title="Probability and Statistics">
+            <div class="topic-title">
+              <span class="topic-number">7</span>
+              <span>Probability and Statistics</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="flash-content" class="tab-content hidden">
+      <div class="topics-section">
+        <div class="topics-grid">
+          <div class="topic-card flashtile-card" data-flashtopic="1" data-title="Number">
+            <div class="topic-title">
+              <span class="topic-number">1</span>
+              <span>Number</span>
+            </div>
+          </div>
+          <div class="topic-card flashtile-card" data-flashtopic="2" data-title="Algebra">
+            <div class="topic-title">
+              <span class="topic-number">2</span>
+              <span>Algebra</span>
+            </div>
+          </div>
+          <div class="topic-card flashtile-card" data-flashtopic="3" data-title="Graphs">
+            <div class="topic-title">
+              <span class="topic-number">3</span>
+              <span>Graphs</span>
+            </div>
+          </div>
+          <div class="topic-card flashtile-card" data-flashtopic="4" data-title="Ratio">
+            <div class="topic-title">
+              <span class="topic-number">4</span>
+              <span>Ratio</span>
+            </div>
+          </div>
+          <div class="topic-card flashtile-card" data-flashtopic="5" data-title="Geometry">
+            <div class="topic-title">
+              <span class="topic-number">5</span>
+              <span>Geometry</span>
+            </div>
+          </div>
+          <div class="topic-card flashtile-card" data-flashtopic="6" data-title="Trigonometry">
+            <div class="topic-title">
+              <span class="topic-number">6</span>
+              <span>Trigonometry</span>
+            </div>
+          </div>
+          <div class="topic-card flashtile-card" data-flashtopic="7" data-title="Probability and Statistics">
+            <div class="topic-title">
+              <span class="topic-number">7</span>
+              <span>Probability and Statistics</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="papers-content" class="tab-content hidden">
+      <div class="topics-section">
+        <div class="papers-grid">
+          <!-- GCSE Experience Card -->
+          <div class="paper-main-card">
+            <div class="paper-main-header">
+              <h2 class="paper-main-title">GCSE Experience</h2>
+              <p class="paper-main-description">Hand-selected GCSE past paper questions to test your strengths and weaknesses</p>
+            </div>
+            
+            <div class="paper-content-wrapper">
+              <button class="paper-nav-btn paper-nav-left" data-carousel="gcse-experience" type="button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </button>
+              
+              <div class="paper-content-carousel" data-carousel-id="gcse-experience">
+                <div class="paper-content-card active">
+                  <h3 class="paper-content-title">Paper 1 (Non Calculator)</h3>
+                  <div class="paper-info-list">
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      <span>90 Minutes</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6"/>
+                      </svg>
+                      <span>36 Questions</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                      </svg>
+                      <span>80 Marks</span>
+                    </div>
+                  </div>
+                  <button class="paper-action-btn">Get Started →</button>
+                </div>
+                
+                <div class="paper-content-card">
+                  <h3 class="paper-content-title">Paper 2 (Calculator)</h3>
+                  <div class="paper-info-list">
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      <span>90 Minutes</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6"/>
+                      </svg>
+                      <span>36 Questions</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                      </svg>
+                      <span>80 Marks</span>
+                    </div>
+                  </div>
+                  <button class="paper-action-btn">Get Started →</button>
+                </div>
+                
+                <div class="paper-content-card">
+                  <h3 class="paper-content-title">Paper 3 (Calculator)</h3>
+                  <div class="paper-info-list">
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      <span>90 Minutes</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6"/>
+                      </svg>
+                      <span>36 Questions</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                      </svg>
+                      <span>80 Marks</span>
+                    </div>
+                  </div>
+                  <button class="paper-action-btn">Get Started →</button>
+                </div>
+              </div>
+              
+              <button class="paper-nav-btn paper-nav-right" data-carousel="gcse-experience" type="button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="carousel-dots" data-dots-for="gcse-experience">
+              <span class="carousel-dot active" data-dot-index="0"></span>
+              <span class="carousel-dot" data-dot-index="1"></span>
+              <span class="carousel-dot" data-dot-index="2"></span>
+            </div>
+          </div>
+
+          <!-- Paper 1 Mastery Card -->
+          <div class="paper-main-card">
+            <div class="paper-main-header">
+              <h2 class="paper-main-title">Paper 1 Mastery</h2>
+              <p class="paper-main-description">All topics across paper 1, with each question of varying levels of difficulty to assess your maths skills.</p>
+            </div>
+            
+            <div class="paper-content-wrapper">
+              <button class="paper-nav-btn paper-nav-left" data-carousel="paper-mastery" type="button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </button>
+              
+              <div class="paper-content-carousel" data-carousel-id="paper-mastery">
+                <div class="paper-content-card active">
+                  <h3 class="paper-content-title">Paper 1 (Non Calculator)</h3>
+                  <div class="paper-info-list">
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      <span>90 Minutes</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6"/>
+                      </svg>
+                      <span>36 Questions</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                      </svg>
+                      <span>80 Marks</span>
+                    </div>
+                  </div>
+                  <button class="paper-action-btn">Get Started →</button>
+                </div>
+                
+                <div class="paper-content-card">
+                  <h3 class="paper-content-title">Paper 2 (Calculator)</h3>
+                  <div class="paper-info-list">
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      <span>90 Minutes</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6"/>
+                      </svg>
+                      <span>36 Questions</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                      </svg>
+                      <span>80 Marks</span>
+                    </div>
+                  </div>
+                  <button class="paper-action-btn">Get Started →</button>
+                </div>
+                
+                <div class="paper-content-card">
+                  <h3 class="paper-content-title">Paper 3 (Calculator)</h3>
+                  <div class="paper-info-list">
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      <span>90 Minutes</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6"/>
+                      </svg>
+                      <span>36 Questions</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                      </svg>
+                      <span>80 Marks</span>
+                    </div>
+                  </div>
+                  <button class="paper-action-btn">Get Started →</button>
+                </div>
+              </div>
+              
+              <button class="paper-nav-btn paper-nav-right" data-carousel="paper-mastery" type="button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="carousel-dots" data-dots-for="paper-mastery">
+              <span class="carousel-dot active" data-dot-index="0"></span>
+              <span class="carousel-dot" data-dot-index="1"></span>
+              <span class="carousel-dot" data-dot-index="2"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 60px;"></div>
+  </div>
+
+  <div class="expanded-overlay" id="expandedOverlay"></div>
+
+  <script>
+// ========== SUPABASE CONFIGURATION - ONLY DECLARE ONCE ==========
+const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+
+
+function getUserId() {
+  let userId = localStorage.getItem('userId');
+  if (!userId) {
+    userId = 'user_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('userId', userId);
+  }
+  return userId;
+}
+
+// ========== NAVIGATION FUNCTION - THIS OPENS THE LECTURE ==========
+window.navigateToLecture = function(topicNum, sectionIndex, sectionTitle) {
+  console.log('Navigate called:', topicNum, sectionIndex, sectionTitle);
+  
+  const lectureURLs = {
+    '1': {
+      '0': 'https://0-product-of-prime-factors-and-index-form.vercel.app/',
+      '1': 'https://1-highest-common-factor.vercel.app/',
+      '2': 'https://2-lowest-common-multiple.vercel.app/'
+    }
+  };
+  
+  const url = lectureURLs[topicNum]?.[sectionIndex];
+  
+  if (url) {
+    console.log('Opening:', url);
+    window.location.href = url;
+  } else {
+    alert('This lecture is coming soon!');
+  }
+};
+
+// ========== LOAD PROGRESS ==========
+async function loadAllLectureProgress() {
+  const userId = getUserId();
+  if (!userId) return;
+  
+  try {
+    const { data, error } = await supabase
+      .from('lecture_progress')
+      .select('*')
+      .eq('user_id', userId);
+    
+    if (data && !error) {
+      console.log('Loaded progress for', data.length, 'lectures');
+      data.forEach(lecture => {
+        updateProgressBar(lecture);
+      });
+    }
+  } catch (err) {
+    console.error('Failed to load progress:', err);
+  }
+}
+
+function updateProgressBar(progress) {
+  const lectureName = progress.lecture_name;
+  const accordionItems = document.querySelectorAll('.accordion-item');
+  
+  accordionItems.forEach(item => {
+    const headerText = item.querySelector('.accordion-header h3')?.textContent;
+    
+    if (headerText && headerText.includes(lectureName)) {
+      const progressContainer = item.querySelector('.lecture-progress-container');
+      const progressBar = item.querySelector('.lecture-progress-bar');
+      const statsSpan = item.querySelector('.progress-stats');
+      
+      if (progressContainer && progressBar && progress.total_questions > 0) {
+        const total = progress.total_questions;
+        const correctPercent = (progress.correct / total) * 100;
+        const partialPercent = (progress.partial / total) * 100;
+        const incorrectPercent = (progress.incorrect / total) * 100;
+        
+        progressBar.querySelector('.progress-correct').style.width = correctPercent + '%';
+        progressBar.querySelector('.progress-partial').style.width = partialPercent + '%';
+        progressBar.querySelector('.progress-incorrect').style.width = incorrectPercent + '%';
+        
+        statsSpan.textContent = `${progress.correct + progress.partial}/${total} complete`;
+        progressContainer.style.display = 'flex';
+      }
+    }
+  });
+}
+
+// ========== MAIN CODE - FIXED TOPIC CARD CLICKS ==========
+document.addEventListener('DOMContentLoaded', function() {
+  const navTabs = document.querySelectorAll('.nav-tab');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  function switchTab(targetTabId) {
+    navTabs.forEach(t => t.classList.remove('active'));
+    tabContents.forEach(content => content.classList.add('hidden'));
+
+    const activeTab = document.querySelector(`.nav-tab[data-tab="${targetTabId}"]`);
+    if (activeTab) activeTab.classList.add('active');
+
+    const tabContent = document.getElementById(targetTabId);
+    if (tabContent) {
+      setTimeout(() => tabContent.classList.remove('hidden'), 50);
+    }
+  }
+
+  navTabs.forEach(tab => {
+    tab.addEventListener('click', function(e) {
+      e.preventDefault();
+      switchTab(this.getAttribute('data-tab'));
+    });
+  });
+
+  // Topic data - THIS IS YOUR LECTURE STRUCTURE
+  const topicData = {
+    1: { title: "Number", sections: [
+      { number: "1", title: "Product of Prime Factors / Index Form", content: "Master expressing numbers as products of prime factors and writing them in index form." },
+      { number: "2", title: "Highest Common Factor", content: "Master the full principles of the Highest Common Factor (HCF)." },
+      { number: "3", title: "Lowest Common Multiple", content: "Master the full principles of the Lowest Common Multiple (LCM)." },
+      { number: "4", title: "Ordering Numbers & Rounding", content: "Master ordering integers, decimals, fractions, and mixed numbers from smallest to largest." },
+      { number: "5", title: "Number Conversions", content: "Master converting between decimals, percentages, and fractions." },
+      { number: "6", title: "Order of Operations (BIDMAS)", content: "Master the correct order of operations in mathematical expressions." },
+      { number: "7", title: "Inequalities", content: "Work with inequality symbols and solve inequality problems." },
+      { number: "8", title: "Error Intervals", content: "Understand and calculate error intervals and bounds in measurements." },
+      { number: "9", title: "Truncation", content: "Learn about truncating numbers and its applications." },
+      { number: "10", title: "Rounding (Decimals and Significant Figures)", content: "Master rounding techniques for decimals and significant figures." },
+      { number: "11", title: "Fractions and Simplification", content: "Simplify fractions and work with equivalent fractions." },
+      { number: "12", title: "Mixed and Improper Fractions", content: "Convert between mixed numbers and improper fractions." },
+      { number: "13", title: "Multiplying Fractions", content: "Master multiplication of fractions and mixed numbers." },
+      { number: "14", title: "Dividing Fractions", content: "Learn techniques for dividing fractions effectively." },
+      { number: "15", title: "Adding Fractions", content: "Add fractions with different denominators." },
+      { number: "16", title: "Subtracting Fractions", content: "Subtract fractions with different denominators." }
+    ]},
+    2: { title: "Algebra", sections: [{ title: "Coming Soon", content: "This topic will be complete by December 20th." }]},
+    3: { title: "Graphs", sections: [{ title: "Coming Soon", content: "This topic will be complete by January 1st." }]},
+    4: { title: "Ratio", sections: [{ title: "Coming Soon", content: "This topic will be complete by January 14th." }]},
+    5: { title: "Geometry", sections: [{ title: "Coming Soon", content: "This topic will be complete by January 28th." }]},
+    6: { title: "Trigonometry", sections: [{ title: "Coming Soon", content: "This topic will be complete by February 7th." }]},
+    7: { title: "Probability and Statistics", sections: [{ title: "Coming Soon", content: "This topic will be complete by February 21st." }]}
+  };
+
+  const flashtileData = {
+    1: { title: "Number", sections: [
+      { number: "1", title: "Prime Factorization", content: "Rapid recall practice for expressing numbers as products of prime factors." },
+      { number: "2", title: "HCF & LCM", content: "Quick practice identifying highest common factors and lowest common multiples." },
+      { number: "3", title: "Fractions Operations", content: "Flash practice for adding, subtracting, multiplying, and dividing fractions." },
+      { number: "4", title: "Decimals & Percentages", content: "Speed conversions between decimals, fractions, and percentages." },
+      { number: "5", title: "Rounding & Estimation", content: "Quick recall of rounding rules and estimation techniques." }
+    ]},
+    2: { title: "Algebra", sections: [{ title: "Coming Soon", content: "Flashtiles for Algebra will be available soon." }]},
+    3: { title: "Graphs", sections: [{ title: "Coming Soon", content: "Flashtiles for Graphs will be available soon." }]},
+    4: { title: "Ratio", sections: [{ title: "Coming Soon", content: "Flashtiles for Ratio will be available soon." }]},
+    5: { title: "Geometry", sections: [{ title: "Coming Soon", content: "Flashtiles for Geometry will be available soon." }]},
+    6: { title: "Trigonometry", sections: [{ title: "Coming Soon", content: "Flashtiles for Trigonometry will be available soon." }]},
+    7: { title: "Probability and Statistics", sections: [{ title: "Coming Soon", content: "Flashtiles for Probability and Statistics will be available soon." }]}
+  };
+
+  const overlay = document.getElementById('expandedOverlay');
+
+  // ========== FIX: LECTURE CARDS - THESE MUST WORK ==========
+  document.querySelectorAll('#lectures-content .topic-card').forEach(card => {
+    card.addEventListener('click', function() {
+      const topicNum = this.dataset.topic;
+      const topicTitle = this.dataset.title;
+      const rect = this.getBoundingClientRect();
+      createExpandedCard(topicNum, topicTitle, rect, topicData, 'lecture');
+    });
+  });
+
+  // Flashtile cards
+  document.querySelectorAll('#flash-content .flashtile-card').forEach(card => {
+    card.addEventListener('click', function() {
+      const topicNum = this.dataset.flashtopic;
+      const topicTitle = this.dataset.title;
+      const rect = this.getBoundingClientRect();
+      createExpandedCard(topicNum, topicTitle, rect, flashtileData, 'flashtile');
+    });
+  });
+
+  // ========== THIS CREATES THE POPUP WITH LECTURES ==========
+  function createExpandedCard(topicNum, topicTitle, rect, dataSource, cardType) {
+    const expandedCard = document.createElement('div');
+    expandedCard.className = 'expanded-card';
+    expandedCard.style.left = rect.left + 'px';
+    expandedCard.style.top = rect.top + 'px';
+    expandedCard.style.width = rect.width + 'px';
+    expandedCard.style.height = rect.height + 'px';
+
+    const data = dataSource[topicNum];
+    let accordionHTML = '';
+    
+    data.sections.forEach((section, index) => {
+      const titleWithNumber = section.number ? `${section.number}. ${section.title}` : section.title;
+      const buttonLabel = cardType === 'flashtile' ? 'Start' : 'Lecture';
+      const buttonLabel2 = cardType === 'flashtile' ? 'Review' : 'Quiz';
+      
+      accordionHTML += `
+        <div class="accordion-item">
+          <div class="accordion-header" data-index="${index}">
+            <h3>${titleWithNumber}</h3>
+            <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </div>
+          <div class="accordion-body">
+            <p>${section.content}</p>
+            <div class="lecture-progress-container" style="display: none;">
+              <div class="lecture-progress-bar">
+                <div class="progress-correct" style="width: 0%"></div>
+                <div class="progress-partial" style="width: 0%"></div>
+                <div class="progress-incorrect" style="width: 0%"></div>
+              </div>
+              <span class="progress-stats"></span>
+            </div>
+            <div class="button-group">
+              <button class="action-btn" onclick="window.navigateToLecture('${topicNum}', '${index}', '${section.title}')">${buttonLabel}</button>
+              <button class="action-btn">${buttonLabel2}</button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    expandedCard.innerHTML = `
+      <div class="expanded-card-header">
+        <button class="close-btn">×</button>
+        <div class="expanded-title">
+          <span class="expanded-number">${topicNum}</span>
+          <span>${topicTitle}</span>
+        </div>
+      </div>
+      <div class="accordion-content">${accordionHTML}</div>
+    `;
+
+    overlay.appendChild(expandedCard);
+    overlay.classList.add('active');
+
+    setTimeout(() => {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const targetWidth = Math.min(800, viewportWidth - 40);
+
+      expandedCard.style.left = (viewportWidth - targetWidth) / 2 + 'px';
+      expandedCard.style.top = Math.max(60, (viewportHeight * 0.08)) + 'px';
+      expandedCard.style.width = targetWidth + 'px';
+      expandedCard.style.height = 'auto';
+      expandedCard.classList.add('animating');
+
+      setTimeout(() => {
+        loadAllLectureProgress();
+        const firstAccordion = expandedCard.querySelector('.accordion-header');
+        const firstBody = expandedCard.querySelector('.accordion-body');
+        const firstIcon = expandedCard.querySelector('.accordion-icon');
+        if (firstAccordion && firstBody && firstIcon) {
+          firstBody.classList.add('open');
+          firstIcon.classList.add('rotated');
+        }
+      }, 450);
+    }, 50);
+
+    expandedCard.querySelector('.close-btn').addEventListener('click', () => {
+      expandedCard.classList.remove('animating');
+      overlay.classList.remove('active');
+      setTimeout(() => expandedCard.remove(), 400);
+    });
+
+    expandedCard.querySelectorAll('.accordion-header').forEach(header => {
+      header.addEventListener('click', function() {
+        const body = this.nextElementSibling;
+        const icon = this.querySelector('.accordion-icon');
+        body.classList.toggle('open');
+        icon.classList.toggle('rotated');
+      });
+    });
+  }
+
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      const card = overlay.querySelector('.expanded-card');
+      if (card) card.remove();
+      overlay.classList.remove('active');
+    }
+  });
+
+  // ========== PAPERS CAROUSEL ==========
+  const paperCarousels = document.querySelectorAll('.paper-content-carousel');
+  
+  paperCarousels.forEach(carousel => {
+    const carouselId = carousel.dataset.carouselId;
+    const cards = carousel.querySelectorAll('.paper-content-card');
+    const leftBtn = document.querySelector(`.paper-nav-left[data-carousel="${carouselId}"]`);
+    const rightBtn = document.querySelector(`.paper-nav-right[data-carousel="${carouselId}"]`);
+    const dotsContainer = document.querySelector(`.carousel-dots[data-dots-for="${carouselId}"]`);
+    const dots = dotsContainer ? dotsContainer.querySelectorAll('.carousel-dot') : [];
+    
+    let currentIndex = 0;
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    function updatePaperCarousel() {
+      cards.forEach((card, index) => {
+        card.classList.remove('active');
+        if (index === currentIndex) {
+          setTimeout(() => {
+            card.classList.add('active');
+          }, 10);
+        }
+      });
+      
+      if (leftBtn && rightBtn) {
+        leftBtn.disabled = currentIndex === 0;
+        rightBtn.disabled = currentIndex === cards.length - 1;
+      }
+      
+      if (dots.length > 0) {
+        dots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === currentIndex);
+        });
+      }
+    }
+    
+    if (leftBtn) {
+      leftBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (currentIndex > 0) {
+          currentIndex--;
+          updatePaperCarousel();
+        }
+      });
+    }
+    
+    if (rightBtn) {
+      rightBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (currentIndex < cards.length - 1) {
+          currentIndex++;
+          updatePaperCarousel();
+        }
+      });
+    }
+    
+    carousel.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    carousel.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+    
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      const diff = touchStartX - touchEndX;
+      
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0 && currentIndex < cards.length - 1) {
+          currentIndex++;
+          updatePaperCarousel();
+        } else if (diff < 0 && currentIndex > 0) {
+          currentIndex--;
+          updatePaperCarousel();
+        }
+      }
+    }
+    
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        currentIndex = index;
+        updatePaperCarousel();
+      });
+    });
+    
+    updatePaperCarousel();
+  });
+
+  switchTab('lectures-content');
+});
+</script>
+
+</body>
+</html>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
