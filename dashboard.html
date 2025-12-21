@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - GCSE Maths Mastery</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-left img {
+            height: 32px;
+            width: auto;
+        }
+
+        .nav-left span {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-name {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .signout-btn {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #111827;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .signout-btn:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .welcome-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-section p {
+            font-size: 1.125rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-section .highlight {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .action-icon svg {
+            width: 30px;
+            height: 30px;
+            color: white;
+        }
+
+        .action-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-card p {
+            font-size: 0.9375rem;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-section h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f9fafb;
+            border-radius: 0.75rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-size: 1.25rem;
+            color: #6b7280;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .welcome-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .welcome-section h1 {
+                font-size: 1.75rem;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingState" class="loading">
+        Loading your dashboard...
+    </div>
+
+    <div id="mainContent" style="display: none;">
+        <!-- Navigation -->
+        <nav>
+            <div class="nav-left">
+                <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="GMM Logo">
+                <span>GCSE Maths Mastery</span>
+            </div>
+            <div class="nav-right">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span class="user-name" id="userName">User</span>
+                </div>
+                <button class="signout-btn" id="signoutBtn">Sign Out</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h1>Welcome back, <span class="highlight" id="welcomeName">Student</span>! 🎉</h1>
+                <p>Ready to ace your GCSE Maths? Let's continue your journey to success.</p>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="action-card" onclick="alert('Interactive Lectures - Coming soon!')">
+                    <div class="action-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3>Interactive Lectures</h3>
+                    <p>Learn with quick videos and instant quizzes that track your progress.</p>
+                </div>
+
+                <div class="action-card" onclick="alert('Flashtiles - Coming soon!')">
+                    <div class="action-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    <h3>Flashtiles</h3>
+                    <p>Practice exam-style questions with worked answers at your fingertips.</p>
+                </div>
+
+                <div class="action-card" onclick="alert('Quizzes - Coming soon!')">
+                    <div class="action-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3>Live Quizzes</h3>
+                    <p>Compete against other students and climb the leaderboard.</p>
+                </div>
+
+                <div class="action-card" onclick="alert('Past Papers - Coming soon!')">
+                    <div class="action-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h3>Past Papers</h3>
+                    <p>Practice with real GCSE exam questions and get instant analytics.</p>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats-section">
+                <h2>Your Progress</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Lessons Completed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Questions Answered</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">0%</div>
+                        <div class="stat-label">Average Score</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Study Streak (Days)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ IMPORTANT: Replace these with YOUR Supabase credentials
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Check authentication and load user data
+        async function checkAuth() {
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+
+                if (error) throw error;
+
+                if (!session) {
+                    // Not logged in, redirect to sign in
+                    window.location.href = 'signin.html';
+                    return;
+                }
+
+                // User is logged in, display their info
+                const user = session.user;
+                const firstName = user.user_metadata.first_name || 'Student';
+                const lastName = user.user_metadata.last_name || '';
+                const fullName = user.user_metadata.full_name || firstName;
+
+                // Update UI with user info
+                document.getElementById('userName').textContent = firstName;
+                document.getElementById('welcomeName').textContent = firstName;
+                
+                // Set avatar initial
+                const initial = firstName.charAt(0).toUpperCase();
+                document.getElementById('userAvatar').textContent = initial;
+
+                // Show main content, hide loading
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+
+            } catch (error) {
+                console.error('Auth check error:', error);
+                window.location.href = 'signin.html';
+            }
+        }
+
+        // Sign out function
+        document.getElementById('signoutBtn').addEventListener('click', async () => {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                
+                // Clear local storage
+                localStorage.clear();
+                
+                // Redirect to landing page
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Sign out error:', error);
+                alert('Error signing out. Please try again.');
+            }
+        });
+
+        // Check auth on page load
+        checkAuth();
+    </script>
+</body>
+</html>
