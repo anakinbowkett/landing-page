@@ -1,0 +1,4440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Lowest Common Multiple - Interactive Lecture</title>
+  <!-- ADD THIS FONT LINK HERE -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    
+
+<!-- Hidden link to Highest Common Factor -->
+<a href="2. Highest Common Factor/" class="hidden-hcf-link"></a>
+
+<style>
+.hidden-hcf-link {
+    display: none !important;
+    visibility: hidden !important;
+}
+</style>
+  
+  
+  
+  
+  
+
+<style>
+  /* ==========================
+     Theme variables & base
+     ========================== */
+  :root{
+    --bg:#ffffff;
+    --muted:#6b7280;
+    --accent:#1d7fe2;
+    --card:#f8fafc;
+    --panel-gap:24px;
+    --step-bg:#fff;
+    --arrow:#cbd5e1;
+    --glass: rgba(255,255,255,0.6);
+  }
+  /* ==========================
+   PROGRESS BAR - FIXED AT TOP
+   ========================== */
+.sticky-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 100;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    padding: 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.video-lectures-link {
+    position: absolute;
+    top: 50%;
+    left: 80px;  /* Desktop: stays at 80px */
+    transform: translateY(-50%);
+    font-size: 15px;
+    font-weight: bold;
+    color: #1D7FE2;
+    cursor: pointer;
+    z-index: 101;
+    text-decoration: none;
+}
+
+.video-lectures-link:link,
+.video-lectures-link:visited,
+.video-lectures-link:hover,
+.video-lectures-link:active {
+    color: #1D7FE2 !important;
+    text-decoration: none !important;
+}
+  
+  
+/* Back to Lectures button - iPhone mode only */
+.back-lectures-btn {
+    display: none; /* Hidden by default */
+}
+
+@media (max-width: 430px) {
+    /* Create positioning context for the button */
+    body {
+        position: relative;
+    }
+    
+    .back-lectures-btn {
+        display: inline-block !important;
+        position: absolute !important;     /* Absolute positioning - doesn't push content */
+        top: -37px !important;              /* Adjust this value to position vertically */
+        left: 16px !important;             /* Distance from left edge */
+        z-index: 50 !important;            /* Above content but below fixed header */
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        text-decoration: none !important;
+        font-family: 'Crimson Text', serif !important;
+        font-weight: 600 !important;
+        font-size: 16px !important;
+        border: 2px solid #000000 !important;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15) !important;
+        cursor: pointer !important;
+        transition: background-color 0.3s ease, transform 0.15s ease !important;
+        margin: 0 !important;              /* Remove any margins */
+    }
+    
+    .back-lectures-btn:hover {
+        background-color: #f0f0f0 !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    .back-arrow {
+        display: inline-block !important;
+        margin-right: 6px !important;
+        font-size: 14px !important;
+        vertical-align: middle !important;
+    }
+}
+
+  
+  
+  
+  
+  
+  
+
+/* iPhone mode: hide the top blue arrow completely */
+@media (max-width: 430px) {
+    .video-lectures-link {
+        display: none !important;  /* Hide the entire blue arrow button */
+    }
+}
+
+/* Hide "Video" text on all screen sizes */
+.video-lectures-link .video-text {
+    display: none;
+}
+
+/* Show "Video" on screens larger than iPhone 15 Pro Max (430px) */
+@media (min-width: 431px) {
+    .video-lectures-link .video-text {
+        display: inline;
+    }
+}
+
+/* Optional: Adjust font size on very small screens */
+@media (max-width: 430px) {
+    .video-lectures-link {
+        font-size: 13px;
+        left: 60px;
+    }
+}
+
+.video-lectures-arrow {
+    vertical-align: middle;
+    margin-top: -6px;
+    display: inline-block;
+    width: 8.5px;
+    height: 8.5px;
+    border-left: 3.5px solid #1D7FE2;
+    border-bottom: 3.5px solid #1D7FE2;
+    transform: rotate(45deg);
+    transition: transform 0.3s ease-in-out;
+    margin-right: 6px;
+}
+
+.video-lectures-container:hover .video-lectures-arrow {
+    transform: rotate(225deg);
+}
+
+.quiz-progress-container {
+    width: 41.6%;
+    height: 9px;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* iPhone mode: make progress bar longer and move it left */
+@media (max-width: 430px) {
+    .quiz-progress-container {
+        width: 75%;  /* Increase width on iPhone */
+        margin: 0 auto 0 calc(50% - 37.5% - 20px);  /* Center but offset left by 20px */
+    }
+}
+
+/* Optional: For very small phones */
+@media (max-width: 375px) {
+    .quiz-progress-container {
+        width: 80%;  /* Even wider on smaller iPhones */
+        margin: 0 auto 0 calc(50% - 40% - 20px);  /* Center but offset left by 20px */
+    }
+}
+
+.quiz-progress-segments {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.quiz-segment {
+    height: 100%;
+    transition: all 1s ease-out;
+    border-right: 2px solid white;
+    position: relative;
+    background-color: transparent;
+}
+
+.quiz-segment:last-child {
+    border-right: none;
+}
+
+.quiz-segment-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+}
+
+.cherry-petal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.cherry-petal {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    border-radius: 50%;
+}
+
+/* Reset + base */
+/* Reset + base */
+html,body{height:100%;margin:0;background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial; color:#111;padding-top:70px;padding-bottom:60px;}  /* Desktop: reduced from 80px */
+.wrap{max-width:1400px;margin:24px auto;padding:28px;display:grid;grid-template-columns: 1fr 500px;gap:var(--panel-gap);}
+@media (max-width: 980px){ .wrap{grid-template-columns:1fr; padding:16px; margin:20px auto;} }
+
+/* --------------------------
+Left SVG panel
+-------------------------- */
+.svg-panel{
+background:#fff;border-radius:12px;padding:20px;box-shadow:0 6px 24px rgba(16,24,40,0.06);
+display:flex;flex-direction:column;gap:12px;min-height:360px;
+}
+.canvas{
+background: linear-gradient(180deg,#ffffff,#fbfdff);
+border-radius:8px;
+padding:20px;
+flex:1;
+display:flex;
+align-items:flex-start; /* Changed from center to flex-start */
+justify-content:center;
+position:relative;
+overflow:hidden;
+min-height: 300px;
+}
+
+/* IMAGE DISPLAY STYLING */
+#stepImage {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Desktop: Larger image display */
+@media (min-width: 981px) {
+  #stepImage {
+    max-height: 320px;
+  }
+}
+
+/* iPhone mode: Fit image properly */
+@media (max-width: 430px) {
+  #stepImage {
+    max-height: 140px;
+    border-radius: 6px;
+  }
+}  
+  
+  
+#demoSVG {
+    width: 100%;
+    height: 280px;
+    max-width: 100%;
+    display: block;
+}
+
+/* Desktop only: Make the panels taller */
+@media (min-width: 981px) {
+    .svg-panel {
+        min-height: 500px;
+    }
+    
+    .steps-panel {
+        min-height: 500px;
+    }
+    
+    .step-window {
+        min-height: 320px;
+    }
+    
+    .canvas {
+        min-height: 360px;
+        align-items: flex-start; /* Keep at top */
+    }
+    
+    #demoSVG {
+        height: 320px;
+    }
+}
+
+/* iPhone mode: BIGGER text for question ONLY */
+/* iPhone mode: BIGGER text for question AND variables */
+@media (max-width: 430px) {
+    .canvas {
+        min-height: 180px;
+        padding: 12px;
+        align-items: flex-start;
+    }
+    
+    #demoSVG {
+        height: 160px;
+    }
+    
+    /* Make question text BIGGER on iPhone */
+    #demoSVG .question-label {
+        font-size: 24px !important;
+    }
+    
+    #demoSVG .question-main,
+    #demoSVG #questionText {
+        font-size: 32px !important;
+    }
+    
+    /* Make variables SAME SIZE as question text on iPhone */
+    #demoSVG .variable-text,
+    #demoSVG #dotAText,
+    #demoSVG #rectBText,
+    #demoSVG #finalText {
+        font-size: 32px !important;
+    }
+    
+    /* Make expression text SAME SIZE as question text on iPhone */
+    #demoSVG .expr-text,
+    #demoSVG #exprLine1,
+    #demoSVG #exprLine2 {
+        font-size: 32px !important;
+    }
+}
+    
+    /* Make visual elements text BIGGER on iPhone */
+    #demoSVG .visual-text,
+    #demoSVG #dotAText,
+    #demoSVG #rectBText {
+        font-size: 28px !important;
+    }
+    
+    /* Make final answer text BIGGER on iPhone */
+    #demoSVG .final-text,
+    #demoSVG #finalText {
+        font-size: 48px !important;
+    }
+}
+
+/* iPhone mode: Adjust SVG height to fit properly */
+@media (max-width: 430px) {
+    .canvas {
+        min-height: 180px;
+        padding: 12px;
+    }
+    
+    #demoSVG {
+        height: 140px;
+        width: 100%;
+    }
+}
+.coming{
+position:absolute;left:16px;right:16px;bottom:16px;padding:8px 12px;background:rgba(26,26,26,0.88);
+color:white;border-radius:8px;font-weight:600;display:flex;justify-content:space-between;align-items:center;
+gap:8px;opacity:0;transform:translateY(8px);transition:all .24s ease;
+}
+.coming.show{opacity:1;transform:translateY(0);}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.select, button{padding:8px 12px;border-radius:8px;border:1px solid #e6eefb;background:white;font-weight:600;color:#0b2546;}
+.btn{background:var(--accent);color:#fff;border:none;cursor:pointer;}
+.btn.secondary{background:#eef6ff;color:var(--accent);border:1px solid #dbeafe;}
+
+/* --------------------------
+Right steps panel
+-------------------------- */
+.steps-panel{background:#fff;border-radius:12px;padding:20px;box-shadow:0 6px 24px rgba(16,24,40,0.06);display:flex;flex-direction:column;gap:12px;}
+.step-window{background:var(--step-bg);border-radius:10px;padding:20px;border:1px solid #eef2f7;min-height:230px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:12px;position:relative;overflow:hidden;}
+.step-text{
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 8px;
+  letter-spacing: -0.05em;
+  line-height: 1.25;
+}
+.sub{
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #464e5a;
+  line-height: 1.6;
+}
+
+/* Desktop only: Make the panels taller */
+@media (min-width: 981px) {
+    .svg-panel {
+        min-height: 500px;
+    }
+    
+    .steps-panel {
+        min-height: 500px;
+    }
+    
+    .step-window {
+        min-height: 320px;
+    }
+}
+.down-arrow{font-size:18px;transform:translateY(0);transition:transform .18s ease;}
+.down-arrow.move{transform:translateY(8px);}
+
+.hint{font-size:13px;color:var(--muted);}
+
+.right-controls{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:8px;}
+  /* Step counter black box styling */
+.right-controls #progress {
+    background-color: #000000;
+    color: #ffffff;
+    padding: 8px 14px;
+    border-radius: 13px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.right-controls #progress strong {
+    color: #ffffff;
+}
+
+.right-controls #progress span {
+    color: #ffffff;
+}
+
+/* iPhone mode adjustments */
+@media (max-width: 430px) {
+    .right-controls #progress {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}
+.toggles{display:flex;gap:8px;}
+.pill{padding:6px 10px;border-radius:999px;border:1px solid #e6eefb;background:#fff;font-weight:700;cursor:pointer;}
+.pill.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* svg helper classes */
+.fade{opacity:0;transition:all .45s cubic-bezier(.2,.9,.25,1);transform-origin:center;}
+.visible{opacity:1;}
+.highlight{filter:drop-shadow(0 6px 18px rgba(29,127,226,0.18));transform:scale(1.04);transition:all .36s cubic-bezier(.2,.9,.25,1);}
+.move-up{transform:translateY(-18px);transition:all .45s cubic-bezier(.2,.9,.25,1);}
+.small{transform:scale(.92);opacity:.95;}
+
+.sol-badge{padding:8px 12px;border-radius:8px;background:#f0fdf4;color:#065f46;font-weight:700;border:1px solid #d1fae5;}
+
+/* --------------------------
+New QType button row + dividers
+sits to the right of Prev/Next/Replay
+-------------------------- */
+.qtype-area{
+display:flex;
+align-items:center;
+gap:12px;
+margin-left:12px;
+flex-direction:row;  /* Horizontal stack */
+}
+.qtype-buttons{
+display:flex;
+align-items:center;
+gap:6px;
+background:#fff;
+border-radius:8px;
+padding:4px 6px;
+box-shadow:0 2px 8px rgba(0,0,0,0.04);
+border:1px solid #eef2f7;
+}
+.qtype-btn{
+font-weight:700;
+color:#0b2546;
+padding:6px 12px;
+cursor:pointer;
+border-radius:6px;
+transition:all .16s ease;
+user-select:none;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+min-width:32px;
+text-align:center;
+background:transparent;
+border:0;
+}
+.qtype-btn[aria-pressed="true"], .qtype-btn.active{
+background:var(--accent);
+color:white;
+}
+.qtype-btn:focus{outline:2px solid rgba(29,127,226,0.18);outline-offset:2px;border-radius:6px;}
+.qtype-btn:hover{background:#f1f5f9;}
+.divider{
+width:1px;
+height:22px;
+background:#e2e8f0;
+border-radius:1px;
+}
+.hint{
+font-size:12px;
+color:var(--muted);
+}
+
+/* iPhone mode: make question selectors WAY smaller and position to right of Replay */
+@media (max-width:430px){
+.qtype-area{
+  margin-left:8px;
+  gap:4px;
+  flex-direction:row;
+}
+.qtype-buttons{
+  gap:1px;
+  padding:1px 2px;
+  border-radius:4px;
+}
+.qtype-btn{
+  padding:2px 4px;
+  min-width:16px;
+  font-size:9px;
+  border-radius:3px;
+}
+.divider{
+  height:10px;
+  width:0.5px;
+}
+}
+
+/* responsive tweak: stack controls and qtypes on mobile */
+@media (max-width:560px){
+.qtype-area{width:100%;justify-content:flex-start;gap:6px;}
+.controls{flex-wrap:wrap;}
+.qtype-buttons{flex-wrap:wrap;gap:4px;}
+}
+/* a11y helper */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  
+        
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+/* --- SECTION: QUESTION 2 STYLES --- */
+.question-box-2 {
+    position: relative;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: white;
+    transition: border-color 0.3s ease;
+}
+
+.question-box-2.incorrect-selection {
+    border: 1px solid #e16280;
+}
+
+.question-box-2.partial-correct {
+    border: 1px solid #f7deb5;
+}
+
+.question-box-2.correct {
+    border: 1px solid #54d3ab;
+}
+
+.question-number-label-2 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #1d7fe2;
+    color: white;
+    font-size: 14px;
+    padding: 5px 15px;
+    border-radius: 0 0 0 5px;
+}
+
+.mark-counter-2 {
+    position: absolute;
+    bottom: 25px;
+    left: 40px;
+    font-size: 15.5px;
+    color: #555;
+    border: 1px solid #1d7fe2;
+    padding: 6px 16px;
+    height: 30px;
+    line-height: 18px;
+    border-radius: 5px;
+    letter-spacing: 2px;
+    background-color: transparent;
+    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Using !important to ensure these styles take precedence */
+.mark-counter-2.correct {
+    background-color: #54d3ab !important;
+    color: white !important;
+    border-color: #54d3ab !important;
+}
+
+.mark-counter-2.incorrect {
+    background-color: #e16280 !important;
+    color: white !important;
+    border-color: #e16280 !important;
+}
+
+.mark-counter-2.partial-correct {
+    background-color: #f7deb5 !important;
+    color: #555 !important;
+    border-color: #f7deb5 !important;
+}
+
+.question-title-2 {
+    padding-top: px;
+    margin-bottom: 32px;
+    text-align: center;
+    font-weight: 350;
+    font-family: "Arial Greek", Arial, sans-serif;
+    color: #464e5a;
+}
+
+.answer-container-2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.answer-option-2-1,
+.answer-option-2-2,
+.answer-option-2-3,
+.answer-option-2-4 {
+    width: 80%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: white;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.answer-option-2-1.selected,
+.answer-option-2-2.selected,
+.answer-option-2-3.selected,
+.answer-option-2-4.selected {
+    background-color: #1d7fe2;
+    color: #ffffff;
+    border-color: #1d7fe2;
+}
+
+.answer-option-2-1.correct-answer,
+.answer-option-2-2.correct-answer,
+.answer-option-2-3.correct-answer,
+.answer-option-2-4.correct-answer {
+    border: 1px solid #54d3ab;
+    box-sizing: border-box;
+}
+
+.answer-option-2-1.correct-answer.selected,
+.answer-option-2-2.correct-answer.selected,
+.answer-option-2-3.correct-answer.selected,
+.answer-option-2-4.correct-answer.selected {
+    background-color: #54d3ab;
+    color: #ffffff;
+    border-color: #54d3ab;
+}
+
+.submit-button-2 {
+    background-color: #1d7fe2;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button-2:hover {
+    background-color: #1a70c5;
+}
+
+/* Additional styles from question 2 that weren't in question 1 */
+.extra-line {
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: "Arial Greek", Arial, sans-serif;
+    color: #464e5a;
+}
+
+.selection-limit-note {
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+
+
+  
+  
+/* Question 1 Styles */
+.question-box-1 {
+    position: relative;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: white;
+    transition: border-color 0.3s ease;
+}
+
+.question-box-1.incorrect-selection {
+    border: 1px solid #e16280;
+}
+
+.question-box-1.partial-correct {
+    border: 1px solid #f7deb5;
+}
+
+.question-box-1.correct {
+    border: 1px solid #54d3ab;
+}
+
+.question-number-label-1 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #1d7fe2;
+    color: white;
+    font-size: 14px;
+    padding: 5px 15px;
+    border-radius: 0 0 0 5px;
+}
+
+.mark-counter-1 {
+    position: absolute;
+    bottom: 25px;
+    left: 40px;
+    font-size: 15.5px;
+    color: #555;
+    border: 1px solid #1d7fe2;
+    padding: 6px 16px;
+    height: 30px;
+    line-height: 18px;
+    border-radius: 5px;
+    letter-spacing: 2px;
+    background-color: transparent;
+    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.mark-counter-1.correct {
+    background-color: #54d3ab !important;
+    color: white !important;
+    border-color: #54d3ab !important;
+}
+
+.mark-counter-1.incorrect {
+    background-color: #e16280 !important;
+    color: white !important;
+    border-color: #e16280 !important;
+}
+
+.mark-counter-1.partial-correct {
+    background-color: #f7deb5 !important;
+    color: #555 !important;
+    border-color: #f7deb5 !important;
+}
+
+.question-title-1 {
+    padding-top: 20px;
+    margin-bottom: 32px;
+    text-align: center;
+    font-weight: 350;
+    font-family: "Arial Greek", Arial, sans-serif;
+    color: #464e5a;
+}
+
+.answer-container-1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.answer-option-1-1,
+.answer-option-1-2,
+.answer-option-1-3,
+.answer-option-1-4 {
+    width: 80%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: white;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.answer-option-1-1.selected,
+.answer-option-1-2.selected,
+.answer-option-1-3.selected,
+.answer-option-1-4.selected {
+    background-color: #1d7fe2;
+    color: #ffffff;
+    border-color: #1d7fe2;
+}
+
+.answer-option-1-1.correct-answer,
+.answer-option-1-2.correct-answer,
+.answer-option-1-3.correct-answer,
+.answer-option-1-4.correct-answer {
+    border: 1px solid #54d3ab;
+    box-sizing: border-box;
+}
+
+.answer-option-1-1.correct-answer.selected,
+.answer-option-1-2.correct-answer.selected,
+.answer-option-1-3.correct-answer.selected,
+.answer-option-1-4.correct-answer.selected {
+    background-color: #54d3ab;
+    color: #ffffff;
+    border-color: #54d3ab;
+}
+
+.submit-button-1 {
+    background-color: #1d7fe2;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button-1:hover {
+    background-color: #1a70c5;
+}  
+  
+  
+  
+  
+  
+
+
+/* --- SECTION: QUESTION 3 STYLES --- */
+.question-box-3 {
+    position: relative;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: white;
+    transition: border-color 0.3s ease;
+}
+
+.question-box-3.incorrect-selection {
+    border: 1px solid #e16280;
+}
+
+.question-box-3.partial-correct {
+    border: 1px solid #f7deb5;
+}
+
+.question-box-3.correct {
+    border: 1px solid #54d3ab;
+}
+
+.question-number-label-3 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #1d7fe2;
+    color: white;
+    font-size: 14px;
+    padding: 5px 15px;
+    border-radius: 0 0 0 5px;
+}
+
+.mark-counter-3 {
+    position: absolute;
+    bottom: 25px;
+    left: 40px;
+    font-size: 15.5px;
+    color: #555;
+    border: 1px solid #1d7fe2;
+    padding: 6px 16px;
+    height: 30px;
+    line-height: 18px;
+    border-radius: 5px;
+    letter-spacing: 2px;
+    background-color: transparent;
+    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Using !important to ensure these styles take precedence */
+.mark-counter-3.correct {
+    background-color: #54d3ab !important;
+    color: white !important;
+    border-color: #54d3ab !important;
+}
+
+.mark-counter-3.incorrect {
+    background-color: #e16280 !important;
+    color: white !important;
+    border-color: #e16280 !important;
+}
+
+.mark-counter-3.partial-correct {
+    background-color: #f7deb5 !important;
+    color: #555 !important;
+    border-color: #f7deb5 !important;
+}
+
+.question-title-3 {
+    padding-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 350;
+    font-family: "Arial Greek", Arial, sans-serif;
+    color: #464e5a;
+}
+
+/* Image container style */
+.question-image-container-3 {
+    text-align: center;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.question-image-3 {
+    max-width: 48%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    border-radius: 5px;
+}
+
+.answer-container-3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.answer-option-3-1,
+.answer-option-3-2,
+.answer-option-3-3,
+.answer-option-3-4 {
+    width: 80%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: white;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* Style for selected answers */
+.answer-option-3-1.selected,
+.answer-option-3-2.selected,
+.answer-option-3-3.selected,
+.answer-option-3-4.selected {
+    background-color: #1d7fe2;
+    color: #ffffff;
+    border-color: #1d7fe2;
+}
+
+/* New style for correct answers after submission */
+.answer-option-3-1.correct-answer,
+.answer-option-3-2.correct-answer,
+.answer-option-3-3.correct-answer,
+.answer-option-3-4.correct-answer {
+    border: 1px solid #54d3ab;
+    box-sizing: border-box;
+}
+
+/* Style for correct answers that were selected */
+.answer-option-3-1.correct-answer.selected,
+.answer-option-3-2.correct-answer.selected,
+.answer-option-3-3.correct-answer.selected,
+.answer-option-3-4.correct-answer.selected {
+    background-color: #54d3ab;
+    color: #ffffff;
+    border-color: #54d3ab;
+}
+
+.submit-button-3 {
+    background-color: #1d7fe2;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button-3:hover {
+    background-color: #1a70c5;
+}
+
+/* Additional styles specific to question 3 */
+.extra-line {
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: "Arial Greek", Arial, sans-serif;
+    color: #464e5a;
+}
+
+.selection-limit-note {
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Question 4 Styles */
+.question-box-4 {
+  position: relative;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  background-color: white;
+  transition: border-color 0.3s ease;
+}
+
+.question-box-4.incorrect-selection {
+  border: 1px solid #e16280;
+}
+
+.question-box-4.partial-correct {
+  border: 1px solid #f7deb5;
+}
+
+.question-box-4.correct {
+  border: 1px solid #54d3ab;
+}
+
+.question-number-label-4 {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #1d7fe2;
+  color: white;
+  font-size: 14px;
+  padding: 5px 15px;
+  border-radius: 0 0 0 5px;
+}
+
+.mark-counter-4 {
+  position: absolute;
+  bottom: 25px;
+  left: 40px;
+  font-size: 15.5px;
+  color: #555;
+  border: 1px solid #1d7fe2;
+  padding: 6px 16px;
+  height: 30px;
+  line-height: 18px;
+  border-radius: 5px;
+  letter-spacing: 2px;
+  background-color: transparent;
+  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Using !important to ensure these styles take precedence */
+.mark-counter-4.correct {
+  background-color: #54d3ab !important;
+  color: white !important;
+  border-color: #54d3ab !important;
+}
+
+.mark-counter-4.incorrect {
+  background-color: #e16280 !important;
+  color: white !important;
+  border-color: #e16280 !important;
+}
+
+.mark-counter-4.partial-correct {
+  background-color: #f7deb5 !important;
+  color: #555 !important;
+  border-color: #f7deb5 !important;
+}
+
+.question-title-4 {
+  padding-top: 20px;
+  margin-bottom: 32px;
+  text-align: center;
+  font-weight: 350;
+  font-family: "Arial Greek", Arial, sans-serif;
+  color: #464e5a;
+}
+
+.answer-container-4 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.answer-option-4-1,
+.answer-option-4-2,
+.answer-option-4-3,
+.answer-option-4-4 {
+  width: 80%;
+  max-width: 400px;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: white;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* Style for selected answers */
+.answer-option-4-1.selected,
+.answer-option-4-2.selected,
+.answer-option-4-3.selected,
+.answer-option-4-4.selected {
+  background-color: #1d7fe2;
+  color: #ffffff;
+  border-color: #1d7fe2;
+}
+
+/* New style for correct answers after submission */
+.answer-option-4-1.correct-answer,
+.answer-option-4-2.correct-answer,
+.answer-option-4-3.correct-answer,
+.answer-option-4-4.correct-answer {
+  border: 1px solid #54d3ab;
+  box-sizing: border-box;
+}
+
+/* Style for correct answers that were selected */
+.answer-option-4-1.correct-answer.selected,
+.answer-option-4-2.correct-answer.selected,
+.answer-option-4-3.correct-answer.selected,
+.answer-option-4-4.correct-answer.selected {
+  background-color: #54d3ab;
+  color: #ffffff;
+  border-color: #54d3ab;
+}
+
+.submit-button-4 {
+  background-color: #1d7fe2;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 26px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button-4:hover {
+  background-color: #1666c7;
+}
+
+
+
+
+
+
+
+/* Question 5 Styles */
+/* Question 5 Styles - Updated to match Question 8 structure */
+.question-box-5 {
+  position: relative;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  background-color: white;
+  transition: border-color 0.3s ease;
+}
+
+.question-box-5.incorrect-selection {
+  border: 1px solid #e16280;
+}
+
+.question-box-5.partial-correct {
+  border: 1px solid #f7deb5;
+}
+
+.question-box-5.correct {
+  border: 1px solid #54d3ab;
+}
+
+.question-number-label-5 {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #1d7fe2;
+  color: white;
+  font-size: 14px;
+  padding: 5px 15px;
+  border-radius: 0 0 0 5px;
+}
+
+.mark-counter-5 {
+  position: absolute;
+  bottom: 25px;
+  left: 40px;
+  font-size: 15.5px;
+  color: #555;
+  border: 1px solid #1d7fe2;
+  padding: 6px 16px;
+  height: 30px;
+  line-height: 18px;
+  border-radius: 5px;
+  letter-spacing: 2px;
+  background-color: transparent;
+  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Using !important to ensure these styles take precedence */
+.mark-counter-5.correct {
+  background-color: #54d3ab !important;
+  color: white !important;
+  border-color: #54d3ab !important;
+}
+
+.mark-counter-5.incorrect {
+  background-color: #e16280 !important;
+  color: white !important;
+  border-color: #e16280 !important;
+}
+
+.mark-counter-5.partial-correct {
+  background-color: #f7deb5 !important;
+  color: #555 !important;
+  border-color: #f7deb5 !important;
+}
+
+.question-title-5 {
+  padding-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 350;
+  font-family: "Arial Greek", Arial, sans-serif;
+  color: #464e5a;
+}
+
+.answer-container-5 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.answer-option-5-1,
+.answer-option-5-2,
+.answer-option-5-3,
+.answer-option-5-4 {
+  width: 80%;
+  max-width: 400px;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: white;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* Style for selected answers */
+.answer-option-5-1.selected,
+.answer-option-5-2.selected,
+.answer-option-5-3.selected,
+.answer-option-5-4.selected {
+  background-color: #1d7fe2;
+  color: #ffffff;
+  border-color: #1d7fe2;
+}
+
+/* New style for correct answers after submission */
+.answer-option-5-1.correct-answer,
+.answer-option-5-2.correct-answer,
+.answer-option-5-3.correct-answer,
+.answer-option-5-4.correct-answer {
+  border: 1px solid #54d3ab;
+  box-sizing: border-box;
+}
+
+/* Style for correct answers that were selected */
+.answer-option-5-1.correct-answer.selected,
+.answer-option-5-2.correct-answer.selected,
+.answer-option-5-3.correct-answer.selected,
+.answer-option-5-4.correct-answer.selected {
+  background-color: #54d3ab;
+  color: #ffffff;
+  border-color: #54d3ab;
+}
+
+.submit-button-5 {
+  background-color: #1d7fe2;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 26px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button-5:hover {
+  background-color: #1666c7;
+}
+
+/* Legacy styles - kept for backwards compatibility */
+.answer-box-5 {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: white;
+}
+
+.answer-box-5.selected {
+    background-color: #f0f0f0;
+    color: black;
+    cursor: default;
+}
+
+.answer-box-5.correct {
+    background-color: #54d3ab;
+    color: white;
+}
+
+
+
+
+
+
+/* Question 6 Styles */
+.question-box-6 {
+    position: relative;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: white;
+    transition: border-color 0.3s ease;
+}
+.question-box-6.incorrect-selection {
+    border: 1px solid #e16280;
+}
+.question-box-6.partial-correct {
+    border: 1px solid #f7deb5;
+}
+.question-box-6.correct {
+    border: 1px solid #54d3ab;
+}
+.question-number-label-6 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #1d7fe2;
+    color: white;
+    font-size: 14px;
+    padding: 5px 15px;
+    border-radius: 0 0 0 5px;
+}
+.mark-counter-6 {
+    position: absolute;
+    bottom: 25px;
+    left: 40px;
+    font-size: 15.5px;
+    color: #555;
+    border: 1px solid #1d7fe2;
+    padding: 6px 16px;
+    height: 30px;
+    line-height: 18px;
+    border-radius: 5px;
+    letter-spacing: 2px;
+    background-color: transparent;
+    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+/* Using !important to ensure these styles take precedence */
+.mark-counter-6.correct {
+    background-color: #54d3ab !important;
+    color: white !important;
+    border-color: #54d3ab !important;
+}
+.mark-counter-6.incorrect {
+    background-color: #e16280 !important;
+    color: white !important;
+    border-color: #e16280 !important;
+}
+.mark-counter-6.partial-correct {
+    background-color: #f7deb5 !important;
+    color: #555 !important;
+    border-color: #f7deb5 !important;
+}
+.question-title-6 {
+    padding-top: 20px;
+    margin-bottom: 32px;
+    text-align: center;
+    font-weight: 350;
+    font-family: "Arial Greek", Arial, sans-serif;
+    color: #464e5a;
+}
+.answer-container-6 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.answer-option-6-1,
+.answer-option-6-2,
+.answer-option-6-3,
+.answer-option-6-4 {
+    width: 80%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: white;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+/* Style for selected answers */
+.answer-option-6-1.selected,
+.answer-option-6-2.selected,
+.answer-option-6-3.selected,
+.answer-option-6-4.selected {
+    background-color: #1d7fe2;
+    color: #ffffff;
+    border-color: #1d7fe2;
+}
+/* New style for correct answers after submission */
+.answer-option-6-1.correct-answer,
+.answer-option-6-2.correct-answer,
+.answer-option-6-3.correct-answer,
+.answer-option-6-4.correct-answer {
+    border: 1px solid #54d3ab;
+    box-sizing: border-box;
+}
+/* Style for correct answers that were selected */
+.answer-option-6-1.correct-answer.selected,
+.answer-option-6-2.correct-answer.selected,
+.answer-option-6-3.correct-answer.selected,
+.answer-option-6-4.correct-answer.selected {
+    background-color: #54d3ab;
+    color: #ffffff;
+    border-color: #54d3ab;
+}
+.submit-button-6 {
+    background-color: #1d7fe2;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.3s ease;
+}
+.submit-button-6:hover {
+    background-color: #1a70c5;
+}
+
+  
+/* Make all answer options use the same font as question titles - applies to both desktop and iPhone */
+.answer-option-1-1,
+.answer-option-1-2,
+.answer-option-1-3,
+.answer-option-1-4,
+.answer-option-2-1,
+.answer-option-2-2,
+.answer-option-2-3,
+.answer-option-2-4,
+.answer-option-3-1,
+.answer-option-3-2,
+.answer-option-3-3,
+.answer-option-3-4,
+.answer-option-4-1,
+.answer-option-4-2,
+.answer-option-4-3,
+.answer-option-4-4,
+.answer-option-5-1,
+.answer-option-5-2,
+.answer-option-5-3,
+.answer-option-5-4,
+.answer-option-6-1,
+.answer-option-6-2,
+.answer-option-6-3,
+.answer-option-6-4 {
+    font-family: "Arial Greek", Arial, sans-serif !important;
+    font-weight: 350 !important;
+    font-size: 15px !important;
+}
+
+/* Make all question titles slightly smaller */
+.question-title-1,
+.question-title-2,
+.question-title-3,
+.question-title-4,
+.question-title-5,
+.question-title-6 {
+    font-size: 15px !important;  /* Slightly smaller - adjust as needed */
+}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+/* Make all question boxes match the combined width of the two panels */
+[class^="question-box-"] {
+    max-width: 1400px;  /* Same as .wrap max-width */
+    width: calc(100% - 56px);  /* Same as .wrap minus padding */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Desktop - match .wrap width exactly */
+@media (min-width: 980px) {
+    [class^="question-box-"] {
+        max-width: 1400px;
+        width: calc(100% - 56px);  /* Matches .wrap with 28px padding on each side */
+    }
+}
+
+/* Tablet - single column, follow .wrap */
+@media (max-width: 980px) {
+    [class^="question-box-"] {
+        width: calc(100% - 32px);  /* Matches .wrap mobile padding */
+        padding: 18px;
+    }
+}
+
+/* Mobile portrait */
+@media (max-width: 768px) {
+    [class^="question-box-"] {
+        width: calc(100% - 32px);
+        padding: 16px;
+    }
+}
+
+/* iPhone landscape mode */
+@media (max-width: 932px) and (orientation: landscape) {
+    [class^="question-box-"] {
+        max-width: 600px;
+        width: 70%;
+        padding: 12px;
+    }
+} 
+.lecture-objective-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px 32px;
+    box-shadow: 0 6px 24px rgba(16, 24, 40, 0.06);
+    max-width: 1400px;  /* Changed from 1235px to match .wrap */
+    width: calc(100% - 56px);  /* Added: matches .wrap padding */
+    margin: 0 auto 24px auto;
+    border: 1px solid #f0f0f0;
+    box-sizing: border-box;  /* Added: ensures padding is included in width */
+}
+
+/* Mobile adjustments for lecture objective box */
+@media (max-width: 980px) {
+    .lecture-objective-box {
+        width: calc(100% - 32px);  /* Matches .wrap mobile padding */
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .lecture-objective-box {
+        width: calc(100% - 32px);
+        padding: 20px 18px;
+    }
+}
+
+.lecture-objective-title {
+    font-family: 'Crimson Text', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #000000;
+    letter-spacing: -0.09em;
+    line-height: 1.2;
+    margin: 0 0 16px 0;
+}
+
+.lecture-objective-content {
+    font-family: Inter, system-ui, 'Segoe UI', Arial, sans-serif;
+    font-size: 16px;
+    color: #464e5a;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.lecture-objective-list {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0 0;
+}
+
+.lecture-objective-list li {
+    padding-left: 24px;
+    position: relative;
+    margin-bottom: 8px;
+    color: #464e5a;
+}
+
+.lecture-objective-list li:before {
+    content: "•";
+    position: absolute;
+    left: 8px;
+    color: #1d7fe2;
+    font-weight: bold;
+}
+
+/* Mobile adjustments for lecture objective box */
+@media (max-width: 980px) {
+    .lecture-objective-box {
+        width: calc(100% - 32px);
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .lecture-objective-box {
+        width: calc(100% - 32px);
+        padding: 20px 18px;
+    }
+}
+
+/* iPhone mode - Make text 0.65x smaller AND move box up */
+@media (max-width: 430px) {
+    .lecture-objective-box {
+        padding: 18px 14px;
+        margin: -60px auto 16px auto;
+    }
+    
+    .lecture-objective-title {
+        font-size: 21px;
+        margin: 0 0 10px 0;
+        letter-spacing: -0.07em;
+    }
+    
+    .lecture-objective-content {
+        font-size: 10px;
+        line-height: 1.5;
+    } 
+    
+    .lecture-objective-content p {
+        font-size: 10px;
+        margin: 0 0 5px 0 !important;
+    }
+    
+    .lecture-objective-list {
+        margin: 8px 0 0 0;
+    }
+    
+    .lecture-objective-list li {
+        font-size: 10px;
+        padding-left: 16px;
+        margin-bottom: 5px;
+    }
+    
+    .lecture-objective-list li:before {
+        left: 5px;
+        font-size: 10px;
+    }
+}
+
+/* Video Container Styling */
+.video-container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 24px rgba(16, 24, 40, 0.06);
+    max-width: 1400px;
+    width: calc(100% - 56px);
+    margin: 24px auto;
+    border: 1px solid #f0f0f0;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.video-container iframe {
+    width: 100%;
+    height: 450px;
+    border: none;
+    border-radius: 8px;
+    display: block;
+}
+
+/* Desktop - match .wrap width AND make video TALLER */
+@media (min-width: 980px) {
+    .video-container {
+        max-width: 1400px;
+        width: calc(100% - 56px);
+        margin: 24px auto;
+    }
+    
+    .video-container iframe {
+        height: 650px;  /* INCREASED from 450px to 650px for desktop */
+    }
+}
+
+/* Tablet adjustments */
+@media (max-width: 980px) {
+    .video-container {
+        width: calc(100% - 32px);
+        padding: 16px;
+        margin: 20px auto;
+    }
+    
+    .video-container iframe {
+        height: 400px;
+    }
+}
+
+/* Mobile portrait */
+@media (max-width: 768px) {
+    .video-container {
+        width: calc(100% - 32px);
+        padding: 14px;
+        margin: 18px auto;
+    }
+    
+    .video-container iframe {
+        height: 300px;
+    }
+}
+
+/* iPhone mode - proper spacing and sizing */
+@media (max-width: 430px) {
+    .video-container {
+        width: calc(100% - 32px);
+        padding: 12px;
+        margin: 16px auto;
+        border-radius: 10px;
+    }
+    
+    .video-container iframe {
+        height: 220px;
+        border-radius: 6px;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 375px) {
+    .video-container iframe {
+        height: 200px;
+    }
+}
+
+/* ========== ADD YOUTUBE CSS HERE ========== */
+/* YouTube Video Container */
+.video-container-wrapper {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 24px rgba(16, 24, 40, 0.06);
+    max-width: 1400px;
+    width: calc(100% - 56px);
+    margin: 0 auto 24px auto;
+    border: 1px solid #f0f0f0;
+    box-sizing: border-box;
+}
+
+.video-container-title {
+    font-family: 'Crimson Text', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: #000000;
+    letter-spacing: -0.07em;
+    line-height: 1.2;
+    margin: 0 0 16px 0;
+    text-align: center;
+}
+
+.video-responsive {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #000;
+}
+
+.video-responsive iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 8px;
+}
+
+/* Mobile adjustments for video container */
+@media (max-width: 980px) {
+    .video-container-wrapper {
+        width: calc(100% - 32px);
+        padding: 16px;
+    }
+    
+    .video-container-title {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .video-container-wrapper {
+        width: calc(100% - 32px);
+        padding: 14px;
+    }
+}
+
+/* iPhone mode - Make container smaller and move up */
+@media (max-width: 430px) {
+    .video-container-wrapper {
+        padding: 14px;
+        margin: -50px auto 16px auto;
+    }
+    
+    .video-container-title {
+        font-size: 16px;
+        margin: 0 0 12px 0;
+    }
+    
+    .video-responsive {
+        border-radius: 6px;
+    }
+}
+  
+ .results-summary-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px 40px;
+    box-shadow: 0 6px 24px rgba(16, 24, 40, 0.06);
+    max-width: 1400px;  /* Changed from 1352px to match .wrap and question boxes */
+    width: calc(100% - 56px);  /* Added: matches question box width exactly */
+    margin: 40px auto 60px auto;
+    border: 1px solid #f0f0f0;
+    box-sizing: border-box;  /* Added: ensures padding is included in width */
+}
+
+/* Mobile adjustments for results box */
+@media (max-width: 980px) {
+    .results-summary-box {
+        width: calc(100% - 32px);  /* Matches mobile padding */
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .results-summary-box {
+        width: calc(100% - 32px);
+        padding: 20px 16px;
+    }
+}
+
+.results-summary-title {
+    font-family: 'Crimson Text', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #000000;
+    letter-spacing: -0.09em;
+    line-height: 1.2;
+    margin: 0 0 24px 0;
+    text-align: center;
+}
+
+/* Tab-like headers */
+.results-tabs {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 12px;
+}
+
+.results-tab {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000000;
+    cursor: pointer;
+    padding-bottom: 8px;
+    border-bottom: 3px solid #000000;
+    position: relative;
+    bottom: -14px;
+}
+
+.results-tab .percentage {
+    color: #6b7280;
+    margin-left: 8px;
+}
+
+/* Progress bar container */
+.results-progress-wrapper {
+    margin-bottom: 24px;
+}
+
+.results-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.results-progress-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000000;
+}
+
+.results-progress-percentage {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000000;
+}
+
+/* Progress bar */
+.results-progress-bar {
+    width: 100%;
+    height: 12px;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.results-progress-fill {
+    height: 100%;
+    display: flex;
+    transition: width 0.3s ease;
+}
+
+.progress-segment-correct {
+    background-color: #54d3ab;
+    transition: width 0.3s ease;
+}
+
+.progress-segment-partial {
+    background-color: #f7b84b;
+    transition: width 0.3s ease;
+}
+
+.progress-segment-incorrect {
+    background-color: #e16280;
+    transition: width 0.3s ease;
+}
+
+/* Legend */
+.results-legend {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.legend-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.legend-icon.correct {
+    background-color: #54d3ab;
+}
+
+.legend-icon.partial {
+    background-color: #f7b84b;
+}
+
+.legend-icon.incorrect {
+    background-color: #e16280;
+}
+
+.legend-icon.missed {
+    background-color: #d1d5db;
+}
+
+.legend-text {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.legend-count {
+    font-weight: 700;
+    color: #000000;
+}
+
+.legend-label {
+    color: #6b7280;
+}
+
+/* Divider line */  
+.results-divider {
+    width: 100%;
+    height: 1px;
+    background-color: #eef2f7;
+    margin: 24px 0;
+}
+
+/* Message at bottom */
+.results-message {
+    text-align: center;
+    font-size: 16px;
+    color: #6b7280;
+    font-style: italic;
+    margin-top: 16px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .results-summary-box {
+        padding: 24px 20px;
+        margin: 30px auto 40px auto;
+    }
+    
+    .results-tabs {
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .results-tab {
+        font-size: 14px;
+    }
+    
+    .results-legend {
+        gap: 16px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 430px) {
+    .results-summary-box {
+        padding: 20px 16px;
+    }
+    
+    .results-summary-title {
+        font-size: 24px;
+    }
+    
+    .results-legend {
+        gap: 12px;
+    }
+    
+    .legend-item {
+        font-size: 13px;
+    }
+}
+  
+  /* --- SECTION: Results Navigation Button --- */
+.results-navigation {
+  text-align: right;
+  margin-top: 30px;
+}
+
+/* Next Lecture Button */
+.next-lecture-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #eef2f7;
+}
+
+.next-lecture-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #ffffff;               /* White background */
+    color: #000000;                          /* Black text */
+    font-family: 'Crimson Text', serif;      /* Elegant serif font */
+    font-weight: 600;
+    font-size: 16px;                         /* Same font size as back button */
+    padding: 8px 16px;                       /* Same padding as back button */
+    border-radius: 8px;                      /* Same rounded corners */
+    border: 2px solid #000000;               /* Same border style */
+    text-decoration: none;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15); /* Same shadow depth */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.next-lecture-btn:hover {
+    background-color: #f0f0f0;               /* Light gray hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.next-arrow {
+    font-size: 14px;                         /* Same arrow size as back button */
+    transition: transform 0.3s ease;
+}
+
+.next-lecture-btn:hover .next-arrow {
+    transform: translateX(4px);
+}
+
+/* iPhone mode adjustments */
+@media (max-width: 430px) {
+    .next-lecture-wrapper {
+        margin-top: 20px;
+        padding-top: 16px;
+    }
+
+    .next-lecture-btn {
+        font-size: 16px !important;
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        border: 2px solid #000000 !important;
+    }
+}
+
+
+  
+  
+  
+ 
+  
+/* --- iPhone Mode: Thinner Header Bar (same progress bar height) --- */
+@media (max-width: 430px) {
+  .sticky-progress-bar {
+    padding: 10px 14px;       /* thinner header bar */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  /* Keep progress bar the same height as desktop */
+  .quiz-progress-container {
+    height: 9px;              /* same as default desktop height */
+  }
+
+  .video-lectures-link {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+
+/* iPhone Mode - Merge windows by stacking step explanation on top of animation */
+@media (max-width: 430px) {
+    .wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 16px;
+    }
+    
+    /* Steps panel - positioned on top, shorter height */
+    .steps-panel {
+        order: 1;
+        border-radius: 12px 12px 0 0;
+        padding: 16px;
+        min-height: 0;
+        margin-bottom: 0;
+    }
+    
+    /* Target the titles directly with !important */
+    .svg-panel > div:first-child > div,
+    .steps-panel > div:first-child > div {
+        font-size: 16px !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Also target by style attribute if they have inline styles */
+    [style*="font-weight:800"] {
+        font-size: 16px !important;
+    }
+    
+    .step-window {
+        min-height: 140px;
+        padding: 16px;
+    }
+    
+    /* SHOW the Layering/Reverse toggles on iPhone */
+    .steps-panel .toggles {
+        display: flex !important;
+        gap: 4px;
+        margin-top: 2px !important;  /* Changed from 8px to 4px - moves up */
+    }
+    
+    /* Make Layering and Reverse buttons same size as Prev/Next */
+    .steps-panel .pill {
+        padding: 7px 8px !important;  /* Same as Prev/Next buttons */
+        font-size: 11px !important;   /* Same as Prev/Next buttons */
+        line-height: 1.2 !important;  /* Same as Prev/Next buttons */
+        border-radius: 6px !important;
+        font-weight: 700 !important;
+    }
+    
+    .right-controls {
+        display: none;
+    }
+    
+    /* SVG panel - positioned below, keeps controls */
+    .svg-panel {
+        order: 2;
+        border-radius: 0 0 12px 12px;
+        padding: 16px;
+        margin-top: -1px;
+    }
+    
+    /* Reduce space between title and canvas border */
+    .svg-panel > div:first-child {
+        margin-bottom: 4px !important;  /* Reduced from 8px to 4px */
+    }
+    
+    /* Canvas - Taller border, closer to title */
+    .canvas {
+        min-height: 180px;  /* Increased from 160px to 180px - TALLER */
+        padding: 12px;
+        border: 1px solid #eef2f7;
+        border-radius: 10px;
+        margin-top: -5px;  /* Pull border closer to title */
+    }
+    
+    #demoSVG {
+        height: 140px;
+    }
+    
+    /* Make Autoplay button SMALLER */
+    #autoplayToggle {
+        padding: 4px 6px !important;
+        font-size: 10px !important;
+        min-width: 70px !important;
+    }
+    
+    /* Make Prev, Next, Replay buttons TALLER */
+    #prevBtn, #nextBtn, #replayBtn {
+        padding: 7px 8px !important;  /* Increased vertical padding from 4px to 7px */
+        font-size: 11px !important;
+        line-height: 1.2 !important;  /* Better vertical alignment */
+    }
+    
+    /* Controls container - put buttons on same row */
+    .controls {
+        gap: 4px;  /* Tighter gap to prevent spillover */
+        flex-wrap: nowrap !important;
+        align-items: center;
+        flex-shrink: 1;  /* Allow controls to shrink if needed */
+    }
+    
+    /* Question type area - same row as buttons, to the right */
+    .qtype-area {
+        width: auto !important;
+        margin-left: 6px !important;  /* Small gap from Replay button */
+        margin-top: 0 !important;
+        justify-content: flex-end;
+        flex-shrink: 0;  /* Don't shrink the number buttons */
+    }
+    
+    /* Hide the "Choose type:" hint text on mobile */
+    .hint {
+        display: none !important;
+    }
+    
+    /* Make question type buttons slightly bigger but controlled */
+    .qtype-buttons {
+        flex-wrap: nowrap;
+        gap: 2px !important;  /* Minimal spacing between buttons */
+        padding: 2px 3px !important;  /* Tight container padding */
+    }
+    
+    .qtype-btn {
+        padding: 4px 7px !important;  /* Slightly bigger than before */
+        font-size: 12px !important;  /* Slightly bigger font */
+        min-width: 24px !important;  /* Controlled min width */
+    }
+    
+    /* Make dividers between numbers smaller */
+    .divider {
+        height: 16px !important;
+        margin: 0 1px !important;  /* Minimal margin */
+    }
+    
+    .select, .btn {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+}
+
+/* iPhone-only adjustments for mark counters */
+@media (max-width: 430px) {
+    .mark-counter,
+    [id^="mark-counter-"] {
+        transform: scale(0.85);        /* Makes it about 15% smaller */
+        transform-origin: top right;   /* Keeps it neatly aligned */
+    }
+}
+  
+  
+  
+  
+  
+  /* Adjust mark counter position to align with submit button - Desktop and iPhone */
+.mark-counter-1,
+.mark-counter-2,
+.mark-counter-3,
+.mark-counter-4,
+.mark-counter-5,
+.mark-counter-6 {
+    position: absolute;
+    bottom: 20px;  /* Changed to match submit button vertical position */
+    left: 40px;
+    font-size: 15.5px;
+    color: #555;
+    border: 1px solid #1d7fe2;
+    padding: 6px 16px;
+    height: 30px;
+    line-height: 18px;
+    border-radius: 5px;
+    letter-spacing: 2px;
+    background-color: transparent;
+    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Ensure submit buttons are consistently positioned */
+.submit-button-1,
+.submit-button-2,
+.submit-button-3,
+.submit-button-4,
+.submit-button-5,
+.submit-button-6 {
+    background-color: #1d7fe2;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-bottom: 0;  /* Ensure no bottom margin */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.3s ease;
+  
+  
+}
+  
+  
+/* Move mark counter down for all devices */
+.mark-counter-1,
+.mark-counter-2,
+.mark-counter-3,
+.mark-counter-4,
+.mark-counter-5,
+.mark-counter-6 {
+    bottom: 11px !important;  /* Changed from 20px to 15px */
+}
+
+
+
+</style>
+</head>
+<body>
+  
+<!-- Back to Lectures Button (iPhone only) -->
+<a href="YOUR_LECTURES_PAGE_URL_HERE" class="back-lectures-btn">
+    <span class="back-arrow">←</span>
+    Lectures
+</a>
+  
+  
+<div class="lecture-objective-box">
+  <div class="objective-content-wrapper">
+    <h1 class="lecture-objective-title">Lowest Common Multiple</h1>
+    <div class="lecture-objective-content">
+      <p style="margin: 0 0 8px 0; font-weight: 600; color: #0b2546;">Lecture Objective:</p>
+      <ul class="lecture-objective-list">
+        <li>Master the full principles of the Lowest Common Multiple (LCM)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+  
+  
+<!-- Video Container -->
+<div class="video-container">
+    <iframe 
+        src="https://www.youtube-nocookie.com/embed/Jx4kl2fVQ0U" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+    </iframe>
+</div>
+  
+  
+  
+
+<!-- ===== PROGRESS BAR AT TOP ===== -->
+<div class="sticky-progress-bar">
+<a href="https://gmmmaths.mykajabi.com/lectures" class="video-lectures-link video-lectures-container">
+    <span class="video-lectures-arrow"></span>
+    <span class="lectures-text">Lectures</span>
+</a>
+
+    <div class="quiz-progress-container">
+        <div class="quiz-progress-segments" id="quiz-progress-segments">
+            <!-- Progress segments will be generated by JS -->
+        </div>
+        <div class="cherry-petal-overlay" id="cherry-petal-overlay">
+            <!-- Petals will be generated by JS -->
+        </div>
+    </div>
+</div>
+<!-- ===== END PROGRESS BAR ===== -->
+
+<div class="wrap">
+  <!-- LEFT: SVG + selectors -->
+  <div class="svg-panel" aria-label="Animation panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-family: 'Crimson Text', serif; font-weight: 700; font-size: 22px; letter-spacing: -0.09em; line-height: 1.2; color: #000000;">Animated Worked Example</div>
+      <div class="controls" aria-hidden="true" style="opacity:.98;">
+        <button id="autoplayToggle" class="select" aria-pressed="false">Autoplay: Off</button>
+        
+      </div>
+    </div>
+
+<div class="canvas" id="canvas">
+  <!-- IMAGE CONTAINER -->
+  <div id="stepImageContainer" style="
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    box-sizing: border-box;
+  ">
+    <img id="stepImage" src="" alt="Step illustration" style="
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      display: none;
+    ">
+  </div>
+
+<svg id="demoSVG" viewBox="0 0 800 280" width="100%" preserveAspectRatio="xMidYMin meet" aria-hidden="true" style="display: none;">
+    <!-- TOP: Question - ABSOLUTELY LOCKED at top -->
+    <g id="g-question" class="fade visible" transform="translate(30,25)">
+      <text x="0" y="0" font-size="16" fill="#0b2546" font-weight="700" class="question-label">Question:</text>
+      <text id="questionText" x="0" y="26" font-size="20" fill="#0b2546" font-weight="600" class="question-main"></text>
+    </g>
+
+    <!-- Horizontal divider line - MOVED DOWN MORE -->
+    <line x1="30" y1="130" x2="770" y2="130" stroke="#e2e8f0" stroke-width="1.5" opacity="0.5"/>
+
+<!-- BOTTOM: Numbers and visual elements -->
+    <g id="g-visual" transform="translate(40,200)" style="display: none;">
+      <!-- Hidden - not needed for HCF lecture -->
+    </g>
+
+    <!-- Expression box on the right side -->
+    <g id="g-steps" transform="translate(430,170)">
+      <rect id="exprBox" x="0" y="0" width="340" height="90" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2" class="fade"></rect>
+      <text id="exprLine1" x="20" y="34" font-size="20" fill="#0b2546" font-weight="600" class="fade expr-text"> </text>
+      <text id="exprLine2" x="20" y="64" font-size="20" fill="#0b2546" font-weight="600" class="fade expr-text"> </text>
+    </g>
+  </svg>
+
+  <div class="coming" id="comingOverlay" aria-hidden="true">
+    <div style="display:flex;gap:10px;align-items:center;">
+      <div style="font-weight:700;font-size:13px;">Next step coming…</div>
+      <div class="sub" id="countdown" aria-hidden="true">1</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <div class="sub">Auto-advance</div>
+      <div class="sol-badge" id="stepBadge">Step 1 / 4</div>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;flex-wrap:wrap;gap:12px;">
+  <div class="controls" style="display:flex;align-items:center;gap:8px;">
+    <button id="prevBtn" class="select" aria-label="Previous step">Prev</button>
+    <button id="nextBtn" class="btn" aria-label="Next step">Next</button>
+    <button id="replayBtn" class="select" aria-label="Replay step">Replay</button>
+
+    <div style="display:none;">
+      <label class="sr-only" for="qType">Question type</label>
+      <select id="qType" aria-hidden="true">
+        <option value="1">Type 1</option>
+        <option value="2">Type 2</option>
+        <option value="3">Type 3</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="qtype-area" aria-hidden="false" style="margin-left: auto;">
+    <div class="hint" style="margin-right:8px;">Choose type:</div>
+    <div id="qTypeButtons" class="qtype-buttons" role="group" aria-label="Question types">
+    </div>
+  </div>
+</div>
+
+  </div>
+
+  <!-- RIGHT: Steps & Method selector -->
+  <div class="steps-panel" aria-label="Steps panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-family: 'Crimson Text', serif; font-weight: 700; font-size: 22px; letter-spacing: -0.09em; line-height: 1.2; color: #000000;">Step-by-step explanation</div>
+
+      <div class="toggles" role="tablist" aria-label="Method selector" style="display: none;">
+  <div id="methodLayer" class="pill active" data-method="layering" role="tab" aria-selected="true" tabindex="0">Layering</div>
+</div>
+    </div>
+
+<div class="step-window" id="stepWindow" aria-live="polite">
+  <div class="step-text" id="stepText">Step will appear here</div>
+  <div class="sub" id="stepSub">Short explanation or hint</div>
+
+  <div class="arrow-wrap" style="width:100%;justify-content:flex-end;">
+    <div class="arrow" aria-hidden="true"><div id="downArrow" class="down-arrow">↓</div></div>
+  </div>
+</div>
+
+<div class="right-controls">
+  <div class="sub"></div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <div id="progress" class="sub">Step <strong id="curStep">1</strong>/<span id="totalSteps">4</span></div>
+  </div>
+</div>
+
+  </div>
+</div>
+  </div> <!-- End of .wrap -->
+
+<!-- ===================================
+     PRACTICE QUESTIONS SECTION BELOW
+     =================================== -->
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<!-- Question 1 -->
+<div class="question-box-1" id="question-box-1">
+    <div class="question-number-label-1">Q1 of 6</div>
+    <div class="mark-counter-1" id="mark-counter-1">0/1</div>
+    <div style="height: 15px;"></div>
+    <div class="question-title-1">
+        What is a multiple?
+    </div>
+    <div class="answer-container-1">
+        <button class="answer-option-1-1" onclick="toggleSingleAnswer1('option1', this)">A number that divides the given number exactly (i.e. a factor).</button>
+        <button class="answer-option-1-2" onclick="toggleSingleAnswer1('option2', this)">A number you get when you multiply a number by 1, 2, 3, and so on.</button>
+        <button class="answer-option-1-3" onclick="toggleSingleAnswer1('option3', this)">The total you get when you add the digits of the number.</button>
+    </div>
+    <button class="submit-button-1" id="submit-button-1" onclick="submitAnswer1()">Submit</button>
+</div>
+
+<!-- Question 2 -->
+<div class="question-box-2" id="question-box-2">
+    <div class="question-number-label-2">Q2 of 6</div>
+    <div class="mark-counter-2" id="mark-counter-2">0/1</div>
+    <div style="height: 15px;"></div>
+    <div class="question-title-2">
+        Give 120 as a Product of its Prime Factors
+    </div>
+    <div class="answer-container-2">
+        <button class="answer-option-2-1" onclick="toggleSingleAnswer2('option1', this)">2 × 3 × 5</button>
+        <button class="answer-option-2-2" onclick="toggleSingleAnswer2('option2', this)">2³ × 3 × 5</button>
+        <button class="answer-option-2-3" onclick="toggleSingleAnswer2('option3', this)">2² × 3² × 5</button>
+        <button class="answer-option-2-4" onclick="toggleSingleAnswer2('option4', this)">2³ × 15</button>
+    </div>
+    <button class="submit-button-2" id="submit-button-2" onclick="submitAnswer2()">Submit</button>
+</div>
+
+<!-- Question 3 -->
+<div class="question-box-3" id="question-box-3">
+    <div class="question-number-label-3">Q3 of 6</div>
+    <div class="mark-counter-3" id="mark-counter-3">0/1</div>
+    <div style="height: 15px;"></div>
+    <div class="question-title-3">
+        Give 36 as a Product of its Prime Factors
+    </div>
+    <div class="answer-container-3">
+        <button class="answer-option-3-1" onclick="toggleSingleAnswer3('option1', this)">2 × 3²</button>
+        <button class="answer-option-3-2" onclick="toggleSingleAnswer3('option2', this)">2² × 3²</button>
+        <button class="answer-option-3-3" onclick="toggleSingleAnswer3('option3', this)">4 × 9</button>
+        <button class="answer-option-3-4" onclick="toggleSingleAnswer3('option4', this)">2³ × 3</button>
+    </div>
+    <button class="submit-button-3" id="submit-button-3" onclick="submitAnswer3()">Submit</button>
+</div>
+
+<!-- Question 4 -->
+<div class="question-box-4" id="question-box-4">
+    <div class="question-number-label-4">Q4 of 6</div>
+    <div class="mark-counter-4" id="mark-counter-4">0/1</div>
+    <div style="height: 15px;"></div>
+    <div class="question-title-4">
+        Give 84 as a Product of its Prime Factors<br><br>
+        Give your answer in index form
+    </div>
+    <div class="answer-container-4">
+        <button class="answer-option-4-1" onclick="toggleSingleAnswer4('option1', this)">2 × 3 × 7</button>
+        <button class="answer-option-4-2" onclick="toggleSingleAnswer4('option2', this)">2² × 3 × 7</button>
+        <button class="answer-option-4-3" onclick="toggleSingleAnswer4('option3', this)">2² × 21</button>
+        <button class="answer-option-4-4" onclick="toggleSingleAnswer4('option4', this)">2³ × 3 × 7</button>
+    </div>
+    <button class="submit-button-4" id="submit-button-4" onclick="submitAnswer4()">Submit</button>
+</div>
+
+<!-- Question 5 -->
+<div class="question-box-5" id="question-box-5">
+    <div class="question-number-label-5">Q5 of 6</div>
+    <div class="mark-counter-5" id="mark-counter-5">0/1</div>
+    <div style="height: 15px;"></div>
+    <div class="question-title-5">
+        Find the LCM of 8 and 12.
+    </div>
+    <div class="answer-container-5">
+        <button class="answer-option-5-1" onclick="toggleSingleAnswer5('option1', this)">36</button>
+        <button class="answer-option-5-2" onclick="toggleSingleAnswer5('option2', this)">24</button>
+        <button class="answer-option-5-3" onclick="toggleSingleAnswer5('option3', this)">12</button>
+    </div>
+    <button class="submit-button-5" id="submit-button-5" onclick="submitAnswer5()">Submit</button>
+</div>
+
+<!-- Question 6 -->
+<div class="question-box-6" id="question-box-6">
+    <div class="question-number-label-6">Q6 of 6</div>
+    <div class="mark-counter-6" id="mark-counter-6">0/1</div>
+    <div style="height: 15px;"></div>
+    <div class="question-title-6">
+        Give 405 as a Product of its Prime Factors<br><br>
+        Give your answer in index form
+    </div>
+    <div class="answer-container-6">
+        <button class="answer-option-6-1" onclick="toggleSingleAnswer6('option1', this)">3⁴ × 5</button>
+        <button class="answer-option-6-2" onclick="toggleSingleAnswer6('option2', this)">3³ × 5</button>
+        <button class="answer-option-6-3" onclick="toggleSingleAnswer6('option3', this)">3⁴ × 5²</button>
+        <button class="answer-option-6-4" onclick="toggleSingleAnswer6('option4', this)">81 × 5</button>
+    </div>
+    <button class="submit-button-6" id="submit-button-6" onclick="submitAnswer6()">Submit</button>
+</div>
+  
+  
+  
+  
+  
+  
+
+
+  <script>
+
+
+// Results tracking - Updated for partial marks
+let resultsTracker = {
+    correct: 0,
+    partial: 0,
+    incorrect: 0,
+    unanswered: 6,
+    totalQuestions: 6,
+    totalMarksEarned: 0,
+    totalMarksPossible: 6  // This can be updated if questions have different marks
+};
+
+function updateResultsSummary() {
+    // Update the counts
+    document.getElementById('correct-count').textContent = resultsTracker.correct;
+    document.getElementById('partial-count').textContent = resultsTracker.partial;
+    document.getElementById('incorrect-count').textContent = resultsTracker.incorrect;
+    document.getElementById('unanswered-count').textContent = resultsTracker.unanswered;
+    
+    // Calculate percentages for progress bar
+    const total = resultsTracker.totalQuestions;
+    const correctPercent = (resultsTracker.correct / total) * 100;
+    const partialPercent = (resultsTracker.partial / total) * 100;
+    const incorrectPercent = (resultsTracker.incorrect / total) * 100;
+    
+    // Update progress bar segments
+    document.getElementById('segment-correct').style.width = correctPercent + '%';
+    document.getElementById('segment-partial').style.width = partialPercent + '%';
+    document.getElementById('segment-incorrect').style.width = incorrectPercent + '%';
+    
+    // Calculate overall percentage
+    const percentage = resultsTracker.totalMarksPossible > 0 
+        ? Math.round((resultsTracker.totalMarksEarned / resultsTracker.totalMarksPossible) * 100) 
+        : 0;
+    
+    // Update percentage displays
+    document.getElementById('progress-percentage').textContent = percentage + '%';
+    document.getElementById('hcf-percentage').textContent = '(' + percentage + '%)';
+    
+    // Update message
+    const messageEl = document.getElementById('results-message');
+    if (resultsTracker.unanswered === resultsTracker.totalQuestions) {
+        messageEl.textContent = 'Answer questions to see your score';
+    } else if (resultsTracker.unanswered === 0) {
+        if (percentage === 100) {
+            messageEl.textContent = 'Perfect score! Excellent work! 🎉';
+        } else if (percentage >= 80) {
+            messageEl.textContent = 'Great job! Keep it up! 👏';
+        } else if (percentage >= 60) {
+            messageEl.textContent = 'Good effort! Review and try again. 📚';
+        } else {
+            messageEl.textContent = 'Keep practicing! You\'ll improve. 💪';
+        }
+    } else {
+        messageEl.textContent = `${resultsTracker.unanswered} question${resultsTracker.unanswered === 1 ? '' : 's'} remaining`;
+    }
+}
+function recordAnswer(questionNumber, resultType, marksEarned, marksPossible) {
+    // resultType can be: 'correct', 'partial', or 'incorrect'
+    // marksEarned: how many marks the student got (e.g., 2 out of 5)
+    // marksPossible: total marks for this question (e.g., 5)
+    
+    // Check if this question was previously answered
+    const wasPreviouslyAnswered = questionStatuses[questionNumber] !== 'unanswered';
+    
+    if (wasPreviouslyAnswered) {
+        // Subtract the old result
+        const oldStatus = questionStatuses[questionNumber];
+        if (oldStatus === 'correct') {
+            resultsTracker.correct--;
+        } else if (oldStatus === 'partial') {
+            resultsTracker.partial--;
+        } else if (oldStatus === 'incorrect') {
+            resultsTracker.incorrect--;
+        }
+        
+        // Subtract old marks (we'll need to store this per question)
+        if (window.questionMarks && window.questionMarks[questionNumber]) {
+            resultsTracker.totalMarksEarned -= window.questionMarks[questionNumber].earned;
+        }
+    } else {
+        // This is a new answer, decrease unanswered count
+        resultsTracker.unanswered--;
+    }
+    
+    // Add the new result
+    if (resultType === 'correct') {
+        resultsTracker.correct++;
+    } else if (resultType === 'partial') {
+        resultsTracker.partial++;
+    } else if (resultType === 'incorrect') {
+        resultsTracker.incorrect++;
+    }
+    
+    // Store marks for this question
+    if (!window.questionMarks) {
+        window.questionMarks = {};
+    }
+    window.questionMarks[questionNumber] = {
+        earned: marksEarned,
+        possible: marksPossible
+    };
+    
+    // Add marks to total
+    resultsTracker.totalMarksEarned += marksEarned;
+    
+    // Update question status
+    questionStatuses[questionNumber] = resultType;
+    
+    updateResultsSummary();
+}
+
+function resetAnswerRecord(questionNumber) {
+    // Only reset if the question was previously answered
+    if (questionStatuses[questionNumber] !== 'unanswered') {
+        const oldStatus = questionStatuses[questionNumber];
+        
+        if (oldStatus === 'correct') {
+            resultsTracker.correct--;
+        } else if (oldStatus === 'partial') {
+            resultsTracker.partial--;
+        } else if (oldStatus === 'incorrect') {
+            resultsTracker.incorrect--;
+        }
+        
+        // Remove marks
+        if (window.questionMarks && window.questionMarks[questionNumber]) {
+            resultsTracker.totalMarksEarned -= window.questionMarks[questionNumber].earned;
+            delete window.questionMarks[questionNumber];
+        }
+        
+        resultsTracker.unanswered++;
+        questionStatuses[questionNumber] = 'unanswered';
+        updateResultsSummary();
+    }
+}
+
+// Initialize results summary on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateResultsSummary();
+});
+    
+    
+    
+const DATA = {
+  1: {
+    label: 'LCM Type 1',
+    steps: [
+      {
+        text: 'Find the Lowest Common Multiple (LCM) of 12 and 18',
+        sub: '',
+        svgAction: 'showQuestion',
+        imageUrl: 'https://i.postimg.cc/yYZ1wnrn/Find-the-hcf.jpg'
+      },
+      {
+        text: 'List the multiples of each number',
+        sub: 'Write down the first several multiples of each number.',
+        svgAction: 'showFactorLists',
+        imageUrl: 'https://i.postimg.cc/x8TnCJMN/21.jpg'
+      },
+      {
+        text: 'Then do the same for your second number',
+        sub: '',
+        svgAction: 'showSecondNumber',
+        imageUrl: 'https://i.postimg.cc/SsxvYW1y/22.jpg'
+      },
+      {
+        text: 'Circle the numbers they both have',
+        sub: 'Look at both lists and circle the numbers that appear in both lists.\n\nThese are your common multiples.',
+        svgAction: 'highlightCommonFactors',
+        imageUrl: 'https://i.postimg.cc/Bnf7BW7N/23.jpg'
+      },
+      {
+        text: 'Pick the smallest number',
+        sub: 'The smallest number that appears in both lists is your Lowest Common Multiple.',
+        svgAction: 'showHCF',
+        imageUrl: 'https://i.postimg.cc/RZvyz57k/24.jpg',
+        endSlide: {
+          text: 'The LCM of 12 and 18 is 36',
+          sub: ''
+        }
+      }
+    ]
+  },
+
+  2: {
+    label: 'LCM Type 2',
+    steps: [
+      {
+        text: 'Find the Lowest Common Multiple (LCM) of 15 and 20',
+        sub: '',
+        svgAction: 'showQuestion2',
+        imageUrl: 'https://i.postimg.cc/Ssxpbg3S/25.jpg'
+      },
+      {
+        text: 'List the multiples of each number',
+        sub: 'Write down the first several multiples of each number.',
+        svgAction: 'isolate',
+        imageUrl: 'https://i.postimg.cc/jSTxk4x5/26.jpg'
+      },
+      {
+        text: 'Then do the same for your second number',
+        sub: '',
+        svgAction: 'finalOk',
+        imageUrl: 'https://i.postimg.cc/Bn3SwBSb/27.jpg'
+      },
+      {
+        text: 'Circle the numbers they both have',
+        sub: 'Look at both lists and circle the numbers that appear in both lists. These are your common multiples.',
+        svgAction: 'verifyAnswer',
+        imageUrl: 'https://i.postimg.cc/bwPyF9ys/28.jpg'
+      },
+      {
+        text: 'Pick the smallest number',
+        sub: 'The smallest number that appears in both lists is your Lowest Common Multiple.',
+        svgAction: 'showFinalAnswer',
+        imageUrl: 'https://i.postimg.cc/4xGfFQfY/29.jpg',
+        endSlide: {
+          text: 'The LCM of 15 and 20 is 60',
+          sub: 'Always check your work!'
+        }
+      }
+    ]
+  },
+
+  3: {
+    label: 'LCM Type 3',
+    steps: [
+      {
+        text: 'Find the Lowest Common Multiple (LCM) of 8 and 12',
+        sub: '',
+        svgAction: 'showQuestion',
+        imageUrl: 'https://i.postimg.cc/yYZ1wnrn/Find-the-hcf.jpg'
+      },
+      {
+        text: 'List the multiples of each number',
+        sub: 'Write down the first several multiples of each number.',
+        svgAction: 'showFactorLists',
+        imageUrl: 'https://i.postimg.cc/x8TnCJMN/21.jpg'
+      },
+      {
+        text: 'Then do the same for your second number',
+        sub: '',
+        svgAction: 'showSecondNumber',
+        imageUrl: 'https://i.postimg.cc/SsxvYW1y/22.jpg'
+      },
+      {
+        text: 'Circle the numbers they both have',
+        sub: 'Look at both lists and circle the numbers that appear in both lists.\n\nThese are your common multiples.',
+        svgAction: 'highlightCommonFactors',
+        imageUrl: 'https://i.postimg.cc/Bnf7BW7N/23.jpg'
+      },
+      {
+        text: 'Pick the smallest number',
+        sub: 'The smallest number that appears in both lists is your Lowest Common Multiple.',
+        svgAction: 'showHCF',
+        imageUrl: 'https://i.postimg.cc/RZvyz57k/24.jpg',
+        endSlide: {
+          text: 'The LCM of 8 and 12 is 24',
+          sub: ''
+        }
+      }
+    ]
+  },
+
+  4: {
+    label: 'LCM Type 4',
+    steps: [
+      {
+        text: 'Find the Lowest Common Multiple (LCM) of 6 and 9',
+        sub: '',
+        svgAction: 'showQuestion2',
+        imageUrl: 'https://i.postimg.cc/Ssxpbg3S/25.jpg'
+      },
+      {
+        text: 'List the multiples of each number',
+        sub: 'Write down the first several multiples of each number.',
+        svgAction: 'isolate',
+        imageUrl: 'https://i.postimg.cc/jSTxk4x5/26.jpg'
+      },
+      {
+        text: 'Then do the same for your second number',
+        sub: '',
+        svgAction: 'finalOk',
+        imageUrl: 'https://i.postimg.cc/Bn3SwBSb/27.jpg'
+      },
+      {
+        text: 'Circle the numbers they both have',
+        sub: 'Look at both lists and circle the numbers that appear in both lists. These are your common multiples.',
+        svgAction: 'verifyAnswer',
+        imageUrl: 'https://i.postimg.cc/bwPyF9ys/28.jpg'
+      },
+      {
+        text: 'Pick the smallest number',
+        sub: 'The smallest number that appears in both lists is your Lowest Common Multiple.',
+        svgAction: 'showFinalAnswer',
+        imageUrl: 'https://i.postimg.cc/4xGfFQfY/29.jpg',
+        endSlide: {
+          text: 'The LCM of 6 and 9 is 18',
+          sub: 'Always check your work!'
+        }
+      }
+    ]
+  }
+};
+
+const qTypeSelect = document.getElementById('qType');
+const methodLayer = document.getElementById('methodLayer');
+const methodReverse = document.getElementById('methodReverse');
+const autoplayToggle = document.getElementById('autoplayToggle');
+const nextBtn = document.getElementById('nextBtn');
+const prevBtn = document.getElementById('prevBtn');
+const replayBtn = document.getElementById('replayBtn');
+
+const stepText = document.getElementById('stepText');
+const stepSub = document.getElementById('stepSub');
+const curStepEl = document.getElementById('curStep');
+const totalStepsEl = document.getElementById('totalSteps');
+const stepBadge = document.getElementById('stepBadge');
+
+const comingOverlay = document.getElementById('comingOverlay');
+const countdownEl = document.getElementById('countdown');
+const downArrow = document.getElementById('downArrow');
+
+const demoSVG = document.getElementById('demoSVG');
+const questionText = document.getElementById('questionText');
+const exprLine1 = document.getElementById('exprLine1');
+const exprLine2 = document.getElementById('exprLine2');
+
+const dotA = document.getElementById('dotA');
+const dotAText = document.getElementById('dotAText');
+const rectB = document.getElementById('rectB');
+const rectBText = document.getElementById('rectBText');
+const finalText = document.getElementById('finalText');
+
+const qTypeButtonsContainer = document.getElementById('qTypeButtons');
+
+let currentType = qTypeSelect.value || '1';
+let currentMethod = 'layering';
+let currentStep = 0;
+let autoplay = false;
+
+let timers = [];
+
+function clearTimers(){
+  timers.forEach(t => clearTimeout(t));
+  timers = [];
+}
+function setTimer(fn, ms){ timers.push(setTimeout(fn, ms)); }
+
+const srLive = document.createElement('div');
+srLive.setAttribute('aria-live', 'polite');
+srLive.className = 'sr-only';
+document.body.appendChild(srLive);
+function announceForSR(msg){
+  srLive.textContent = '';
+  setTimeout(()=> { srLive.textContent = msg; }, 50);
+}
+
+const STORAGE_KEY = 'flashtile:settings';
+function saveSettings(){
+  try {
+    const payload = { currentType, currentMethod, autoplay };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  } catch(e){}
+}
+function restoreSettings(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const obj = JSON.parse(raw);
+    if (obj.currentType) currentType = String(obj.currentType);
+    if (obj.currentMethod) currentMethod = obj.currentMethod;
+    if (typeof obj.autoplay === 'boolean') autoplay = obj.autoplay;
+  } catch(e){}
+}
+
+function loadCurrentData(){
+  qTypeSelect.value = String(currentType);
+  currentStep = 0;
+  window.__isShowingEndSlide = false;
+  updateStepPanel();
+  updateQTypeButtons();
+  
+  // Get elements
+  const steps = getSteps();
+  const stepImage = document.getElementById('stepImage');
+  const stepImageContainer = document.getElementById('stepImageContainer');
+  const demoSVG = document.getElementById('demoSVG');
+  
+  // STEP 1: Clear everything first
+  if (stepImage) {
+    stepImage.style.display = 'none';
+    stepImage.src = '';  // Clear old image
+  }
+  
+  // STEP 2: Reset SVG
+  resetSVG();
+  
+  // STEP 3: Force load the NEW image after a tiny delay to ensure browser updates
+  setTimeout(() => {
+    if (steps && steps.length > 0 && steps[0].imageUrl) {
+      if (stepImage && stepImageContainer) {
+        // Force display the image container
+        stepImageContainer.style.display = 'flex';
+        
+        // Load the NEW image URL
+        stepImage.src = steps[0].imageUrl;
+        stepImage.style.display = 'block';
+        
+        // Hide SVG
+        if (demoSVG) {
+          demoSVG.style.display = 'none';
+        }
+        
+        // Update text for step 1
+        const firstStep = steps[0];
+        if (firstStep) {
+          stepText.textContent = firstStep.text;
+          stepSub.textContent = firstStep.sub || '';
+        }
+      }
+    }
+    
+    // Play the step
+    playCurrentStep();
+  }, 10);  // Tiny 10ms delay to force browser refresh
+}
+    
+    // Backup fix - run on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const stepImage = document.getElementById('stepImage');
+  const demoSVG = document.getElementById('demoSVG');
+  
+  if (stepImage && demoSVG) {
+    // Make sure image container is always ready
+    stepImage.parentElement.style.display = 'flex';
+    demoSVG.style.display = 'none';
+  }
+});
+
+function getSteps(){
+  const data = DATA[currentType];
+  return (data && data.steps) ? data.steps : [];
+}
+
+function updateStepPanel(){
+  const steps = getSteps();
+  const total = steps.length;
+  totalStepsEl.textContent = total || 0;
+  curStepEl.textContent = Math.min(currentStep + 1, Math.max(1, total));
+  stepBadge.textContent = `Step ${Math.min(currentStep+1, total || 0)} / ${total}`;
+}
+
+function playCurrentStep(){
+  clearTimers();
+  const steps = getSteps();
+
+  if (!steps || steps.length === 0){
+    stepText.textContent = 'No steps for this selection.';
+    stepSub.textContent = DATA[currentType] ? DATA[currentType].label : 'No label';
+    comingOverlay.classList.remove('show');
+    announceForSR('No steps available');
+    return;
+  }
+
+  if (currentStep >= steps.length){
+    stepText.textContent = 'All steps complete ✅';
+    stepSub.textContent = 'You can replay or change type/method.';
+    comingOverlay.classList.remove('show');
+    announceForSR('All steps complete');
+    return;
+  }
+
+  const step = steps[currentStep];
+  
+  // Check if we're in "end slide" mode
+  const isEndSlide = step.endSlide && window.__isShowingEndSlide;
+
+  // HANDLE IMAGE DISPLAY - ALWAYS SHOW IMAGES
+  const stepImage = document.getElementById('stepImage');
+  const stepImageContainer = document.getElementById('stepImageContainer');
+  const demoSVG = document.getElementById('demoSVG');
+  
+  if (step.imageUrl) {
+    stepImage.src = step.imageUrl;
+    stepImage.style.display = 'block';
+    stepImageContainer.style.display = 'flex';
+    
+    // Make sure SVG is hidden when showing image
+    if (demoSVG) {
+      demoSVG.style.display = 'none';
+    }
+  } else {
+    // Only hide image if there's no imageUrl
+    stepImage.style.display = 'none';
+  }
+
+  // Show either the main step or the end slide
+  if (isEndSlide) {
+    stepText.textContent = step.endSlide.text;
+    stepSub.textContent = step.endSlide.sub || '';
+  } else {
+    stepText.textContent = step.text;
+    stepSub.textContent = step.sub || '';
+  }
+
+  updateStepPanel();
+  announceForSR(`Step ${currentStep + 1} of ${steps.length}. ${isEndSlide ? step.endSlide.text : step.text}`);
+
+  performSvgAction(step.svgAction, () => {
+    if (step.endSlide && !window.__isShowingEndSlide) {
+      window.__canShowEndSlide = true;
+    }
+    
+    showComingOverlay(1500, () => {
+      if (autoplay){
+        if (window.__canShowEndSlide && !window.__isShowingEndSlide) {
+          window.__isShowingEndSlide = true;
+          window.__canShowEndSlide = false;
+          setTimer(()=> playCurrentStep(), 350);
+        } else {
+          window.__isShowingEndSlide = false;
+          currentStep++;
+          updateStepPanel();
+          setTimer(()=> playCurrentStep(), 350);
+        }
+      } else {
+        arrowPulse();
+      }
+    });
+  });
+}
+
+function showComingOverlay(ms = 1500, done){
+  let left = Math.max(1, Math.round(ms / 500));
+  countdownEl.textContent = left;
+  comingOverlay.classList.add('show');
+
+  function tick(){
+    left--;
+    if (left <= 0){
+      comingOverlay.classList.remove('show');
+      countdownEl.textContent = '0';
+      if (done) done();
+    } else {
+      countdownEl.textContent = left;
+      setTimer(tick, 500);
+    }
+  }
+  setTimer(tick, 500);
+}
+
+function arrowPulse(){
+  downArrow.classList.add('move');
+  setTimer(()=> downArrow.classList.remove('move'), 700);
+}
+
+function resetSVG(){
+  clearTimers();
+  comingOverlay.classList.remove('show');
+
+  // DON'T hide the image when resetting - we want to keep it visible
+  const stepImage = document.getElementById('stepImage');
+  // Remove these lines that were hiding the image:
+  // if (stepImage) {
+  //   stepImage.style.display = 'none';
+  //   stepImage.src = '';
+  // }
+
+  questionText.textContent = '';
+  exprLine1.textContent = '';
+  exprLine2.textContent = '';
+  finalText.textContent = '';
+
+  dotA.classList.remove('visible','highlight','move-up');
+  dotAText.classList.remove('visible','highlight');
+  rectB.classList.remove('visible','highlight');
+  rectBText.classList.remove('visible','highlight');
+  exprLine1.classList.remove('visible','highlight');
+  exprLine2.classList.remove('visible','highlight');
+  finalText.classList.remove('visible','highlight');
+}
+
+function performSvgAction(actionName, callback){
+  clearTimers();
+  
+  const stepImage = document.getElementById('stepImage');
+
+  setTimer(()=> {
+    dotA.classList.remove('visible','highlight','move-up');
+    dotAText.classList.remove('visible','highlight');
+    rectB.classList.remove('visible','highlight');
+    rectBText.classList.remove('visible','highlight');
+    finalText.classList.remove('visible','highlight');
+    exprLine1.classList.remove('visible','highlight');
+    exprLine2.classList.remove('visible','highlight');
+
+    switch(actionName){
+      case 'showFactorLists':
+      case 'highlightCommonFactors':
+      case 'showHCF':
+        // Image will be shown by playCurrentStep function
+        if (callback) setTimer(callback, 600);
+      break;
+
+      default:
+        if (callback) setTimer(callback, 400);
+      break;
+    }
+  }, 20);
+}
+
+methodLayer.addEventListener('click', () => {
+  currentMethod = 'layering';
+  methodLayer.classList.add('active');
+  methodLayer.setAttribute('aria-selected', 'true');
+  loadCurrentData();
+});
+autoplayToggle.addEventListener('click', () => {
+  autoplay = !autoplay;
+  autoplayToggle.textContent = `Autoplay: ${autoplay ? 'On' : 'Off'}`;
+  autoplayToggle.setAttribute('aria-pressed', String(autoplay));
+  saveSettings();
+});
+
+nextBtn.addEventListener('click', () => {
+  const steps = getSteps();
+  const currentStepData = steps[currentStep];
+  
+  // Check if current step has an end slide and we haven't shown it yet
+  if (currentStepData && currentStepData.endSlide && !window.__isShowingEndSlide) {
+    window.__isShowingEndSlide = true;
+    playCurrentStep();
+  } else {
+    // Move to next step
+    window.__isShowingEndSlide = false;
+    if (currentStep < steps.length - 1){
+      currentStep++;
+      updateStepPanel();
+      playCurrentStep();
+    } else {
+      currentStep = steps.length;
+      updateStepPanel();
+      playCurrentStep();
+    }
+  }
+});
+replayBtn.addEventListener('click', () => {
+  playCurrentStep();
+});
+    
+    prevBtn.addEventListener('click', () => {
+  if (currentStep > 0){
+    window.__isShowingEndSlide = false;  // Reset end slide flag when going back
+    currentStep--;
+    updateStepPanel();
+    playCurrentStep();
+  }
+});
+
+function generateQTypeButtons(){
+  qTypeButtonsContainer.innerHTML = '';
+
+  const keys = Object.keys(DATA).map(k=>String(k)).sort((a,b)=> Number(a)-Number(b));
+
+  keys.forEach((key, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'qtype-btn';
+    btn.type = 'button';
+    btn.textContent = key;
+    btn.setAttribute('data-type', key);
+    btn.setAttribute('aria-pressed', 'false');
+    btn.setAttribute('title', `${key}: ${DATA[key].label || 'Question type'}`);
+    btn.addEventListener('click', () => {
+      const prevActive = qTypeButtonsContainer.querySelector('.qtype-btn.active');
+      if (prevActive) {
+        prevActive.classList.remove('active');
+        prevActive.setAttribute('aria-pressed', 'false');
+      }
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+
+      currentType = String(key);
+      qTypeSelect.value = String(key);
+      saveSettings();
+      loadCurrentData();
+    });
+
+    btn.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        btn.click();
+      }
+      if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight'){
+        ev.preventDefault();
+        const sibling = (ev.key === 'ArrowLeft') ? btn.previousElementSibling : btn.nextElementSibling;
+        let target = sibling;
+        while (target && target.classList && !target.classList.contains('qtype-btn')){
+          target = (ev.key === 'ArrowLeft') ? target.previousElementSibling : target.nextElementSibling;
+        }
+        if (target && target.classList && target.classList.contains('qtype-btn')){
+          target.focus();
+        }
+      }
+    });
+
+    qTypeButtonsContainer.appendChild(btn);
+
+    if (idx < keys.length - 1){
+      const div = document.createElement('div');
+      div.className = 'divider';
+      qTypeButtonsContainer.appendChild(div);
+    }
+  });
+
+  updateQTypeButtons();
+}
+
+function updateQTypeButtons(){
+  const btns = qTypeButtonsContainer.querySelectorAll('.qtype-btn');
+  btns.forEach(b => {
+    const t = b.getAttribute('data-type');
+    if (String(t) === String(currentType)){
+      b.classList.add('active');
+      b.setAttribute('aria-pressed', 'true');
+      b.focus && b.blur();
+    } else {
+      b.classList.remove('active');
+      b.setAttribute('aria-pressed', 'false');
+    }
+  });
+
+  qTypeSelect.value = String(currentType);
+  const label = DATA[currentType] ? DATA[currentType].label : `Type ${currentType}`;
+  announceForSR(`Question type ${currentType}: ${label}`);
+}
+
+document.addEventListener('keydown', (ev) => {
+  const tag = (document.activeElement && document.activeElement.tagName) || '';
+  if (['INPUT','TEXTAREA','SELECT','BUTTON'].includes(tag)) {
+    return;
+  }
+
+  if (ev.key === 'ArrowLeft'){
+    ev.preventDefault();
+    prevBtn.click();
+  } else if (ev.key === 'ArrowRight'){
+    ev.preventDefault();
+    nextBtn.click();
+  } else if (ev.key === ' '){
+    ev.preventDefault();
+    autoplayToggle.click();
+  } else if (/^[1-9]$/.test(ev.key)){
+    const num = ev.key;
+    if (DATA[num]){
+      const btn = qTypeButtonsContainer.querySelector(`.qtype-btn[data-type="${num}"]`);
+      if (btn) btn.click();
+    }
+  }
+});
+
+function init(){
+  restoreSettings();
+  generateQTypeButtons();
+
+  // Always use layering method
+  currentMethod = 'layering';
+  methodLayer.classList.add('active');
+  methodLayer.setAttribute('aria-selected', 'true');
+
+  autoplayToggle.textContent = `Autoplay: ${autoplay ? 'On' : 'Off'}`;
+  autoplayToggle.setAttribute('aria-pressed', String(autoplay));
+
+  if (!DATA[currentType]){
+    const first = Object.keys(DATA)[0];
+    currentType = String(first);
+  }
+
+  announceForSR('Interactive step example loaded');
+
+  loadCurrentData();
+}
+
+if (document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+  
+  
+  
+  
+  
+  
+ 
+    
+
+
+
+<!-- JAVASCRIPT - Question 1 -->
+
+// ============= QUESTION 1 =============
+document.addEventListener('DOMContentLoaded', function() {
+  const markCounter = document.getElementById('mark-counter-1');
+  if (markCounter) {
+    markCounter.textContent = '0/1';
+  }
+});
+
+function toggleSingleAnswer1(answer, button) {
+  const questionBox = document.getElementById('question-box-1');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-1"]');
+
+  allButtons.forEach(btn => {
+    btn.classList.remove('selected');
+  });
+
+  button.classList.toggle('selected');
+}
+
+function setCorrectStyles1(markCounter) {
+  markCounter.style.backgroundColor = '#54d3ab';
+  markCounter.style.color = 'white';
+  markCounter.style.borderColor = '#54d3ab';
+}
+
+function setIncorrectStyles1(markCounter) {
+  markCounter.style.backgroundColor = '#e16280';
+  markCounter.style.color = 'white';
+  markCounter.style.borderColor = '#e16280';
+}
+
+function resetStyles1(markCounter) {
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
+}
+
+function submitAnswer1() {
+  const correctAnswerButton = document.querySelector('.answer-option-1-2');
+  
+  const questionBox = document.getElementById('question-box-1');
+  const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-1"].selected');
+  const markCounter = document.getElementById('mark-counter-1');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-1"]');
+
+  const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
+  
+  const yourScore = gotItRight ? 1 : 0;
+  const resultType = yourScore === 1 ? 'correct' : 'incorrect';
+  recordAnswer(1, resultType, yourScore, 1);
+  
+  markCounter.innerHTML = `${yourScore}/1`;
+  
+  markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
+  questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
+
+  correctAnswerButton.classList.add('correct-answer');
+
+  if (yourScore === 1) {
+    setCorrectStyles1(markCounter);
+    markCounter.classList.add('correct');
+    questionBox.classList.add('correct');
+  } else {
+    setIncorrectStyles1(markCounter);
+    markCounter.classList.add('incorrect');
+    questionBox.classList.add('incorrect-selection');
+  }
+
+  if (typeof updateProgressSegment === 'function') {
+    updateProgressSegment(1);
+  }
+
+  allButtons.forEach(button => {
+    button.disabled = true;
+    button.style.cursor = 'not-allowed';
+  });
+
+  const submitBtn = document.getElementById('submit-button-1');
+  submitBtn.innerText = 'Reset';
+  submitBtn.disabled = false;
+  submitBtn.style.cursor = 'pointer';
+  submitBtn.onclick = function () {
+    resetQuestion1();
+  };
+}
+
+function resetQuestion1() {
+  resetAnswerRecord(1);
+  const questionBox = document.getElementById('question-box-1');
+  const buttons = questionBox.querySelectorAll('[class^="answer-option-1"]');
+  const markCounter = document.getElementById('mark-counter-1');
+  const submitBtn = document.getElementById('submit-button-1');
+
+  if (typeof resetProgressSegment === 'function') {
+    resetProgressSegment(1);
+  }
+
+  buttons.forEach(button => {
+    button.classList.remove('selected', 'correct-answer');
+    button.disabled = false;
+    button.style.cursor = 'pointer';
+  });
+
+  markCounter.innerHTML = '0/1';
+  markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
+  resetStyles1(markCounter);
+
+  submitBtn.innerText = 'Submit';
+  submitBtn.disabled = false;
+  submitBtn.style.cursor = 'pointer';
+  submitBtn.onclick = function () {
+    submitAnswer1();
+  };
+
+  questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
+}
+
+// ============= QUESTION 2 =============
+document.addEventListener('DOMContentLoaded', function() {
+  const markCounter = document.getElementById('mark-counter-2');
+  if (markCounter) {
+    markCounter.textContent = '0/1';
+  }
+});
+
+function toggleSingleAnswer2(answer, button) {
+  const questionBox = document.getElementById('question-box-2');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-2"]');
+
+  allButtons.forEach(btn => {
+    btn.classList.remove('selected');
+  });
+
+  button.classList.toggle('selected');
+}
+
+function setCorrectStyles2(markCounter) {
+  markCounter.style.backgroundColor = '#54d3ab';
+  markCounter.style.color = 'white';
+  markCounter.style.borderColor = '#54d3ab';
+}
+
+function setIncorrectStyles2(markCounter) {
+  markCounter.style.backgroundColor = '#e16280';
+  markCounter.style.color = 'white';
+  markCounter.style.borderColor = '#e16280';
+}
+
+function resetStyles2(markCounter) {
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
+}
+
+function submitAnswer2() {
+  const correctAnswerButton = document.querySelector('.answer-option-2-2');
+  const questionBox = document.getElementById('question-box-2');
+  const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-2"].selected');
+  const markCounter = document.getElementById('mark-counter-2');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-2"]');
+
+  const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
+  
+  const yourScore = gotItRight ? 1 : 0;
+  const resultType = yourScore === 1 ? 'correct' : 'incorrect';
+  recordAnswer(2, resultType, yourScore, 1);
+  
+  markCounter.innerHTML = `${yourScore}/1`;
+  
+  markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
+  questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
+
+  correctAnswerButton.classList.add('correct-answer');
+
+  if (yourScore === 1) {
+    setCorrectStyles2(markCounter);
+    markCounter.classList.add('correct');
+    questionBox.classList.add('correct');
+  } else {
+    setIncorrectStyles2(markCounter);
+    markCounter.classList.add('incorrect');
+    questionBox.classList.add('incorrect-selection');
+  }
+
+  if (typeof updateProgressSegment === 'function') {
+    updateProgressSegment(2);
+  }
+
+  allButtons.forEach(button => {
+    button.disabled = true;
+    button.style.cursor = 'not-allowed';
+  });
+
+  const submitBtn = document.getElementById('submit-button-2');
+  submitBtn.innerText = 'Reset';
+  submitBtn.disabled = false;
+  submitBtn.style.cursor = 'pointer';
+  submitBtn.onclick = function () {
+    resetQuestion2();
+  };
+}
+
+function resetQuestion2() {
+  resetAnswerRecord(2); 
+  const questionBox = document.getElementById('question-box-2');
+  const buttons = questionBox.querySelectorAll('[class^="answer-option-2"]');
+  const markCounter = document.getElementById('mark-counter-2');
+  const submitBtn = document.getElementById('submit-button-2');
+
+  if (typeof resetProgressSegment === 'function') {
+    resetProgressSegment(2);
+  }
+
+  buttons.forEach(button => {
+    button.classList.remove('selected', 'correct-answer');
+    button.disabled = false;
+    button.style.cursor = 'pointer';
+  });
+
+  markCounter.innerHTML = '0/1';
+  markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
+  resetStyles2(markCounter);
+
+  submitBtn.innerText = 'Submit';
+  submitBtn.disabled = false;
+  submitBtn.style.cursor = 'pointer';
+  submitBtn.onclick = function () {
+    submitAnswer2();
+  };
+
+  questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
+}
+
+// ============= QUESTION 3 =============
+function toggleSingleAnswer3(answer, button) {
+  const questionBox = document.getElementById('question-box-3');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-3"]');
+
+  allButtons.forEach(btn => {
+    btn.classList.remove('selected');
+  });
+
+  button.classList.toggle('selected');
+}
+
+function setCorrectStyles3(markCounter) {
+  markCounter.style.backgroundColor = '#54d3ab';
+  markCounter.style.color = 'white';
+  markCounter.style.borderColor = '#54d3ab';
+}
+
+function setIncorrectStyles3(markCounter) {
+  markCounter.style.backgroundColor = '#e16280';
+  markCounter.style.color = 'white';
+  markCounter.style.borderColor = '#e16280';
+}
+
+function resetStyles3(markCounter) {
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
+}
+
+function submitAnswer3() {
+  const correctAnswerButton = document.querySelector('.answer-option-3-2');
+  const questionBox = document.getElementById('question-box-3');
+  const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-3"].selected');
+  const markCounter = document.getElementById('mark-counter-3');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-3"]');
+
+  const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
+  
+  const yourScore = gotItRight ? 1 : 0;
+  const resultType = yourScore === 1 ? 'correct' : 'incorrect';
+  recordAnswer(3, resultType, yourScore, 1);
+  
+  markCounter.innerHTML = `${yourScore}/1`;
+  
+  markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
+  questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
+
+  correctAnswerButton.classList.add('correct-answer');
+
+  if (yourScore === 1) {
+    setCorrectStyles3(markCounter);
+    markCounter.classList.add('correct');
+    questionBox.classList.add('correct');
+  } else {
+    setIncorrectStyles3(markCounter);
+    markCounter.classList.add('incorrect');
+    questionBox.classList.add('incorrect-selection');
+  }
+
+  if (typeof updateProgressSegment === 'function') {
+    updateProgressSegment(3);
+  }
+
+  allButtons.forEach(button => {
+    button.disabled = true;
+    button.style.cursor = 'not-allowed';
+  });
+
+  const submitBtn = document.getElementById('submit-button-3');
+  submitBtn.innerText = 'Reset';
+  submitBtn.disabled = false;
+  submitBtn.style.cursor = 'pointer';
+  submitBtn.onclick = function () {
+    resetQuestion3();
+  };
+}
+
+function resetQuestion3() {
+  resetAnswerRecord(3);
+  const questionBox = document.getElementById('question-box-3');
+  const buttons = questionBox.querySelectorAll('[class^="answer-option-3"]');
+  const markCounter = document.getElementById('mark-counter-3');
+  const submitBtn = document.getElementById('submit-button-3');
+
+  if (typeof resetProgressSegment === 'function') {
+    resetProgressSegment(3);
+  }
+
+  buttons.forEach(button => {
+    button.classList.remove('selected', 'correct-answer');
+    button.disabled = false;
+    button.style.cursor = 'pointer';
+  });
+
+  markCounter.innerHTML = '0/1';
+  markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
+  resetStyles3(markCounter);
+
+  submitBtn.innerText = 'Submit';
+  submitBtn.disabled = false;
+  submitBtn.style.cursor = 'pointer';
+  submitBtn.onclick = function () {
+    submitAnswer3();
+  };
+
+  questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
+}
+
+// ============= QUESTION 4 =============
+function toggleSingleAnswer4(answer, button) {
+  const questionBox = document.getElementById('question-box-4');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-4"]');
+
+  allButtons.forEach(btn => {
+    btn.classList.remove('selected');
+  });
+
+  button.classList.toggle('selected');
+}
+
+function setCorrectStyles4(markCounter) {
+  markCounter.style.backgroundColor = '#54d3ab';
+  markCounter.style.color = 'white';
+  markCounter.style.borderColor = '#54d3ab';
+}
+
+function setIncorrectStyles4(markCounter) {
+  markCounter.style.backgroundColor = '#e16280';
+  markCounter.style.color = 'white';
+  markCounter.style.borderColor = '#e16280';
+}
+
+function resetStyles4(markCounter) {
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
+}
+
+function submitAnswer4() {
+  const correctAnswerButton = document.querySelector('.answer-option-4-2');
+  const questionBox = document.getElementById('question-box-4');
+  const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-4"].selected');
+  const markCounter = document.getElementById('mark-counter-4');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-4"]');
+
+  const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
+  const yourScore = gotItRight ? 1 : 0;
+  const resultType = yourScore === 1 ? 'correct' : 'incorrect';
+  recordAnswer(4, resultType, yourScore, 1);
+  markCounter.innerHTML = `${yourScore}/1`;
+
+  markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
+  questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
+
+  correctAnswerButton.classList.add('correct-answer');
+
+  if (yourScore === 1) {
+    setCorrectStyles4(markCounter);
+    markCounter.classList.add('correct');
+    questionBox.classList.add('correct');
+  } else {
+    setIncorrectStyles4(markCounter);
+    markCounter.classList.add('incorrect');
+    questionBox.classList.add('incorrect-selection');
+  }
+
+  if (typeof updateProgressSegment === 'function') {
+    updateProgressSegment(4);
+  }
+
+  allButtons.forEach(button => {
+    button.disabled = true;
+    button.style.cursor = 'not-allowed';
+  });
+
+  const submitBtn = document.getElementById('submit-button-4');
+  submitBtn.innerText = 'Reset';
+  submitBtn.disabled = false;
+  submitBtn.style.cursor = 'pointer';
+  submitBtn.onclick = function() {
+    resetQuestion4();
+  };
+}
+
+function resetQuestion4() {
+  resetAnswerRecord(4);
+  const questionBox = document.getElementById('question-box-4');
+  const buttons = questionBox.querySelectorAll('[class^="answer-option-4"]');
+  const markCounter = document.getElementById('mark-counter-4');
+  const submitBtn = document.getElementById('submit-button-4');
+
+  if (typeof resetProgressSegment === 'function') {
+    resetProgressSegment(4);
+  }
+
+  buttons.forEach(button => {
+    button.classList.remove('selected', 'correct-answer');
+    button.disabled = false;
+    button.style.cursor = 'pointer';
+  });
+
+  markCounter.innerHTML = '0/1';
+  markCounter.classList.remove('correct', 'incorrect');
+  resetStyles4(markCounter);
+
+  submitBtn.innerText = 'Submit';
+  submitBtn.onclick = function() {
+    submitAnswer4();
+  };
+
+  questionBox.classList.remove('correct', 'incorrect-selection');
+}
+
+// ============= QUESTION 5 =============
+document.addEventListener('DOMContentLoaded', function() {
+  const markCounter = document.getElementById('mark-counter-5');
+  if (markCounter) {
+    markCounter.textContent = '0/1';
+  }
+});
+
+function toggleSingleAnswer5(answer, button) {
+  const questionBox = document.getElementById('question-box-5');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-5"]');
+  
+  allButtons.forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  
+  button.classList.add('selected');
+}
+
+function setCorrectStyles5(markCounter) {
+  markCounter.style.backgroundColor = '#54d3ab';
+  markCounter.style.color = 'white';
+  markCounter.style.borderColor = '#54d3ab';
+}
+
+function setIncorrectStyles5(markCounter) {
+  markCounter.style.backgroundColor = '#e16280';
+  markCounter.style.color = 'white';
+  markCounter.style.borderColor = '#e16280';
+}
+
+function resetStyles5(markCounter) {
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
+}
+
+function submitAnswer5() {
+  const correctAnswerButton = document.querySelector('.answer-option-5-2');
+  
+  const questionBox = document.getElementById('question-box-5');
+  const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-5"].selected');
+  const markCounter = document.getElementById('mark-counter-5');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-5"]');
+
+  const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
+  
+  const yourScore = gotItRight ? 1 : 0;
+  const resultType = yourScore === 1 ? 'correct' : 'incorrect';
+  recordAnswer(5, resultType, yourScore, 1);
+  
+  markCounter.innerHTML = `${yourScore}/1`;
+  
+  markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
+  questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
+
+  correctAnswerButton.classList.add('correct-answer');
+
+  if (yourScore === 1) {
+    setCorrectStyles5(markCounter);
+    markCounter.classList.add('correct');
+    questionBox.classList.add('correct');
+  } else {
+    setIncorrectStyles5(markCounter);
+    markCounter.classList.add('incorrect');
+    questionBox.classList.add('incorrect-selection');
+  }
+
+  if (typeof updateProgressSegment === 'function') {
+    updateProgressSegment(5);
+  }
+
+  allButtons.forEach(button => {
+    button.disabled = true;
+    button.style.cursor = 'not-allowed';
+  });
+
+  const submitBtn = document.getElementById('submit-button-5');
+  submitBtn.innerText = 'Reset';
+  submitBtn.disabled = false;
+  submitBtn.style.cursor = 'pointer';
+  submitBtn.onclick = function() {
+    resetQuestion5();
+  };
+}
+
+function resetQuestion5() {
+  resetAnswerRecord(5);
+  const questionBox = document.getElementById('question-box-5');
+  const buttons = questionBox.querySelectorAll('[class^="answer-option-5"]');
+  const markCounter = document.getElementById('mark-counter-5');
+  const submitBtn = document.getElementById('submit-button-5');
+
+  if (typeof resetProgressSegment === 'function') {
+    resetProgressSegment(5);
+  }
+
+  buttons.forEach(button => {
+    button.classList.remove('selected', 'correct-answer');
+    button.disabled = false;
+    button.style.cursor = 'pointer';
+  });
+
+  markCounter.innerHTML = '0/1';
+  markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
+  resetStyles5(markCounter);
+
+  submitBtn.innerText = 'Submit';
+  submitBtn.disabled = false;
+  submitBtn.style.cursor = 'pointer';
+  submitBtn.onclick = function() {
+    submitAnswer5();
+  };
+
+  questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
+}
+
+// ============= QUESTION 6 =============
+function toggleSingleAnswer6(answer, button) {
+  const questionBox = document.getElementById('question-box-6');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-6"]');
+
+  allButtons.forEach(btn => {
+    btn.classList.remove('selected');
+  });
+
+  button.classList.toggle('selected');
+}
+
+function setCorrectStyles6(markCounter) {
+  markCounter.style.backgroundColor = '#54d3ab';
+  markCounter.style.color = 'white';
+  markCounter.style.borderColor = '#54d3ab';
+}
+
+function setIncorrectStyles6(markCounter) {
+  markCounter.style.backgroundColor = '#e16280';
+  markCounter.style.color = 'white';
+  markCounter.style.borderColor = '#e16280';
+}
+
+function resetStyles6(markCounter) {
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
+}
+
+function submitAnswer6() {
+  const correctAnswerButton = document.querySelector('.answer-option-6-2');
+  const questionBox = document.getElementById('question-box-6');
+  const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-6"].selected');
+  const markCounter = document.getElementById('mark-counter-6');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-6"]');
+
+  const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
+  const yourScore = gotItRight ? 1 : 0;
+  const resultType = yourScore === 1 ? 'correct' : 'incorrect';
+  recordAnswer(6, resultType, yourScore, 1);
+  markCounter.innerHTML = `${yourScore}/1`;
+
+  markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
+  questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
+
+  correctAnswerButton.classList.add('correct-answer');
+
+  if (yourScore === 1) {
+    setCorrectStyles6(markCounter);
+    markCounter.classList.add('correct');
+    questionBox.classList.add('correct');
+  } else {
+    setIncorrectStyles6(markCounter);
+    markCounter.classList.add('incorrect');
+    questionBox.classList.add('incorrect-selection');
+  }
+
+  if (typeof updateProgressSegment === 'function') {
+    updateProgressSegment(6);
+  }
+
+  allButtons.forEach(button => {
+    button.disabled = true;
+    button.style.cursor = 'not-allowed';
+  });
+
+  const submitBtn = document.getElementById('submit-button-6');
+  submitBtn.innerText = 'Reset';
+  submitBtn.disabled = false;
+  submitBtn.style.cursor = 'pointer';
+  submitBtn.onclick = function() {
+    resetQuestion6();
+  };
+}
+
+function resetQuestion6() {
+  resetAnswerRecord(6);
+  const questionBox = document.getElementById('question-box-6');
+  const buttons = questionBox.querySelectorAll('[class^="answer-option-6"]');
+  const markCounter = document.getElementById('mark-counter-6');
+  const submitBtn = document.getElementById('submit-button-6');
+
+  if (typeof resetProgressSegment === 'function') {
+    resetProgressSegment(6);
+  }
+
+  buttons.forEach(button => {
+    button.classList.remove('selected', 'correct-answer');
+    button.disabled = false;
+    button.style.cursor = 'pointer';
+  });
+
+  markCounter.innerHTML = '0/1';
+markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
+resetStyles6(markCounter);
+submitBtn.innerText = 'Submit';
+submitBtn.disabled = false;
+submitBtn.style.cursor = 'pointer';
+submitBtn.onclick = function() {
+submitAnswer6();
+};
+questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
+}
+    
+    
+    
+    
+
+window.__flashtile = {
+  DATA,
+  getState: () => ({ currentType, currentMethod, currentStep, autoplay }),
+  setType: (t) => { if (DATA[t]) { currentType = String(t); loadCurrentData(); } },
+  play: playCurrentStep,
+  reset: resetSVG,
+  saveSettings
+};
+  
+  
+  // Progress bar functionality
+const totalQuestions = 6;
+let questionStatuses = {};
+
+function initializeProgressBar() {
+    const container = document.getElementById('quiz-progress-segments');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    for (let i = 1; i <= totalQuestions; i++) {
+        const segment = document.createElement('div');
+        segment.className = 'quiz-segment';
+        segment.style.width = `${100/totalQuestions}%`;
+        segment.id = `segment-${i}`;
+        
+        const icon = document.createElement('div');
+        icon.className = 'quiz-segment-icon';
+        icon.id = `icon-${i}`;
+        
+        segment.appendChild(icon);
+        container.appendChild(segment);
+        questionStatuses[i] = 'unanswered';
+    }
+}
+
+function updateProgressSegment(questionNumber) {
+    const questionBox = document.getElementById(`question-box-${questionNumber}`);
+    const segment = document.getElementById(`segment-${questionNumber}`);
+    const icon = document.getElementById(`icon-${questionNumber}`);
+    
+    if (!questionBox || !segment || !icon) return;
+    
+    let color = 'transparent';
+    let iconContent = '';
+    
+    if (questionBox.classList.contains('correct')) {
+        color = '#54d3ab';
+        iconContent = '✓';
+    } else if (questionBox.classList.contains('incorrect-selection')) {
+        color = '#e16280';
+        iconContent = '✗';
+    }
+    
+    segment.style.backgroundColor = color;
+    icon.innerHTML = iconContent;
+}
+
+function resetProgressSegment(questionNumber) {
+    const segment = document.getElementById(`segment-${questionNumber}`);
+    const icon = document.getElementById(`icon-${questionNumber}`);
+    
+    if (!segment || !icon) return;
+    
+    segment.style.backgroundColor = 'transparent';
+    icon.innerHTML = '';
+}
+
+// Initialize progress bar when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeProgressBar();
+});
+
+</script>
+  
+<!-- Results Summary Box -->
+<div class="results-summary-box" id="results-summary-box">
+    <h2 class="results-summary-title">Your Results</h2>
+    
+    <!-- Tabs -->
+    <div class="results-tabs">
+        <div class="results-tab">
+            Lowest Common Multiple
+            <span class="percentage" id="hcf-percentage">(0%)</span>
+        </div>
+    </div>
+    
+    <!-- Progress Section -->
+    <div class="results-progress-wrapper">
+        <div class="results-progress-header">
+            <div class="results-progress-label">Lowest Common Multiple</div>
+            <div class="results-progress-percentage" id="progress-percentage">0%</div>
+        </div>
+        
+        <div class="results-progress-bar">
+            <div class="results-progress-fill" id="progress-fill">
+                <div class="progress-segment-correct" id="segment-correct" style="width: 0%"></div>
+                <div class="progress-segment-partial" id="segment-partial" style="width: 0%"></div>
+                <div class="progress-segment-incorrect" id="segment-incorrect" style="width: 0%"></div>
+            </div>
+        </div>
+        
+        <!-- Legend -->
+        <div class="results-legend">
+            <div class="legend-item">
+                <div class="legend-icon correct">✓</div>
+                <div class="legend-text">
+                    <span class="legend-count" id="correct-count">0</span>
+                    <span class="legend-label">/ 6 correct</span>
+                </div>
+            </div>
+            
+            <div class="legend-item">
+                <div class="legend-icon partial">○</div>
+                <div class="legend-text">
+                    <span class="legend-count" id="partial-count">0</span>
+                    <span class="legend-label">/ 6 partially correct</span>
+                </div>
+            </div>
+            
+            <div class="legend-item">
+                <div class="legend-icon incorrect">✗</div>
+                <div class="legend-text">
+                    <span class="legend-count" id="incorrect-count">0</span>
+                    <span class="legend-label">/ 6 wrong</span>
+                </div>
+            </div>
+            
+            <div class="legend-item">
+                <div class="legend-icon missed"></div>
+                <div class="legend-text">
+                    <span class="legend-count" id="unanswered-count">6</span>
+                    <span class="legend-label">/ 6 missed</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Divider -->
+    <div class="results-divider"></div>
+    
+   <!-- Message -->
+    <div class="results-message" id="results-message">Answer questions to see your score</div>
+    
+    <!-- Next Lecture Button -->
+    <div class="next-lecture-wrapper">
+        <a href="#" class="next-lecture-btn" id="next-lecture-btn">
+            Next Lecture
+            <span class="next-arrow">→</span>
+        </a>
+    </div>
+</div>
+
+</div>
+
+</body>
+
+</html>
