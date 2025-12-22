@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Flashtile Step Sync Prototype — QType Buttons Integrated</title>
+<title>Error Intervals - Interactive Lecture</title>
   <!-- ADD THIS FONT LINK HERE -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +11,7 @@
     
 
 <!-- Hidden link to Highest Common Factor -->
-<a href="6. Order of operations (BIDMAS)/" class="hidden-hcf-link"></a>
+<a href="2. Highest Common Factor/" class="hidden-hcf-link"></a>
 
 <style>
 .hidden-hcf-link {
@@ -645,6 +645,7 @@ color:var(--muted);
     transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
+/* Using !important to ensure these styles take precedence */
 .mark-counter-2.correct {
     background-color: #54d3ab !important;
     color: white !important;
@@ -664,7 +665,7 @@ color:var(--muted);
 }
 
 .question-title-2 {
-    padding-top: 20px;
+    padding-top: px;
     margin-bottom: 32px;
     text-align: center;
     font-weight: 350;
@@ -688,9 +689,8 @@ color:var(--muted);
     margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-family: "Arial Greek", Arial, sans-serif !important;
-    font-weight: 350 !important;
-    font-size: 15px !important;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
     cursor: pointer;
     background-color: white;
     text-align: center;
@@ -744,6 +744,7 @@ color:var(--muted);
     background-color: #1a70c5;
 }
 
+/* Additional styles from question 2 that weren't in question 1 */
 .extra-line {
     text-align: center;
     margin-bottom: 20px;
@@ -856,9 +857,8 @@ color:var(--muted);
     margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-family: "Arial Greek", Arial, sans-serif !important;
-    font-weight: 350 !important;
-    font-size: 15px !important;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
     cursor: pointer;
     background-color: white;
     text-align: center;
@@ -866,6 +866,21 @@ color:var(--muted);
     box-sizing: border-box;
 }
 
+/* Fix Q1 answer options to match other questions */
+.answer-option-1-1,
+.answer-option-1-2,
+.answer-option-1-3,
+.answer-option-1-4 {
+    font-family: "Arial Greek", Arial, sans-serif !important;
+    font-weight: 350 !important;
+    font-size: 15px !important;
+}  
+  
+  
+  
+  
+  
+  
 .answer-option-1-1.selected,
 .answer-option-1-2.selected,
 .answer-option-1-3.selected,
@@ -910,7 +925,7 @@ color:var(--muted);
 
 .submit-button-1:hover {
     background-color: #1a70c5;
-}
+}  
   
   
   
@@ -1462,19 +1477,15 @@ color:var(--muted);
     background-color: white;
     transition: border-color 0.3s ease;
 }
-
 .question-box-6.incorrect-selection {
     border: 1px solid #e16280;
 }
-
 .question-box-6.partial-correct {
     border: 1px solid #f7deb5;
 }
-
 .question-box-6.correct {
     border: 1px solid #54d3ab;
 }
-
 .question-number-label-6 {
     position: absolute;
     top: 0;
@@ -1485,7 +1496,6 @@ color:var(--muted);
     padding: 5px 15px;
     border-radius: 0 0 0 5px;
 }
-
 .mark-counter-6 {
     position: absolute;
     bottom: 25px;
@@ -1501,25 +1511,22 @@ color:var(--muted);
     background-color: transparent;
     transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
-
+/* Using !important to ensure these styles take precedence */
 .mark-counter-6.correct {
     background-color: #54d3ab !important;
     color: white !important;
     border-color: #54d3ab !important;
 }
-
 .mark-counter-6.incorrect {
     background-color: #e16280 !important;
     color: white !important;
     border-color: #e16280 !important;
 }
-
 .mark-counter-6.partial-correct {
     background-color: #f7deb5 !important;
     color: #555 !important;
     border-color: #f7deb5 !important;
 }
-
 .question-title-6 {
     padding-top: 20px;
     margin-bottom: 32px;
@@ -1528,13 +1535,11 @@ color:var(--muted);
     font-family: "Arial Greek", Arial, sans-serif;
     color: #464e5a;
 }
-
 .answer-container-6 {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
 .answer-option-6-1,
 .answer-option-6-2,
 .answer-option-6-3,
@@ -1545,16 +1550,15 @@ color:var(--muted);
     margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-family: "Arial Greek", Arial, sans-serif !important;
-    font-weight: 350 !important;
-    font-size: 15px !important;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
     cursor: pointer;
     background-color: white;
     text-align: center;
     transition: all 0.3s ease;
     box-sizing: border-box;
 }
-
+/* Style for selected answers */
 .answer-option-6-1.selected,
 .answer-option-6-2.selected,
 .answer-option-6-3.selected,
@@ -1563,7 +1567,7 @@ color:var(--muted);
     color: #ffffff;
     border-color: #1d7fe2;
 }
-
+/* New style for correct answers after submission */
 .answer-option-6-1.correct-answer,
 .answer-option-6-2.correct-answer,
 .answer-option-6-3.correct-answer,
@@ -1571,7 +1575,7 @@ color:var(--muted);
     border: 1px solid #54d3ab;
     box-sizing: border-box;
 }
-
+/* Style for correct answers that were selected */
 .answer-option-6-1.correct-answer.selected,
 .answer-option-6-2.correct-answer.selected,
 .answer-option-6-3.correct-answer.selected,
@@ -1580,7 +1584,6 @@ color:var(--muted);
     color: #ffffff;
     border-color: #54d3ab;
 }
-
 .submit-button-6 {
     background-color: #1d7fe2;
     color: white;
@@ -1596,7 +1599,6 @@ color:var(--muted);
     margin-right: auto;
     transition: background-color 0.3s ease;
 }
-
 .submit-button-6:hover {
     background-color: #1a70c5;
 }
@@ -1606,602 +1608,605 @@ color:var(--muted);
   
 /* Question 7 Styles */
 .question-box-7 {
-    position: relative;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    background-color: white;
-    transition: border-color 0.3s ease;
+  position: relative;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  background-color: white;
+  transition: border-color 0.3s ease;
 }
 
 .question-box-7.incorrect-selection {
-    border: 1px solid #e16280;
+  border: 1px solid #e16280;
 }
 
 .question-box-7.partial-correct {
-    border: 1px solid #f7deb5;
+  border: 1px solid #f7deb5;
 }
 
 .question-box-7.correct {
-    border: 1px solid #54d3ab;
+  border: 1px solid #54d3ab;
 }
 
 .question-number-label-7 {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    padding: 5px 15px;
-    border-radius: 0 0 0 5px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #1d7fe2;
+  color: white;
+  font-size: 14px;
+  padding: 5px 15px;
+  border-radius: 0 0 0 5px;
 }
 
 .mark-counter-7 {
-    position: absolute;
-    bottom: 11px;
-    left: 40px;
-    font-size: 15.5px;
-    color: #555;
-    border: 1px solid #1d7fe2;
-    padding: 6px 16px;
-    height: 30px;
-    line-height: 18px;
-    border-radius: 5px;
-    letter-spacing: 2px;
-    background-color: transparent;
-    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  position: absolute;
+  bottom: 11px;
+  left: 40px;
+  font-size: 15.5px;
+  color: #555;
+  border: 1px solid #1d7fe2;
+  padding: 6px 16px;
+  height: 30px;
+  line-height: 18px;
+  border-radius: 5px;
+  letter-spacing: 2px;
+  background-color: transparent;
+  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
 .mark-counter-7.correct {
-    background-color: #54d3ab !important;
-    color: white !important;
-    border-color: #54d3ab !important;
+  background-color: #54d3ab !important;
+  color: white !important;
+  border-color: #54d3ab !important;
 }
 
 .mark-counter-7.incorrect {
-    background-color: #e16280 !important;
-    color: white !important;
-    border-color: #e16280 !important;
+  background-color: #e16280 !important;
+  color: white !important;
+  border-color: #e16280 !important;
 }
 
 .mark-counter-7.partial-correct {
-    background-color: #f7deb5 !important;
-    color: #555 !important;
-    border-color: #f7deb5 !important;
+  background-color: #f7deb5 !important;
+  color: #555 !important;
+  border-color: #f7deb5 !important;
 }
 
 .question-title-7 {
-    padding-top: 20px;
-    margin-bottom: 32px;
-    text-align: center;
-    font-weight: 350;
-    font-family: "Arial Greek", Arial, sans-serif;
-    color: #464e5a;
-    font-size: 15px !important;
+  padding-top: 20px;
+  margin-bottom: 32px;
+  text-align: center;
+  font-weight: 350;
+  font-family: "Arial Greek", Arial, sans-serif;
+  color: #464e5a;
+  font-size: 15px;
 }
 
 .answer-container-7 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .answer-option-7-1,
 .answer-option-7-2,
 .answer-option-7-3,
 .answer-option-7-4 {
-    width: 80%;
-    max-width: 400px;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: "Arial Greek", Arial, sans-serif !important;
-    font-weight: 350 !important;
-    font-size: 15px !important;
-    cursor: pointer;
-    background-color: white;
-    text-align: center;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
+  width: 80%;
+  max-width: 400px;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: "Arial Greek", Arial, sans-serif !important;
+  font-weight: 350 !important;
+  font-size: 15px !important;
+  cursor: pointer;
+  background-color: white;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .answer-option-7-1.selected,
 .answer-option-7-2.selected,
 .answer-option-7-3.selected,
 .answer-option-7-4.selected {
-    background-color: #1d7fe2;
-    color: #ffffff;
-    border-color: #1d7fe2;
+  background-color: #1d7fe2;
+  color: #ffffff;
+  border-color: #1d7fe2;
 }
 
 .answer-option-7-1.correct-answer,
 .answer-option-7-2.correct-answer,
 .answer-option-7-3.correct-answer,
 .answer-option-7-4.correct-answer {
-    border: 1px solid #54d3ab;
-    box-sizing: border-box;
+  border: 1px solid #54d3ab;
+  box-sizing: border-box;
 }
 
 .answer-option-7-1.correct-answer.selected,
 .answer-option-7-2.correct-answer.selected,
 .answer-option-7-3.correct-answer.selected,
 .answer-option-7-4.correct-answer.selected {
-    background-color: #54d3ab;
-    color: #ffffff;
-    border-color: #54d3ab;
+  background-color: #54d3ab;
+  color: #ffffff;
+  border-color: #54d3ab;
 }
 
 .submit-button-7 {
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    transition: background-color 0.3s ease;
+  background-color: #1d7fe2;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.3s ease;
 }
 
 .submit-button-7:hover {
-    background-color: #1a70c5;
+  background-color: #1a70c5;
 }
 
 /* Question 8 Styles */
 .question-box-8 {
-    position: relative;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    background-color: white;
-    transition: border-color 0.3s ease;
+  position: relative;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  background-color: white;
+  transition: border-color 0.3s ease;
 }
 
 .question-box-8.incorrect-selection {
-    border: 1px solid #e16280;
+  border: 1px solid #e16280;
 }
 
 .question-box-8.partial-correct {
-    border: 1px solid #f7deb5;
+  border: 1px solid #f7deb5;
 }
 
 .question-box-8.correct {
-    border: 1px solid #54d3ab;
+  border: 1px solid #54d3ab;
 }
 
 .question-number-label-8 {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    padding: 5px 15px;
-    border-radius: 0 0 0 5px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #1d7fe2;
+  color: white;
+  font-size: 14px;
+  padding: 5px 15px;
+  border-radius: 0 0 0 5px;
 }
 
 .mark-counter-8 {
-    position: absolute;
-    bottom: 11px;
-    left: 40px;
-    font-size: 15.5px;
-    color: #555;
-    border: 1px solid #1d7fe2;
-    padding: 6px 16px;
-    height: 30px;
-    line-height: 18px;
-    border-radius: 5px;
-    letter-spacing: 2px;
-    background-color: transparent;
-    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  position: absolute;
+  bottom: 11px;
+  left: 40px;
+  font-size: 15.5px;
+  color: #555;
+  border: 1px solid #1d7fe2;
+  padding: 6px 16px;
+  height: 30px;
+  line-height: 18px;
+  border-radius: 5px;
+  letter-spacing: 2px;
+  background-color: transparent;
+  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
 .mark-counter-8.correct {
-    background-color: #54d3ab !important;
-    color: white !important;
-    border-color: #54d3ab !important;
+  background-color: #54d3ab !important;
+  color: white !important;
+  border-color: #54d3ab !important;
 }
 
 .mark-counter-8.incorrect {
-    background-color: #e16280 !important;
-    color: white !important;
-    border-color: #e16280 !important;
+  background-color: #e16280 !important;
+  color: white !important;
+  border-color: #e16280 !important;
 }
 
 .mark-counter-8.partial-correct {
-    background-color: #f7deb5 !important;
-    color: #555 !important;
-    border-color: #f7deb5 !important;
+  background-color: #f7deb5 !important;
+  color: #555 !important;
+  border-color: #f7deb5 !important;
 }
 
 .question-title-8 {
-    padding-top: 20px;
-    margin-bottom: 32px;
-    text-align: center;
-    font-weight: 350;
-    font-family: "Arial Greek", Arial, sans-serif;
-    color: #464e5a;
-    font-size: 15px !important;
+  padding-top: 20px;
+  margin-bottom: 32px;
+  text-align: center;
+  font-weight: 350;
+  font-family: "Arial Greek", Arial, sans-serif;
+  color: #464e5a;
+  font-size: 15px;
 }
 
 .answer-container-8 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .answer-option-8-1,
 .answer-option-8-2,
 .answer-option-8-3,
 .answer-option-8-4 {
-    width: 80%;
-    max-width: 400px;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: "Arial Greek", Arial, sans-serif !important;
-    font-weight: 350 !important;
-    font-size: 15px !important;
-    cursor: pointer;
-    background-color: white;
-    text-align: center;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
+  width: 80%;
+  max-width: 400px;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: "Arial Greek", Arial, sans-serif !important;
+  font-weight: 350 !important;
+  font-size: 15px !important;
+  cursor: pointer;
+  background-color: white;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .answer-option-8-1.selected,
 .answer-option-8-2.selected,
 .answer-option-8-3.selected,
 .answer-option-8-4.selected {
-    background-color: #1d7fe2;
-    color: #ffffff;
-    border-color: #1d7fe2;
+  background-color: #1d7fe2;
+  color: #ffffff;
+  border-color: #1d7fe2;
 }
 
 .answer-option-8-1.correct-answer,
 .answer-option-8-2.correct-answer,
 .answer-option-8-3.correct-answer,
 .answer-option-8-4.correct-answer {
-    border: 1px solid #54d3ab;
-    box-sizing: border-box;
+  border: 1px solid #54d3ab;
+  box-sizing: border-box;
 }
 
 .answer-option-8-1.correct-answer.selected,
 .answer-option-8-2.correct-answer.selected,
 .answer-option-8-3.correct-answer.selected,
 .answer-option-8-4.correct-answer.selected {
-    background-color: #54d3ab;
-    color: #ffffff;
-    border-color: #54d3ab;
+  background-color: #54d3ab;
+  color: #ffffff;
+  border-color: #54d3ab;
 }
 
 .submit-button-8 {
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    transition: background-color 0.3s ease;
+  background-color: #1d7fe2;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.3s ease;
 }
 
 .submit-button-8:hover {
-    background-color: #1a70c5;
+  background-color: #1a70c5;
 }
 
 /* Question 9 Styles */
 .question-box-9 {
-    position: relative;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    background-color: white;
-    transition: border-color 0.3s ease;
+  position: relative;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  background-color: white;
+  transition: border-color 0.3s ease;
 }
 
 .question-box-9.incorrect-selection {
-    border: 1px solid #e16280;
+  border: 1px solid #e16280;
 }
 
 .question-box-9.partial-correct {
-    border: 1px solid #f7deb5;
+  border: 1px solid #f7deb5;
 }
 
 .question-box-9.correct {
-    border: 1px solid #54d3ab;
+  border: 1px solid #54d3ab;
 }
 
 .question-number-label-9 {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    padding: 5px 15px;
-    border-radius: 0 0 0 5px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #1d7fe2;
+  color: white;
+  font-size: 14px;
+  padding: 5px 15px;
+  border-radius: 0 0 0 5px;
 }
 
 .mark-counter-9 {
-    position: absolute;
-    bottom: 11px;
-    left: 40px;
-    font-size: 15.5px;
-    color: #555;
-    border: 1px solid #1d7fe2;
-    padding: 6px 16px;
-    height: 30px;
-    line-height: 18px;
-    border-radius: 5px;
-    letter-spacing: 2px;
-    background-color: transparent;
-    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  position: absolute;
+  bottom: 11px;
+  left: 40px;
+  font-size: 15.5px;
+  color: #555;
+  border: 1px solid #1d7fe2;
+  padding: 6px 16px;
+  height: 30px;
+  line-height: 18px;
+  border-radius: 5px;
+  letter-spacing: 2px;
+  background-color: transparent;
+  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
 .mark-counter-9.correct {
-    background-color: #54d3ab !important;
-    color: white !important;
-    border-color: #54d3ab !important;
+  background-color: #54d3ab !important;
+  color: white !important;
+  border-color: #54d3ab !important;
 }
 
 .mark-counter-9.incorrect {
-    background-color: #e16280 !important;
-    color: white !important;
-    border-color: #e16280 !important;
+  background-color: #e16280 !important;
+  color: white !important;
+  border-color: #e16280 !important;
 }
 
 .mark-counter-9.partial-correct {
-    background-color: #f7deb5 !important;
-    color: #555 !important;
-    border-color: #f7deb5 !important;
+  background-color: #f7deb5 !important;
+  color: #555 !important;
+  border-color: #f7deb5 !important;
 }
 
 .question-title-9 {
-    padding-top: 20px;
-    margin-bottom: 32px;
-    text-align: center;
-    font-weight: 350;
-    font-family: "Arial Greek", Arial, sans-serif;
-    color: #464e5a;
-    font-size: 15px !important;
+  padding-top: 20px;
+  margin-bottom: 32px;
+  text-align: center;
+  font-weight: 350;
+  font-family: "Arial Greek", Arial, sans-serif;
+  color: #464e5a;
+  font-size: 15px;
 }
 
 .answer-container-9 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .answer-option-9-1,
 .answer-option-9-2,
 .answer-option-9-3,
 .answer-option-9-4 {
-    width: 80%;
-    max-width: 400px;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: "Arial Greek", Arial, sans-serif !important;
-    font-weight: 350 !important;
-    font-size: 15px !important;
-    cursor: pointer;
-    background-color: white;
-    text-align: center;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
+  width: 80%;
+  max-width: 400px;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: "Arial Greek", Arial, sans-serif !important;
+  font-weight: 350 !important;
+  font-size: 15px !important;
+  cursor: pointer;
+  background-color: white;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .answer-option-9-1.selected,
 .answer-option-9-2.selected,
 .answer-option-9-3.selected,
 .answer-option-9-4.selected {
-    background-color: #1d7fe2;
-    color: #ffffff;
-    border-color: #1d7fe2;
+  background-color: #1d7fe2;
+  color: #ffffff;
+  border-color: #1d7fe2;
 }
 
 .answer-option-9-1.correct-answer,
 .answer-option-9-2.correct-answer,
 .answer-option-9-3.correct-answer,
 .answer-option-9-4.correct-answer {
-    border: 1px solid #54d3ab;
-    box-sizing: border-box;
+  border: 1px solid #54d3ab;
+  box-sizing: border-box;
 }
 
 .answer-option-9-1.correct-answer.selected,
 .answer-option-9-2.correct-answer.selected,
 .answer-option-9-3.correct-answer.selected,
 .answer-option-9-4.correct-answer.selected {
-    background-color: #54d3ab;
-    color: #ffffff;
-    border-color: #54d3ab;
+  background-color: #54d3ab;
+  color: #ffffff;
+  border-color: #54d3ab;
 }
 
 .submit-button-9 {
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    transition: background-color 0.3s ease;
+  background-color: #1d7fe2;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.3s ease;
 }
 
 .submit-button-9:hover {
-    background-color: #1a70c5;
+  background-color: #1a70c5;
 }
 
+
+
+  
 /* Question 10 Styles */
 .question-box-10 {
-    position: relative;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    background-color: white;
-    transition: border-color 0.3s ease;
+  position: relative;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  background-color: white;
+  transition: border-color 0.3s ease;
 }
 
 .question-box-10.incorrect-selection {
-    border: 1px solid #e16280;
+  border: 1px solid #e16280;
 }
 
 .question-box-10.partial-correct {
-    border: 1px solid #f7deb5;
+  border: 1px solid #f7deb5;
 }
 
 .question-box-10.correct {
-    border: 1px solid #54d3ab;
+  border: 1px solid #54d3ab;
 }
 
 .question-number-label-10 {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    padding: 5px 15px;
-    border-radius: 0 0 0 5px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #1d7fe2;
+  color: white;
+  font-size: 14px;
+  padding: 5px 15px;
+  border-radius: 0 0 0 5px;
 }
 
 .mark-counter-10 {
-    position: absolute;
-    bottom: 11px;
-    left: 40px;
-    font-size: 15.5px;
-    color: #555;
-    border: 1px solid #1d7fe2;
-    padding: 6px 16px;
-    height: 30px;
-    line-height: 18px;
-    border-radius: 5px;
-    letter-spacing: 2px;
-    background-color: transparent;
-    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  position: absolute;
+  bottom: 11px;
+  left: 40px;
+  font-size: 15.5px;
+  color: #555;
+  border: 1px solid #1d7fe2;
+  padding: 6px 16px;
+  height: 30px;
+  line-height: 18px;
+  border-radius: 5px;
+  letter-spacing: 2px;
+  background-color: transparent;
+  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
 .mark-counter-10.correct {
-    background-color: #54d3ab !important;
-    color: white !important;
-    border-color: #54d3ab !important;
+  background-color: #54d3ab !important;
+  color: white !important;
+  border-color: #54d3ab !important;
 }
 
 .mark-counter-10.incorrect {
-    background-color: #e16280 !important;
-    color: white !important;
-    border-color: #e16280 !important;
+  background-color: #e16280 !important;
+  color: white !important;
+  border-color: #e16280 !important;
 }
 
 .mark-counter-10.partial-correct {
-    background-color: #f7deb5 !important;
-    color: #555 !important;
-    border-color: #f7deb5 !important;
+  background-color: #f7deb5 !important;
+  color: #555 !important;
+  border-color: #f7deb5 !important;
 }
 
 .question-title-10 {
-    padding-top: 20px;
-    margin-bottom: 32px;
-    text-align: center;
-    font-weight: 350;
-    font-family: "Arial Greek", Arial, sans-serif;
-    color: #464e5a;
-    font-size: 15px !important;
+  padding-top: 20px;
+  margin-bottom: 32px;
+  text-align: center;
+  font-weight: 350;
+  font-family: "Arial Greek", Arial, sans-serif;
+  color: #464e5a;
+  font-size: 15px;
 }
 
 .answer-container-10 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .answer-option-10-1,
 .answer-option-10-2,
 .answer-option-10-3,
 .answer-option-10-4 {
-    width: 80%;
-    max-width: 400px;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: "Arial Greek", Arial, sans-serif !important;
-    font-weight: 350 !important;
-    font-size: 15px !important;
-    cursor: pointer;
-    background-color: white;
-    text-align: center;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
+  width: 80%;
+  max-width: 400px;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: "Arial Greek", Arial, sans-serif !important;
+  font-weight: 350 !important;
+  font-size: 15px !important;
+  cursor: pointer;
+  background-color: white;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .answer-option-10-1.selected,
 .answer-option-10-2.selected,
 .answer-option-10-3.selected,
 .answer-option-10-4.selected {
-    background-color: #1d7fe2;
-    color: #ffffff;
-    border-color: #1d7fe2;
+  background-color: #1d7fe2;
+  color: #ffffff;
+  border-color: #1d7fe2;
 }
 
 .answer-option-10-1.correct-answer,
 .answer-option-10-2.correct-answer,
 .answer-option-10-3.correct-answer,
-.answer-option-10-10-4.correct-answer {
-    border: 1px solid #54d3ab;
-    box-sizing: border-box;
+.answer-option-10-4.correct-answer {
+  border: 1px solid #54d3ab;
+  box-sizing: border-box;
 }
 
 .answer-option-10-1.correct-answer.selected,
 .answer-option-10-2.correct-answer.selected,
 .answer-option-10-3.correct-answer.selected,
 .answer-option-10-4.correct-answer.selected {
-    background-color: #54d3ab;
-    color: #ffffff;
-    border-color: #54d3ab;
+  background-color: #54d3ab;
+  color: #ffffff;
+  border-color: #54d3ab;
 }
 
 .submit-button-10 {
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    transition: background-color 0.3s ease;
+  background-color: #1d7fe2;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.3s ease;
 }
 
 .submit-button-10:hover {
-    background-color: #1a70c5;
+  background-color: #1a70c5;
 }  
   
   
@@ -2211,35 +2216,9 @@ color:var(--muted);
   
   
   
-  
-  
-  
-  
-  
-  
-  
-/* Make all answer options use the same font as question titles - applies to both desktop and iPhone */
-.answer-option-1-1,
-.answer-option-1-2,
-.answer-option-1-3,
-.answer-option-2-1,
-.answer-option-2-2,
-.answer-option-2-3,
-.answer-option-3-1,
-.answer-option-3-2,
-.answer-option-3-3,
-.answer-option-3-4,
-.answer-option-4-1,
-.answer-option-4-2,
-.answer-option-4-3,
-.answer-option-4-4,
-.answer-option-5-1,
-.answer-option-5-2,
-.answer-option-5-3,
-.answer-option-5-4,
-.answer-option-6-1,
-.answer-option-6-2,
-.answer-option-6-3
+
+/* Update global answer option font styles to include questions 7-10 */
+/* Complete the answer option font styles for questions 7-10 */
 .answer-option-7-1,
 .answer-option-7-2,
 .answer-option-7-3,
@@ -2261,20 +2240,62 @@ color:var(--muted);
     font-size: 15px !important;
 }
 
+/* Update question title sizes for questions 7-10 */
+.question-title-7,
+.question-title-8,
+.question-title-9,
+.question-title-10 {
+    font-size: 15px !important;
+}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+/* Make all answer options use the same font as question titles - applies to both desktop and iPhone */
+.answer-option-1-1,
+.answer-option-1-2,
+.answer-option-1-3,
+.answer-option-1-4,
+.answer-option-2-1,
+.answer-option-2-2,
+.answer-option-2-3,
+.answer-option-2-4,
+.answer-option-3-1,
+.answer-option-3-2,
+.answer-option-3-3,
+.answer-option-3-4,
+.answer-option-4-1,
+.answer-option-4-2,
+.answer-option-4-3,
+.answer-option-4-4,
+.answer-option-5-1,
+.answer-option-5-2,
+.answer-option-5-3,
+.answer-option-5-4,
+.answer-option-6-1,
+.answer-option-6-2,
+.answer-option-6-3,
+.answer-option-6-4 {
+    font-family: "Arial Greek", Arial, sans-serif !important;
+    font-weight: 350 !important;
+    font-size: 15px !important;
+}
+
 /* Make all question titles slightly smaller */
 .question-title-1,
 .question-title-2,
 .question-title-3,
 .question-title-4,
 .question-title-5,
-.question-title-6
-.question-title-7,
-.question-title-8,
-.question-title-9,
-.question-title-10 
-  {
+.question-title-6 {
     font-size: 15px !important;  /* Slightly smaller - adjust as needed */
 }
+  
   
   
   
@@ -3157,13 +3178,14 @@ color:var(--muted);
 </a>
   
   
+<!-- LECTURE OBJECTIVE BOX -->
 <div class="lecture-objective-box">
     <div class="objective-content-wrapper">
-        <h1 class="lecture-objective-title">Error Intervals and Bounds and Truncation</h1>
+        <h1 class="lecture-objective-title">Error Intervals</h1>
         <div class="lecture-objective-content">
             <p style="margin: 0 0 8px 0; font-weight: 600; color: #0b2546;">Lecture Objective:</p>
             <ul class="lecture-objective-list">
-                <li>Master the full principles of Error Intervals, Bounds and how to truncate Numbers</li>
+                <li>Master the principles of determining and interpreting error intervals from rounded and truncated values.</li>
             </ul>
         </div>
     </div>
@@ -3173,7 +3195,7 @@ color:var(--muted);
 <!-- Video Container -->
 <div class="video-container">
     <iframe 
-        src="https://www.youtube-nocookie.com/embed/YOUR_YOUTUBE_VIDEO_ID_HERE" 
+        src="https://www.youtube-nocookie.com/embed/YOUR_NEW_VIDEO_ID_HERE" 
         frameborder="0" 
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
         allowfullscreen>
@@ -3339,196 +3361,229 @@ color:var(--muted);
   
   
   
-  
-<!-- HTML - Question 1 -->
+
+
+</script>
+
+<!-- QUESTION 1 - Correct Answer: 24.5 ≤ x < 25.5 (option3) -->
 <div class="question-box-1" id="question-box-1">
 <div class="question-number-label-1">Q1 of 10</div>
 <div class="mark-counter-1" id="mark-counter-1">0/1</div>
 <div class="question-title-1">
-A number is rounded to 30 to the nearest 10. What is the lower bound?
+A length x is measured as 25 cm to the nearest centimetre.<br>Write down the error interval for x.
 </div>
 <div class="answer-container-1">
-<button class="answer-option-1-1" onclick="toggleSingleAnswer1('option1', this)">20</button>
-<button class="answer-option-1-2" onclick="toggleSingleAnswer1('option2', this)">25</button>
-<button class="answer-option-1-3" onclick="toggleSingleAnswer1('option3', this)">29</button>
-<button class="answer-option-1-4" onclick="toggleSingleAnswer1('option4', this)">30</button>
+<button class="answer-option-1-1" onclick="toggleSingleAnswer1('option1', this)">24 ≤ x < 26</button>
+<button class="answer-option-1-2" onclick="toggleSingleAnswer1('option2', this)">25 ≤ x < 26</button>
+<button class="answer-option-1-3" onclick="toggleSingleAnswer1('option3', this)" data-correct="true">24.5 ≤ x < 25.5</button>
+<button class="answer-option-1-4" onclick="toggleSingleAnswer1('option4', this)">24.5 ≤ x ≤ 25.5</button>
 </div>
 <button class="submit-button-1" id="submit-button-1" onclick="submitAnswer1()">Submit</button>
 </div>
 
-<!-- HTML - Question 2 -->
+<!-- QUESTION 2 - Correct Answer: 7.25 ≤ m < 7.35 (option1) -->
 <div class="question-box-2" id="question-box-2">
 <div class="question-number-label-2">Q2 of 10</div>
 <div class="mark-counter-2" id="mark-counter-2">0/1</div>
 <div style="height: 15px;"></div>
 <div class="question-title-2">
-A number is rounded to 50 to the nearest 10. What is the upper bound?
+A mass m is recorded as 7.3 kg to 1 decimal place.<br>Write down the error interval for m.
 </div>
 <div class="answer-container-2">
-<button class="answer-option-2-1" onclick="toggleSingleAnswer2('option1', this)">50</button>
-<button class="answer-option-2-2" onclick="toggleSingleAnswer2('option2', this)">54</button>
-<button class="answer-option-2-3" onclick="toggleSingleAnswer2('option3', this)">55</button>
-<button class="answer-option-2-4" onclick="toggleSingleAnswer2('option4', this)">60</button>
+<button class="answer-option-2-1" onclick="toggleSingleAnswer2('option1', this)" data-correct="true">7.25 ≤ m < 7.35</button>
+<button class="answer-option-2-2" onclick="toggleSingleAnswer2('option2', this)">7.2 ≤ m < 7.4</button>
+<button class="answer-option-2-3" onclick="toggleSingleAnswer2('option3', this)">7.3 ≤ m < 7.4</button>
+<button class="answer-option-2-4" onclick="toggleSingleAnswer2('option4', this)">7.25 ≤ m ≤ 7.35</button>
 </div>
 <button class="submit-button-2" id="submit-button-2" onclick="submitAnswer2()">Submit</button>
 </div>
 
-<!-- HTML - Question 3 -->
+<!-- QUESTION 3 - Correct Answer: 8.4 ≤ t < 8.5 (option4) -->
 <div class="question-box-3" id="question-box-3">
 <div class="question-number-label-3">Q3 of 10</div>
 <div class="mark-counter-3" id="mark-counter-3">0/1</div>
 <div style="height: 15px;"></div>
 <div class="question-title-3">
-A number is rounded to 8.3 to 1 decimal place. What is the lower bound?
+A time t is truncated to 8.4 seconds.<br>Write down the error interval for t.
 </div>
 <div class="answer-container-3">
-<button class="answer-option-3-1" onclick="toggleSingleAnswer3('option1', this)">8.2</button>
-<button class="answer-option-3-2" onclick="toggleSingleAnswer3('option2', this)">8.25</button>
-<button class="answer-option-3-3" onclick="toggleSingleAnswer3('option3', this)">8.29</button>
-<button class="answer-option-3-4" onclick="toggleSingleAnswer3('option4', this)">8.3</button>
+<button class="answer-option-3-1" onclick="toggleSingleAnswer3('option1', this)">8.35 ≤ t < 8.45</button>
+<button class="answer-option-3-2" onclick="toggleSingleAnswer3('option2', this)">8.4 ≤ t ≤ 8.5</button>
+<button class="answer-option-3-3" onclick="toggleSingleAnswer3('option3', this)">8.3 ≤ t < 8.5</button>
+<button class="answer-option-3-4" onclick="toggleSingleAnswer3('option4', this)" data-correct="true">8.4 ≤ t < 8.5</button>
 </div>
 <button class="submit-button-3" id="submit-button-3" onclick="submitAnswer3()">Submit</button>
 </div>
 
-<!-- HTML - Question 4 -->
+<!-- QUESTION 4 - Correct Answer: 335 ≤ d < 345 (option2) -->
 <div class="question-box-4" id="question-box-4">
 <div class="question-number-label-4">Q4 of 10</div>
 <div class="mark-counter-4" id="mark-counter-4">0/1</div>
 <div style="height: 15px;"></div>
 <div class="question-title-4">
-A number is rounded to 6.4 to 1 decimal place. What is the upper bound?
+A distance d is given as 340 m to 2 significant figures.<br>Write down the error interval for d.
 </div>
 <div class="answer-container-4">
-<button class="answer-option-4-1" onclick="toggleSingleAnswer4('option1', this)">6.4</button>
-<button class="answer-option-4-2" onclick="toggleSingleAnswer4('option2', this)">6.44</button>
-<button class="answer-option-4-3" onclick="toggleSingleAnswer4('option3', this)">6.45</button>
-<button class="answer-option-4-4" onclick="toggleSingleAnswer4('option4', this)">6.5</button>
+<button class="answer-option-4-1" onclick="toggleSingleAnswer4('option1', this)">330 ≤ d < 350</button>
+<button class="answer-option-4-2" onclick="toggleSingleAnswer4('option2', this)" data-correct="true">335 ≤ d < 345</button>
+<button class="answer-option-4-3" onclick="toggleSingleAnswer4('option3', this)">340 ≤ d < 350</button>
+<button class="answer-option-4-4" onclick="toggleSingleAnswer4('option4', this)">335 ≤ d ≤ 345</button>
 </div>
 <button class="submit-button-4" id="submit-button-4" onclick="submitAnswer4()">Submit</button>
 </div>
 
-<!-- HTML - Question 5 -->
+<!-- QUESTION 5 - Correct Answer: 12.5 ≤ w < 13.5 (option3) -->
 <div class="question-box-5" id="question-box-5">
 <div class="question-number-label-5">Q5 of 10</div>
 <div class="mark-counter-5" id="mark-counter-5">0/1</div>
 <div style="height: 15px;"></div>
 <div class="question-title-5">
-Write the error interval for x = 70 (to nearest 10)
+A weight w is 13 kg to the nearest kilogram.<br>Write down the error interval for w.
 </div>
 <div class="answer-container-5">
-<button class="answer-option-5-1" onclick="toggleSingleAnswer5('option1', this)">60 ≤ x < 80</button>
-<button class="answer-option-5-2" onclick="toggleSingleAnswer5('option2', this)">65 < x ≤ 75</button>
-<button class="answer-option-5-3" onclick="toggleSingleAnswer5('option3', this)">65 ≤ x < 75</button>
-<button class="answer-option-5-4" onclick="toggleSingleAnswer5('option4', this)">65 < x < 75</button>
+<button class="answer-option-5-1" onclick="toggleSingleAnswer5('option1', this)">12 ≤ w < 14</button>
+<button class="answer-option-5-2" onclick="toggleSingleAnswer5('option2', this)">13 ≤ w < 14</button>
+<button class="answer-option-5-3" onclick="toggleSingleAnswer5('option3', this)" data-correct="true">12.5 ≤ w < 13.5</button>
+<button class="answer-option-5-4" onclick="toggleSingleAnswer5('option4', this)">12.5 ≤ w ≤ 13.5</button>
 </div>
 <button class="submit-button-5" id="submit-button-5" onclick="submitAnswer5()">Submit</button>
 </div>
 
-<!-- HTML - Question 6 -->
+<!-- QUESTION 6 - Correct Answer: 5.6 ≤ h < 5.7 (option1) -->
 <div class="question-box-6" id="question-box-6">
 <div class="question-number-label-6">Q6 of 10</div>
 <div class="mark-counter-6" id="mark-counter-6">0/1</div>
 <div style="height: 15px;"></div>
 <div class="question-title-6">
-Write the error interval for y = 4.2 (to 1 d.p.)
+A height h is truncated to 5.6 m.<br>Write down the error interval for h.
 </div>
 <div class="answer-container-6">
-<button class="answer-option-6-1" onclick="toggleSingleAnswer6('option1', this)">4.1 ≤ y < 4.3</button>
-<button class="answer-option-6-2" onclick="toggleSingleAnswer6('option2', this)">4.15 < y < 4.25</button>
-<button class="answer-option-6-3" onclick="toggleSingleAnswer6('option3', this)">4.15 ≤ y < 4.25</button>
-<button class="answer-option-6-4" onclick="toggleSingleAnswer6('option4', this)">4.2 ≤ y < 4.3</button>
+<button class="answer-option-6-1" onclick="toggleSingleAnswer6('option1', this)" data-correct="true">5.6 ≤ h < 5.7</button>
+<button class="answer-option-6-2" onclick="toggleSingleAnswer6('option2', this)">5.55 ≤ h < 5.65</button>
+<button class="answer-option-6-3" onclick="toggleSingleAnswer6('option3', this)">5.6 ≤ h ≤ 5.7</button>
+<button class="answer-option-6-4" onclick="toggleSingleAnswer6('option4', this)">5.5 ≤ h < 5.7</button>
 </div>
 <button class="submit-button-6" id="submit-button-6" onclick="submitAnswer6()">Submit</button>
 </div>
 
-<!-- HTML - Question 7 -->
+<!-- QUESTION 7 - Correct Answer: 4500 ≤ p < 5500 (option4) -->
 <div class="question-box-7" id="question-box-7">
 <div class="question-number-label-7">Q7 of 10</div>
 <div class="mark-counter-7" id="mark-counter-7">0/1</div>
 <div style="height: 15px;"></div>
 <div class="question-title-7">
-Truncate 5.8947 to 2 decimal places
+A population p is given as 5000 to 1 significant figure.<br>Write down the error interval for p.
 </div>
 <div class="answer-container-7">
-<button class="answer-option-7-1" onclick="toggleSingleAnswer7('option1', this)">5.89</button>
-<button class="answer-option-7-2" onclick="toggleSingleAnswer7('option2', this)">5.90</button>
-<button class="answer-option-7-3" onclick="toggleSingleAnswer7('option3', this)">5.894</button>
-<button class="answer-option-7-4" onclick="toggleSingleAnswer7('option4', this)">5.9</button>
+<button class="answer-option-7-1" onclick="toggleSingleAnswer7('option1', this)">4000 ≤ p < 6000</button>
+<button class="answer-option-7-2" onclick="toggleSingleAnswer7('option2', this)">4950 ≤ p < 5050</button>
+<button class="answer-option-7-3" onclick="toggleSingleAnswer7('option3', this)">5000 ≤ p < 6000</button>
+<button class="answer-option-7-4" onclick="toggleSingleAnswer7('option4', this)" data-correct="true">4500 ≤ p < 5500</button>
 </div>
 <button class="submit-button-7" id="submit-button-7" onclick="submitAnswer7()">Submit</button>
 </div>
 
-<!-- HTML - Question 8 -->
+<!-- QUESTION 8 - Correct Answer: 12.345 ≤ v < 12.355 (option2) -->
 <div class="question-box-8" id="question-box-8">
 <div class="question-number-label-8">Q8 of 10</div>
 <div class="mark-counter-8" id="mark-counter-8">0/1</div>
 <div style="height: 15px;"></div>
 <div class="question-title-8">
-Truncate 12.3786 to 1 decimal place
+A volume v is measured as 12.35 cm³ to 2 decimal places.<br>Write down the error interval for v.
 </div>
 <div class="answer-container-8">
-<button class="answer-option-8-1" onclick="toggleSingleAnswer8('option1', this)">12.3</button>
-<button class="answer-option-8-2" onclick="toggleSingleAnswer8('option2', this)">12.4</button>
-<button class="answer-option-8-3" onclick="toggleSingleAnswer8('option3', this)">12.37</button>
-<button class="answer-option-8-4" onclick="toggleSingleAnswer8('option4', this)">12.38</button>
+<button class="answer-option-8-1" onclick="toggleSingleAnswer8('option1', this)">12.3 ≤ v < 12.4</button>
+<button class="answer-option-8-2" onclick="toggleSingleAnswer8('option2', this)" data-correct="true">12.345 ≤ v < 12.355</button>
+<button class="answer-option-8-3" onclick="toggleSingleAnswer8('option3', this)">12.34 ≤ v < 12.36</button>
+<button class="answer-option-8-4" onclick="toggleSingleAnswer8('option4', this)">12.345 ≤ v ≤ 12.355</button>
 </div>
 <button class="submit-button-8" id="submit-button-8" onclick="submitAnswer8()">Submit</button>
 </div>
 
-<!-- HTML - Question 9 -->
+<!-- QUESTION 9 - Correct Answer: 45 ≤ A < 55 (option3) -->
 <div class="question-box-9" id="question-box-9">
 <div class="question-number-label-9">Q9 of 10</div>
 <div class="mark-counter-9" id="mark-counter-9">0/1</div>
 <div style="height: 15px;"></div>
 <div class="question-title-9">
-A number is rounded to 300 to the nearest 100. Write the error interval.
+The area A of a rectangle is 50 cm² to the nearest 10 cm².<br>Work out the error interval for A.
+</div>
+<!-- DIAGRAM -->
+<div style="text-align: center; margin: 20px 0 25px 0;">
+<svg width="200" height="140" viewBox="0 0 200 140" style="border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc;">
+  <!-- Rectangle -->
+  <rect x="40" y="40" width="120" height="60" fill="#e8f4ff" stroke="#0b2546" stroke-width="2"/>
+  
+  <!-- Area label (center) -->
+  <text x="100" y="75" font-size="16" fill="#0b2546" text-anchor="middle" font-family="Arial" font-weight="600">Area = 50 cm²</text>
+  
+  <!-- Note -->
+  <text x="100" y="120" font-size="12" fill="#6b7280" text-anchor="middle" font-family="Arial">(to nearest 10 cm²)</text>
+</svg>
 </div>
 <div class="answer-container-9">
-<button class="answer-option-9-1" onclick="toggleSingleAnswer9('option1', this)">200 ≤ x < 400</button>
-<button class="answer-option-9-2" onclick="toggleSingleAnswer9('option2', this)">250 < x < 350</button>
-<button class="answer-option-9-3" onclick="toggleSingleAnswer9('option3', this)">250 ≤ x < 350</button>
-<button class="answer-option-9-4" onclick="toggleSingleAnswer9('option4', this)">299 ≤ x < 301</button>
+<button class="answer-option-9-1" onclick="toggleSingleAnswer9('option1', this)">40 ≤ A < 60</button>
+<button class="answer-option-9-2" onclick="toggleSingleAnswer9('option2', this)">49.5 ≤ A < 50.5</button>
+<button class="answer-option-9-3" onclick="toggleSingleAnswer9('option3', this)" data-correct="true">45 ≤ A < 55</button>
+<button class="answer-option-9-4" onclick="toggleSingleAnswer9('option4', this)">45 ≤ A ≤ 55</button>
 </div>
 <button class="submit-button-9" id="submit-button-9" onclick="submitAnswer9()">Submit</button>
 </div>
 
-<!-- HTML - Question 10 -->
+<!-- QUESTION 10 - Correct Answer: 7.5 (option1) -->
 <div class="question-box-10" id="question-box-10">
 <div class="question-number-label-10">Q10 of 10</div>
 <div class="mark-counter-10" id="mark-counter-10">0/1</div>
 <div style="height: 15px;"></div>
 <div class="question-title-10">
-A rectangle has length 8.4 cm (to 1 d.p.) and width 5.2 cm (to 1 d.p.). What is the maximum possible area?
+A length l is given as 8 cm to the nearest cm.<br>Another length p is truncated to 3 cm.<br>What is the minimum possible value of l - p?
+</div>
+<!-- DIAGRAM -->
+<div style="text-align: center; margin: 20px 0 25px 0;">
+<svg width="280" height="180" viewBox="0 0 280 180" style="border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc;">
+  <!-- First line (l) -->
+  <line x1="40" y1="50" x2="200" y2="50" stroke="#0b2546" stroke-width="3"/>
+  <line x1="40" y1="45" x2="40" y2="55" stroke="#0b2546" stroke-width="2"/>
+  <line x1="200" y1="45" x2="200" y2="55" stroke="#0b2546" stroke-width="2"/>
+  <text x="120" y="40" font-size="14" fill="#0b2546" text-anchor="middle" font-family="Arial" font-weight="600">l = 8 cm</text>
+  <text x="120" y="70" font-size="11" fill="#6b7280" text-anchor="middle" font-family="Arial">(to nearest cm)</text>
+  
+  <!-- Second line (p) -->
+  <line x1="40" y1="120" x2="130" y2="120" stroke="#e16280" stroke-width="3"/>
+  <line x1="40" y1="115" x2="40" y2="125" stroke="#e16280" stroke-width="2"/>
+  <line x1="130" y1="115" x2="130" y2="125" stroke="#e16280" stroke-width="2"/>
+  <text x="85" y="110" font-size="14" fill="#e16280" text-anchor="middle" font-family="Arial" font-weight="600">p = 3 cm</text>
+  <text x="85" y="140" font-size="11" fill="#6b7280" text-anchor="middle" font-family="Arial">(truncated)</text>
+  
+  <!-- Question -->
+  <text x="140" y="165" font-size="13" fill="#0b2546" text-anchor="middle" font-family="Arial" font-style="italic">Find minimum of (l - p)</text>
+</svg>
 </div>
 <div class="answer-container-10">
-<button class="answer-option-10-1" onclick="toggleSingleAnswer10('option1', this)">43.68 cm²</button>
-<button class="answer-option-10-2" onclick="toggleSingleAnswer10('option2', this)">44.1875 cm²</button>
-<button class="answer-option-10-3" onclick="toggleSingleAnswer10('option3', this)">43.875 cm²</button>
-<button class="answer-option-10-4" onclick="toggleSingleAnswer10('option4', this)">44.0 cm²</button>
+<button class="answer-option-10-1" onclick="toggleSingleAnswer10('option1', this)" data-correct="true">4.5 cm</button>
+<button class="answer-option-10-2" onclick="toggleSingleAnswer10('option2', this)">4 cm</button>
+<button class="answer-option-10-3" onclick="toggleSingleAnswer10('option3', this)">5 cm</button>
+<button class="answer-option-10-4" onclick="toggleSingleAnswer10('option4', this)">3.5 cm</button>
 </div>
 <button class="submit-button-10" id="submit-button-10" onclick="submitAnswer10()">Submit</button>
 </div>
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
 
 
   <script>
 
 
-// Results tracking - Updated for partial marks
 let resultsTracker = {
     correct: 0,
     partial: 0,
     incorrect: 0,
-    unanswered: 10,
-    totalQuestions: 10,
+    unanswered: 10,  // Changed to 10
+    totalQuestions: 10,  // Changed to 10
     totalMarksEarned: 0,
-    totalMarksPossible: 10
+    totalMarksPossible: 10  // Changed to 10
 };
 
 function updateResultsSummary() {
@@ -3665,166 +3720,143 @@ document.addEventListener('DOMContentLoaded', function() {
     
 const DATA = {
   1: {
-    label: 'Lower Bounds',
+    label: 'Basic error intervals',
     steps: [
       {
-        text: 'A number is rounded to 50 to the nearest 10. Find the lower bound.',
-        sub: '',
+        text: 'Problem: A length is 15 cm to the nearest cm. Write the error interval.',
+        sub: 'Find the range of values that round to 15 cm',
         svgAction: 'showQuestion',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_1_TYPE_1'
+        imageUrl: 'https://i.postimg.cc/error-q1-step1.jpg'
       },
       {
-        text: 'Understand rounding to nearest 10',
-        sub: 'When rounding to nearest 10, we look at numbers within 5 either side.',
+        text: 'Identify the degree of accuracy',
+        sub: 'Rounded to nearest cm means ±0.5 cm',
         svgAction: 'showFactorLists',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_2_TYPE_1'
+        imageUrl: 'https://i.postimg.cc/error-q1-step2.jpg'
       },
       {
-        text: 'Identify the range',
-        sub: 'Numbers from 45 up to (but not including) 55 round to 50.',
+        text: 'Calculate lower and upper bounds',
+        sub: 'Lower: 15 - 0.5 = 14.5 cm, Upper: 15 + 0.5 = 15.5 cm',
         svgAction: 'showSecondNumber',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_3_TYPE_1'
+        imageUrl: 'https://i.postimg.cc/error-q1-step3.jpg'
       },
       {
-        text: 'Find the lower bound',
-        sub: 'The lower bound is the smallest value that rounds to 50.',
-        svgAction: 'highlightCommonFactors',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_4_TYPE_1'
-      },
-      {
-        text: 'Write the answer',
-        sub: 'Lower bound = 45',
+        text: 'Write the error interval using inequality notation',
+        sub: '14.5 ≤ length < 15.5',
         svgAction: 'showHCF',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_5_TYPE_1',
+        imageUrl: 'https://i.postimg.cc/error-q1-step4.jpg',
         endSlide: {
-          text: 'Answer: 45',
-          sub: 'The lower bound is always included!'
+          text: 'Answer: 14.5 ≤ length < 15.5',
+          sub: 'Lower bound is inclusive (≥), upper bound is exclusive (<)'
         }
       }
     ]
   },
 
   2: {
-    label: 'Upper Bounds',
+    label: 'Decimal place accuracy',
     steps: [
       {
-        text: 'A number is rounded to 7.2 to 1 decimal place. Find the upper bound.',
-        sub: '',
+        text: 'Problem: A mass is 7.3 kg to 1 d.p. Write the error interval.',
+        sub: 'Find bounds for values rounded to 1 decimal place',
         svgAction: 'showQuestion2',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_1_TYPE_2'
+        imageUrl: 'https://i.postimg.cc/error-q2-step1.jpg'
       },
       {
-        text: 'Understand decimal place rounding',
-        sub: 'When rounding to 1 d.p., we look at the second decimal place.',
+        text: 'Identify the degree of accuracy',
+        sub: '1 d.p. means ±0.05',
         svgAction: 'isolate',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_2_TYPE_2'
+        imageUrl: 'https://i.postimg.cc/error-q2-step2.jpg'
       },
       {
-        text: 'Identify the range',
-        sub: 'Numbers from 7.15 up to (but not including) 7.25 round to 7.2.',
+        text: 'Calculate the bounds',
+        sub: 'Lower: 7.3 - 0.05 = 7.25, Upper: 7.3 + 0.05 = 7.35',
+        svgAction: 'isolate',
+        imageUrl: 'https://i.postimg.cc/error-q2-step3.jpg'
+      },
+      {
+        text: 'Write the error interval',
+        sub: '7.25 ≤ mass < 7.35',
         svgAction: 'finalOk',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_3_TYPE_2'
-      },
-      {
-        text: 'Find the upper bound',
-        sub: 'The upper bound is the largest value before it rounds up to 7.3.',
-        svgAction: 'verifyAnswer',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_4_TYPE_2'
-      },
-      {
-        text: 'Write the answer',
-        sub: 'Upper bound = 7.25',
-        svgAction: 'showFinalAnswer',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_5_TYPE_2',
+        imageUrl: 'https://i.postimg.cc/error-q2-step4.jpg',
         endSlide: {
-          text: 'Answer: 7.25',
-          sub: 'Upper bound is NOT included in the range!'
+          text: 'Answer: 7.25 ≤ mass < 7.35',
+          sub: 'Always use ≤ for lower bound and < for upper bound'
         }
       }
     ]
   },
 
   3: {
-    label: 'Error Intervals',
+    label: 'Truncated values',
     steps: [
       {
-        text: 'Write the error interval for x = 40 (nearest 10)',
-        sub: '',
+        text: 'Problem: A value is truncated to 8.4. Write the error interval.',
+        sub: 'Truncation removes digits without rounding',
         svgAction: 'showQuestion',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_1_TYPE_3'
+        imageUrl: 'https://i.postimg.cc/error-q3-step1.jpg'
       },
       {
-        text: 'Find lower bound',
-        sub: 'Lower bound = 35 (included)',
+        text: 'Understand truncation bounds',
+        sub: 'Lower bound is the value itself: 8.4',
         svgAction: 'showFactorLists',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_2_TYPE_3'
+        imageUrl: 'https://i.postimg.cc/error-q3-step2.jpg'
       },
       {
-        text: 'Find upper bound',
-        sub: 'Upper bound = 45 (not included)',
+        text: 'Find the upper bound',
+        sub: 'Upper bound is 8.5 (next value in the sequence)',
         svgAction: 'showSecondNumber',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_3_TYPE_3'
+        imageUrl: 'https://i.postimg.cc/error-q3-step3.jpg'
       },
       {
-        text: 'Write using inequality notation',
-        sub: 'Use ≤ for lower (included) and < for upper (not included)',
-        svgAction: 'highlightCommonFactors',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_4_TYPE_3'
-      },
-      {
-        text: 'Complete the error interval',
-        sub: '35 ≤ x < 45',
+        text: 'Write the error interval',
+        sub: '8.4 ≤ value < 8.5',
         svgAction: 'showHCF',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_5_TYPE_3',
+        imageUrl: 'https://i.postimg.cc/error-q3-step4.jpg',
         endSlide: {
-          text: 'Answer: 35 ≤ x < 45',
-          sub: 'Lower bound uses ≤, upper bound uses <'
+          text: 'Answer: 8.4 ≤ value < 8.5',
+          sub: 'For truncation, lower bound equals the truncated value'
         }
       }
     ]
   },
 
   4: {
-    label: 'Truncation',
+    label: 'Significant figures',
     steps: [
       {
-        text: 'Truncate 8.7364 to 2 decimal places',
-        sub: '',
-        svgAction: 'showQuestion',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_1_TYPE_4'
+        text: 'Problem: A distance is 340 m to 2 s.f. Write the error interval.',
+        sub: 'Find bounds for 2 significant figures',
+        svgAction: 'showQuestion2',
+        imageUrl: 'https://i.postimg.cc/error-q4-step1.jpg'
       },
       {
-        text: 'Understand truncation',
-        sub: 'Truncation means cutting off digits without rounding.',
-        svgAction: 'showFactorLists',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_2_TYPE_4'
+        text: 'Identify the degree of accuracy',
+        sub: '2 s.f. means the last significant digit is in the tens place',
+        svgAction: 'isolate',
+        imageUrl: 'https://i.postimg.cc/error-q4-step2.jpg'
       },
       {
-        text: 'Count decimal places',
-        sub: 'We need 2 decimal places: 8.73...',
-        svgAction: 'showSecondNumber',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_3_TYPE_4'
+        text: 'Calculate the bounds',
+        sub: 'Lower: 340 - 5 = 335, Upper: 340 + 5 = 345',
+        svgAction: 'isolate',
+        imageUrl: 'https://i.postimg.cc/error-q4-step3.jpg'
       },
       {
-        text: 'Cut off remaining digits',
-        sub: 'Simply remove all digits after the 2nd decimal place.',
-        svgAction: 'highlightCommonFactors',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_4_TYPE_4'
-      },
-      {
-        text: 'Write the truncated number',
-        sub: '8.73',
-        svgAction: 'showHCF',
-        imageUrl: 'YOUR_IMAGE_URL_STEP_5_TYPE_4',
+        text: 'Write the error interval',
+        sub: '335 ≤ distance < 345',
+        svgAction: 'finalOk',
+        imageUrl: 'https://i.postimg.cc/error-q4-step4.jpg',
         endSlide: {
-          text: 'Answer: 8.73',
-          sub: 'Truncation always makes numbers smaller!'
+          text: 'Answer: 335 ≤ distance < 345',
+          sub: 'Half the value of the last significant figure gives ±5'
         }
       }
     ]
   }
 };
-
+    
+    
 const qTypeSelect = document.getElementById('qType');
 const methodLayer = document.getElementById('methodLayer');
 const methodReverse = document.getElementById('methodReverse');
@@ -4319,108 +4351,59 @@ if (document.readyState === 'loading'){
 
 
 
-<!-- JAVASCRIPT - Question 1 -->
-
-// Question 1 Functions
-// Ensure the mark counter shows "0/1" initially
-document.addEventListener('DOMContentLoaded', function() {
-  const markCounter = document.getElementById('mark-counter-1');
-  if (markCounter) {
-    markCounter.textContent = '0/1';
-  }
-});
-
-// Question 1 specific functions with unique names to avoid conflicts
+// ========================================
+// QUESTION 1 - Correct Answer: 24.5 ≤ x < 25.5 (option3)
+// ========================================
 function toggleSingleAnswer1(answer, button) {
   const questionBox = document.getElementById('question-box-1');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-1"]');
-
-  // First, deselect all the answer buttons
-  allButtons.forEach(btn => {
-    btn.classList.remove('selected');
-  });
-
-  // Now, toggle the 'selected' class on the button that was just clicked
+  allButtons.forEach(btn => btn.classList.remove('selected'));
   button.classList.toggle('selected');
 }
 
-// Helper functions for setting styles directly
-function setCorrectStyles1(markCounter) {
-  // Apply background and text color directly
-  markCounter.style.backgroundColor = '#54d3ab';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#54d3ab';
-}
-
-function setIncorrectStyles1(markCounter) {
-  // Apply background and text color directly
-  markCounter.style.backgroundColor = '#e16280';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#e16280';
-}
-
-function resetStyles1(markCounter) {
-  // Clear all styles and set defaults
-  markCounter.style.backgroundColor = 'transparent';
-  markCounter.style.color = '#555';
-  markCounter.style.borderColor = '#1d7fe2';
-}
-
 function submitAnswer1() {
-  // The FIRST button is the correct answer (Brackets)
-  const correctAnswerButton = document.querySelector('.answer-option-1-1'); // Answer: Brackets
   const questionBox = document.getElementById('question-box-1');
+  const correctAnswerButton = questionBox.querySelector('[data-correct="true"]');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-1"].selected');
   const markCounter = document.getElementById('mark-counter-1');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-1"]');
 
-  // Check if correct button was selected
   const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
-  
-  // Set score: 1 if correct, 0 if not
   const yourScore = gotItRight ? 1 : 0;
-
-  // NEW: Determine result type and record answer
   const resultType = yourScore === 1 ? 'correct' : 'incorrect';
   recordAnswer(1, resultType, yourScore, 1);
   
-  // FORCE the mark counter text to "1/1" if correct, "0/1" if incorrect
   markCounter.innerHTML = `${yourScore}/1`;
-  
-  // Reset classes
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
 
-  // Highlight correct answer
   correctAnswerButton.classList.add('correct-answer');
 
-  // Apply styling based on score
   if (yourScore === 1) {
-    setCorrectStyles1(markCounter);
+    markCounter.style.backgroundColor = '#54d3ab';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#54d3ab';
     markCounter.classList.add('correct');
     questionBox.classList.add('correct');
   } else {
-    setIncorrectStyles1(markCounter);
+    markCounter.style.backgroundColor = '#e16280';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#e16280';
     markCounter.classList.add('incorrect');
     questionBox.classList.add('incorrect-selection');
   }
 
-  // Update progress bar
   if (typeof updateProgressSegment === 'function') {
     updateProgressSegment(1);
   }
 
-  // Disable buttons after submission
   allButtons.forEach(button => {
     button.disabled = true;
     button.style.cursor = 'not-allowed';
   });
 
-  // Change submit button to reset
   const submitBtn = document.getElementById('submit-button-1');
   submitBtn.innerText = 'Reset';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     resetQuestion1();
   };
@@ -4433,288 +4416,172 @@ function resetQuestion1() {
   const markCounter = document.getElementById('mark-counter-1');
   const submitBtn = document.getElementById('submit-button-1');
 
-  // Reset progress bar
   if (typeof resetProgressSegment === 'function') {
     resetProgressSegment(1);
   }
 
-  // Reset all the buttons
   buttons.forEach(button => {
     button.classList.remove('selected', 'correct-answer');
     button.disabled = false;
     button.style.cursor = 'pointer';
   });
 
-  // Reset the mark counter to ALWAYS show 0/1
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
-  resetStyles1(markCounter);
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
 
-  // Reset the submit button
   submitBtn.innerText = 'Submit';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     submitAnswer1();
   };
 
-  // Reset the question box classes
   questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-   // Question 2 Functions
-// Ensure the mark counter shows "0/1" initially
-document.addEventListener('DOMContentLoaded', function() {
-  const markCounter = document.getElementById('mark-counter-2');
-  if (markCounter) {
-    markCounter.textContent = '0/1';
-  }
-});
-
-// Question 2 specific functions with unique names to avoid conflicts - following Question 6 pattern
+// ========================================
+// QUESTION 2 - Correct Answer: 7.25 ≤ m < 7.35 (option1)
+// ========================================
 function toggleSingleAnswer2(answer, button) {
   const questionBox = document.getElementById('question-box-2');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-2"]');
-
-  // First, deselect all the answer buttons
-  allButtons.forEach(btn => {
-    btn.classList.remove('selected');
-  });
-
-  // Now, toggle the 'selected' class on the button that was just clicked
+  allButtons.forEach(btn => btn.classList.remove('selected'));
   button.classList.toggle('selected');
 }
 
-// Helper functions for setting styles directly
-function setCorrectStyles2(markCounter) {
-  // Apply background and text color directly
-  markCounter.style.backgroundColor = '#54d3ab';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#54d3ab';
-}
-
-function setIncorrectStyles2(markCounter) {
-  // Apply background and text color directly
-  markCounter.style.backgroundColor = '#e16280';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#e16280';
-}
-
-function resetStyles2(markCounter) {
-  // Clear all styles and set defaults
-  markCounter.style.backgroundColor = 'transparent';
-  markCounter.style.color = '#555';
-  markCounter.style.borderColor = '#1d7fe2';
-}
-
 function submitAnswer2() {
-  // The SECOND button is the correct answer (6) - CHANGED FROM THIRD
-const correctAnswerButton = document.querySelector('.answer-option-2-1'); // Answer: 11
   const questionBox = document.getElementById('question-box-2');
+  const correctAnswerButton = questionBox.querySelector('[data-correct="true"]');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-2"].selected');
   const markCounter = document.getElementById('mark-counter-2');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-2"]');
 
-  // Check if correct button was selected
   const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
-  
-  // Set score: 1 if correct, 0 if not
   const yourScore = gotItRight ? 1 : 0;
   const resultType = yourScore === 1 ? 'correct' : 'incorrect';
   recordAnswer(2, resultType, yourScore, 1);
   
-  // FORCE the mark counter text to "1/1" if correct, "0/1" if incorrect
   markCounter.innerHTML = `${yourScore}/1`;
-  
-  // Reset classes
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
 
-  // Highlight correct answer
   correctAnswerButton.classList.add('correct-answer');
 
-  // Apply styling based on score
   if (yourScore === 1) {
-    setCorrectStyles2(markCounter);
+    markCounter.style.backgroundColor = '#54d3ab';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#54d3ab';
     markCounter.classList.add('correct');
     questionBox.classList.add('correct');
   } else {
-    setIncorrectStyles2(markCounter);
+    markCounter.style.backgroundColor = '#e16280';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#e16280';
     markCounter.classList.add('incorrect');
     questionBox.classList.add('incorrect-selection');
   }
 
-  // Update progress bar
   if (typeof updateProgressSegment === 'function') {
     updateProgressSegment(2);
   }
 
-  // Disable buttons after submission
   allButtons.forEach(button => {
     button.disabled = true;
     button.style.cursor = 'not-allowed';
   });
 
-  // Change submit button to reset
   const submitBtn = document.getElementById('submit-button-2');
   submitBtn.innerText = 'Reset';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     resetQuestion2();
   };
 }
 
 function resetQuestion2() {
-    resetAnswerRecord(2); 
+  resetAnswerRecord(2);
   const questionBox = document.getElementById('question-box-2');
   const buttons = questionBox.querySelectorAll('[class^="answer-option-2"]');
   const markCounter = document.getElementById('mark-counter-2');
   const submitBtn = document.getElementById('submit-button-2');
 
-  // Reset progress bar
   if (typeof resetProgressSegment === 'function') {
     resetProgressSegment(2);
   }
 
-  // Reset all the buttons
   buttons.forEach(button => {
     button.classList.remove('selected', 'correct-answer');
     button.disabled = false;
-    button.style.cursor = 'pointer'; // Ensure cursor is clickable again
+    button.style.cursor = 'pointer';
   });
 
-  // Reset the mark counter to ALWAYS show 0/1
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
-  resetStyles2(markCounter);
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
 
-  // Reset the submit button
   submitBtn.innerText = 'Submit';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     submitAnswer2();
   };
 
-  // Reset the question box classes
   questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Question 3 specific functions with unique names to avoid conflicts - following Question 2 pattern
+// ========================================
+// QUESTION 3 - Correct Answer: 8.4 ≤ t < 8.5 (option4)
+// ========================================
 function toggleSingleAnswer3(answer, button) {
   const questionBox = document.getElementById('question-box-3');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-3"]');
-
-  // First, deselect all the answer buttons
-  allButtons.forEach(btn => {
-    btn.classList.remove('selected');
-  });
-
-  // Now, toggle the 'selected' class on the button that was just clicked
+  allButtons.forEach(btn => btn.classList.remove('selected'));
   button.classList.toggle('selected');
 }
 
-// Helper functions for setting styles directly
-function setCorrectStyles3(markCounter) {
-  // Apply background and text color directly
-  markCounter.style.backgroundColor = '#54d3ab';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#54d3ab';
-}
-
-function setIncorrectStyles3(markCounter) {
-  // Apply background and text color directly
-  markCounter.style.backgroundColor = '#e16280';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#e16280';
-}
-
-function resetStyles3(markCounter) {
-  // Clear all styles and set defaults
-  markCounter.style.backgroundColor = 'transparent';
-  markCounter.style.color = '#555';
-  markCounter.style.borderColor = '#1d7fe2';
-}
-
 function submitAnswer3() {
-  // The correct answer button (following Question 2's pattern of selecting by class)
-const correctAnswerButton = document.querySelector('.answer-option-3-1'); // Answer: 10
   const questionBox = document.getElementById('question-box-3');
+  const correctAnswerButton = questionBox.querySelector('[data-correct="true"]');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-3"].selected');
   const markCounter = document.getElementById('mark-counter-3');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-3"]');
 
-  // Check if correct button was selected
   const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
-  
-  // Set score: 1 if correct, 0 if not
   const yourScore = gotItRight ? 1 : 0;
-const resultType = yourScore === 1 ? 'correct' : 'incorrect';
-recordAnswer(3, resultType, yourScore, 1);
+  const resultType = yourScore === 1 ? 'correct' : 'incorrect';
+  recordAnswer(3, resultType, yourScore, 1);
   
-  // FORCE the mark counter text to "1/1" if correct, "0/1" if incorrect
   markCounter.innerHTML = `${yourScore}/1`;
-  
-  // Reset classes
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
 
-  // Highlight correct answer
   correctAnswerButton.classList.add('correct-answer');
 
-  // Apply styling based on score
   if (yourScore === 1) {
-    setCorrectStyles3(markCounter);
+    markCounter.style.backgroundColor = '#54d3ab';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#54d3ab';
     markCounter.classList.add('correct');
     questionBox.classList.add('correct');
   } else {
-    setIncorrectStyles3(markCounter);
+    markCounter.style.backgroundColor = '#e16280';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#e16280';
     markCounter.classList.add('incorrect');
     questionBox.classList.add('incorrect-selection');
   }
 
-  // Update progress bar
   if (typeof updateProgressSegment === 'function') {
     updateProgressSegment(3);
   }
 
-  // Disable buttons after submission
   allButtons.forEach(button => {
     button.disabled = true;
     button.style.cursor = 'not-allowed';
   });
 
-  // Change submit button to reset
   const submitBtn = document.getElementById('submit-button-3');
   submitBtn.innerText = 'Reset';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     resetQuestion3();
   };
@@ -4727,124 +4594,84 @@ function resetQuestion3() {
   const markCounter = document.getElementById('mark-counter-3');
   const submitBtn = document.getElementById('submit-button-3');
 
-  // Reset progress bar
   if (typeof resetProgressSegment === 'function') {
     resetProgressSegment(3);
   }
 
-  // Reset all the buttons
   buttons.forEach(button => {
     button.classList.remove('selected', 'correct-answer');
     button.disabled = false;
-    button.style.cursor = 'pointer'; // Ensure cursor is clickable again
+    button.style.cursor = 'pointer';
   });
 
-  // Reset the mark counter to ALWAYS show 0/1
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
-  resetStyles3(markCounter);
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
 
-  // Reset the submit button
   submitBtn.innerText = 'Submit';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     submitAnswer3();
   };
 
-  // Reset the question box classes
   questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
 }
 
-
-
-
-
-
-
-// Question 4 specific functions with same functionality as Question 3
+// ========================================
+// QUESTION 4 - Correct Answer: 335 ≤ d < 345 (option2)
+// ========================================
 function toggleSingleAnswer4(answer, button) {
   const questionBox = document.getElementById('question-box-4');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-4"]');
-
-  // First, deselect all the answer buttons
-  allButtons.forEach(btn => {
-    btn.classList.remove('selected');
-  });
-
-  // Now, toggle the 'selected' class on the button that was just clicked
+  allButtons.forEach(btn => btn.classList.remove('selected'));
   button.classList.toggle('selected');
 }
 
-// Helper functions for setting styles directly (same as Question 3)
-function setCorrectStyles4(markCounter) {
-  markCounter.style.backgroundColor = '#54d3ab';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#54d3ab';
-}
-
-function setIncorrectStyles4(markCounter) {
-  markCounter.style.backgroundColor = '#e16280';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#e16280';
-}
-
-function resetStyles4(markCounter) {
-  markCounter.style.backgroundColor = 'transparent';
-  markCounter.style.color = '#555';
-  markCounter.style.borderColor = '#1d7fe2';
-}
-
 function submitAnswer4() {
-  // The THIRD button is the correct answer (12)
-const correctAnswerButton = document.querySelector('.answer-option-4-2'); // Answer: 8
   const questionBox = document.getElementById('question-box-4');
+  const correctAnswerButton = questionBox.querySelector('[data-correct="true"]');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-4"].selected');
   const markCounter = document.getElementById('mark-counter-4');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-4"]');
 
-  // Check if correct button was selected
   const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
   const yourScore = gotItRight ? 1 : 0;
   const resultType = yourScore === 1 ? 'correct' : 'incorrect';
   recordAnswer(4, resultType, yourScore, 1);
+  
   markCounter.innerHTML = `${yourScore}/1`;
-
-  // Reset classes
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
 
-  // Highlight correct answer
   correctAnswerButton.classList.add('correct-answer');
 
-  // Apply styling based on score
   if (yourScore === 1) {
-    setCorrectStyles4(markCounter);
+    markCounter.style.backgroundColor = '#54d3ab';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#54d3ab';
     markCounter.classList.add('correct');
     questionBox.classList.add('correct');
   } else {
-    setIncorrectStyles4(markCounter);
+    markCounter.style.backgroundColor = '#e16280';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#e16280';
     markCounter.classList.add('incorrect');
     questionBox.classList.add('incorrect-selection');
   }
 
-  // Update progress bar (same as Question 3)
   if (typeof updateProgressSegment === 'function') {
     updateProgressSegment(4);
   }
 
-  // Disable buttons after submission
   allButtons.forEach(button => {
     button.disabled = true;
     button.style.cursor = 'not-allowed';
   });
 
-  // Change submit button to reset
   const submitBtn = document.getElementById('submit-button-4');
   submitBtn.innerText = 'Reset';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
-  submitBtn.onclick = function() {
+  submitBtn.onclick = function () {
     resetQuestion4();
   };
 }
@@ -4856,133 +4683,84 @@ function resetQuestion4() {
   const markCounter = document.getElementById('mark-counter-4');
   const submitBtn = document.getElementById('submit-button-4');
 
-  // Reset progress bar (same as Question 3)
   if (typeof resetProgressSegment === 'function') {
     resetProgressSegment(4);
   }
 
-  // Reset all the buttons
   buttons.forEach(button => {
     button.classList.remove('selected', 'correct-answer');
     button.disabled = false;
     button.style.cursor = 'pointer';
   });
 
-  // Reset the mark counter
   markCounter.innerHTML = '0/1';
-  markCounter.classList.remove('correct', 'incorrect');
-  resetStyles4(markCounter);
-
-  // Reset the submit button
-  submitBtn.innerText = 'Submit';
-  submitBtn.onclick = function() {
-    submitAnswer4();
-  };
-
-  // Reset the question box classes
-  questionBox.classList.remove('correct', 'incorrect-selection');
-}
-
-
-
-
-
-
-// Ensure the mark counter shows "0/1" initially (matching Question 8 pattern)
-document.addEventListener('DOMContentLoaded', function() {
-  const markCounter = document.getElementById('mark-counter-5');
-  if (markCounter) {
-    markCounter.textContent = '0/1';
-  }
-});
-
-// Question 5 specific functions - updated to match Question 8 functionality
-function toggleSingleAnswer5(answer, button) {
-  const questionBox = document.getElementById('question-box-5');
-  const allButtons = questionBox.querySelectorAll('[class^="answer-option-5"]');
-  
-  // Deselect all buttons first (single-select behavior)
-  allButtons.forEach(btn => {
-    btn.classList.remove('selected');
-  });
-  
-  // Select the clicked button
-  button.classList.add('selected');
-}
-
-// Helper functions for setting styles directly (matching Question 8)
-function setCorrectStyles5(markCounter) {
-  markCounter.style.backgroundColor = '#54d3ab';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#54d3ab';
-}
-
-function setIncorrectStyles5(markCounter) {
-  markCounter.style.backgroundColor = '#e16280';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#e16280';
-}
-
-function resetStyles5(markCounter) {
+  markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   markCounter.style.backgroundColor = 'transparent';
   markCounter.style.color = '#555';
   markCounter.style.borderColor = '#1d7fe2';
+
+  submitBtn.innerText = 'Submit';
+  submitBtn.onclick = function () {
+    submitAnswer4();
+  };
+
+  questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
+}
+
+// ========================================
+// QUESTION 5 - Correct Answer: 12.5 ≤ w < 13.5 (option3)
+// ========================================
+function toggleSingleAnswer5(answer, button) {
+  const questionBox = document.getElementById('question-box-5');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-5"]');
+  allButtons.forEach(btn => btn.classList.remove('selected'));
+  button.classList.toggle('selected');
 }
 
 function submitAnswer5() {
-  // The FIRST button is the correct answer (16)
-  const correctAnswerButton = document.querySelector('.answer-option-5-1'); // Answer: 16
   const questionBox = document.getElementById('question-box-5');
+  const correctAnswerButton = questionBox.querySelector('[data-correct="true"]');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-5"].selected');
   const markCounter = document.getElementById('mark-counter-5');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-5"]');
 
-  // Check if correct button was selected
   const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
-  
-  // Set score: 1 if correct, 0 if not - MATCHING other questions
   const yourScore = gotItRight ? 1 : 0;
   const resultType = yourScore === 1 ? 'correct' : 'incorrect';
   recordAnswer(5, resultType, yourScore, 1);
   
-  // Update the mark counter text (1/1 or 0/1 like Question 8)
   markCounter.innerHTML = `${yourScore}/1`;
-  
-  // Reset classes
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
 
-  // Highlight correct answer
   correctAnswerButton.classList.add('correct-answer');
 
-  // Apply styling based on score (simplified to match Question 8)
   if (yourScore === 1) {
-    setCorrectStyles5(markCounter);
+    markCounter.style.backgroundColor = '#54d3ab';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#54d3ab';
     markCounter.classList.add('correct');
     questionBox.classList.add('correct');
   } else {
-    setIncorrectStyles5(markCounter);
+    markCounter.style.backgroundColor = '#e16280';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#e16280';
     markCounter.classList.add('incorrect');
     questionBox.classList.add('incorrect-selection');
   }
 
-  // Update progress bar (same as Question 8)
   if (typeof updateProgressSegment === 'function') {
     updateProgressSegment(5);
   }
 
-  // Disable buttons after submission
   allButtons.forEach(button => {
     button.disabled = true;
     button.style.cursor = 'not-allowed';
   });
 
-  // Change submit button to reset
   const submitBtn = document.getElementById('submit-button-5');
   submitBtn.innerText = 'Reset';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
-  submitBtn.onclick = function() {
+  submitBtn.onclick = function () {
     resetQuestion5();
   };
 }
@@ -4994,125 +4772,84 @@ function resetQuestion5() {
   const markCounter = document.getElementById('mark-counter-5');
   const submitBtn = document.getElementById('submit-button-5');
 
-  // Reset progress bar (same as Question 8)
   if (typeof resetProgressSegment === 'function') {
     resetProgressSegment(5);
   }
 
-  // Reset all the buttons
   buttons.forEach(button => {
     button.classList.remove('selected', 'correct-answer');
     button.disabled = false;
     button.style.cursor = 'pointer';
   });
 
-  // Reset the mark counter to ALWAYS show 0/1 (like Question 8)
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
-  resetStyles5(markCounter);
-
-  // Reset the submit button
-  submitBtn.innerText = 'Submit';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
-  submitBtn.onclick = function() {
-    submitAnswer5();
-  };
-
-  // Reset the question box classes
-  questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
-}
-
-
-
-
-
-
-
-
-// Question 6 Functions - Updated to match Question 4 functionality
-function toggleSingleAnswer6(answer, button) {
-  const questionBox = document.getElementById('question-box-6');
-  const allButtons = questionBox.querySelectorAll('[class^="answer-option-6"]');
-
-  // First, deselect all the answer buttons
-  allButtons.forEach(btn => {
-    btn.classList.remove('selected');
-  });
-
-  // Now, toggle the 'selected' class on the button that was just clicked
-  button.classList.toggle('selected');
-}
-
-// Helper functions for setting styles directly (same as Question 4)
-function setCorrectStyles6(markCounter) {
-  markCounter.style.backgroundColor = '#54d3ab';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#54d3ab';
-}
-
-function setIncorrectStyles6(markCounter) {
-  markCounter.style.backgroundColor = '#e16280';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#e16280';
-}
-
-function resetStyles6(markCounter) {
   markCounter.style.backgroundColor = 'transparent';
   markCounter.style.color = '#555';
   markCounter.style.borderColor = '#1d7fe2';
+
+  submitBtn.innerText = 'Submit';
+  submitBtn.onclick = function () {
+    submitAnswer5();
+  };
+
+  questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
+}
+
+// ========================================
+// QUESTION 6 - Correct Answer: 5.6 ≤ h < 5.7 (option1)
+// ========================================
+function toggleSingleAnswer6(answer, button) {
+  const questionBox = document.getElementById('question-box-6');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-6"]');
+  allButtons.forEach(btn => btn.classList.remove('selected'));
+  button.classList.toggle('selected');
 }
 
 function submitAnswer6() {
-  // The correct answer button (second option - 12 bouquets)
-const correctAnswerButton = document.querySelector('.answer-option-6-1'); // Answer: 11
   const questionBox = document.getElementById('question-box-6');
+  const correctAnswerButton = questionBox.querySelector('[data-correct="true"]');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-6"].selected');
   const markCounter = document.getElementById('mark-counter-6');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-6"]');
 
-  // Check if correct button was selected
   const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
   const yourScore = gotItRight ? 1 : 0;
   const resultType = yourScore === 1 ? 'correct' : 'incorrect';
   recordAnswer(6, resultType, yourScore, 1);
+  
   markCounter.innerHTML = `${yourScore}/1`;
-
-  // Reset classes
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
 
-  // Highlight correct answer
   correctAnswerButton.classList.add('correct-answer');
 
-  // Apply styling based on score
   if (yourScore === 1) {
-    setCorrectStyles6(markCounter);
+    markCounter.style.backgroundColor = '#54d3ab';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#54d3ab';
     markCounter.classList.add('correct');
     questionBox.classList.add('correct');
   } else {
-    setIncorrectStyles6(markCounter);
+    markCounter.style.backgroundColor = '#e16280';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#e16280';
     markCounter.classList.add('incorrect');
     questionBox.classList.add('incorrect-selection');
   }
 
-  // Update progress bar (same as Question 4)
   if (typeof updateProgressSegment === 'function') {
     updateProgressSegment(6);
   }
 
-  // Disable buttons after submission
   allButtons.forEach(button => {
     button.disabled = true;
     button.style.cursor = 'not-allowed';
   });
 
-  // Change submit button to reset
   const submitBtn = document.getElementById('submit-button-6');
   submitBtn.innerText = 'Reset';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
-  submitBtn.onclick = function() {
+  submitBtn.onclick = function () {
     resetQuestion6();
   };
 }
@@ -5124,73 +4861,44 @@ function resetQuestion6() {
   const markCounter = document.getElementById('mark-counter-6');
   const submitBtn = document.getElementById('submit-button-6');
 
-  // Reset progress bar (same as Question 4)
   if (typeof resetProgressSegment === 'function') {
     resetProgressSegment(6);
   }
 
-  // Reset all the buttons
   buttons.forEach(button => {
     button.classList.remove('selected', 'correct-answer');
     button.disabled = false;
     button.style.cursor = 'pointer';
   });
 
-  // Reset the mark counter
   markCounter.innerHTML = '0/1';
-  markCounter.classList.remove('correct', 'incorrect');
-  resetStyles6(markCounter);
-
-  // Reset the submit button
-  submitBtn.innerText = 'Submit';
-  submitBtn.onclick = function() {
-    submitAnswer6();
-  };
-
-  // Reset the question box classes
-  questionBox.classList.remove('correct', 'incorrect-selection');
-}
-    
-    
-    
-  // Question 7 Functions
-document.addEventListener('DOMContentLoaded', function() {
-  const markCounter = document.getElementById('mark-counter-7');
-  if (markCounter) {
-    markCounter.textContent = '0/1';
-  }
-});
-
-function toggleSingleAnswer7(answer, button) {
-  const questionBox = document.getElementById('question-box-7');
-  const allButtons = questionBox.querySelectorAll('[class^="answer-option-7"]');
-  allButtons.forEach(btn => {
-    btn.classList.remove('selected');
-  });
-  button.classList.toggle('selected');
-}
-
-function setCorrectStyles7(markCounter) {
-  markCounter.style.backgroundColor = '#54d3ab';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#54d3ab';
-}
-
-function setIncorrectStyles7(markCounter) {
-  markCounter.style.backgroundColor = '#e16280';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#e16280';
-}
-
-function resetStyles7(markCounter) {
+  markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   markCounter.style.backgroundColor = 'transparent';
   markCounter.style.color = '#555';
   markCounter.style.borderColor = '#1d7fe2';
+
+  submitBtn.innerText = 'Submit';
+  submitBtn.onclick = function () {
+    submitAnswer6();
+  };
+
+  questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
+} 
+    
+    
+// ========================================
+// QUESTION 7 - Correct Answer: 4500 ≤ p < 5500 (option4)
+// ========================================
+function toggleSingleAnswer7(answer, button) {
+  const questionBox = document.getElementById('question-box-7');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-7"]');
+  allButtons.forEach(btn => btn.classList.remove('selected'));
+  button.classList.toggle('selected');
 }
 
 function submitAnswer7() {
-  const correctAnswerButton = document.querySelector('.answer-option-7-1'); // Answer: 5.89
   const questionBox = document.getElementById('question-box-7');
+  const correctAnswerButton = questionBox.querySelector('[data-correct="true"]');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-7"].selected');
   const markCounter = document.getElementById('mark-counter-7');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-7"]');
@@ -5207,11 +4915,15 @@ function submitAnswer7() {
   correctAnswerButton.classList.add('correct-answer');
 
   if (yourScore === 1) {
-    setCorrectStyles7(markCounter);
+    markCounter.style.backgroundColor = '#54d3ab';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#54d3ab';
     markCounter.classList.add('correct');
     questionBox.classList.add('correct');
   } else {
-    setIncorrectStyles7(markCounter);
+    markCounter.style.backgroundColor = '#e16280';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#e16280';
     markCounter.classList.add('incorrect');
     questionBox.classList.add('incorrect-selection');
   }
@@ -5227,8 +4939,6 @@ function submitAnswer7() {
 
   const submitBtn = document.getElementById('submit-button-7');
   submitBtn.innerText = 'Reset';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     resetQuestion7();
   };
@@ -5253,11 +4963,11 @@ function resetQuestion7() {
 
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
-  resetStyles7(markCounter);
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
 
   submitBtn.innerText = 'Submit';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     submitAnswer7();
   };
@@ -5265,44 +4975,19 @@ function resetQuestion7() {
   questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
 }
 
-// Question 8 Functions
-document.addEventListener('DOMContentLoaded', function() {
-  const markCounter = document.getElementById('mark-counter-8');
-  if (markCounter) {
-    markCounter.textContent = '0/1';
-  }
-});
-
+// ========================================
+// QUESTION 8 - Correct Answer: 12.345 ≤ v < 12.355 (option2)
+// ========================================
 function toggleSingleAnswer8(answer, button) {
   const questionBox = document.getElementById('question-box-8');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-8"]');
-  allButtons.forEach(btn => {
-    btn.classList.remove('selected');
-  });
+  allButtons.forEach(btn => btn.classList.remove('selected'));
   button.classList.toggle('selected');
 }
 
-function setCorrectStyles8(markCounter) {
-  markCounter.style.backgroundColor = '#54d3ab';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#54d3ab';
-}
-
-function setIncorrectStyles8(markCounter) {
-  markCounter.style.backgroundColor = '#e16280';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#e16280';
-}
-
-function resetStyles8(markCounter) {
-  markCounter.style.backgroundColor = 'transparent';
-  markCounter.style.color = '#555';
-  markCounter.style.borderColor = '#1d7fe2';
-}
-
 function submitAnswer8() {
-  const correctAnswerButton = document.querySelector('.answer-option-8-1'); // Answer: 12.3
   const questionBox = document.getElementById('question-box-8');
+  const correctAnswerButton = questionBox.querySelector('[data-correct="true"]');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-8"].selected');
   const markCounter = document.getElementById('mark-counter-8');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-8"]');
@@ -5319,11 +5004,15 @@ function submitAnswer8() {
   correctAnswerButton.classList.add('correct-answer');
 
   if (yourScore === 1) {
-    setCorrectStyles8(markCounter);
+    markCounter.style.backgroundColor = '#54d3ab';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#54d3ab';
     markCounter.classList.add('correct');
     questionBox.classList.add('correct');
   } else {
-    setIncorrectStyles8(markCounter);
+    markCounter.style.backgroundColor = '#e16280';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#e16280';
     markCounter.classList.add('incorrect');
     questionBox.classList.add('incorrect-selection');
   }
@@ -5339,8 +5028,6 @@ function submitAnswer8() {
 
   const submitBtn = document.getElementById('submit-button-8');
   submitBtn.innerText = 'Reset';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     resetQuestion8();
   };
@@ -5365,11 +5052,11 @@ function resetQuestion8() {
 
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
-  resetStyles8(markCounter);
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
 
   submitBtn.innerText = 'Submit';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     submitAnswer8();
   };
@@ -5377,44 +5064,19 @@ function resetQuestion8() {
   questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
 }
 
-// Question 9 Functions
-document.addEventListener('DOMContentLoaded', function() {
-  const markCounter = document.getElementById('mark-counter-9');
-  if (markCounter) {
-    markCounter.textContent = '0/1';
-  }
-});
-
+// ========================================
+// QUESTION 9 - Correct Answer: 45 ≤ A < 55 (option3)
+// ========================================
 function toggleSingleAnswer9(answer, button) {
   const questionBox = document.getElementById('question-box-9');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-9"]');
-  allButtons.forEach(btn => {
-    btn.classList.remove('selected');
-  });
+  allButtons.forEach(btn => btn.classList.remove('selected'));
   button.classList.toggle('selected');
 }
 
-function setCorrectStyles9(markCounter) {
-  markCounter.style.backgroundColor = '#54d3ab';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#54d3ab';
-}
-
-function setIncorrectStyles9(markCounter) {
-  markCounter.style.backgroundColor = '#e16280';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#e16280';
-}
-
-function resetStyles9(markCounter) {
-  markCounter.style.backgroundColor = 'transparent';
-  markCounter.style.color = '#555';
-  markCounter.style.borderColor = '#1d7fe2';
-}
-
 function submitAnswer9() {
-  const correctAnswerButton = document.querySelector('.answer-option-9-3'); // Answer: 250 ≤ x < 350
   const questionBox = document.getElementById('question-box-9');
+  const correctAnswerButton = questionBox.querySelector('[data-correct="true"]');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-9"].selected');
   const markCounter = document.getElementById('mark-counter-9');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-9"]');
@@ -5431,11 +5093,15 @@ function submitAnswer9() {
   correctAnswerButton.classList.add('correct-answer');
 
   if (yourScore === 1) {
-    setCorrectStyles9(markCounter);
+    markCounter.style.backgroundColor = '#54d3ab';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#54d3ab';
     markCounter.classList.add('correct');
     questionBox.classList.add('correct');
   } else {
-    setIncorrectStyles9(markCounter);
+    markCounter.style.backgroundColor = '#e16280';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#e16280';
     markCounter.classList.add('incorrect');
     questionBox.classList.add('incorrect-selection');
   }
@@ -5451,8 +5117,6 @@ function submitAnswer9() {
 
   const submitBtn = document.getElementById('submit-button-9');
   submitBtn.innerText = 'Reset';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     resetQuestion9();
   };
@@ -5477,11 +5141,11 @@ function resetQuestion9() {
 
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
-  resetStyles9(markCounter);
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
 
   submitBtn.innerText = 'Submit';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     submitAnswer9();
   };
@@ -5489,44 +5153,19 @@ function resetQuestion9() {
   questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
 }
 
-// Question 10 Functions
-document.addEventListener('DOMContentLoaded', function() {
-  const markCounter = document.getElementById('mark-counter-10');
-  if (markCounter) {
-    markCounter.textContent = '0/1';
-  }
-});
-
+// ========================================
+// QUESTION 10 - Correct Answer: 4.5 cm (option1)
+// ========================================
 function toggleSingleAnswer10(answer, button) {
   const questionBox = document.getElementById('question-box-10');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-10"]');
-  allButtons.forEach(btn => {
-    btn.classList.remove('selected');
-  });
+  allButtons.forEach(btn => btn.classList.remove('selected'));
   button.classList.toggle('selected');
 }
 
-function setCorrectStyles10(markCounter) {
-  markCounter.style.backgroundColor = '#54d3ab';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#54d3ab';
-}
-
-function setIncorrectStyles10(markCounter) {
-  markCounter.style.backgroundColor = '#e16280';
-  markCounter.style.color = 'white';
-  markCounter.style.borderColor = '#e16280';
-}
-
-function resetStyles10(markCounter) {
-  markCounter.style.backgroundColor = 'transparent';
-  markCounter.style.color = '#555';
-  markCounter.style.borderColor = '#1d7fe2';
-}
-
 function submitAnswer10() {
-  const correctAnswerButton = document.querySelector('.answer-option-10-2'); // Answer: 44.1875 cm²
   const questionBox = document.getElementById('question-box-10');
+  const correctAnswerButton = questionBox.querySelector('[data-correct="true"]');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-10"].selected');
   const markCounter = document.getElementById('mark-counter-10');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-10"]');
@@ -5543,11 +5182,15 @@ function submitAnswer10() {
   correctAnswerButton.classList.add('correct-answer');
 
   if (yourScore === 1) {
-    setCorrectStyles10(markCounter);
+    markCounter.style.backgroundColor = '#54d3ab';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#54d3ab';
     markCounter.classList.add('correct');
     questionBox.classList.add('correct');
   } else {
-    setIncorrectStyles10(markCounter);
+    markCounter.style.backgroundColor = '#e16280';
+    markCounter.style.color = 'white';
+    markCounter.style.borderColor = '#e16280';
     markCounter.classList.add('incorrect');
     questionBox.classList.add('incorrect-selection');
   }
@@ -5563,8 +5206,6 @@ function submitAnswer10() {
 
   const submitBtn = document.getElementById('submit-button-10');
   submitBtn.innerText = 'Reset';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     resetQuestion10();
   };
@@ -5589,28 +5230,17 @@ function resetQuestion10() {
 
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
-  resetStyles10(markCounter);
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  markCounter.style.borderColor = '#1d7fe2';
 
   submitBtn.innerText = 'Submit';
-  submitBtn.disabled = false;
-  submitBtn.style.cursor = 'pointer';
   submitBtn.onclick = function () {
     submitAnswer10();
   };
 
   questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
-}  
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+}    
     
     
     
@@ -5625,8 +5255,8 @@ window.__flashtile = {
 };
   
   
-  // Progress bar functionality
-const totalQuestions = 10;
+// Progress bar functionality
+const totalQuestions = 10
 let questionStatuses = {};
 
 function initializeProgressBar() {
@@ -5650,6 +5280,7 @@ function initializeProgressBar() {
         questionStatuses[i] = 'unanswered';
     }
 }
+
 
 function updateProgressSegment(questionNumber) {
     const questionBox = document.getElementById(`question-box-${questionNumber}`);
@@ -5683,9 +5314,15 @@ function resetProgressSegment(questionNumber) {
     icon.innerHTML = '';
 }
 
-// Initialize progress bar when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    initializeProgressBar();
+// Initialize on DOMContentLoaded: progress bar, randomiser, results UI
+document.addEventListener('DOMContentLoaded', function(){
+  try {
+    if (typeof initializeProgressBar === 'function') initializeProgressBar();
+    randomizeAllAnswers();
+    if (typeof updateResultsSummary === 'function') updateResultsSummary();
+  } catch (e) {
+    console.error('Quiz init error', e);
+  }
 });
 
 </script>
@@ -5694,30 +5331,29 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="results-summary-box" id="results-summary-box">
     <h2 class="results-summary-title">Your Results</h2>
     
-   <!-- Tabs -->
+<!-- Tabs -->
 <div class="results-tabs">
     <div class="results-tab">
-        Error Intervals and Bounds and Truncation
+        Error Intervals
         <span class="percentage" id="hcf-percentage">(0%)</span>
     </div>
 </div>
 
 <!-- Progress Section -->
-<div class="results-progress-wrapper">
-    <div class="results-progress-header">
-        <div class="results-progress-label">Error Intervals and Bounds and Truncation</div>
-        <div class="results-progress-percentage" id="progress-percentage">0%</div>
-    </div>
+<div class="results-progress-header">
+    <div class="results-progress-label">Error Intervals</div>
+    <div class="results-progress-percentage" id="progress-percentage">0%</div>
+</div>
         
-        <div class="results-progress-bar">
-            <div class="results-progress-fill" id="progress-fill">
-                <div class="progress-segment-correct" id="segment-correct" style="width: 0%"></div>
-                <div class="progress-segment-partial" id="segment-partial" style="width: 0%"></div>
-                <div class="progress-segment-incorrect" id="segment-incorrect" style="width: 0%"></div>
-            </div>
+    <div class="results-progress-bar">
+        <div class="results-progress-fill" id="progress-fill">
+            <div class="progress-segment-correct" id="segment-correct" style="width: 0%"></div>
+            <div class="progress-segment-partial" id="segment-partial" style="width: 0%"></div>
+            <div class="progress-segment-incorrect" id="segment-incorrect" style="width: 0%"></div>
         </div>
-        
-        <!-- Legend -->
+    </div>
+    
+    <!-- Legend -->
 <div class="results-legend">
     <div class="legend-item">
         <div class="legend-icon correct">✓</div>
@@ -5726,7 +5362,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <span class="legend-label">/ 10 correct</span>
         </div>
     </div>
-    
+
     <div class="legend-item">
         <div class="legend-icon partial">○</div>
         <div class="legend-text">
@@ -5734,7 +5370,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <span class="legend-label">/ 10 partially correct</span>
         </div>
     </div>
-    
+
     <div class="legend-item">
         <div class="legend-icon incorrect">✗</div>
         <div class="legend-text">
@@ -5742,7 +5378,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <span class="legend-label">/ 10 wrong</span>
         </div>
     </div>
-    
+
     <div class="legend-item">
         <div class="legend-icon missed"></div>
         <div class="legend-text">
@@ -5755,11 +5391,12 @@ document.addEventListener('DOMContentLoaded', function() {
     <!-- Divider -->
     <div class="results-divider"></div>
     
-   <!-- Message -->
+    <!-- Message -->
     <div class="results-message" id="results-message">Answer questions to see your score</div>
     
     <!-- Next Lecture Button -->
-    <div class="next-lecture-wrapper">
+    <div class="next-lecture-
+
         <a href="#" class="next-lecture-btn" id="next-lecture-btn">
             Next Lecture
             <span class="next-arrow">→</span>
@@ -5767,8 +5404,6 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 
-</div>
-
 </body>
 
-</html>
+</html> 
