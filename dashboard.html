@@ -367,12 +367,12 @@
         
         const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Check authentication and load user data
         async function checkAuth() {
             try {
-                const { data: { session }, error } = await supabase.auth.getSession();
+                const { data: { session }, error } = await sbClient.auth.getSession();
 
                 if (error) throw error;
 
@@ -409,7 +409,7 @@
         // Sign out function
         document.getElementById('signoutBtn').addEventListener('click', async () => {
             try {
-                const { error } = await supabase.auth.signOut();
+                const { error } = await sbClient.auth.signOut();
                 if (error) throw error;
                 
                 // Clear local storage
