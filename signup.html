@@ -407,8 +407,8 @@
 
     <script>
         const supabaseUrl = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+const sbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         function showError(message) {
             const errorDiv = document.getElementById('errorMessage');
@@ -448,7 +448,7 @@
             submitBtn.textContent = 'Creating Account...';
 
             try {
-                const { data, error } = await supabase.auth.signUp({
+                const { data, error } = await sbClient.auth.signUp({
                     email: email,
                     password: password,
                     options: {
@@ -480,7 +480,7 @@
             }
         });
 
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        sbClient.auth.getSession().then(({ data: { session } }) => {
             if (session) {
                 window.location.href = 'dashboard.html';
             }
