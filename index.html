@@ -459,82 +459,137 @@
             justify-content: center;
         }
 
-        .trustpilot-card {
-            background: white;
-            border-radius: 0.5rem;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            max-width: 28rem;
-            width: 100%;
-        }
+        .trustpilot-link {
+    text-decoration: none;
+    display: block;
+}
 
-        .trustpilot-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 0.75rem;
-        }
+.trustpilot-card {
+    background: linear-gradient(135deg, #393939 0%, #2b2b2b 100%);
+    border-radius: 8px;
+    padding: 18px 20px 18px 20px;
+    width: 550px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
 
-        .trustpilot-header span {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #111827;
-        }
+.trustpilot-card::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 240px;
+    height: 240px;
+    background: rgba(200, 200, 200, 0.15);
+    border-radius: 50%;
+}
 
-        .stars {
-            display: flex;
-            gap: 0.25rem;
-        }
+.rating-section {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 52px;
+}
 
-        .star {
-            width: 1.5rem;
-            height: 1.5rem;
-            fill: #22c55e;
-        }
+.rating-text {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 28px;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
 
-        .star-small {
-            width: 1rem;
-            height: 1rem;
-            fill: #22c55e;
-        }
+.rating-number {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
 
-        .trustpilot-reviews {
-            font-size: 0.875rem;
-            color: #4b5563;
-            text-align: center;
-            margin-bottom: 0.5rem;
-        }
+.bottom-section {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
 
-        .trustpilot-reviews span {
-            font-weight: 600;
-        }
+.left-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
-        .trustpilot-footer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
+.review-count {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
 
-        .trustpilot-logo {
-            width: 5rem;
-            height: 1.5rem;
-        }
+.review-number {
+    font-weight: 700;
+}
 
-        .trustpilot-logo text {
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-            font-weight: bold;
-            fill: #00B67A;
-        }
+.stars-row {
+    display: flex;
+    gap: 2px;
+}
 
-        .stars-small {
-            display: flex;
-            gap: 0.125rem;
-        }
+.star-box {
+    width: 23px;
+    height: 23px;
+    background: #00B67A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
 
+.star {
+    width: 15px;
+    height: 15px;
+    fill: #ffffff;
+    flex-shrink: 0;
+    shape-rendering: crispEdges;
+}
+
+.trustpilot-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.trustpilot-star-icon {
+    width: 20px;
+    height: 20px;
+    fill: #00B67A;
+    flex-shrink: 0;
+}
+
+.trustpilot-star-icon path {
+    fill: #00B67A;
+}
+
+.trustpilot-text {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    line-height: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+
+@media (max-width: 768px) {
+    .trustpilot-card {
+        width: 100%;
+        max-width: 550px;
+    }
+}
+
+    
         /* Mobile Responsive */
         @media (min-width: 1024px) {
             .hero-container {
@@ -1244,27 +1299,60 @@ document.addEventListener('DOMContentLoaded', function() {
     </svg>
 </a>
 
-        <!-- Trustpilot Widget -->
-        <div class="trustpilot-widget">
-            <div class="trustpilot-card">
-                <div class="trustpilot-header">
-                    <span>Excellent</span>
-                    <div class="stars">
-                        <svg class="star" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="star" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="star" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="star" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91
+        <!-- PIXEL PERFECT Trustpilot Widget -->
+<div class="trustpilot-widget">
+    <a href="https://uk.trustpilot.com/review/gmmmaths.com" target="_blank" rel="noopener" class="trustpilot-link">
+        <div class="trustpilot-card">
+            <!-- Top: Rating text -->
+            <div class="rating-section">
+                <div class="rating-text">
+                    Rated <span class="rating-number">4.2</span> out<br>of 5 stars
+                </div>
+            </div>
 
+            <!-- Bottom: Review count, stars, and logo -->
+            <div class="bottom-section">
+                <div class="left-content">
+                    <div class="review-count"><span class="review-number">40K</span> reviews</div>
+                    <div class="stars-row">
+                        <div class="star-box">
+                            <svg class="star" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <div class="star-box">
+                            <svg class="star" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <div class="star-box">
+                            <svg class="star" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <div class="star-box">
+                            <svg class="star" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <div class="star-box">
+                            <svg class="star" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
 
-
-
+                <div class="trustpilot-logo-container">
+                    <svg class="trustpilot-star-icon" viewBox="0 0 126.72 120.75" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M63.36 0l16.43 39.46 42.93 3.51-32.43 27.89 10.13 42.89-36.93-23.39-37.06 23.39 10.26-42.89L4.26 42.97l42.8-3.51z"/>
+                    </svg>
+                    <span class="trustpilot-text">Trustpilot</span>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>
 
 
 
