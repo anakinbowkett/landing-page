@@ -722,10 +722,10 @@
     <span>Ratio and Proportion</span>
   </div>
 </div>
-<div class="topic-card" data-topic="4" data-title="Graphs">
+<div class="topic-card" data-topic="4" data-title="Geometry and Measures">
   <div class="topic-title">
     <span class="topic-number">4</span>
-    <span>Graphs</span>
+    <span>Geometry and Measures</span>
   </div>
 </div>
           <div class="topic-card" data-topic="5" data-title="Geometry">
@@ -777,12 +777,12 @@
               <span>Ratio</span>
             </div>
           </div>
-          <div class="topic-card flashtile-card" data-flashtopic="5" data-title="Geometry">
-            <div class="topic-title">
-              <span class="topic-number">5</span>
-              <span>Geometry</span>
-            </div>
-          </div>
+          <div class="topic-card flashtile-card" data-flashtopic="4" data-title="Geometry and Measures">
+  <div class="topic-title">
+    <span class="topic-number">4</span>
+    <span>Geometry and Measures</span>
+  </div>
+</div>
           <div class="topic-card flashtile-card" data-flashtopic="6" data-title="Trigonometry">
             <div class="topic-title">
               <span class="topic-number">6</span>
@@ -1121,8 +1121,25 @@ const lectureURLs = {
     '8': '/lectures/ratio-8-speed-distance-time/',
     '9': '/lectures/ratio-9-distance-time-graphs/',
     '10': '/lectures/ratio-10-unit-conversions-metric/'
-  }
-};
+  },
+'4': {
+  '0': '/lectures/geometry-0-angle-facts/',
+  '1': '/lectures/geometry-1-angles-on-lines/',
+  '2': '/lectures/geometry-2-angles-triangles-polygons/',
+  '3': '/lectures/geometry-3-properties-2d-3d-shapes/',
+  '4': '/lectures/geometry-4-bearings/',
+  '5': '/lectures/geometry-5-transformations/',
+  '6': '/lectures/geometry-6-congruent-shapes/',
+  '7': '/lectures/geometry-7-similar-shapes/',
+  '8': '/lectures/geometry-8-area-perimeter-shapes/',
+  '9': '/lectures/geometry-9-area-triangles-parallelograms/',
+  '10': '/lectures/geometry-10-circles-area-circumference/',
+  '11': '/lectures/geometry-11-nets-3d-shapes/',
+  '12': '/lectures/geometry-12-volume-cuboids-prisms/',
+  '13': '/lectures/geometry-13-surface-area-prisms/',
+  '14': '/lectures/geometry-14-scale-diagrams/',
+  '15': '/lectures/geometry-15-loci-constructions/'
+}
   
   const url = lectureURLs[topicNum]?.[sectionIndex];
   
@@ -1282,6 +1299,25 @@ document.addEventListener('DOMContentLoaded', function() {
 ]},   
     
     
+ 
+  4: { title: "Geometry and Measures", sections: [
+  { number: "1", title: "Angle Facts", content: "Learn fundamental angle properties and relationships." },
+  { number: "2", title: "Angles on Lines", content: "Master angles on straight lines and around points." },
+  { number: "3", title: "Angles in Triangles and Polygons", content: "Calculate angles in triangles, quadrilaterals, and polygons." },
+  { number: "4", title: "Properties of 2D and 3D Shapes", content: "Identify and work with properties of geometric shapes." },
+  { number: "5", title: "Bearings", content: "Use three-figure bearings to describe direction and position." },
+  { number: "6", title: "Transformations (Reflection, Rotation, Translation, Enlargement)", content: "Perform and describe geometric transformations." },
+  { number: "7", title: "Congruent Shapes", content: "Identify and prove congruent shapes." },
+  { number: "8", title: "Similar Shapes (Scale Factor Only)", content: "Work with similar shapes and scale factors." },
+  { number: "9", title: "Area and Perimeter of Shapes", content: "Calculate area and perimeter of 2D shapes." },
+  { number: "10", title: "Area of Triangles, Parallelograms and Trapeziums", content: "Calculate areas of various quadrilaterals and triangles." },
+  { number: "11", title: "Circles (Area and Circumference)", content: "Calculate the area and circumference of circles." },
+  { number: "12", title: "Nets of 3D Shapes", content: "Draw and identify nets of 3D solids." },
+  { number: "13", title: "Volume of Cuboids, Prisms and Cylinders", content: "Calculate volumes of 3D shapes." },
+  { number: "14", title: "Surface Area of Prisms and Cylinders", content: "Calculate total surface area of 3D shapes." },
+  { number: "15", title: "Scale Diagrams", content: "Work with scale drawings and maps." },
+  { number: "16", title: "Loci and Constructions", content: "Draw loci and perform geometric constructions." }
+]},
     
     
     
@@ -1296,25 +1332,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-   
-   
-    4: { title: "Geometry", sections: [{ title: "Coming Soon", content: "This topic will be complete by January 28th." }]},
     5: { title: "Trigonometry", sections: [{ title: "Coming Soon", content: "This topic will be complete by February 7th." }]},
     6: { title: "Probability and Statistics", sections: [{ title: "Coming Soon", content: "This topic will be complete by February 21st." }]}
   };
@@ -1330,7 +1347,7 @@ document.addEventListener('DOMContentLoaded', function() {
     2: { title: "Algebra", sections: [{ title: "Coming Soon", content: "Flashtiles for Algebra will be available soon." }]},
     3: { title: "Graphs", sections: [{ title: "Coming Soon", content: "Flashtiles for Graphs will be available soon." }]},
     4: { title: "Ratio", sections: [{ title: "Coming Soon", content: "Flashtiles for Ratio will be available soon." }]},
-    5: { title: "Geometry", sections: [{ title: "Coming Soon", content: "Flashtiles for Geometry will be available soon." }]},
+    5: { title: "Geometry and Measures", sections: [{ title: "Coming Soon", content: "Flashtiles for Geometry and Measures will be available soon." }]},
     6: { title: "Trigonometry", sections: [{ title: "Coming Soon", content: "Flashtiles for Trigonometry will be available soon." }]},
     7: { title: "Probability and Statistics", sections: [{ title: "Coming Soon", content: "Flashtiles for Probability and Statistics will be available soon." }]}
   };
