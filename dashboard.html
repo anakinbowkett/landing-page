@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - GCSE Maths Mastery</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>GCSE Maths Mastery - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
         * {
             margin: 0;
             padding: 0;
@@ -18,56 +19,109 @@
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
             min-height: 100vh;
         }
 
-        /* Navigation */
         nav {
             background: white;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 1rem 2rem;
+            border-bottom: 1px solid #e0e4e9;
+            padding: 1.25rem 3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .nav-left {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
         }
 
         .nav-left img {
-            height: 32px;
+            height: 28px;
             width: auto;
         }
 
         .nav-left span {
-            font-size: 1.25rem;
-            font-weight: 700;
+            font-size: 1.125rem;
+            font-weight: 600;
             color: #111827;
+            letter-spacing: -0.02em;
         }
 
         .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.nav-stats-container {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid #e0e4e9;
+    border-radius: 10px;
+    background: white;
+    padding: 0.5rem 0;
+    margin-right: 2rem;
+}
+
+.streak-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    background: transparent;
+    border-right: 1px solid #e0e4e9;
+    border-radius: 0;
+    color: #111827;
+    font-weight: 600;
+    font-size: 0.875rem;
+    box-shadow: none;
+}
+
+.streak-badge::before {
+    content: "🔥";
+    font-size: 1.125rem;
+}
+  
+.mastery-miles-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    background: transparent;
+    border-radius: 0;
+    color: #111827;
+    font-weight: 600;
+    font-size: 0.875rem;
+    box-shadow: none;
+}
+
+.mastery-miles-badge img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+      
+      
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.5rem 1rem;
-            background: #f9fafb;
-            border-radius: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e0e4e9;
         }
 
         .user-avatar {
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -79,284 +133,1206 @@
 
         .user-name {
             font-size: 0.9375rem;
-            font-weight: 600;
+            font-weight: 500;
             color: #111827;
         }
 
-        .signout-btn {
-            background: white;
-            border: 1px solid #e5e7eb;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #111827;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        .user-profile-container {
+    position: relative;
+}
 
-        .signout-btn:hover {
-            background: #f9fafb;
-            border-color: #d1d5db;
-        }
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: white;
+    border: 1px solid #e0e4e9;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s;
+    z-index: 1000;
+}
 
-        /* Main Content */
+.user-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-info {
+    cursor: pointer;
+}
+
+.dropdown-item {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #111827;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+}
+
+.dropdown-item.signout {
+    color: #ef4444;
+}
+
+.dropdown-item.signout:hover {
+    background: #fef2f2;
+}
+
+.signout-btn {
+    display: none;
+}
+
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 3rem 2rem;
+            padding: 3rem 3rem;
         }
 
-        .welcome-section {
-            background: white;
-            border-radius: 1rem;
-            padding: 3rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .welcome-section h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 1rem;
-        }
-
-        .welcome-section p {
-            font-size: 1.125rem;
-            color: #6b7280;
-            margin-bottom: 2rem;
-        }
-
-        .welcome-section .highlight {
-            color: #3b82f6;
-            font-weight: 600;
-        }
-
-        /* Quick Actions */
-        .quick-actions {
+        .main-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 2.5rem;
+            margin-bottom: 3rem;
         }
 
-        .action-card {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-
-        .action-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
-            border-color: #3b82f6;
-        }
-
-        .action-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .action-icon svg {
-            width: 30px;
-            height: 30px;
-            color: white;
-        }
-
-        .action-card h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
+        /* Left Column */
+        .welcome-section h1 {
+            font-family: 'Crimson Text', serif;
+            font-size: 3rem;
+            font-weight: 600;
             color: #111827;
+            letter-spacing: -0.08em;
+            line-height: 1.2;
             margin-bottom: 0.5rem;
         }
 
-        .action-card p {
-            font-size: 0.9375rem;
+        .welcome-section .highlight {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-section p {
+            font-size: 1rem;
             color: #6b7280;
+            font-weight: 400;
+            margin-top: 0.5rem;
+            margin-bottom: 2.5rem;
             line-height: 1.6;
         }
+      
+      /* Personal Card */
+.personal-card {
+    margin-bottom: 2.5rem;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    max-width: 100%;
+}
+
+.personal-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.card-member-name {
+    position: absolute;
+    top: 50%;
+    right: 8%;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: white;
+    text-align: right;
+    letter-spacing: -0.01em;
+    transform: translateY(-50%);
+}
+
+.card-member-id {
+    position: absolute;
+    bottom: 13%;
+    right: 8%;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.08em;
+}
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
 
         /* Stats Section */
         .stats-section {
             background: white;
-            border-radius: 1rem;
+            border: 1px solid #e0e4e9;
+            border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .stats-section h2 {
+            font-family: 'Crimson Text', serif;
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 600;
             color: #111827;
+            letter-spacing: -0.04em;
             margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stats-section h2::before {
+            content: "📊";
+            font-size: 1.25rem;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 1.5rem;
         }
 
         .stat-item {
-            text-align: center;
-            padding: 1.5rem;
-            background: #f9fafb;
-            border-radius: 0.75rem;
+            text-align: left;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         .stat-number {
-            font-size: 2.5rem;
+            font-family: 'Crimson Text', serif;
+            font-size: 2.25rem;
             font-weight: 700;
-            color: #3b82f6;
-            margin-bottom: 0.5rem;
+            color: #111827;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.25rem;
         }
 
         .stat-label {
+            font-size: 0.8125rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        /* Right Column */
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    background: white;
+    border: 1px solid #e0e4e9;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+       .section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.01em;
+}
+
+        .filter-tabs {
+    display: flex;
+    gap: 0;
+    border-left: 1px solid #e0e4e9;
+}
+
+        .filter-tab {
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-right: 1px solid #e0e4e9;
+    background: transparent;
+    border-radius: 0;
+    font-size: 0.9375rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-tab:last-child {
+    border-right: none;
+}
+
+.filter-tab:hover {
+    background: #f8f9fa;
+    color: #111827;
+}
+
+.filter-tab.active {
+    background: transparent;
+    color: #1d7fe2;
+    font-weight: 600;
+}
+
+        /* Learning Journey Cards */
+        .journey-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .journey-card {
+            background: white;
+            border: 1px solid #e0e4e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .journey-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border-color: #1d7fe2;
+        }
+
+        .journey-badge {
+            position: absolute;
+            top: -1px;
+            right: -1px;
+            color: white;
+            padding: 0.375rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 0 12px 0 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .journey-badge.quick {
+            background: #54D3AB;
+        }
+
+        .journey-badge.intermediate {
+            background: #FFB380;
+        }
+
+        .journey-badge.grind {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .journey-badge.comeback {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .journey-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.25rem;
+        }
+
+        .journey-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .save-btn {
+            background: white;
+            border: 1px solid #e0e4e9;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .save-btn:hover {
+            background: #f8f9fa;
+            border-color: #4f46e5;
+        }
+
+        .save-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: #6b7280;
+        }
+
+        .save-btn:hover svg {
+            stroke: #4f46e5;
+        }
+
+        .learners-count {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .learners-count::before {
+            content: "👥";
+            font-size: 1rem;
+        }
+
+        .journey-main {
+            display: grid;
+            grid-template-columns: 50px 1fr auto 1fr 60px;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .topic-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .topic-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .journey-topic-section {
+            text-align: center;
+        }
+
+        .journey-topic {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .journey-subtopic {
+            font-size: 0.8125rem;
+            color: #6b7280;
+        }
+
+        .journey-duration-section {
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        .journey-difficulty {
+            font-size: 0.8125rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .difficulty-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #d1d5db;
+        }
+
+        .difficulty-dot.active {
+            background: #4f46e5;
+        }
+
+        .journey-line {
+            position: relative;
+            height: 2px;
+            background: linear-gradient(90deg, #e0e4e9 0%, #4f46e5 100%);
+            margin: 0.5rem 0;
+            border-radius: 2px;
+        }
+
+        .journey-line::before {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: -3px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid #4f46e5;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+        }
+
+        .journey-content-type {
+            font-size: 0.8125rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .journey-result-section {
+            text-align: right;
+        }
+
+        .journey-xp {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.375rem;
+        }
+
+        .journey-xp img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .journey-lectures {
+            font-size: 0.8125rem;
+            color: #6b7280;
+        }
+
+        .journey-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .journey-provider {
             font-size: 0.875rem;
             color: #6b7280;
             font-weight: 500;
         }
 
-        /* Loading State */
-        .loading {
+        .journey-cta-group {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            font-size: 1.25rem;
-            color: #6b7280;
+            gap: 0.5rem;
         }
 
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            nav {
-                padding: 1rem;
-                flex-direction: column;
-                gap: 1rem;
-            }
+        .go-to-btn {
+            background: #000000;
+            border: none;
+            color: white;
+            padding: 0.75rem 2.5rem;
+            border-radius: 10px;
+            font-family: 'Crimson Text', serif;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: -0.02em;
+        }
 
-            .container {
-                padding: 2rem 1rem;
-            }
+        .go-to-btn:hover {
+            background: #1a1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
 
-            .welcome-section {
-                padding: 2rem 1.5rem;
-            }
+        .hidden {
+            display: none;
+        }
 
-            .welcome-section h1 {
-                font-size: 1.75rem;
-            }
-
-            .quick-actions {
+        @media (max-width: 1024px) {
+            .main-grid {
                 grid-template-columns: 1fr;
             }
+
+            .journey-main {
+                grid-template-columns: 50px 1fr auto 1fr 50px;
+                gap: 0.5rem;
+            }
         }
+
+        @media (max-width: 768px) {
+    nav {
+        padding: 0.75rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .nav-left {
+        gap: 0.5rem;
+    }
+
+    .nav-left img {
+        height: 24px;
+    }
+
+    .nav-left span {
+        font-size: 0.875rem;
+    }
+
+    .nav-right {
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .nav-stats-container {
+        margin-right: 0.5rem;
+        padding: 0.375rem 0;
+    }
+
+    .streak-badge,
+    .mastery-miles-badge {
+        padding: 0 0.75rem;
+        font-size: 0.75rem;
+    }
+
+    .streak-badge::before {
+        font-size: 1rem;
+    }
+
+    .mastery-miles-badge img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .user-info {
+        padding: 0.375rem 0.75rem;
+        gap: 0.5rem;
+    }
+
+    .user-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+
+    .user-name {
+        font-size: 0.8125rem;
+    }
+
+    .user-dropdown {
+        right: 0;
+        min-width: 180px;
+    }
+
+    .dropdown-item {
+        padding: 0.625rem 1rem;
+        font-size: 0.8125rem;
+    }
+
+    .container {
+        padding: 1.5rem 1rem;
+    }
+
+    .main-grid {
+        gap: 1.5rem;
+    }
+
+    .welcome-section h1 {
+        font-size: 2rem;
+        letter-spacing: -0.05em;
+    }
+
+    .welcome-section p {
+        font-size: 0.9375rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .personal-card {
+        margin-bottom: 1.5rem;
+    }
+
+    .card-member-name {
+        font-size: 0.95rem;
+        top: 50%;
+        right: 6%;
+    }
+
+    .card-member-id {
+        font-size: 1.15rem;
+        bottom: 13%;
+        right: 6%;
+        letter-spacing: 0.05em;
+    }
+
+    .stats-section {
+        padding: 1.25rem;
+    }
+
+    .stats-section h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .stats-section h2::before {
+        font-size: 1rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 0.875rem;
+    }
+
+    .stat-item {
+        padding: 0.875rem;
+    }
+
+    .stat-number {
+        font-size: 1.875rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .section-title {
+        font-size: 1rem;
+    }
+
+    .filter-tabs {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #e0e4e9;
+        padding-top: 0.75rem;
+    }
+
+    .filter-tab {
+        flex: 1;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8125rem;
+        text-align: center;
+    }
+
+    .journey-card {
+        padding: 1rem;
+    }
+
+    .journey-badge {
+        font-size: 0.625rem;
+        padding: 0.25rem 0.75rem;
+    }
+
+    .journey-header {
+        margin-bottom: 1rem;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .journey-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .save-btn {
+        padding: 0.375rem;
+    }
+
+    .save-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .learners-count {
+        padding: 0.375rem 0.625rem;
+        font-size: 0.75rem;
+    }
+
+    .learners-count::before {
+        font-size: 0.875rem;
+    }
+
+    .journey-main {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .topic-icon {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto;
+    }
+
+    .journey-topic {
+        font-size: 0.9375rem;
+    }
+
+    .journey-subtopic {
+        font-size: 0.75rem;
+    }
+
+    .journey-duration-section {
+        padding: 0.75rem 0;
+    }
+
+    .journey-difficulty {
+        font-size: 0.75rem;
+        margin-bottom: 0.375rem;
+    }
+
+    .difficulty-dot {
+        width: 5px;
+        height: 5px;
+    }
+
+    .journey-content-type {
+        font-size: 0.75rem;
+    }
+
+    .journey-result-section {
+        text-align: center;
+    }
+
+    .journey-xp {
+        font-size: 1.25rem;
+        justify-content: center;
+    }
+
+    .journey-xp img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .journey-lectures {
+        font-size: 0.75rem;
+    }
+
+    .journey-footer {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding-top: 0.75rem;
+        align-items: flex-start;
+    }
+
+    .journey-provider {
+        font-size: 0.8125rem;
+    }
+
+    .journey-cta-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .go-to-btn {
+        width: 100%;
+        padding: 0.625rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* Additional small phone support */
+/* Additional small phone support */
+@media (max-width: 390px) {
+    .nav-left span {
+        display: none;
+    }
+
+    .welcome-section h1 {
+        font-size: 1.75rem;
+    }
+
+    .card-member-name {
+        font-size: 0.8rem;
+        right: 5%;
+    }
+
+    .card-member-id {
+        font-size: 1rem;
+        bottom: 13%;
+        right: 5%;
+        letter-spacing: 0.04em;
+    }
+
+    .filter-tab {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.5rem;
+    }
+}
     </style>
 </head>
 <body>
-    <div id="loadingState" class="loading">
-        Loading your dashboard...
-    </div>
-
-    <div id="mainContent" style="display: none;">
-        <!-- Navigation -->
-        <nav>
-            <div class="nav-left">
-                <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="GMM Logo">
-                <span>GCSE Maths Mastery</span>
-            </div>
-            <div class="nav-right">
-                <div class="user-info">
-                    <div class="user-avatar" id="userAvatar">U</div>
-                    <span class="user-name" id="userName">User</span>
-                </div>
-                <button class="signout-btn" id="signoutBtn">Sign Out</button>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <div class="container">
-            <!-- Welcome Section -->
-            <div class="welcome-section">
-                <h1>Welcome back, <span class="highlight" id="welcomeName">Student</span>! 🎉</h1>
-                <p>Ready to ace your GCSE Maths? Let's continue your journey to success.</p>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="quick-actions">
-                <div class="action-card" onclick="alert('Interactive Lectures - Coming soon!')">
-                    <div class="action-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <h3>Interactive Lectures</h3>
-                    <p>Learn with quick videos and instant quizzes that track your progress.</p>
-                </div>
-
-                <div class="action-card" onclick="alert('Flashtiles - Coming soon!')">
-                    <div class="action-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                        </svg>
-                    </div>
-                    <h3>Flashtiles</h3>
-                    <p>Practice exam-style questions with worked answers at your fingertips.</p>
-                </div>
-
-                <div class="action-card" onclick="alert('Quizzes - Coming soon!')">
-                    <div class="action-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                    </div>
-                    <h3>Live Quizzes</h3>
-                    <p>Compete against other students and climb the leaderboard.</p>
-                </div>
-
-                <div class="action-card" onclick="alert('Past Papers - Coming soon!')">
-                    <div class="action-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                    <h3>Past Papers</h3>
-                    <p>Practice with real GCSE exam questions and get instant analytics.</p>
+    <nav>
+        <div class="nav-left">
+            <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="GMM Logo">
+            <span>GCSE Maths Mastery</span>
+        </div>
+        <div class="nav-right">
+            <div class="nav-stats-container">
+                <div class="streak-badge">12 Day Streak</div>
+                <div class="mastery-miles-badge">
+                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
+                    <span>1,250</span>
                 </div>
             </div>
+            <div class="user-profile-container">
+                <div class="user-info" id="user-profile-trigger">
+                    <div class="user-avatar" id="user-avatar">A</div>
+                    <span class="user-name" id="nav-user-name">Anakin</span>
+                </div>
+                <div class="user-dropdown" id="user-dropdown">
+                    <div class="dropdown-item">
+                        <span>👤</span>
+                        <span>My Profile</span>
+                    </div>
+                    <div class="dropdown-item">
+                        <span>⚙️</span>
+                        <span>Settings</span>
+                    </div>
+                    <div class="dropdown-item signout" id="signout-btn">
+                        <span>🚪</span>
+                        <span>Sign Out</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-            <!-- Stats Section -->
-            <div class="stats-section">
-                <h2>Your Progress</h2>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">Lessons Completed</div>
+    <div class="container">
+        <div class="main-grid">
+            <!-- Left Column -->
+            <div class="left-column">
+                <div class="welcome-section">
+                    <h1>Welcome back, <span class="highlight" id="welcome-name">Anakin</span></h1>
+                    <p>Choose your learning journey below and let's keep that momentum going. You're doing great! 🚀</p>
+                </div>
+
+                <!-- Personal Member Card -->
+                <div class="personal-card">
+                    <div class="card-member-name">Anakin</div>
+                    <div class="card-member-id">15111113</div>
+                </div>
+                </div>
+
+                <div class="stats-section">
+                    <h2>Your Progress</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">24</div>
+                            <div class="stat-label">Lessons Completed</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">487</div>
+                            <div class="stat-label">Questions Answered</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">87%</div>
+                            <div class="stat-label">Average Score</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">Questions Answered</div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <div class="section-header">
+                    <div class="section-title">Choose Your learning type</div>
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-mode="lectures">Lectures & Quiz</button>
+                        <button class="filter-tab" data-mode="flashtiles">Flashtiles</button>
+                        <button class="filter-tab" data-mode="papers">Past Papers</button>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">0%</div>
-                        <div class="stat-label">Average Score</div>
+                </div>
+
+                <div class="journey-cards">
+                    <!-- Journey Card 1 -->
+                    <div class="journey-card">
+                        <div class="journey-badge quick">Best for a quick study</div>
+                        <div class="journey-header">
+                            <div class="journey-actions">
+                                <button class="save-btn">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                    </svg>
+                                </button>
+                                <div class="learners-count">1.2k learning</div>
+                            </div>
+                        </div>
+
+                        <div class="journey-main">
+                            <div class="topic-icon">
+                                <img src="https://i.postimg.cc/5NMKQxxN/66914cd391028b3d2c4e413f.png" alt="Journey">
+                            </div>
+                            
+                            <div class="journey-topic-section">
+                                <div class="journey-topic">Algebra Basics</div>
+                                <div class="journey-subtopic">Linear Equations</div>
+                            </div>
+
+                            <div class="journey-duration-section">
+                                <div class="journey-difficulty">
+                                    <span class="difficulty-dot active"></span>
+                                    <span class="difficulty-dot"></span>
+                                    <span class="difficulty-dot"></span>
+                                    <span class="difficulty-dot"></span>
+                                </div>
+                                <div class="journey-line"></div>
+                                <div class="journey-content-type">2 topics</div>
+                            </div>
+
+                            <div class="journey-topic-section">
+                                <div class="journey-topic">Practice</div>
+                                <div class="journey-subtopic">Flashcards + Quiz</div>
+                            </div>
+
+                            <div class="journey-result-section">
+                                <div class="journey-xp">
+                                    +50
+                                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
+                                </div>
+                                <div class="journey-lectures">Pick up to 2 lectures</div>
+                            </div>
+                        </div>
+
+                        <div class="journey-footer">
+                            <div class="journey-provider">Est. completion: 85%</div>
+                            <div class="journey-cta-group">
+                                <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
+                                <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
+                                <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">Study Streak (Days)</div>
+
+                    <!-- Journey Card 2 -->
+                    <div class="journey-card">
+                        <div class="journey-badge intermediate">Best for an intermediate study</div>
+                        <div class="journey-header">
+                            <div class="journey-actions">
+                                <button class="save-btn">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                    </svg>
+                                </button>
+                                <div class="learners-count">892 learning</div>
+                            </div>
+                        </div>
+
+                        <div class="journey-main">
+                            <div class="topic-icon">
+                                <img src="https://i.postimg.cc/5NMKQxxN/66914cd391028b3d2c4e413f.png" alt="Journey">
+                            </div>
+                            
+                            <div class="journey-topic-section">
+                                <div class="journey-topic">Quadratic Functions</div>
+                                <div class="journey-subtopic">Solving & Graphing</div>
+                            </div>
+
+                            <div class="journey-duration-section">
+                                <div class="journey-difficulty">
+                                    <span class="difficulty-dot active"></span>
+                                    <span class="difficulty-dot active"></span>
+                                    <span class="difficulty-dot"></span>
+                                    <span class="difficulty-dot"></span>
+                                </div>
+                                <div class="journey-line"></div>
+                                <div class="journey-content-type">3 topics</div>
+                            </div>
+
+                            <div class="journey-topic-section">
+                                <div class="journey-topic">Deep Practice</div>
+                                <div class="journey-subtopic">Past Papers</div>
+                            </div>
+
+                            <div class="journey-result-section">
+                                <div class="journey-xp">
+                                    +100
+                                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles" alt="Mastery Miles">
+                                </div>
+                                <div class="journey-lectures">Pick up to 3 lectures</div>
+                            </div>
+                        </div>
+
+                        <div class="journey-footer">
+                            <div class="journey-provider">Success rate: 92%</div>
+                            <div class="journey-cta-group">
+                                <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
+                                <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
+                                <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Journey Card 3 -->
+                    <div class="journey-card">
+                        <div class="journey-badge grind">Best for the study grind</div>
+                        <div class="journey-header">
+                            <div class="journey-actions">
+                                <button class="save-btn">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                    </svg>
+                                </button>
+                                <div class="learners-count">654 learning</div>
+                            </div>
+                        </div>
+
+                        <div class="journey-main">
+                            <div class="topic-icon">
+                                <img src="https://i.postimg.cc/5NMKQxxN/66914cd391028b3d2c4e413f.png" alt="Journey">
+                            </div>
+                            
+                            <div class="journey-topic-section">
+                                <div class="journey-topic">Trigonometry</div>
+                                <div class="journey-subtopic">Sin, Cos, Tan</div>
+                            </div>
+
+                            <div class="journey-duration-section">
+                                <div class="journey-difficulty">
+                                    <span class="difficulty-dot active"></span>
+                                    <span class="difficulty-dot active"></span>
+                                    <span class="difficulty-dot active"></span>
+                                    <span class="difficulty-dot"></span>
+                                </div>
+                                <div class="journey-line"></div>
+                                <div class="journey-content-type">4 topics</div>
+                            </div>
+
+                            <div class="journey-topic-section">
+                                <div class="journey-topic">Mastery Path</div>
+                                <div class="journey-subtopic">All Formats</div>
+                            </div>
+
+                            <div class="journey-result-section">
+                                <div class="journey-xp">
+                                    +175
+                                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles" alt="Mastery Miles">
+                                </div>
+                                <div class="journey-lectures">Pick up to 4 lectures</div>
+                            </div>
+                        </div>
+
+                        <div class="journey-footer">
+                            <div class="journey-provider">Avg. grade boost: +1.5</div>
+                            <div class="journey-cta-group">
+                                <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
+                                <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
+                                <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Journey Card 4 -->
+                    <div class="journey-card">
+                        <div class="journey-badge comeback">Best for an academic comeback</div>
+                        <div class="journey-header">
+                            <div class="journey-actions">
+                                <button class="save-btn">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                    </svg>
+                                </button>
+                                <div class="learners-count">423 learning</div>
+                            </div>
+                        </div>
+
+                        <div class="journey-main">
+                            <div class="topic-icon">
+                                <img src="https://i.postimg.cc/5NMKQxxN/66914cd391028b3d2c4e413f.png" alt="Journey">
+                            </div>
+                            
+                            <div class="journey-topic-section">
+                                <div class="journey-topic">Complete Review</div>
+                                <div class="journey-subtopic">All Topics</div>
+                            </div>
+
+                            <div class="journey-duration-section">
+                                <div class="journey-difficulty">
+                                    <span class="difficulty-dot active"></span>
+                                    <span class="difficulty-dot active"></span>
+                                    <span class="difficulty-dot active"></span>
+                                    <span class="difficulty-dot active"></span>
+                                </div>
+                                <div class="journey-line"></div>
+                                <div class="journey-content-type">6 topics</div>
+                            </div>
+
+                            <div class="journey-topic-section">
+                                <div class="journey-topic">Exam Ready</div>
+                                <div class="journey-subtopic">Mock Exam</div>
+                            </div>
+
+                            <div class="journey-result-section">
+                                <div class="journey-xp">
+                                    +250
+                                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles" alt="Mastery Miles">
+                                </div>
+                                <div class="journey-lectures">Pick up to 5 lectures</div>
+                            </div>
+                        </div>
+
+                        <div class="journey-footer">
+                            <div class="journey-provider">Mastery level: Advanced</div>
+                            <div class="journey-cta-group">
+                                <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
+                                <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
+                                <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -364,67 +1340,129 @@
     </div>
 
     <script>
-        
-        const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
-        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Supabase Configuration
+    const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Check authentication and load user data
-        async function checkAuth() {
-            try {
-                const { data: { session }, error } = await sbClient.auth.getSession();
+    // User data object (will be populated from Supabase)
+    let userData = {
+        name: "Student",
+        userId: "00000000"
+    };
 
-                if (error) throw error;
+    // Check authentication and load user data
+    async function checkAuth() {
+        try {
+            const { data: { session }, error } = await sbClient.auth.getSession();
 
-                if (!session) {
-                    // Not logged in, redirect to sign in
-                    window.location.href = 'signin.html';
-                    return;
-                }
+            if (error) throw error;
 
-                // User is logged in, display their info
-                const user = session.user;
-                const firstName = user.user_metadata.first_name || 'Student';
-                const lastName = user.user_metadata.last_name || '';
-                const fullName = user.user_metadata.full_name || firstName;
-
-                // Update UI with user info
-                document.getElementById('userName').textContent = firstName;
-                document.getElementById('welcomeName').textContent = firstName;
-                
-                // Set avatar initial
-                const initial = firstName.charAt(0).toUpperCase();
-                document.getElementById('userAvatar').textContent = initial;
-
-                // Show main content, hide loading
-                document.getElementById('loadingState').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-
-            } catch (error) {
-                console.error('Auth check error:', error);
+            if (!session) {
+                // Not logged in, redirect to sign in
                 window.location.href = 'signin.html';
+                return;
             }
+
+            // User is logged in, get their info
+            const user = session.user;
+            const firstName = user.user_metadata.first_name || 'Student';
+            const userId = user.id.slice(0, 8); // Use first 8 chars of user ID
+
+            // Update userData object
+            userData.name = firstName;
+            userData.userId = userId;
+
+            // Update all user-related elements
+            updateUserData();
+
+        } catch (error) {
+            console.error('Auth check error:', error);
+            window.location.href = 'signin.html';
         }
+    }
 
-        // Sign out function
-        document.getElementById('signoutBtn').addEventListener('click', async () => {
-            try {
-                const { error } = await sbClient.auth.signOut();
-                if (error) throw error;
-                
-                // Clear local storage
-                localStorage.clear();
-                
-                // Redirect to landing page
-                window.location.href = 'index.html';
-            } catch (error) {
-                console.error('Sign out error:', error);
-                alert('Error signing out. Please try again.');
-            }
+    // Update all user-related elements
+    function updateUserData() {
+        // Update member card
+        document.querySelector('.card-member-name').textContent = userData.name;
+        document.querySelector('.card-member-id').textContent = userData.userId;
+        
+        // Update welcome message
+        document.getElementById('welcome-name').textContent = userData.name;
+        
+        // Update navigation
+        document.getElementById('nav-user-name').textContent = userData.name;
+        
+        // Update avatar (first letter of name)
+        document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
+    }
+
+    // User profile dropdown functionality
+    const userProfileTrigger = document.getElementById('user-profile-trigger');
+    const userDropdown = document.getElementById('user-dropdown');
+    const signoutBtn = document.getElementById('signout-btn');
+
+    // Toggle dropdown on click
+    userProfileTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userDropdown.classList.toggle('active');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!userProfileTrigger.contains(e.target) && !userDropdown.contains(e.target)) {
+            userDropdown.classList.remove('active');
+        }
+    });
+
+    // Handle sign out
+    signoutBtn.addEventListener('click', async () => {
+        try {
+            const { error } = await sbClient.auth.signOut();
+            if (error) throw error;
+            
+            // Clear local storage
+            localStorage.clear();
+            
+            // Redirect to landing page
+            window.location.href = 'index.html';
+        } catch (error) {
+            console.error('Sign out error:', error);
+            alert('Error signing out. Please try again.');
+        }
+    });
+
+    // Filter tab functionality
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const journeyCards = document.querySelectorAll('.journey-card');
+
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active class from all tabs
+            filterTabs.forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            tab.classList.add('active');
+
+            // Get the selected mode
+            const selectedMode = tab.dataset.mode;
+
+            // Show/hide buttons based on selected mode
+            journeyCards.forEach(card => {
+                const buttons = card.querySelectorAll('.go-to-btn');
+                buttons.forEach(btn => {
+                    if (btn.dataset.journeyMode === selectedMode) {
+                        btn.classList.remove('hidden');
+                    } else {
+                        btn.classList.add('hidden');
+                    }
+                });
+            });
         });
+    });
 
-        // Check auth on page load
-        checkAuth();
-    </script>
+    // Check auth on page load
+    checkAuth();
+</script>
 </body>
 </html>
