@@ -1127,7 +1127,12 @@ const lectureURLs = {
   '13': '/lectures/geometry-13-surface-area-prisms/',
   '14': '/lectures/geometry-14-scale-diagrams/',
   '15': '/lectures/geometry-15-loci-constructions/'
-}
+ },
+  '5': {
+    '0': '/lectures/trigonometry-0-pythagoras-theorem/',
+    '1': '/lectures/trigonometry-1-soh-cah-toa/',
+    '2': '/lectures/trigonometry-2-trigonometry-real-life/'
+  }
 };
   
   const url = lectureURLs[topicNum]?.[sectionIndex];
@@ -1310,6 +1315,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     
     
+   5: { title: "Trigonometry", sections: [
+  { number: "1", title: "Pythagoras' Theorem", content: "Apply Pythagoras' theorem to find missing sides in right-angled triangles." },
+  { number: "2", title: "SOH CAH TOA (Finding Sides and Angles)", content: "Use sine, cosine, and tangent to find missing sides and angles in right-angled triangles." },
+  { number: "3", title: "Trigonometry in Real-Life Contexts", content: "Apply trigonometric principles to solve real-world problems involving angles and distances." }
+]}, 
     
     
     
@@ -1321,7 +1331,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     
     
-    5: { title: "Trigonometry", sections: [{ title: "Coming Soon", content: "This topic will be complete by February 7th." }]},
   6: { title: "Probability and Statistics", sections: [{ title: "Coming Soon", content: "This topic will be complete by February 21st." }]}
 };
 
