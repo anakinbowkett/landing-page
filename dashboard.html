@@ -1375,6 +1375,9 @@
 
             // Update all user-related elements
             updateUserData();
+          
+          // Update streak
+            updateStreak();
 
         } catch (error) {
             console.error('Auth check error:', error);
@@ -1397,6 +1400,90 @@
         // Update avatar (first letter of name)
         document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
     }
+
+// Streak management function
+async function updateStreak() {
+    try {
+        const { data: { session } } = await sbClient.auth.getSession();
+        if (!session) return;
+
+        const userId = session.user.id;
+        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+
+        // Check if user has a streak record
+        const { data: existingStreak, error: fetchError } = await sbClient
+            .from('user_streaks')
+            .select('*')
+            .eq('user_id', userId)
+            .single();
+
+        if (fetchError && fetchError.code !== 'PGRST116') {
+            console.error('Error fetching streak:', fetchError);
+            return;
+        }
+
+        if (!existingStreak) {
+            // Create new streak record
+            const { error: insertError } = await sbClient
+                .from('user_streaks')
+                .insert({
+                    user_id: userId,
+                    current_streak: 1,
+                    last_login_date: today
+                });
+
+            if (insertError) {
+                console.error('Error creating streak:', insertError);
+            } else {
+                // Update display to show streak of 1
+                document.querySelector('.streak-badge').textContent = '1 Day Streak';
+            }
+        } else {
+            // Check if last login was today
+            if (existingStreak.last_login_date === today) {
+                // Already logged in today, just display current streak
+                document.querySelector('.streak-badge').textContent = 
+                    `${existingStreak.current_streak} Day Streak`;
+            } else {
+                // Check if last login was yesterday
+                const lastLogin = new Date(existingStreak.last_login_date);
+                const todayDate = new Date(today);
+                const diffTime = todayDate - lastLogin;
+                const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+                let newStreak;
+                if (diffDays === 1) {
+                    // Logged in consecutive days, increment streak
+                    newStreak = existingStreak.current_streak + 1;
+                } else {
+                    // Streak broken, reset to 1
+                    newStreak = 1;
+                }
+
+                // Update streak in database
+                const { error: updateError } = await sbClient
+                    .from('user_streaks')
+                    .update({
+                        current_streak: newStreak,
+                        last_login_date: today
+                    })
+                    .eq('user_id', userId);
+
+                if (updateError) {
+                    console.error('Error updating streak:', updateError);
+                } else {
+                    // Update display
+                    document.querySelector('.streak-badge').textContent = 
+                        `${newStreak} Day Streak`;
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Streak update error:', error);
+    }
+}
+
+      
 
     // User profile dropdown functionality
     const userProfileTrigger = document.getElementById('user-profile-trigger');
