@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GCSE Maths Mastery - Dashboard</title>
@@ -658,6 +658,61 @@
             text-align: center;
             padding: 0 1rem;
         }
+      
+      .journey-duration-section {
+    text-align: center;
+    padding: 0 1rem;
+    position: relative;
+}
+
+.topic-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.topic-nav-arrow {
+    background: white;
+    border: 1px solid #e0e4e9;
+    border-radius: 6px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.topic-nav-arrow:hover {
+    background: #f8f9fa;
+    border-color: #4f46e5;
+}
+
+.topic-nav-arrow:hover svg {
+    stroke: #4f46e5;
+}
+
+.topic-nav-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.topic-nav-arrow:disabled:hover {
+    background: white;
+    border-color: #e0e4e9;
+}
+
+.topic-nav-arrow svg {
+    width: 14px;
+    height: 14px;
+    stroke: #6b7280;
+}
+
+
 
         .journey-difficulty {
             font-size: 0.8125rem;
@@ -1132,7 +1187,30 @@
         font-size: 0.75rem;
         border-bottom: 1px solid #e0e4e9;
     }
-}  
+
+   .topic-nav-arrow {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .topic-nav-arrow svg {
+        width: 12px;
+        height: 12px;
+    }
+    
+    .difficulty-dot {
+        width: 5px;
+        height: 5px;
+    }
+    
+    .difficulty-dot.active {
+        transform: scale(1.2);
+    }
+    
+    .topic-navigation {
+        gap: 0.375rem;
+    }
+}
   
   
   
@@ -1249,246 +1327,290 @@
     </div>
 </div>
 
-                <div class="journey-cards">
-                    <!-- Journey Card 1 -->
-                    <div class="journey-card">
-                        <div class="journey-badge quick">Best for a quick study</div>
-                        <div class="journey-header">
-                            <div class="journey-actions">
-                                <button class="save-btn">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                                    </svg>
-                                </button>
-                                <div class="learners-count">1.2k learning</div>
-                            </div>
-                        </div>
+               <div class="journey-cards">
+    <!-- Journey Card 1 -->
+    <div class="journey-card">
+        <div class="journey-badge quick">Best for a quick study</div>
+        <div class="journey-header">
+            <div class="journey-actions">
+                <button class="save-btn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                    </svg>
+                </button>
+                <div class="learners-count">1.2k learning</div>
+            </div>
+        </div>
 
-                        <div class="journey-main">
-                            <div class="topic-icon">
-                                <img src="https://i.postimg.cc/5NMKQxxN/66914cd391028b3d2c4e413f.png" alt="Journey">
-                            </div>
-                            
-                            <div class="journey-topic-section">
-                                <div class="journey-topic">Algebra Basics</div>
-                                <div class="journey-subtopic">Linear Equations</div>
-                            </div>
+        <div class="journey-main">
+            <div class="topic-icon">
+                <img src="https://i.postimg.cc/5NMKQxxN/66914cd391028b3d2c4e413f.png" alt="Journey">
+            </div>
+            
+            <div class="journey-topic-section">
+                <div class="journey-topic">Algebra Basics</div>
+                <div class="journey-subtopic">Linear Equations</div>
+            </div>
 
-                            <div class="journey-duration-section">
-                                <div class="journey-difficulty">
-                                    <span class="difficulty-dot active"></span>
-                                    <span class="difficulty-dot"></span>
-                                    <span class="difficulty-dot"></span>
-                                    <span class="difficulty-dot"></span>
-                                </div>
-                                <div class="journey-line"></div>
-                                <div class="journey-content-type">2 topics</div>
-                            </div>
-
-                            <div class="journey-topic-section">
-                                <div class="journey-topic">Practice</div>
-                                <div class="journey-subtopic">Flashcards + Quiz</div>
-                            </div>
-
-                            <div class="journey-result-section">
-                                <div class="journey-xp">
-                                    +50
-                                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
-                                </div>
-                                <div class="journey-lectures">Pick up to 2 lectures</div>
-                            </div>
-                        </div>
-
-                        <div class="journey-footer">
-                            <div class="journey-provider">Est. completion: 85%</div>
-                            <div class="journey-cta-group">
-                                <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
-                                <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
-                                <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
-                            </div>
-                        </div>
+            <div class="journey-duration-section">
+                <div class="topic-navigation">
+                    <button class="topic-nav-arrow prev-topic">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <div class="journey-difficulty">
+                        <span class="difficulty-dot active"></span>
+                        <span class="difficulty-dot"></span>
                     </div>
-
-                    <!-- Journey Card 2 -->
-                    <div class="journey-card">
-                        <div class="journey-badge intermediate">Best for an intermediate study</div>
-                        <div class="journey-header">
-                            <div class="journey-actions">
-                                <button class="save-btn">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                                    </svg>
-                                </button>
-                                <div class="learners-count">892 learning</div>
-                            </div>
-                        </div>
-
-                        <div class="journey-main">
-                            <div class="topic-icon">
-                                <img src="https://i.postimg.cc/5NMKQxxN/66914cd391028b3d2c4e413f.png" alt="Journey">
-                            </div>
-                            
-                            <div class="journey-topic-section">
-                                <div class="journey-topic">Quadratic Functions</div>
-                                <div class="journey-subtopic">Solving & Graphing</div>
-                            </div>
-
-                            <div class="journey-duration-section">
-                                <div class="journey-difficulty">
-                                    <span class="difficulty-dot active"></span>
-                                    <span class="difficulty-dot active"></span>
-                                    <span class="difficulty-dot"></span>
-                                    <span class="difficulty-dot"></span>
-                                </div>
-                                <div class="journey-line"></div>
-                                <div class="journey-content-type">3 topics</div>
-                            </div>
-
-                            <div class="journey-topic-section">
-                                <div class="journey-topic">Deep Practice</div>
-                                <div class="journey-subtopic">Past Papers</div>
-                            </div>
-
-                            <div class="journey-result-section">
-                                <div class="journey-xp">
-                                    +100
-                                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles" alt="Mastery Miles">
-                                </div>
-                                <div class="journey-lectures">Pick up to 3 lectures</div>
-                            </div>
-                        </div>
-
-                        <div class="journey-footer">
-                            <div class="journey-provider">Success rate: 92%</div>
-                            <div class="journey-cta-group">
-                                <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
-                                <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
-                                <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Journey Card 3 -->
-                    <div class="journey-card">
-                        <div class="journey-badge grind">Best for the study grind</div>
-                        <div class="journey-header">
-                            <div class="journey-actions">
-                                <button class="save-btn">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                                    </svg>
-                                </button>
-                                <div class="learners-count">654 learning</div>
-                            </div>
-                        </div>
-
-                        <div class="journey-main">
-                            <div class="topic-icon">
-                                <img src="https://i.postimg.cc/5NMKQxxN/66914cd391028b3d2c4e413f.png" alt="Journey">
-                            </div>
-                            
-                            <div class="journey-topic-section">
-                                <div class="journey-topic">Trigonometry</div>
-                                <div class="journey-subtopic">Sin, Cos, Tan</div>
-                            </div>
-
-                            <div class="journey-duration-section">
-                                <div class="journey-difficulty">
-                                    <span class="difficulty-dot active"></span>
-                                    <span class="difficulty-dot active"></span>
-                                    <span class="difficulty-dot active"></span>
-                                    <span class="difficulty-dot"></span>
-                                </div>
-                                <div class="journey-line"></div>
-                                <div class="journey-content-type">4 topics</div>
-                            </div>
-
-                            <div class="journey-topic-section">
-                                <div class="journey-topic">Mastery Path</div>
-                                <div class="journey-subtopic">All Formats</div>
-                            </div>
-
-                            <div class="journey-result-section">
-                                <div class="journey-xp">
-                                    +175
-                                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles" alt="Mastery Miles">
-                                </div>
-                                <div class="journey-lectures">Pick up to 4 lectures</div>
-                            </div>
-                        </div>
-
-                        <div class="journey-footer">
-                            <div class="journey-provider">Avg. grade boost: +1.5</div>
-                            <div class="journey-cta-group">
-                                <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
-                                <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
-                                <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Journey Card 4 -->
-                    <div class="journey-card">
-                        <div class="journey-badge comeback">Best for an academic comeback</div>
-                        <div class="journey-header">
-                            <div class="journey-actions">
-                                <button class="save-btn">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                                    </svg>
-                                </button>
-                                <div class="learners-count">423 learning</div>
-                            </div>
-                        </div>
-
-                        <div class="journey-main">
-                            <div class="topic-icon">
-                                <img src="https://i.postimg.cc/5NMKQxxN/66914cd391028b3d2c4e413f.png" alt="Journey">
-                            </div>
-                            
-                            <div class="journey-topic-section">
-                                <div class="journey-topic">Complete Review</div>
-                                <div class="journey-subtopic">All Topics</div>
-                            </div>
-
-                            <div class="journey-duration-section">
-                                <div class="journey-difficulty">
-                                    <span class="difficulty-dot active"></span>
-                                    <span class="difficulty-dot active"></span>
-                                    <span class="difficulty-dot active"></span>
-                                    <span class="difficulty-dot active"></span>
-                                </div>
-                                <div class="journey-line"></div>
-                                <div class="journey-content-type">6 topics</div>
-                            </div>
-
-                            <div class="journey-topic-section">
-                                <div class="journey-topic">Exam Ready</div>
-                                <div class="journey-subtopic">Mock Exam</div>
-                            </div>
-
-                            <div class="journey-result-section">
-                                <div class="journey-xp">
-                                    +250
-                                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles" alt="Mastery Miles">
-                                </div>
-                                <div class="journey-lectures">Pick up to 5 lectures</div>
-                            </div>
-                        </div>
-
-                        <div class="journey-footer">
-                            <div class="journey-provider">Mastery level: Advanced</div>
-                            <div class="journey-cta-group">
-                                <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
-                                <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
-                                <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
-                            </div>
-                        </div>
-                    </div>
+                    <button class="topic-nav-arrow next-topic">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
                 </div>
+                <div class="journey-line"></div>
+                <div class="journey-content-type">2 topics</div>
+            </div>
+
+            <div class="journey-topic-section">
+                <div class="journey-topic">Practice</div>
+                <div class="journey-subtopic">Flashcards + Quiz</div>
+            </div>
+
+            <div class="journey-result-section">
+                <div class="journey-xp">
+                    +50
+                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
+                </div>
+                <div class="journey-lectures">Pick up to 2 lectures</div>
+            </div>
+        </div>
+
+        <div class="journey-footer">
+            <div class="journey-provider">Est. completion: 85%</div>
+            <div class="journey-cta-group">
+                <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
+                <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
+                <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
             </div>
         </div>
     </div>
+
+    <!-- Journey Card 2 -->
+    <div class="journey-card">
+        <div class="journey-badge intermediate">Best for an intermediate study</div>
+        <div class="journey-header">
+            <div class="journey-actions">
+                <button class="save-btn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                    </svg>
+                </button>
+                <div class="learners-count">892 learning</div>
+            </div>
+        </div>
+
+        <div class="journey-main">
+            <div class="topic-icon">
+                <img src="https://i.postimg.cc/5NMKQxxN/66914cd391028b3d2c4e413f.png" alt="Journey">
+            </div>
+            
+            <div class="journey-topic-section">
+                <div class="journey-topic">Quadratic Functions</div>
+                <div class="journey-subtopic">Solving & Graphing</div>
+            </div>
+
+            <div class="journey-duration-section">
+                <div class="topic-navigation">
+                    <button class="topic-nav-arrow prev-topic">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <div class="journey-difficulty">
+                        <span class="difficulty-dot active"></span>
+                        <span class="difficulty-dot"></span>
+                        <span class="difficulty-dot"></span>
+                    </div>
+                    <button class="topic-nav-arrow next-topic">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="journey-line"></div>
+                <div class="journey-content-type">3 topics</div>
+            </div>
+
+            <div class="journey-topic-section">
+                <div class="journey-topic">Deep Practice</div>
+                <div class="journey-subtopic">Past Papers</div>
+            </div>
+
+            <div class="journey-result-section">
+                <div class="journey-xp">
+                    +100
+                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
+                </div>
+                <div class="journey-lectures">Pick up to 3 lectures</div>
+            </div>
+        </div>
+
+        <div class="journey-footer">
+            <div class="journey-provider">Success rate: 92%</div>
+            <div class="journey-cta-group">
+                <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
+                <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
+                <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Journey Card 3 -->
+    <div class="journey-card">
+        <div class="journey-badge grind">Best for the study grind</div>
+        <div class="journey-header">
+            <div class="journey-actions">
+                <button class="save-btn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                    </svg>
+                </button>
+                <div class="learners-count">654 learning</div>
+            </div>
+        </div>
+
+        <div class="journey-main">
+            <div class="topic-icon">
+                <img src="https://i.postimg.cc/5NMKQxxN/66914cd391028b3d2c4e413f.png" alt="Journey">
+            </div>
+            
+            <div class="journey-topic-section">
+                <div class="journey-topic">Trigonometry</div>
+                <div class="journey-subtopic">Sin, Cos, Tan</div>
+            </div>
+
+            <div class="journey-duration-section">
+                <div class="topic-navigation">
+                    <button class="topic-nav-arrow prev-topic">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <div class="journey-difficulty">
+                        <span class="difficulty-dot active"></span>
+                        <span class="difficulty-dot"></span>
+                        <span class="difficulty-dot"></span>
+                        <span class="difficulty-dot"></span>
+                    </div>
+                    <button class="topic-nav-arrow next-topic">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="journey-line"></div>
+                <div class="journey-content-type">4 topics</div>
+            </div>
+
+            <div class="journey-topic-section">
+                <div class="journey-topic">Mastery Path</div>
+                <div class="journey-subtopic">All Formats</div>
+            </div>
+
+            <div class="journey-result-section">
+                <div class="journey-xp">
+                    +175
+                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
+                </div>
+                <div class="journey-lectures">Pick up to 4 lectures</div>
+            </div>
+        </div>
+
+        <div class="journey-footer">
+            <div class="journey-provider">Avg. grade boost: +1.5</div>
+            <div class="journey-cta-group">
+                <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
+                <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
+                <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Journey Card 4 -->
+    <div class="journey-card">
+        <div class="journey-badge comeback">Best for an academic comeback</div>
+        <div class="journey-header">
+            <div class="journey-actions">
+                <button class="save-btn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                    </svg>
+                </button>
+                <div class="learners-count">423 learning</div>
+            </div>
+        </div>
+
+        <div class="journey-main">
+            <div class="topic-icon">
+                <img src="https://i.postimg.cc/5NMKQxxN/66914cd391028b3d2c4e413f.png" alt="Journey">
+            </div>
+            
+            <div class="journey-topic-section">
+                <div class="journey-topic">Complete Review</div>
+                <div class="journey-subtopic">All Topics</div>
+            </div>
+
+            <div class="journey-duration-section">
+                <div class="topic-navigation">
+                    <button class="topic-nav-arrow prev-topic">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <div class="journey-difficulty">
+                        <span class="difficulty-dot active"></span>
+                        <span class="difficulty-dot"></span>
+                        <span class="difficulty-dot"></span>
+                        <span class="difficulty-dot"></span>
+                        <span class="difficulty-dot"></span>
+                        <span class="difficulty-dot"></span>
+                    </div>
+                    <button class="topic-nav-arrow next-topic">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="journey-line"></div>
+                <div class="journey-content-type">6 topics</div>
+            </div>
+
+            <div class="journey-topic-section">
+                <div class="journey-topic">Exam Ready</div>
+                <div class="journey-subtopic">Mock Exam</div>
+            </div>
+
+            <div class="journey-result-section">
+                <div class="journey-xp">
+                    +250
+                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
+                </div>
+                <div class="journey-lectures">Pick up to 6 lectures</div>
+            </div>
+        </div>
+
+        <div class="journey-footer">
+            <div class="journey-provider">Mastery level: Advanced</div>
+            <div class="journey-cta-group">
+                <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
+                <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
+                <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
+            </div>
+        </div>
+    </div>
+</div>
 
     <script>
     // Supabase Configuration
@@ -1737,6 +1859,9 @@ function getRandomTopics(categoryId, count) {
     return shuffled.slice(0, count);
 }
 
+// Store topics for each card
+const cardTopics = new Map();
+
 // Function to update a journey card with new topics
 function updateJourneyCard(card, topicCount, categoryId = null) {
     let selectedCategory = categoryId;
@@ -1750,17 +1875,22 @@ function updateJourneyCard(card, topicCount, categoryId = null) {
     const randomTopicKeys = getRandomTopics(selectedCategory, topicCount);
     const categoryName = topicNames[selectedCategory];
     
-    // Update the main topic section
-    const topicSection = card.querySelector('.journey-topic');
-    const subtopicSection = card.querySelector('.journey-subtopic');
+    // Store topics for this card
+    const topicsData = randomTopicKeys.map(key => ({
+        category: selectedCategory,
+        categoryName: categoryName,
+        topicKey: key,
+        url: lectureURLs[selectedCategory][key],
+        name: getTopicNameFromURL(lectureURLs[selectedCategory][key])
+    }));
     
-    if (randomTopicKeys.length > 0) {
-        const firstTopicURL = lectureURLs[selectedCategory][randomTopicKeys[0]];
-        const firstTopicName = getTopicNameFromURL(firstTopicURL);
-        
-        topicSection.textContent = categoryName;
-        subtopicSection.textContent = firstTopicName;
-    }
+    cardTopics.set(card, {
+        topics: topicsData,
+        currentIndex: 0
+    });
+    
+    // Update the display with first topic
+    updateCardDisplay(card, 0);
     
     // Update topics count
     const topicsCountElement = card.querySelector('.journey-content-type');
@@ -1769,6 +1899,84 @@ function updateJourneyCard(card, topicCount, categoryId = null) {
     // Update lectures count
     const lecturesElement = card.querySelector('.journey-lectures');
     lecturesElement.textContent = `Pick up to ${topicCount} lectures`;
+    
+    // Initialize navigation
+    initializeCardNavigation(card);
+}
+
+// Function to update card display based on current topic index
+function updateCardDisplay(card, index) {
+    const cardData = cardTopics.get(card);
+    if (!cardData) return;
+    
+    const currentTopic = cardData.topics[index];
+    
+    // Update the main topic section
+    const topicSection = card.querySelector('.journey-topic');
+    const subtopicSection = card.querySelector('.journey-subtopic');
+    
+    topicSection.textContent = currentTopic.categoryName;
+    subtopicSection.textContent = currentTopic.name;
+    
+    // Update dots
+    const dots = card.querySelectorAll('.difficulty-dot');
+    dots.forEach((dot, i) => {
+        if (i === index) {
+            dot.classList.add('active');
+        } else {
+            dot.classList.remove('active');
+        }
+    });
+    
+    // Update button states
+    updateNavigationButtons(card);
+}
+
+// Initialize navigation for a card
+function initializeCardNavigation(card) {
+    const cardData = cardTopics.get(card);
+    if (!cardData) return;
+    
+    const prevBtn = card.querySelector('.prev-topic');
+    const nextBtn = card.querySelector('.next-topic');
+    
+    // Remove old listeners by cloning and replacing
+    const newPrevBtn = prevBtn.cloneNode(true);
+    const newNextBtn = nextBtn.cloneNode(true);
+    prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+    nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+    
+    // Add new listeners
+    newPrevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (cardData.currentIndex > 0) {
+            cardData.currentIndex--;
+            updateCardDisplay(card, cardData.currentIndex);
+        }
+    });
+    
+    newNextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (cardData.currentIndex < cardData.topics.length - 1) {
+            cardData.currentIndex++;
+            updateCardDisplay(card, cardData.currentIndex);
+        }
+    });
+    
+    // Update button states
+    updateNavigationButtons(card);
+}
+
+// Update navigation button states
+function updateNavigationButtons(card) {
+    const cardData = cardTopics.get(card);
+    if (!cardData) return;
+    
+    const prevBtn = card.querySelector('.prev-topic');
+    const nextBtn = card.querySelector('.next-topic');
+    
+    prevBtn.disabled = cardData.currentIndex === 0;
+    nextBtn.disabled = cardData.currentIndex === cardData.topics.length - 1;
 }
 
 // Current filter state
@@ -1859,12 +2067,22 @@ filterTabs.forEach(tab => {
 });
 
 // Add rotation transition to replay button
-replayBtn.style.transition = 'transform 0.3s ease';   
+replayBtn.style.transition = 'transform 0.3s ease';
+
+// Initialize cards with topics on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        if (replayBtn) {
+            replayBtn.click();
+        }
+    }, 500);
+});
+
+// Check auth on page load
+checkAuth();
       
       
       
-    // Check auth on page load
-    checkAuth();
 </script>
 </body>
 </html>
