@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GCSE Maths Mastery - Dashboard</title>
@@ -386,6 +386,89 @@
     color: #111827;
     font-family: 'Inter', sans-serif;
     letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.replay-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 1px solid #e0e4e9;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: #111827;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.replay-btn:hover {
+    background: #f8f9fa;
+    border-color: #4f46e5;
+    color: #4f46e5;
+}
+
+.replay-btn:hover svg {
+    stroke: #4f46e5;
+}
+
+.replay-btn:active {
+    transform: scale(0.95);
+}
+
+.topic-filters {
+    display: flex;
+    gap: 0;
+    border-left: 1px solid #e0e4e9;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e4e9;
+}
+
+.topic-filter {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-right: 1px solid #e0e4e9;
+    background: transparent;
+    border-radius: 0;
+    font-size: 0.8125rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.topic-filter:last-child {
+    border-right: none;
+}
+
+.topic-filter:hover {
+    background: #f8f9fa;
+    color: #111827;
+}
+
+.topic-filter.active {
+    background: transparent;
+    color: #4f46e5;
+    font-weight: 600;
+}
+
+.filters-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.mode-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
         .filter-tabs {
@@ -1008,7 +1091,55 @@
         font-size: 0.75rem;
         padding: 0.5rem 0.5rem;
     }
-}
+
+  
+.filters-container {
+        width: 100%;
+    }
+    
+    .mode-filters {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .section-title {
+        width: 100%;
+        justify-content: flex-start;
+        padding-bottom: 0.75rem;
+    }
+    
+    .replay-btn {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8125rem;
+    }
+    
+    .replay-btn svg {
+        width: 14px !important;
+        height: 14px !important;
+    }
+    
+    .topic-filters {
+        flex-wrap: wrap;
+        border-left: none;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+    }
+    
+    .topic-filter {
+        flex: 1 1 auto;
+        min-width: calc(50% - 1px);
+        padding: 0.5rem 0.5rem;
+        font-size: 0.75rem;
+        border-bottom: 1px solid #e0e4e9;
+    }
+}  
+  
+  
+  
+  
+  
+  
+  
     </style>
 </head>
 <body>
@@ -1090,13 +1221,33 @@
             <!-- Right Column -->
             <div class="right-column">
                 <div class="section-header">
-                    <div class="section-title">Choose Your learning type</div>
-                    <div class="filter-tabs">
-                        <button class="filter-tab active" data-mode="lectures">Lectures & Quiz</button>
-                        <button class="filter-tab" data-mode="flashtiles">Flashtiles</button>
-                        <button class="filter-tab" data-mode="papers">Past Papers</button>
-                    </div>
-                </div>
+    <div class="filters-container">
+        <div class="mode-filters">
+            <div class="section-title">
+                <button class="replay-btn" id="replay-topics-btn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Replay
+                </button>
+                Choose Your learning type
+            </div>
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-mode="lectures">Lectures & Quiz</button>
+                <button class="filter-tab" data-mode="flashtiles">Flashtiles</button>
+                <button class="filter-tab" data-mode="papers">Past Papers</button>
+            </div>
+        </div>
+        <div class="topic-filters" id="topic-filters">
+            <button class="topic-filter active" data-topic="all">All Topics</button>
+            <button class="topic-filter" data-topic="1">Number</button>
+            <button class="topic-filter" data-topic="2">Algebra</button>
+            <button class="topic-filter" data-topic="3">Ratio & Proportion</button>
+            <button class="topic-filter" data-topic="4">Geometry & Measures</button>
+            <button class="topic-filter" data-topic="5">Trigonometry</button>
+        </div>
+    </div>
+</div>
 
                 <div class="journey-cards">
                     <!-- Journey Card 1 -->
@@ -1375,9 +1526,6 @@
 
             // Update all user-related elements
             updateUserData();
-          
-          // Update streak
-            updateStreak();
 
         } catch (error) {
             console.error('Auth check error:', error);
@@ -1401,87 +1549,7 @@
         document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
     }
 
-// Streak management function
-async function updateStreak() {
-    try {
-        const { data: { session } } = await sbClient.auth.getSession();
-        if (!session) return;
 
-        const userId = session.user.id;
-        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-
-        // Check if user has a streak record
-        const { data: existingStreak, error: fetchError } = await sbClient
-            .from('user_streaks')
-            .select('*')
-            .eq('user_id', userId)
-            .single();
-
-        if (fetchError && fetchError.code !== 'PGRST116') {
-            console.error('Error fetching streak:', fetchError);
-            return;
-        }
-
-        if (!existingStreak) {
-            // Create new streak record
-            const { error: insertError } = await sbClient
-                .from('user_streaks')
-                .insert({
-                    user_id: userId,
-                    current_streak: 1,
-                    last_login_date: today
-                });
-
-            if (insertError) {
-                console.error('Error creating streak:', insertError);
-            } else {
-                // Update display to show streak of 1
-                document.querySelector('.streak-badge').textContent = '1 Day Streak';
-            }
-        } else {
-            // Check if last login was today
-            if (existingStreak.last_login_date === today) {
-                // Already logged in today, just display current streak
-                document.querySelector('.streak-badge').textContent = 
-                    `${existingStreak.current_streak} Day Streak`;
-            } else {
-                // Check if last login was yesterday
-                const lastLogin = new Date(existingStreak.last_login_date);
-                const todayDate = new Date(today);
-                const diffTime = todayDate - lastLogin;
-                const diffDays = diffTime / (1000 * 60 * 60 * 24);
-
-                let newStreak;
-                if (diffDays === 1) {
-                    // Logged in consecutive days, increment streak
-                    newStreak = existingStreak.current_streak + 1;
-                } else {
-                    // Streak broken, reset to 1
-                    newStreak = 1;
-                }
-
-                // Update streak in database
-                const { error: updateError } = await sbClient
-                    .from('user_streaks')
-                    .update({
-                        current_streak: newStreak,
-                        last_login_date: today
-                    })
-                    .eq('user_id', userId);
-
-                if (updateError) {
-                    console.error('Error updating streak:', updateError);
-                } else {
-                    // Update display
-                    document.querySelector('.streak-badge').textContent = 
-                        `${newStreak} Day Streak`;
-                }
-            }
-        }
-    } catch (error) {
-        console.error('Streak update error:', error);
-    }
-}
 
       
 
@@ -1548,6 +1616,253 @@ async function updateStreak() {
         });
     });
 
+      
+   // Topic data structure
+const lectureURLs = {
+  '1': {
+    '0': '/lectures/0-product-of-prime-factors/',
+    '1': '/lectures/1-highest-common-factor/',
+    '2': '/lectures/2-lowest-common-multiple/',
+    '3': '/lectures/3-ordering-numbers-rounding/',
+    '4': '/lectures/4-number-conversions/',
+    '5': '/lectures/5-order-of-operations-BIDMAS/',
+    '6': '/lectures/6-inequalities-on-a-number-line/',
+    '7': '/lectures/7-error-intervals/',
+    '8': '/lectures/8-bounds-and-truncation/',
+    '9': '/lectures/9-rounding-decimal-significant/',
+    '10': '/lectures/10-multiplying-fractions/',
+    '11': '/lectures/11-dividing-fractions/',
+    '12': '/lectures/12-adding-fractions/',
+    '13': '/lectures/13-subtracting-fractions/',
+    '14': '/lectures/14-simplifying-fractions/',
+    '15': '/lectures/15-mixed-improper-fractions/',
+    '16': '/lectures/16-fractions-of-amount/',
+    '17': '/lectures/17-percentage-of-amount/',
+    '18': '/lectures/18-reverse-percentages/',
+    '19': '/lectures/19-simple-interest/',
+    '20': '/lectures/20-compound-interest/',
+    '21': '/lectures/21-depreciation/',
+    '22': '/lectures/22-percentage-profit/',
+    '23': '/lectures/23-value-for-money/',
+    '24': '/lectures/24-standard-form/',
+    '25': '/lectures/25-number-powers/',
+    '26': '/lectures/26-estimation/',
+    '27': '/lectures/27-negative-numbers-operations/',
+    '28': '/lectures/28-converting-fractions-decimals/',
+    '29': '/lectures/29-unit-conversions/',
+    '30': '/lectures/30-calculator-fluency/'
+  },
+  '2': {
+    '0': '/lectures/algebra-0-index-laws/',
+    '1': '/lectures/algebra-1-expression-vs-equation/',
+    '2': '/lectures/algebra-2-factorising-expressions/',
+    '3': '/lectures/algebra-3-powers-in-brackets/',
+    '4': '/lectures/algebra-4-expanding-simplifying-brackets/',
+    '5': '/lectures/algebra-5-make-x-subject/',
+    '6': '/lectures/algebra-6-substitution/',
+    '7': '/lectures/algebra-7-solving-linear-equations/',
+    '8': '/lectures/algebra-8-forming-equations/',
+    '9': '/lectures/algebra-9-collecting-like-terms/',
+    '10': '/lectures/algebra-10-nth-term-sequences/',
+    '11': '/lectures/algebra-11-inequalities-number-line/',
+    '12': '/lectures/algebra-12-drawing-linear-graphs/',
+    '13': '/lectures/algebra-13-equation-straight-line/',
+    '14': '/lectures/algebra-14-gradient-of-line/',
+    '15': '/lectures/algebra-15-coordinates/'
+  },
+  '3': {
+    '0': '/lectures/ratio-0-simplifying-ratios/',
+    '1': '/lectures/ratio-1-sharing-in-ratio/',
+    '2': '/lectures/ratio-2-three-part-ratios/',
+    '3': '/lectures/ratio-3-ratios-as-fractions/',
+    '4': '/lectures/ratio-4-direct-proportion-unitary/',
+    '5': '/lectures/ratio-5-recipe-scale-problems/',
+    '6': '/lectures/ratio-6-best-buys/',
+    '7': '/lectures/ratio-7-exchange-rates/',
+    '8': '/lectures/ratio-8-speed-distance-time/',
+    '9': '/lectures/ratio-9-distance-time-graphs/',
+    '10': '/lectures/ratio-10-unit-conversions-metric/'
+  },
+  '4': {
+    '0': '/lectures/geometry-0-angle-facts/',
+    '1': '/lectures/geometry-1-angles-on-lines/',
+    '2': '/lectures/geometry-2-angles-triangles-polygons/',
+    '3': '/lectures/geometry-3-properties-2d-3d-shapes/',
+    '4': '/lectures/geometry-4-bearings/',
+    '5': '/lectures/geometry-5-transformations/',
+    '6': '/lectures/geometry-6-congruent-shapes/',
+    '7': '/lectures/geometry-7-similar-shapes/',
+    '8': '/lectures/geometry-8-area-perimeter-shapes/',
+    '9': '/lectures/geometry-9-area-triangles-parallelograms/',
+    '10': '/lectures/geometry-10-circles-area-circumference/',
+    '11': '/lectures/geometry-11-nets-3d-shapes/',
+    '12': '/lectures/geometry-12-volume-cuboids-prisms/',
+    '13': '/lectures/geometry-13-surface-area-prisms/',
+    '14': '/lectures/geometry-14-scale-diagrams/',
+    '15': '/lectures/geometry-15-loci-constructions/'
+  },
+  '5': {
+    '0': '/lectures/trigonometry-0-pythagoras-theorem/',
+    '1': '/lectures/trigonometry-1-soh-cah-toa/',
+    '2': '/lectures/trigonometry-2-trigonometry-real-life/'
+  }
+};
+
+// Topic names mapping
+const topicNames = {
+  '1': 'Number',
+  '2': 'Algebra',
+  '3': 'Ratio & Proportion',
+  '4': 'Geometry & Measures',
+  '5': 'Trigonometry'
+};
+
+// Function to extract topic name from URL
+function getTopicNameFromURL(url) {
+    const parts = url.split('/');
+    const fileName = parts[parts.length - 2];
+    
+    // Remove the number prefix and convert to title case
+    let name = fileName.split('-').slice(1).join(' ');
+    name = name.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    
+    return name;
+}
+
+// Function to get random topics from a category
+function getRandomTopics(categoryId, count) {
+    const topics = lectureURLs[categoryId];
+    const topicKeys = Object.keys(topics);
+    const shuffled = topicKeys.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+}
+
+// Function to update a journey card with new topics
+function updateJourneyCard(card, topicCount, categoryId = null) {
+    let selectedCategory = categoryId;
+    
+    // If no category specified, pick from all or currently filtered
+    if (!selectedCategory || selectedCategory === 'all') {
+        const categories = ['1', '2', '3', '4', '5'];
+        selectedCategory = categories[Math.floor(Math.random() * categories.length)];
+    }
+    
+    const randomTopicKeys = getRandomTopics(selectedCategory, topicCount);
+    const categoryName = topicNames[selectedCategory];
+    
+    // Update the main topic section
+    const topicSection = card.querySelector('.journey-topic');
+    const subtopicSection = card.querySelector('.journey-subtopic');
+    
+    if (randomTopicKeys.length > 0) {
+        const firstTopicURL = lectureURLs[selectedCategory][randomTopicKeys[0]];
+        const firstTopicName = getTopicNameFromURL(firstTopicURL);
+        
+        topicSection.textContent = categoryName;
+        subtopicSection.textContent = firstTopicName;
+    }
+    
+    // Update topics count
+    const topicsCountElement = card.querySelector('.journey-content-type');
+    topicsCountElement.textContent = `${topicCount} topics`;
+    
+    // Update lectures count
+    const lecturesElement = card.querySelector('.journey-lectures');
+    lecturesElement.textContent = `Pick up to ${topicCount} lectures`;
+}
+
+// Current filter state
+let currentMode = 'lectures';
+let currentTopic = 'all';
+
+// Replay button functionality
+const replayBtn = document.getElementById('replay-topics-btn');
+replayBtn.addEventListener('click', () => {
+    // Only work for lectures and flashtiles, not past papers
+    if (currentMode === 'papers') {
+        return;
+    }
+    
+    const cards = document.querySelectorAll('.journey-card');
+    
+    cards.forEach((card, index) => {
+        let topicCount;
+        
+        // Determine topic count based on card type
+        if (index === 0) topicCount = 2; // Quick study
+        else if (index === 1) topicCount = 3; // Intermediate
+        else if (index === 2) topicCount = 4; // Grind
+        else if (index === 3) topicCount = 6; // Comeback
+        
+        updateJourneyCard(card, topicCount, currentTopic);
+    });
+    
+    // Add animation feedback
+    replayBtn.style.transform = 'rotate(360deg)';
+    setTimeout(() => {
+        replayBtn.style.transform = 'rotate(0deg)';
+    }, 300);
+});
+
+// Topic filter functionality
+const topicFilterBtns = document.querySelectorAll('.topic-filter');
+const topicFiltersContainer = document.getElementById('topic-filters');
+
+topicFilterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Remove active class from all topic filters
+        topicFilterBtns.forEach(b => b.classList.remove('active'));
+        // Add active class to clicked button
+        btn.classList.add('active');
+        
+        // Update current topic
+        currentTopic = btn.dataset.topic;
+        
+        // Trigger replay to update cards with new topic filter
+        if (currentMode !== 'papers') {
+            replayBtn.click();
+        }
+    });
+});
+
+// Update filter tab functionality to include topic filter visibility
+filterTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        // Remove active class from all tabs
+        filterTabs.forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
+        tab.classList.add('active');
+
+        // Get the selected mode
+        const selectedMode = tab.dataset.mode;
+        currentMode = selectedMode;
+
+        // Show/hide topic filters based on mode
+        if (selectedMode === 'papers') {
+            topicFiltersContainer.style.display = 'none';
+        } else {
+            topicFiltersContainer.style.display = 'flex';
+        }
+
+        // Show/hide buttons based on selected mode
+        journeyCards.forEach(card => {
+            const buttons = card.querySelectorAll('.go-to-btn');
+            buttons.forEach(btn => {
+                if (btn.dataset.journeyMode === selectedMode) {
+                    btn.classList.remove('hidden');
+                } else {
+                    btn.classList.add('hidden');
+                }
+            });
+        });
+    });
+});
+
+// Add rotation transition to replay button
+replayBtn.style.transition = 'transform 0.3s ease';   
+      
+      
+      
     // Check auth on page load
     checkAuth();
 </script>
