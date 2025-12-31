@@ -506,6 +506,32 @@
     font-weight: 600;
 }
 
+        .syllabus-btn {
+    background: #1d7fe2;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.syllabus-btn:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(29, 127, 226, 0.25);
+}
+
+.syllabus-btn:active {
+    transform: translateY(0);
+}
+
         /* Learning Journey Cards */
         .journey-cards {
             display: flex;
@@ -1489,19 +1515,19 @@
             </div>
 
             <!-- Right Column -->
-            <div class="right-column">
-                <div class="section-header">
+            <div class="section-header">
     <div class="filters-container">
         <div class="mode-filters">
             <div class="section-title">
-    <button class="replay-btn" id="replay-topics-btn">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-        </svg>
-        Replay
-    </button>
-    Learning Goals
-</div>
+                <button class="replay-btn" id="replay-topics-btn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Replay
+                </button>
+                Learning Goals
+            </div>
+            <a href="syllabus.html" class="syllabus-btn">Go to Syllabus</a>
             <div class="filter-tabs">
                 <button class="filter-tab active" data-mode="lectures">Lectures & Quiz</button>
                 <button class="filter-tab" data-mode="flashtiles">Flashtiles</button>
