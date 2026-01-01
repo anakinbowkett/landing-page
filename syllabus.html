@@ -2269,12 +2269,42 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
     
-  checkAuth();
+ // Handle anchor navigation from dashboard
+const hash = window.location.hash;
+
+if (hash) {
+    // Remove the # from hash
+    const targetTabId = hash.substring(1);
+    
+    // Switch to the appropriate tab
+    if (targetTabId === 'lectures-content' || targetTabId === 'flash-content' || targetTabId === 'papers-content') {
+        switchTab(targetTabId);
+        
+        // Scroll to the section smoothly
+        setTimeout(() => {
+            const element = document.getElementById(targetTabId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    } else if (targetTabId === 'past-papers') {
+        // Special handling for past-papers anchor
+        switchTab('papers-content');
+        setTimeout(() => {
+            const element = document.getElementById('papers-content');
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    }
+}
+    
+checkAuth();
 </script>
 
 </body>
 </html>
-</html>
+
 
 
 
