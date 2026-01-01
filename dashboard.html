@@ -2256,14 +2256,20 @@ if (syllabusBtn) {
     });
 }
 
-// Handle "Go to Past Papers" button clicks
+// Handle ALL "Go to" button clicks
 document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('go-to-btn') && 
-        e.target.dataset.journeyMode === 'papers') {
-        // Redirect to syllabus page Past Papers section
-        window.location.href = 'syllabus.html#past-papers';
+    if (e.target.classList.contains('go-to-btn')) {
+        const mode = e.target.dataset.journeyMode;
+        
+        if (mode === 'lectures') {
+            window.location.href = 'syllabus.html#lectures-content';
+        } else if (mode === 'flashtiles') {
+            window.location.href = 'syllabus.html#flash-content';
+        } else if (mode === 'papers') {
+            window.location.href = 'syllabus.html#past-papers';
+        }
     }
-});       
+});     
 
 // Add rotation transition to replay button
 replayBtn.style.transition = 'transform 0.3s ease';
