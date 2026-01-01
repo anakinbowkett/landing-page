@@ -144,67 +144,42 @@
       line-height: 1.5;
     }
 
-/* Progress Box Styles */
-.progress-box {
+/* Motivational Quote Box Styles */
+.quote-box {
   position: absolute;
   top: 40px;
   right: 32px;
   background: white;
   border: 1px solid #d4d4d4;
-  border-radius: 12px;
-  padding: 24px;
-  width: 320px;
+  border-radius: 10px;
+  padding: 20px 24px;
+  width: 400px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.progress-box-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 20px;
-  font-family: 'Crimson Text', serif;
-}
-
-.progress-metrics {
+  min-height: 80px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 24px;
 }
 
-.metric-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: #fafafa;
-  border-radius: 8px;
-  border: 1px solid #e8e8e8;
-}
-
-.metric-label {
-  font-size: 14px;
-  color: #6b7280;
-  font-weight: 500;
-}
-
-.metric-value {
-  font-size: 20px;
-  font-weight: 600;
+.quote-text {
+  font-size: 15px;
+  line-height: 1.6;
   color: #1a1a1a;
-  font-family: 'Crimson Text', serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
 }
 
-.metric-value.correct {
-  color: #10b981;
+.quote-char {
+  opacity: 0;
+  animation: fadeIn 0.05s ease-in forwards;
 }
 
-.metric-value.partial {
-  color: #f59e0b;
-}
-
-.metric-value.incorrect {
-  color: #ef4444;
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
 }
 
 .dashboard-btn {
@@ -212,9 +187,9 @@
   color: #ffffff;
   border: none;
   border-radius: 8px;
-  padding: 16px 28px;
+  padding: 12px 24px;
   font-family: 'Crimson Text', serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -232,11 +207,10 @@
 }
     
 
-    /* Topics Section */
     .topics-section {
-      padding: 40px 32px;
-      font-family: 'Crimson Text', serif;
-    }
+  padding: 80px 32px 40px;
+  font-family: 'Crimson Text', serif;
+}
 
     .topics-grid {
       display: grid;
@@ -658,11 +632,15 @@
     padding-right: 20px; 
   }
 
-  .progress-box {
+  .quote-box {
     position: static;
     width: 100%;
     margin-top: 20px;
     margin-bottom: 20px;
+  }
+
+  .topics-section {
+    padding: 40px 20px 40px;
   }
   
   .course-header { 
@@ -790,31 +768,13 @@
     </div>
   </div>
 
-  <!-- Progress Box -->
-  <div class="progress-box">
-    <h3 class="progress-box-title">Your Progress</h3>
-    <div class="progress-metrics">
-      <div class="metric-item">
-        <span class="metric-label">Total Questions</span>
-        <span class="metric-value" id="total-questions">0</span>
-      </div>
-      <div class="metric-item">
-        <span class="metric-label">Correct</span>
-        <span class="metric-value correct" id="correct-count">0</span>
-      </div>
-      <div class="metric-item">
-        <span class="metric-label">Partial</span>
-        <span class="metric-value partial" id="partial-count">0</span>
-      </div>
-      <div class="metric-item">
-        <span class="metric-label">Incorrect</span>
-        <span class="metric-value incorrect" id="incorrect-count">0</span>
-      </div>
-    </div>
-    <button class="dashboard-btn" onclick="window.location.href='/dashboard.html'">
-      Back to Dashboard
-    </button>
-  </div>
+  <!-- Motivational Quote Box -->
+<div class="quote-box">
+  <div class="quote-text" id="motivational-quote"></div>
+  <button class="dashboard-btn" id="dashboard-btn">
+    Back to Dashboard
+  </button>
+</div>
 
   <div class="nav-tabs">
         <a class="nav-tab active" data-tab="lectures-content">Lectures & Quiz</a>
@@ -1166,6 +1126,102 @@ function getUserId() {
   return userId;
 }
 
+  // ========== MOTIVATIONAL QUOTES SYSTEM ==========
+const motivationalQuotes = [
+  "Every expert was once a beginner. Keep going.",
+  "Mathematics is not about numbers, it's about patterns and thinking.",
+  "Small progress is still progress. You're doing great.",
+  "The only way to learn mathematics is to do mathematics.",
+  "Mistakes are proof that you're trying. Embrace them.",
+  "Success is the sum of small efforts repeated day in and day out.",
+  "Your potential is endless. Go do what you were created to do.",
+  "Mathematics is the music of reason. Keep playing.",
+  "Don't watch the clock; do what it does. Keep going.",
+  "The expert in anything was once a beginner like you.",
+  "Believe in yourself and all that you are capable of achieving.",
+  "Each problem you solve makes you stronger and wiser.",
+  "Mathematics reveals its secrets to those who approach it with patience.",
+  "You're not just learning maths, you're training your mind to think.",
+  "Every question answered is a step closer to mastery.",
+  "Great things never come from comfort zones. Challenge yourself.",
+  "The difference between ordinary and extraordinary is practice.",
+  "Your dedication today is building your success tomorrow.",
+  "Mathematics is a language worth learning. You're becoming fluent.",
+  "Persistence guarantees that results are inevitable.",
+  "The journey of a thousand problems begins with a single equation.",
+  "You have within you right now, everything you need to excel.",
+  "Don't aim for perfection, aim for progress and understanding.",
+  "Every mathematician was once confused by what now seems simple.",
+  "Your breakthrough is closer than you think. Keep pushing forward."
+];
+
+let currentQuoteIndex = 0;
+let isTyping = false;
+
+function typeQuote(text, element) {
+  return new Promise((resolve) => {
+    element.innerHTML = '';
+    let charIndex = 0;
+    
+    function typeChar() {
+      if (charIndex < text.length) {
+        const span = document.createElement('span');
+        span.className = 'quote-char';
+        span.textContent = text[charIndex];
+        span.style.animationDelay = '0s';
+        element.appendChild(span);
+        charIndex++;
+        setTimeout(typeChar, 30);
+      } else {
+        setTimeout(resolve, 5000); // Show complete quote for 5 seconds
+      }
+    }
+    
+    typeChar();
+  });
+}
+
+async function cycleQuotes() {
+  const quoteElement = document.getElementById('motivational-quote');
+  if (!quoteElement) return;
+  
+  while (true) {
+    isTyping = true;
+    await typeQuote(motivationalQuotes[currentQuoteIndex], quoteElement);
+    isTyping = false;
+    
+    currentQuoteIndex = (currentQuoteIndex + 1) % motivationalQuotes.length;
+    
+    // Fade out
+    quoteElement.style.opacity = '0';
+    await new Promise(resolve => setTimeout(resolve, 500));
+    quoteElement.style.transition = 'opacity 0.5s ease';
+    quoteElement.style.opacity = '1';
+  }
+}
+
+// ========== LOAD PROGRESS FOR PROGRESS BARS ==========
+async function loadAllLectureProgress() {
+  const userId = getUserId();
+  if (!userId) return;
+  
+  try {
+    const { data, error } = await supabase
+      .from('lecture_progress')
+      .select('*')
+      .eq('user_id', userId);
+    
+    if (data && !error) {
+      console.log('Loaded progress for', data.length, 'lectures');
+      data.forEach(lecture => {
+        updateProgressBar(lecture);
+      });
+    }
+  } catch (err) {
+    console.error('Failed to load progress:', err);
+  }
+}  
+
 // ========== NAVIGATION FUNCTION - THIS OPENS THE LECTURE ==========
 window.navigateToLecture = function(topicNum, sectionIndex, sectionTitle) {
   console.log('Navigate called:', topicNum, sectionIndex, sectionTitle);
@@ -1290,51 +1346,7 @@ const lectureURLs = {
   }
 };
 
-// ========== LOAD PROGRESS ==========
-async function loadAllLectureProgress() {
-  const userId = getUserId();
-  if (!userId) return;
-  
-  try {
-    const { data, error } = await supabase
-      .from('lecture_progress')
-      .select('*')
-      .eq('user_id', userId);
-    
-    if (data && !error) {
-      console.log('Loaded progress for', data.length, 'lectures');
-      
-      // Update progress bars in accordions
-      data.forEach(lecture => {
-        updateProgressBar(lecture);
-      });
-      
-      // Calculate and update summary metrics
-      updateSummaryMetrics(data);
-    }
-  } catch (err) {
-    console.error('Failed to load progress:', err);
-  }
-}
 
-function updateSummaryMetrics(progressData) {
-  let totalQuestions = 0;
-  let correctCount = 0;
-  let partialCount = 0;
-  let incorrectCount = 0;
-  
-  progressData.forEach(lecture => {
-    totalQuestions += lecture.total_questions || 0;
-    correctCount += lecture.correct || 0;
-    partialCount += lecture.partial || 0;
-    incorrectCount += lecture.incorrect || 0;
-  });
-  
-  document.getElementById('total-questions').textContent = totalQuestions;
-  document.getElementById('correct-count').textContent = correctCount;
-  document.getElementById('partial-count').textContent = partialCount;
-  document.getElementById('incorrect-count').textContent = incorrectCount;
-}
 function updateProgressBar(progress) {
   const lectureName = progress.lecture_name;
   const accordionItems = document.querySelectorAll('.accordion-item');
@@ -1752,6 +1764,14 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   switchTab('lectures-content');
+  
+  // Start quote cycling
+  cycleQuotes();
+  
+  // Dashboard button click handler
+  document.getElementById('dashboard-btn').addEventListener('click', function() {
+    window.location.href = '/dashboard.html';
+  });
 });
 </script>
 
