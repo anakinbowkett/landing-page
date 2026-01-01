@@ -1,1741 +1,2366 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Foundation Tier - GCSE Maths</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foundation Tier - GCSE Maths</title>
 <!-- ADD SUPABASE HERE -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
- <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      background-color: white;
-      color: #1a1a1a;
-      line-height: 1.6;
-    }
-
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    body::-webkit-scrollbar,
-    .expanded-card::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* Hide scrollbar for IE, Edge and Firefox */
-    body,
-    .expanded-card {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    .container {
-      max-width: 1600px;
-      margin: 0 auto;
-      background-color: white;
-      min-height: 100vh;
-    }
-
-    /* Tab Content Visibility Styles */
-    .tab-content {
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .tab-content.hidden {
-      display: none;
-      opacity: 0;
-      transform: translateY(10px);
-    }
-
-    .tab-content:not(.hidden) {
-      display: block;
-      opacity: 1;
-      transform: translateY(0);
-    }
-    
-    /* Header section */
-    .header-section {
-      padding: 0;
-      border-bottom: none;
-    }
-
-    /* Navigation */
-    .nav-tabs {
-      display: flex;
-      gap: 0;
-    }
-
-    .nav-tab {
-      padding: 20px 24px;
-      color: #6b7280;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 15px;
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s ease;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .nav-tab::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 50%;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, #1a1a1a, #666);
-      transition: all 0.3s ease;
-      transform: translateX(-50%);
-    }
-
-    .nav-tab:hover {
-      color: #1a1a1a;
-      background-color: #f9f9f9;
-    }
-
-    .nav-tab.active {
-      color: #1a1a1a;
-      background-color: white;
-    }
-
-    .nav-tab.active::after {
-      width: 100%;
-    }
-
-    /* Course info section */
-    .course-info {
-  padding: 40px 32px;
-  border-bottom: 1px solid #e5e5e5;
-  position: relative;
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
 }
 
-    .course-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 32px;
-    }
+nav {
+background: white;
+border-bottom: 1px solid #e0e4e9;
+padding: 1.25rem 3rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
 
-    .course-details {
-      flex: 1;
-    }
+.nav-left {
+display: flex;
+align-items: center;
+gap: 1rem;
+}
 
-    .course-title {
-      font-size: 32px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #1a1a1a;
-    }
+.nav-left img {
+height: 28px;
+width: auto;
+}
 
-    .course-subtitle {
-      font-size: 16px;
-      color: #6b7280;
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
+.nav-left span {
+font-size: 1.125rem;
+font-weight: 600;
+color: #111827;
+letter-spacing: -0.02em;
+}
+
+.nav-right {
+display: flex;
+align-items: center;
+gap: 0;
+}
+
+.nav-stats-container {
+display: flex;
+align-items: center;
+gap: 0;
+border: 1px solid #e0e4e9;
+border-radius: 10px;
+background: white;
+padding: 0.5rem 0;
+margin-right: 2rem;
+}
+
+.streak-badge {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+padding: 0 1rem;
+background: transparent;
+border-right: 1px solid #e0e4e9;
+border-radius: 0;
+color: #111827;
+font-weight: 600;
+font-size: 0.875rem;
+box-shadow: none;
+}
+
+.streak-badge::before {
+content: "🔥";
+font-size: 1.125rem;
+}
+
+.mastery-miles-badge {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+padding: 0 1rem;
+background: transparent;
+border-radius: 0;
+color: #111827;
+font-weight: 600;
+font-size: 0.875rem;
+box-shadow: none;
+}
+
+.mastery-miles-badge img {
+width: 24px;
+height: 24px;
+object-fit: contain;
+}
+
+.user-info {
+display: flex;
+align-items: center;
+gap: 0.75rem;
+padding: 0.5rem 1.25rem;
+background: #f8f9fa;
+border-radius: 10px;
+border: 1px solid #e0e4e9;
+cursor: pointer;
+}
+
+.user-avatar {
+width: 32px;
+height: 32px;
+background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+color: white;
+font-weight: 600;
+font-size: 0.875rem;
+}
+
+.user-name {
+font-size: 0.9375rem;
+font-weight: 500;
+color: #111827;
+}
+
+.user-profile-container {
+position: relative;
+}
+
+.user-dropdown {
+position: absolute;
+top: calc(100% + 0.5rem);
+right: 0;
+background: white;
+border: 1px solid #e0e4e9;
+border-radius: 10px;
+box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+min-width: 200px;
+opacity: 0;
+visibility: hidden;
+transform: translateY(-10px);
+transition: all 0.2s;
+z-index: 1000;
+}
+
+.user-dropdown.active {
+opacity: 1;
+visibility: visible;
+transform: translateY(0);
+}
+
+.dropdown-item {
+padding: 0.75rem 1.25rem;
+font-size: 0.875rem;
+font-weight: 500;
+color: #111827;
+cursor: pointer;
+transition: all 0.2s;
+border-bottom: 1px solid #f3f4f6;
+display: flex;
+align-items: center;
+gap: 0.75rem;
+}
+
+.dropdown-item:last-child {
+border-bottom: none;
+}
+
+.dropdown-item:hover {
+background: #f8f9fa;
+}
+
+.dropdown-item.signout {
+color: #ef4444;
+}
+
+.dropdown-item.signout:hover {
+background: #fef2f2;
+}
+
+
+
+
+body {
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+background-color: white;
+color: #1a1a1a;
+line-height: 1.6;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar,
+.expanded-card::-webkit-scrollbar {
+display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+body,
+.expanded-card {
+-ms-overflow-style: none;
+scrollbar-width: none;
+}
+
+.container {
+max-width: 1600px;
+margin: 0 auto;
+background-color: white;
+min-height: 100vh;
+}
+
+/* Tab Content Visibility Styles */
+.tab-content {
+transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.tab-content.hidden {
+display: none;
+opacity: 0;
+transform: translateY(10px);
+}
+
+.tab-content:not(.hidden) {
+display: block;
+opacity: 1;
+transform: translateY(0);
+}
+
+/* Header section */
+.header-section {
+padding: 0;
+border-bottom: none;
+}
+
+/* Navigation */
+.nav-tabs {
+display: flex;
+gap: 0;
+}
+
+.nav-tab {
+padding: 20px 24px;
+color: #6b7280;
+text-decoration: none;
+font-weight: 500;
+font-size: 15px;
+border-bottom: 2px solid transparent;
+transition: all 0.2s ease;
+cursor: pointer;
+position: relative;
+}
+
+.nav-tab::after {
+content: '';
+position: absolute;
+bottom: -2px;
+left: 50%;
+width: 0;
+height: 2px;
+background: linear-gradient(90deg, #1a1a1a, #666);
+transition: all 0.3s ease;
+transform: translateX(-50%);
+}
+
+.nav-tab:hover {
+color: #1a1a1a;
+background-color: #f9f9f9;
+}
+
+.nav-tab.active {
+color: #1a1a1a;
+background-color: white;
+}
+
+.nav-tab.active::after {
+width: 100%;
+}
+
+/* Course info section */
+.course-info {
+padding: 40px 32px;
+border-bottom: 1px solid #e5e5e5;
+position: relative;
+}
+
+.course-header {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+gap: 32px;
+}
+
+.course-details {
+flex: 1;
+}
+
+.course-title {
+font-size: 32px;
+font-weight: 600;
+margin-bottom: 8px;
+color: #1a1a1a;
+}
+
+.course-subtitle {
+font-size: 16px;
+color: #6b7280;
+margin-bottom: 20px;
+line-height: 1.5;
+}
 
 /* Motivational Quote Box Styles */
 .quote-box {
-  position: absolute;
-  top: 40px;
-  right: 32px;
-  background: white;
-  border: 1px solid #d4d4d4;
-  border-radius: 10px;
-  padding: 20px 24px;
-  width: 400px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  min-height: 80px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+position: absolute;
+top: 40px;
+right: 32px;
+background: white;
+border: 1px solid #d4d4d4;
+border-radius: 10px;
+padding: 20px 24px;
+width: 400px;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+min-height: 80px;
+display: flex;
+flex-direction: column;
+gap: 16px;
 }
 
 .quote-text {
-  font-size: 15px;
-  line-height: 1.6;
-  color: #1a1a1a;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  min-height: 48px;
-  display: flex;
-  align-items: center;
+font-size: 15px;
+line-height: 1.6;
+color: #1a1a1a;
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+min-height: 48px;
+display: flex;
+align-items: center;
 }
 
 .quote-char {
-  opacity: 0;
-  animation: fadeIn 0.05s ease-in forwards;
+opacity: 0;
+animation: fadeIn 0.05s ease-in forwards;
 }
 
 @keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+to {
+opacity: 1;
+}
 }
 
 .dashboard-btn {
-  background: #000000;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-family: 'Crimson Text', serif;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: 100%;
-  text-align: center;
+background: #000000;
+color: #ffffff;
+border: none;
+border-radius: 8px;
+padding: 12px 24px;
+font-family: 'Crimson Text', serif;
+font-size: 15px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s ease;
+width: 100%;
+text-align: center;
 }
 
 .dashboard-btn:hover {
-  background: #2a2a2a;
-  transform: translateY(-1px);
+background: #2a2a2a;
+transform: translateY(-1px);
 }
 
 .dashboard-btn:active {
-  transform: translateY(0);
-}
-    
-
-    .topics-section {
-  padding: 80px 32px 40px;
-  font-family: 'Crimson Text', serif;
+transform: translateY(0);
 }
 
-    .topics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
-      margin-top: 40px;
-      width: 100%;
-    }
 
-    .topic-card {
-      background: white;
-      border: 1px solid #d4d4d4;
-      border-radius: 12px;
-      padding: 32px;
-      transition: all 0.2s ease;
-      cursor: pointer;
-      position: relative;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      box-sizing: border-box;
-    }
+.topics-section {
+padding: 80px 32px 40px;
+font-family: 'Crimson Text', serif;
+}
 
-    .topic-card:hover {
-      border-color: #a0a0a0;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
+.topics-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+gap: 20px;
+margin-top: 40px;
+width: 100%;
+}
 
-    .topic-title {
-      font-size: 26px;
-      font-weight: 600;
-      color: #000000;
-      letter-spacing: -0.02em;
-      line-height: 1.3;
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
+.topic-card {
+background: white;
+border: 1px solid #d4d4d4;
+border-radius: 12px;
+padding: 32px;
+transition: all 0.2s ease;
+cursor: pointer;
+position: relative;
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+box-sizing: border-box;
+}
 
-    .topic-number {
-      font-size: 26px;
-      font-weight: 600;
-      color: #999;
-      letter-spacing: -0.02em;
-    }
+.topic-card:hover {
+border-color: #a0a0a0;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
 
-    /* Expanded card overlay */
-    .expanded-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-      display: none;
-      pointer-events: none;
-      background: rgba(0, 0, 0, 0);
-      transition: background 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-    }
+.topic-title {
+font-size: 26px;
+font-weight: 600;
+color: #000000;
+letter-spacing: -0.02em;
+line-height: 1.3;
+display: flex;
+align-items: baseline;
+gap: 12px;
+word-wrap: break-word;
+overflow-wrap: break-word;
+}
 
-    .expanded-overlay.active {
-      display: block;
-      pointer-events: all;
-      background: rgba(0, 0, 0, 0.65);
-    }
+.topic-number {
+font-size: 26px;
+font-weight: 600;
+color: #999;
+letter-spacing: -0.02em;
+}
 
-    .expanded-card {
-      position: fixed;
-      background: white;
-      border: 1px solid #d4d4d4;
-      border-radius: 12px;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
-      z-index: 1001;
-      opacity: 0;
-      transform: scale(0.92) translateZ(0);
-      transition: all 0.65s cubic-bezier(0.19, 1, 0.22, 1);
-      overflow: hidden;
-      max-height: 85vh;
-      overflow-y: auto;
-      box-sizing: border-box;
-      will-change: transform, opacity, left, top, width;
-    }
+/* Expanded card overlay */
+.expanded-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 1000;
+display: none;
+pointer-events: none;
+background: rgba(0, 0, 0, 0);
+transition: background 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-    .expanded-card.animating {
-      opacity: 1;
-      transform: scale(1) translateZ(0);
-    }
+.expanded-overlay.active {
+display: block;
+pointer-events: all;
+background: rgba(0, 0, 0, 0.65);
+}
 
-    .expanded-card-header {
-      padding: 40px;
-      border-bottom: 1px solid #e8e8e8;
-      position: sticky;
-      top: 0;
-      background: white;
-      z-index: 10;
-    }
+.expanded-card {
+position: fixed;
+background: white;
+border: 1px solid #d4d4d4;
+border-radius: 12px;
+box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+z-index: 1001;
+opacity: 0;
+transform: scale(0.92) translateZ(0);
+transition: all 0.65s cubic-bezier(0.19, 1, 0.22, 1);
+overflow: hidden;
+max-height: 85vh;
+overflow-y: auto;
+box-sizing: border-box;
+will-change: transform, opacity, left, top, width;
+}
 
-    .close-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 32px;
-      height: 32px;
-      border: none;
-      background: #f5f5f5;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-      font-size: 20px;
-      color: #666;
-    }
+.expanded-card.animating {
+opacity: 1;
+transform: scale(1) translateZ(0);
+}
 
-    .close-btn:hover {
-      background: #e8e8e8;
-      color: #000;
-    }
+.expanded-card-header {
+padding: 40px;
+border-bottom: 1px solid #e8e8e8;
+position: sticky;
+top: 0;
+background: white;
+z-index: 10;
+}
 
-    .expanded-title {
-      font-size: 36px;
-      font-weight: 600;
-      color: #000000;
-      letter-spacing: -0.02em;
-      line-height: 1.3;
-      display: flex;
-      align-items: baseline;
-      gap: 16px;
-    }
+.close-btn {
+position: absolute;
+top: 20px;
+right: 20px;
+width: 32px;
+height: 32px;
+border: none;
+background: #f5f5f5;
+border-radius: 50%;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.2s ease;
+font-size: 20px;
+color: #666;
+}
 
-    .expanded-number {
-      font-size: 36px;
-      font-weight: 600;
-      color: #999;
-      letter-spacing: -0.02em;
-    }
+.close-btn:hover {
+background: #e8e8e8;
+color: #000;
+}
 
-    .accordion-content {
-      padding: 0 40px 40px;
-    }
+.expanded-title {
+font-size: 36px;
+font-weight: 600;
+color: #000000;
+letter-spacing: -0.02em;
+line-height: 1.3;
+display: flex;
+align-items: baseline;
+gap: 16px;
+}
 
-    .accordion-item {
-      border-bottom: 1px solid #e8e8e8;
-      overflow: hidden;
-    }
+.expanded-number {
+font-size: 36px;
+font-weight: 600;
+color: #999;
+letter-spacing: -0.02em;
+}
 
-    .accordion-item:last-child {
-      border-bottom: none;
-    }
+.accordion-content {
+padding: 0 40px 40px;
+}
 
-    .accordion-header {
-      padding: 24px 0;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.2s ease;
-    }
+.accordion-item {
+border-bottom: 1px solid #e8e8e8;
+overflow: hidden;
+}
 
-    .accordion-header:hover {
-      color: #666;
-    }
+.accordion-item:last-child {
+border-bottom: none;
+}
 
-    .accordion-header h3 {
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-    }
+.accordion-header {
+padding: 24px 0;
+cursor: pointer;
+display: flex;
+justify-content: space-between;
+align-items: center;
+transition: all 0.2s ease;
+}
 
-    .accordion-icon {
-      width: 24px;
-      height: 24px;
-      transition: transform 0.3s ease;
-      flex-shrink: 0;
-    }
+.accordion-header:hover {
+color: #666;
+}
 
-    .accordion-icon.rotated {
-      transform: rotate(180deg);
-    }
+.accordion-header h3 {
+font-size: 22px;
+font-weight: 600;
+letter-spacing: -0.01em;
+}
 
-    .accordion-body {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease, padding 0.4s ease;
-      padding: 0;
-    }
+.accordion-icon {
+width: 24px;
+height: 24px;
+transition: transform 0.3s ease;
+flex-shrink: 0;
+}
 
-    .accordion-body.open {
-      max-height: 1000px;
-      padding-bottom: 24px;
-    }
+.accordion-icon.rotated {
+transform: rotate(180deg);
+}
 
-    .accordion-body p {
-      font-size: 18px;
-      line-height: 1.7;
-      color: #444;
-      margin-bottom: 20px;
-    }
+.accordion-body {
+max-height: 0;
+overflow: hidden;
+transition: max-height 0.4s ease, padding 0.4s ease;
+padding: 0;
+}
 
-    .button-group {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-    }
+.accordion-body.open {
+max-height: 1000px;
+padding-bottom: 24px;
+}
 
-    .action-btn {
-      background: #000000;
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-family: 'Crimson Text', serif;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      flex: 1;
-      max-width: 120px;
-    }
+.accordion-body p {
+font-size: 18px;
+line-height: 1.7;
+color: #444;
+margin-bottom: 20px;
+}
 
-    .action-btn:hover {
-      background: #2a2a2a;
-      transform: translateY(-1px);
-    }
+.button-group {
+display: flex;
+gap: 12px;
+margin-top: 20px;
+}
 
-    .action-btn:active {
-      transform: translateY(0);
-    }
+.action-btn {
+background: #000000;
+color: #ffffff;
+border: none;
+border-radius: 8px;
+padding: 10px 20px;
+font-family: 'Crimson Text', serif;
+font-size: 15px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s ease;
+flex: 1;
+max-width: 120px;
+}
 
-    /* Past Papers Section */
-    .papers-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      margin-top: 0;
-    }
+.action-btn:hover {
+background: #2a2a2a;
+transform: translateY(-1px);
+}
 
-    .paper-main-card {
-      background: white;
-      border: 1px solid #d4d4d4;
-      border-radius: 12px;
-      padding: 32px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      transition: all 0.2s ease;
-    }
+.action-btn:active {
+transform: translateY(0);
+}
 
-    .paper-main-card:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
+/* Past Papers Section */
+.papers-grid {
+display: flex;
+flex-direction: column;
+gap: 24px;
+margin-top: 0;
+}
 
-    .paper-main-header {
-      margin-bottom: 28px;
-    }
+.paper-main-card {
+background: white;
+border: 1px solid #d4d4d4;
+border-radius: 12px;
+padding: 32px;
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+transition: all 0.2s ease;
+}
 
-    .paper-main-title {
-      font-size: 26px;
-      font-weight: 600;
-      color: #000000;
-      letter-spacing: -0.02em;
-      margin-bottom: 10px;
-      font-family: 'Crimson Text', serif;
-    }
+.paper-main-card:hover {
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
 
-    .paper-main-description {
-      font-size: 15px;
-      color: #6b7280;
-      line-height: 1.6;
-    }
+.paper-main-header {
+margin-bottom: 28px;
+}
 
-    .paper-content-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      position: relative;
-    }
+.paper-main-title {
+font-size: 26px;
+font-weight: 600;
+color: #000000;
+letter-spacing: -0.02em;
+margin-bottom: 10px;
+font-family: 'Crimson Text', serif;
+}
 
-    .paper-nav-btn {
-      background: #f5f5f5;
-      border: 1px solid #e5e5e5;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      min-width: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      color: #666;
-      flex-shrink: 0;
-    }
+.paper-main-description {
+font-size: 15px;
+color: #6b7280;
+line-height: 1.6;
+}
 
-    .paper-nav-btn:hover:not(:disabled) {
-      background: #e8e8e8;
-      border-color: #d4d4d4;
-      color: #000;
-      transform: scale(1.05);
-    }
+.paper-content-wrapper {
+display: flex;
+align-items: center;
+gap: 16px;
+position: relative;
+}
 
-    .paper-nav-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
+.paper-nav-btn {
+background: #f5f5f5;
+border: 1px solid #e5e5e5;
+border-radius: 50%;
+width: 36px;
+height: 36px;
+min-width: 36px;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 0.2s ease;
+color: #666;
+flex-shrink: 0;
+}
 
-    .paper-content-carousel {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      min-height: 260px;
-      touch-action: pan-y;
-    }
+.paper-nav-btn:hover:not(:disabled) {
+background: #e8e8e8;
+border-color: #d4d4d4;
+color: #000;
+transform: scale(1.05);
+}
 
-    .paper-content-card {
-      background: #fafafa;
-      border: 1px solid #e8e8e8;
-      border-radius: 10px;
-      padding: 28px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      opacity: 0;
-      transform: translateX(20px);
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      pointer-events: none;
-    }
+.paper-nav-btn:disabled {
+opacity: 0.3;
+cursor: not-allowed;
+}
 
-    .paper-content-card.active {
-      opacity: 1;
-      transform: translateX(0);
-      pointer-events: all;
-      position: relative;
-    }
+.paper-content-carousel {
+flex: 1;
+position: relative;
+overflow: hidden;
+min-height: 260px;
+touch-action: pan-y;
+}
 
-    .paper-content-title {
-      font-size: 22px;
-      font-weight: 600;
-      color: #1a1a1a;
-      letter-spacing: -0.01em;
-      margin-bottom: 24px;
-      font-family: 'Crimson Text', serif;
-    }
+.paper-content-card {
+background: #fafafa;
+border: 1px solid #e8e8e8;
+border-radius: 10px;
+padding: 28px;
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+opacity: 0;
+transform: translateX(20px);
+transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+pointer-events: none;
+}
 
-    .paper-info-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 24px;
-    }
+.paper-content-card.active {
+opacity: 1;
+transform: translateX(0);
+pointer-events: all;
+position: relative;
+}
 
-    .paper-info-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 15px;
-      color: #444;
-    }
+.paper-content-title {
+font-size: 22px;
+font-weight: 600;
+color: #1a1a1a;
+letter-spacing: -0.01em;
+margin-bottom: 24px;
+font-family: 'Crimson Text', serif;
+}
 
-    .paper-info-row svg {
-      flex-shrink: 0;
-      color: #666;
-    }
+.paper-info-list {
+display: flex;
+flex-direction: column;
+gap: 14px;
+margin-bottom: 24px;
+}
 
-    .paper-action-btn {
-      background: #000000;
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
-      padding: 11px 22px;
-      font-family: 'Crimson Text', serif;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: inline-block;
-    }
+.paper-info-row {
+display: flex;
+align-items: center;
+gap: 10px;
+font-size: 15px;
+color: #444;
+}
 
-    .paper-action-btn:hover {
-      background: #2a2a2a;
-      transform: translateY(-1px);
-    }
+.paper-info-row svg {
+flex-shrink: 0;
+color: #666;
+}
 
-    .paper-action-btn:active {
-      transform: translateY(0);
-    }
+.paper-action-btn {
+background: #000000;
+color: #ffffff;
+border: none;
+border-radius: 8px;
+padding: 11px 22px;
+font-family: 'Crimson Text', serif;
+font-size: 15px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s ease;
+display: inline-block;
+}
 
-    /* Dot indicators for mobile */
-    .carousel-dots {
-      display: none;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 20px;
-    }
+.paper-action-btn:hover {
+background: #2a2a2a;
+transform: translateY(-1px);
+}
 
-    .carousel-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #d4d4d4;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
+.paper-action-btn:active {
+transform: translateY(0);
+}
 
-    .carousel-dot.active {
-      background: #1a1a1a;
-      width: 24px;
-      border-radius: 4px;
-    }
+/* Dot indicators for mobile */
+.carousel-dots {
+display: none;
+justify-content: center;
+gap: 8px;
+margin-top: 20px;
+}
 
-    /* Responsive design */
-    @media (max-width: 768px) {
-  .container { 
-    margin: 0; 
-  }
-  
-  .course-info, .topics-section, .tab-content { 
-    padding-left: 20px; 
-    padding-right: 20px; 
-  }
+.carousel-dot {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+background: #d4d4d4;
+transition: all 0.3s ease;
+cursor: pointer;
+}
 
-  .quote-box {
-    position: static;
-    width: 100%;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
+.carousel-dot.active {
+background: #1a1a1a;
+width: 24px;
+border-radius: 4px;
+}
 
-  .topics-section {
-    padding: 40px 20px 40px;
-  }
-  
-  .course-header { 
-    flex-direction: column; 
-    gap: 20px; 
-  }
-      
-      .nav-tabs { 
-        overflow-x: auto; 
-        -webkit-overflow-scrolling: touch; 
-      }
-      
-      .nav-tab { 
-        white-space: nowrap; 
-      }
-      
-      .topics-grid { 
-        grid-template-columns: 1fr; 
-        gap: 16px; 
-        margin-top: 32px; 
-      }
-      
-      .expanded-card-header { 
-        padding: 32px 24px; 
-      }
-      
-      .accordion-content { 
-        padding: 0 24px 32px; 
-      }
+/* Responsive design */
+@media (max-width: 768px) {
+.container { 
+margin: 0; 
+}
 
-      /* Mobile paper carousel adjustments */
-      .paper-nav-btn {
-        display: none;
-      }
+.course-info, .topics-section, .tab-content { 
+padding-left: 20px; 
+padding-right: 20px; 
+}
 
-      .paper-content-wrapper {
-        gap: 0;
-      }
+.quote-box {
+position: static;
+width: 100%;
+margin-top: 20px;
+margin-bottom: 20px;
+}
 
-      .paper-content-carousel {
-        overflow: visible;
-        margin: 0 -32px;
-        padding: 0 32px;
-      }
+.topics-section {
+padding: 40px 20px 40px;
+}
 
-      .carousel-dots {
-        display: flex;
-      }
-    }
+.course-header { 
+flex-direction: column; 
+gap: 20px; 
+}
 
-    @media (min-width: 1024px) {
-      .container { 
-        padding-left: 80px; 
-        padding-right: 80px; 
-      }
-    }
+.nav-tabs { 
+overflow-x: auto; 
+-webkit-overflow-scrolling: touch; 
+}
 
-    @media (min-width: 768px) and (max-width: 1023px) {
-      .container { 
-        padding-left: 40px; 
-        padding-right: 40px; 
-      }
-    }
+.nav-tab { 
+white-space: nowrap; 
+}
+
+.topics-grid { 
+grid-template-columns: 1fr; 
+gap: 16px; 
+margin-top: 32px; 
+}
+
+.expanded-card-header { 
+padding: 32px 24px; 
+}
+
+.accordion-content { 
+padding: 0 24px 32px; 
+}
+
+/* Mobile paper carousel adjustments */
+.paper-nav-btn {
+display: none;
+}
+
+.paper-content-wrapper {
+gap: 0;
+}
+
+.paper-content-carousel {
+overflow: visible;
+margin: 0 -32px;
+padding: 0 32px;
+}
+
+.carousel-dots {
+display: flex;
+}
+}
+
+@media (min-width: 1024px) {
+.container { 
+padding-left: 80px; 
+padding-right: 80px; 
+}
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+.container { 
+padding-left: 40px; 
+padding-right: 40px; 
+}
+}
 
 
 /* Lecture Progress Bar Styles */
 .lecture-progress-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
+display: flex;
+align-items: center;
+gap: 8px;
+margin-top: 8px;
 }
 
+
+/* Paper Topic Cards */
+.paper-topic-card {
+background: white;
+border: 1px solid #d4d4d4;
+border-radius: 12px;
+padding: 32px;
+transition: all 0.2s ease;
+cursor: pointer;
+position: relative;
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+box-sizing: border-box;
+}
+
+.paper-topic-card:hover {
+border-color: #a0a0a0;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+transform: translateY(-2px);
+}
+
+.paper-card-header {
+margin-bottom: 24px;
+}
+
+.paper-topic-title {
+font-size: 26px;
+font-weight: 600;
+color: #000000;
+letter-spacing: -0.02em;
+line-height: 1.3;
+display: flex;
+align-items: baseline;
+gap: 12px;
+word-wrap: break-word;
+overflow-wrap: break-word;
+font-family: 'Crimson Text', serif;
+margin-bottom: 8px;
+}
+
+.paper-topic-number {
+font-size: 26px;
+}
+
+.paper-subtitle {
+font-size: 15px;
+color: #6b7280;
+line-height: 1.6;
+margin-top: 8px;
+}
+
+.paper-card-stats {
+display: flex;
+flex-direction: column;
+gap: 12px;
+padding-top: 20px;
+border-top: 1px solid #f3f4f6;
+}
+
+.paper-stat-item {
+display: flex;
+align-items: center;
+gap: 12px;
+font-size: 15px;
+color: #444;
+}
+
+.paper-stat-icon {
+font-size: 18px;
+width: 24px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.paper-stat-text {
+font-weight: 500;
+}
+
+/* Expanded Paper Modal */
+.expanded-paper-card {
+position: fixed;
+background: white;
+border: 1px solid #d4d4d4;
+border-radius: 12px;
+box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+z-index: 1001;
+opacity: 0;
+transform: scale(0.92) translateZ(0);
+transition: all 0.65s cubic-bezier(0.19, 1, 0.22, 1);
+overflow: hidden;
+max-height: 85vh;
+overflow-y: auto;
+box-sizing: border-box;
+will-change: transform, opacity, left, top, width;
+}
+
+.expanded-paper-card.animating {
+opacity: 1;
+transform: scale(1) translateZ(0);
+}
+
+.paper-modal-header {
+padding: 40px;
+border-bottom: 1px solid #e8e8e8;
+position: sticky;
+top: 0;
+background: white;
+z-index: 10;
+}
+
+.paper-modal-title {
+font-size: 36px;
+font-weight: 600;
+color: #000000;
+letter-spacing: -0.02em;
+line-height: 1.3;
+font-family: 'Crimson Text', serif;
+margin-bottom: 12px;
+}
+
+.paper-modal-description {
+font-size: 16px;
+color: #6b7280;
+line-height: 1.6;
+}
+
+.paper-modal-content {
+padding: 40px;
+}
+
+.paper-option {
+background: #fafafa;
+border: 1px solid #e8e8e8;
+border-radius: 10px;
+padding: 28px;
+margin-bottom: 20px;
+transition: all 0.2s ease;
+}
+
+.paper-option:hover {
+background: #f5f5f5;
+border-color: #d4d4d4;
+}
+
+.paper-option-title {
+font-size: 22px;
+font-weight: 600;
+color: #1a1a1a;
+letter-spacing: -0.01em;
+margin-bottom: 20px;
+font-family: 'Crimson Text', serif;
+}
+
+.paper-option-details {
+display: flex;
+flex-direction: column;
+gap: 12px;
+margin-bottom: 20px;
+}
+
+.paper-detail-row {
+display: flex;
+align-items: center;
+gap: 10px;
+font-size: 15px;
+color: #444;
+}
+
+.paper-detail-row svg {
+flex-shrink: 0;
+color: #666;
+}
+
+.paper-start-btn {
+background: #000000;
+color: #ffffff;
+border: none;
+border-radius: 8px;
+padding: 11px 22px;
+font-family: 'Crimson Text', serif;
+font-size: 15px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s ease;
+display: inline-block;
+}
+
+.paper-start-btn:hover {
+background: #2a2a2a;
+transform: translateY(-1px);
+}
+
+.paper-start-btn:active {
+transform: translateY(0);
+}
+
+
 .lecture-progress-bar {
-  width: 120px;
-  height: 6px;
-  background-color: #f2f2f2;
-  border-radius: 10px;
-  overflow: hidden;
-  display: flex;
+width: 120px;
+height: 6px;
+background-color: #f2f2f2;
+border-radius: 10px;
+overflow: hidden;
+display: flex;
 }
 
 .progress-correct {
-  height: 100%;
-  background-color: #54d3ab;
-  transition: width 0.3s ease;
+height: 100%;
+background-color: #54d3ab;
+transition: width 0.3s ease;
 }
 
 .progress-partial {
-  height: 100%;
-  background-color: #f7b84b;
-  transition: width 0.3s ease;
+height: 100%;
+background-color: #f7b84b;
+transition: width 0.3s ease;
 }
 
 .progress-incorrect {
-  height: 100%;
-  background-color: #e16280;
-  transition: width 0.3s ease;
+height: 100%;
+background-color: #e16280;
+transition: width 0.3s ease;
 }
 
 .progress-stats {
-  font-size: 12px;
-  color: #6b7280;
-  font-weight: 500;
+font-size: 12px;
+color: #6b7280;
+font-weight: 500;
 }
 
 
 
 
-    
-  </style>
+
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="header-section">
-    </div>
 
-    <div class="course-info">
-  <div class="course-header">
-    <div class="course-details">
-      <h1 class="course-title">Foundation Tier</h1>
-      <p class="course-subtitle">
-        Question repeats from the past AQA, EDEXCEL and OCR Foundation Tier Examinations
-      </p>
-    </div>
-  </div>
 
-  <!-- Motivational Quote Box -->
+
+<nav>
+<div class="nav-left">
+<img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="GMM Logo">
+<span>GCSE Maths Mastery</span>
+</div>
+<div class="nav-right">
+<div class="nav-stats-container">
+<div class="streak-badge" id="streak-badge">0 Day Streak</div>
+<div class="mastery-miles-badge">
+<img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
+<span id="mastery-miles">0</span>
+</div>
+</div>
+<div class="user-profile-container">
+<div class="user-info" id="user-profile-trigger">
+<div class="user-avatar" id="user-avatar">S</div>
+<span class="user-name" id="user-name">Student</span>
+</div>
+<div class="user-dropdown" id="user-dropdown">
+<div class="dropdown-item">
+<span>👤</span>
+<span>My Profile</span>
+</div>
+<div class="dropdown-item">
+<span>⚙️</span>
+<span>Settings</span>
+</div>
+<div class="dropdown-item signout" id="signout-btn">
+<span>🚪</span>
+<span>Sign Out</span>
+</div>
+</div>
+</div>
+</div>
+</nav>
+
+
+
+
+
+
+<div class="container">
+<div class="header-section">
+</div>
+
+<div class="course-info">
+<div class="course-header">
+<div class="course-details">
+<h1 class="course-title">Foundation Tier</h1>
+<p class="course-subtitle">
+Question repeats from the past AQA, EDEXCEL and OCR Foundation Tier Examinations
+</p>
+</div>
+</div>
+
+<!-- Motivational Quote Box -->
 <div class="quote-box">
-  <div class="quote-text" id="motivational-quote"></div>
-  <button class="dashboard-btn" id="dashboard-btn">
-    Back to Dashboard
-  </button>
+<div class="quote-text" id="motivational-quote"></div>
+<button class="dashboard-btn" id="dashboard-btn">
+Back to Dashboard
+</button>
 </div>
 
-  <div class="nav-tabs">
-        <a class="nav-tab active" data-tab="lectures-content">Lectures & Quiz</a>
-        <a class="nav-tab" data-tab="flash-content">Flashtiles</a>
-        <a class="nav-tab" data-tab="papers-content">Past Papers</a>
-      </div>
-    </div>
-
-
-    
-
-    <div id="lectures-content" class="tab-content">
-  <div class="topics-section">
-    <div class="topics-grid">
-      <div class="topic-card" data-topic="1" data-title="Number">
-        <div class="topic-title">
-          <span class="topic-number">1</span>
-          <span>Number</span>
-        </div>
-      </div>
-      <div class="topic-card" data-topic="2" data-title="Algebra">
-        <div class="topic-title">
-          <span class="topic-number">2</span>
-          <span>Algebra</span>
-        </div>
-      </div>
-      <div class="topic-card" data-topic="3" data-title="Ratio and Proportion">
-        <div class="topic-title">
-          <span class="topic-number">3</span>
-          <span>Ratio and Proportion</span>
-        </div>
-      </div>
-      <div class="topic-card" data-topic="4" data-title="Geometry and Measures">
-        <div class="topic-title">
-          <span class="topic-number">4</span>
-          <span>Geometry and Measures</span>
-        </div>
-      </div>
-      <div class="topic-card" data-topic="5" data-title="Trigonometry">
-        <div class="topic-title">
-          <span class="topic-number">5</span>
-          <span>Trigonometry</span>
-        </div>
-      </div>
-      <div class="topic-card" data-topic="6" data-title="Probability and Statistics">
-        <div class="topic-title">
-          <span class="topic-number">6</span>
-          <span>Probability and Statistics</span>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="nav-tabs">
+<a class="nav-tab active" data-tab="lectures-content">Lectures & Quiz</a>
+<a class="nav-tab" data-tab="flash-content">Flashtiles</a>
+<a class="nav-tab" data-tab="papers-content">Past Papers</a>
+</div>
 </div>
 
-   <div id="flash-content" class="tab-content hidden">
-  <div class="topics-section">
-    <div class="topics-grid">
-      <div class="topic-card flashtile-card" data-flashtopic="1" data-title="Number">
-        <div class="topic-title">
-          <span class="topic-number">1</span>
-          <span>Number</span>
-        </div>
-      </div>
-      <div class="topic-card flashtile-card" data-flashtopic="2" data-title="Algebra">
-        <div class="topic-title">
-          <span class="topic-number">2</span>
-          <span>Algebra</span>
-        </div>
-      </div>
-      <div class="topic-card flashtile-card" data-flashtopic="3" data-title="Ratio and Proportion">
-        <div class="topic-title">
-          <span class="topic-number">3</span>
-          <span>Ratio and Proportion</span>
-        </div>
-      </div>
-      <div class="topic-card flashtile-card" data-flashtopic="4" data-title="Geometry and Measures">
-        <div class="topic-title">
-          <span class="topic-number">4</span>
-          <span>Geometry and Measures</span>
-        </div>
-      </div>
-      <div class="topic-card flashtile-card" data-flashtopic="5" data-title="Trigonometry">
-        <div class="topic-title">
-          <span class="topic-number">5</span>
-          <span>Trigonometry</span>
-        </div>
-      </div>
-      <div class="topic-card flashtile-card" data-flashtopic="6" data-title="Probability and Statistics">
-        <div class="topic-title">
-          <span class="topic-number">6</span>
-          <span>Probability and Statistics</span>
-        </div>
-      </div>
-    </div>
-  </div>
+
+
+
+<div id="lectures-content" class="tab-content">
+<div class="topics-section">
+<div class="topics-grid">
+<div class="topic-card" data-topic="1" data-title="Number">
+<div class="topic-title">
+<span class="topic-number">1</span>
+<span>Number</span>
+</div>
+</div>
+<div class="topic-card" data-topic="2" data-title="Algebra">
+<div class="topic-title">
+<span class="topic-number">2</span>
+<span>Algebra</span>
+</div>
+</div>
+<div class="topic-card" data-topic="3" data-title="Ratio and Proportion">
+<div class="topic-title">
+<span class="topic-number">3</span>
+<span>Ratio and Proportion</span>
+</div>
+</div>
+<div class="topic-card" data-topic="4" data-title="Geometry and Measures">
+<div class="topic-title">
+<span class="topic-number">4</span>
+<span>Geometry and Measures</span>
+</div>
+</div>
+<div class="topic-card" data-topic="5" data-title="Trigonometry">
+<div class="topic-title">
+<span class="topic-number">5</span>
+<span>Trigonometry</span>
+</div>
+</div>
+<div class="topic-card" data-topic="6" data-title="Probability and Statistics">
+<div class="topic-title">
+<span class="topic-number">6</span>
+<span>Probability and Statistics</span>
+</div>
+</div>
+</div>
+</div>
 </div>
 
-    <div id="papers-content" class="tab-content hidden">
-      <div class="topics-section">
-        <div class="papers-grid">
-          <!-- GCSE Experience Card -->
-          <div class="paper-main-card">
-            <div class="paper-main-header">
-              <h2 class="paper-main-title">GCSE Experience</h2>
-              <p class="paper-main-description">Hand-selected GCSE past paper questions to test your strengths and weaknesses</p>
-            </div>
-            
-            <div class="paper-content-wrapper">
-              <button class="paper-nav-btn paper-nav-left" data-carousel="gcse-experience" type="button">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M15 18l-6-6 6-6"/>
-                </svg>
-              </button>
-              
-              <div class="paper-content-carousel" data-carousel-id="gcse-experience">
-                <div class="paper-content-card active">
-                  <h3 class="paper-content-title">Paper 1 (Non Calculator)</h3>
-                  <div class="paper-info-list">
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                      <span>90 Minutes</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                      </svg>
-                      <span>36 Questions</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                      </svg>
-                      <span>80 Marks</span>
-                    </div>
-                  </div>
-                  <button class="paper-action-btn">Get Started →</button>
-                </div>
-                
-                <div class="paper-content-card">
-                  <h3 class="paper-content-title">Paper 2 (Calculator)</h3>
-                  <div class="paper-info-list">
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                      <span>90 Minutes</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                      </svg>
-                      <span>36 Questions</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                      </svg>
-                      <span>80 Marks</span>
-                    </div>
-                  </div>
-                  <button class="paper-action-btn">Get Started →</button>
-                </div>
-                
-                <div class="paper-content-card">
-                  <h3 class="paper-content-title">Paper 3 (Calculator)</h3>
-                  <div class="paper-info-list">
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                      <span>90 Minutes</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                      </svg>
-                      <span>36 Questions</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                      </svg>
-                      <span>80 Marks</span>
-                    </div>
-                  </div>
-                  <button class="paper-action-btn">Get Started →</button>
-                </div>
-              </div>
-              
-              <button class="paper-nav-btn paper-nav-right" data-carousel="gcse-experience" type="button">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M9 18l6-6-6-6"/>
-                </svg>
-              </button>
-            </div>
-            
-            <div class="carousel-dots" data-dots-for="gcse-experience">
-              <span class="carousel-dot active" data-dot-index="0"></span>
-              <span class="carousel-dot" data-dot-index="1"></span>
-              <span class="carousel-dot" data-dot-index="2"></span>
-            </div>
-          </div>
+<div id="flash-content" class="tab-content hidden">
+<div class="topics-section">
+<div class="topics-grid">
+<div class="topic-card flashtile-card" data-flashtopic="1" data-title="Number">
+<div class="topic-title">
+<span class="topic-number">1</span>
+<span>Number</span>
+</div>
+</div>
+<div class="topic-card flashtile-card" data-flashtopic="2" data-title="Algebra">
+<div class="topic-title">
+<span class="topic-number">2</span>
+<span>Algebra</span>
+</div>
+</div>
+<div class="topic-card flashtile-card" data-flashtopic="3" data-title="Ratio and Proportion">
+<div class="topic-title">
+<span class="topic-number">3</span>
+<span>Ratio and Proportion</span>
+</div>
+</div>
+<div class="topic-card flashtile-card" data-flashtopic="4" data-title="Geometry and Measures">
+<div class="topic-title">
+<span class="topic-number">4</span>
+<span>Geometry and Measures</span>
+</div>
+</div>
+<div class="topic-card flashtile-card" data-flashtopic="5" data-title="Trigonometry">
+<div class="topic-title">
+<span class="topic-number">5</span>
+<span>Trigonometry</span>
+</div>
+</div>
+<div class="topic-card flashtile-card" data-flashtopic="6" data-title="Probability and Statistics">
+<div class="topic-title">
+<span class="topic-number">6</span>
+<span>Probability and Statistics</span>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-          <!-- Paper 1 Mastery Card -->
-          <div class="paper-main-card">
-            <div class="paper-main-header">
-              <h2 class="paper-main-title">Paper 1 Mastery</h2>
-              <p class="paper-main-description">All topics across paper 1, with each question of varying levels of difficulty to assess your maths skills.</p>
-            </div>
-            
-            <div class="paper-content-wrapper">
-              <button class="paper-nav-btn paper-nav-left" data-carousel="paper-mastery" type="button">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M15 18l-6-6 6-6"/>
-                </svg>
-              </button>
-              
-              <div class="paper-content-carousel" data-carousel-id="paper-mastery">
-                <div class="paper-content-card active">
-                  <h3 class="paper-content-title">Paper 1 (Non Calculator)</h3>
-                  <div class="paper-info-list">
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                      <span>90 Minutes</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                      </svg>
-                      <span>36 Questions</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                      </svg>
-                      <span>80 Marks</span>
-                    </div>
-                  </div>
-                  <button class="paper-action-btn">Get Started →</button>
-                </div>
-                
-                <div class="paper-content-card">
-                  <h3 class="paper-content-title">Paper 2 (Calculator)</h3>
-                  <div class="paper-info-list">
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                      <span>90 Minutes</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                      </svg>
-                      <span>36 Questions</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                      </svg>
-                      <span>80 Marks</span>
-                    </div>
-                  </div>
-                  <button class="paper-action-btn">Get Started →</button>
-                </div>
-                
-                <div class="paper-content-card">
-                  <h3 class="paper-content-title">Paper 3 (Calculator)</h3>
-                  <div class="paper-info-list">
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                      <span>90 Minutes</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                      </svg>
-                      <span>36 Questions</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                      </svg>
-                      <span>80 Marks</span>
-                    </div>
-                  </div>
-                  <button class="paper-action-btn">Get Started →</button>
-                </div>
-              </div>
-              
-              <button class="paper-nav-btn paper-nav-right" data-carousel="paper-mastery" type="button">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M9 18l6-6-6-6"/>
-                </svg>
-              </button>
-            </div>
-            
-            <div class="carousel-dots" data-dots-for="paper-mastery">
-              <span class="carousel-dot active" data-dot-index="0"></span>
-              <span class="carousel-dot" data-dot-index="1"></span>
-              <span class="carousel-dot" data-dot-index="2"></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<div id="papers-content" class="tab-content hidden">
+<div class="topics-section">
+<div class="topics-grid">
+<!-- GCSE Experience Card -->
+<div class="paper-topic-card" data-paper-type="gcse-experience">
+<div class="paper-card-header">
+<div class="paper-topic-title">
+<span class="paper-topic-number">📝</span>
+<span>GCSE Experience</span>
+</div>
+<div class="paper-subtitle">Hand-selected past paper questions</div>
+</div>
+<div class="paper-card-stats">
+<div class="paper-stat-item">
+<div class="paper-stat-icon">📄</div>
+<div class="paper-stat-text">3 Papers</div>
+</div>
+<div class="paper-stat-item">
+<div class="paper-stat-icon">⏱️</div>
+<div class="paper-stat-text">90 min each</div>
+</div>
+<div class="paper-stat-item">
+<div class="paper-stat-icon">✓</div>
+<div class="paper-stat-text">240 marks total</div>
+</div>
+</div>
+</div>
 
-    <div style="height: 60px;"></div>
-  </div>
+<!-- Paper 1 Mastery Card -->
+<div class="paper-topic-card" data-paper-type="paper-mastery">
+<div class="paper-card-header">
+<div class="paper-topic-title">
+<span class="paper-topic-number">🎯</span>
+<span>Paper 1 Mastery</span>
+</div>
+<div class="paper-subtitle">Varying difficulty levels across all topics</div>
+</div>
+<div class="paper-card-stats">
+<div class="paper-stat-item">
+<div class="paper-stat-icon">📄</div>
+<div class="paper-stat-text">3 Papers</div>
+</div>
+<div class="paper-stat-item">
+<div class="paper-stat-icon">⏱️</div>
+<div class="paper-stat-text">90 min each</div>
+</div>
+<div class="paper-stat-item">
+<div class="paper-stat-icon">✓</div>
+<div class="paper-stat-text">240 marks total</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div style="height: 60px;"></div>
+</div>
 
-  <div class="expanded-overlay" id="expandedOverlay"></div>
+<div class="expanded-overlay" id="expandedOverlay"></div>
 
-  <script>
+<script>
 // ========== SUPABASE CONFIGURATION - ONLY DECLARE ONCE ==========
 const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
 
-    
-function getUserId() {
-  let userId = localStorage.getItem('userId');
-  if (!userId) {
-    userId = 'user_' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('userId', userId);
-  }
-  return userId;
+
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let userData = {
+    name: "Student",
+    userId: "00000000",
+    streak: 0,
+    masteryMiles: 0
+  name: "Student",
+  userId: "00000000",
+  streak: 0,
+  masteryMiles: 0
+};
+
+// Update streak based on login
+async function updateStreak(userId) {
+try {
+const today = new Date().toISOString().split('T')[0];
+
+const { data: existingStreak, error: fetchError } = await sbClient
+.from('user_streaks')
+.select('*')
+.eq('user_id', userId)
+.single();
+
+if (fetchError && fetchError.code !== 'PGRST116') {
+throw fetchError;
 }
+
+if (!existingStreak) {
+const { data: newStreak, error: insertError } = await sbClient
+.from('user_streaks')
+.insert([{
+user_id: userId,
+current_streak: 1,
+last_login_date: today
+}])
+.select()
+.single();
+
+if (insertError) throw insertError;
+return 1;
+}
+
+if (existingStreak.last_login_date === today) {
+return existingStreak.current_streak;
+}
+
+const lastLogin = new Date(existingStreak.last_login_date);
+const yesterday = new Date();
+yesterday.setDate(yesterday.getDate() - 1);
+const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+let newStreak;
+if (existingStreak.last_login_date === yesterdayStr) {
+newStreak = existingStreak.current_streak + 1;
+} else {
+newStreak = 1;
+}
+
+const { data: updatedStreak, error: updateError } = await sbClient
+.from('user_streaks')
+.update({
+current_streak: newStreak,
+last_login_date: today,
+updated_at: new Date().toISOString()
+})
+.eq('user_id', userId)
+.select()
+.single();
+
+if (updateError) throw updateError;
+return newStreak;
+
+} catch (error) {
+console.error('Streak update error:', error);
+return 0;
+}
+}
+
+async function checkAuth() {
+try {
+const { data: { session }, error } = await sbClient.auth.getSession();
+
+if (error) throw error;
+
+if (!session) {
+window.location.href = 'signin.html';
+return;
+}
+
+const user = session.user;
+const firstName = user.user_metadata.first_name || 'Student';
+const userId = user.id;
+
+const currentStreak = await updateStreak(userId);
+
+userData.name = firstName;
+userData.userId = userId.slice(0, 8);
+userData.streak = currentStreak;
+userData.masteryMiles = 1250; // You can fetch this from database later
+    userData.name = firstName;
+    userData.userId = userId.slice(0, 8);
+    userData.streak = currentStreak;
+    userData.masteryMiles = 1250; // You can fetch this from database later
+
+updateUserData();
+
+} catch (error) {
+console.error('Auth check error:', error);
+window.location.href = 'signin.html';
+}
+}
+
+function updateUserData() {
+    const streakBadge = document.getElementById('streak-badge');
+    const masteryMiles = document.getElementById('mastery-miles');
+    const userName = document.getElementById('user-name');
+    const userAvatar = document.getElementById('user-avatar');
+    
+    // Update streak (remove the emoji since CSS ::before adds it)
+    if (streakBadge) {
+        streakBadge.childNodes.forEach(node => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                node.textContent = `${userData.streak} Day Streak`;
+            }
+        });
+        // If no text node exists, just set textContent
+        if (streakBadge.childNodes.length === 0 || !Array.from(streakBadge.childNodes).some(n => n.nodeType === Node.TEXT_NODE)) {
+            streakBadge.textContent = `${userData.streak} Day Streak`;
+        }
+    }
+    
+    // Update mastery miles
+    if (masteryMiles) {
+        masteryMiles.textContent = userData.masteryMiles;
+    }
+    
+    // Update user name
+    if (userName) {
+        userName.textContent = userData.name;
+    }
+    
+    // Update user avatar
+    if (userAvatar) {
+        userAvatar.textContent = userData.name.charAt(0).toUpperCase();
+    }
+  document.getElementById('user-name').textContent = userData.name;
+  document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
+  document.getElementById('streak-badge').textContent = `${userData.streak} Day Streak`;
+  document.getElementById('mastery-miles').textContent = userData.masteryMiles;
+}
+
+// User dropdown functionality
+const userProfileTrigger = document.getElementById('user-profile-trigger');
+const userDropdown = document.getElementById('user-dropdown');
+const signoutBtn = document.getElementById('signout-btn');
+
+if (userProfileTrigger && userDropdown) {
+userProfileTrigger.addEventListener('click', (e) => {
+e.stopPropagation();
+userDropdown.classList.toggle('active');
+});
+
+document.addEventListener('click', (e) => {
+if (!userProfileTrigger.contains(e.target) && !userDropdown.contains(e.target)) {
+userDropdown.classList.remove('active');
+}
+});
+}
+
+if (signoutBtn) {
+signoutBtn.addEventListener('click', async () => {
+try {
+const { error } = await sbClient.auth.signOut();
+if (error) throw error;
+
+localStorage.clear();
+window.location.href = 'index.html';
+} catch (error) {
+console.error('Sign out error:', error);
+alert('Error signing out. Please try again.');
+}
+});
+}
+
+
+
+function getUserId() {
+let userId = localStorage.getItem('userId');
+if (!userId) {
+userId = 'user_' + Math.random().toString(36).substr(2, 9);
+localStorage.setItem('userId', userId);
+}
+return userId;
+}
+
+// ========== MOTIVATIONAL QUOTES SYSTEM ==========
+const motivationalQuotes = [
+"Every expert was once a beginner. Keep going.",
+"Mathematics is not about numbers, it's about patterns and thinking.",
+"Small progress is still progress. You're doing great.",
+"The only way to learn mathematics is to do mathematics.",
+"Mistakes are proof that you're trying. Embrace them.",
+"Success is the sum of small efforts repeated day in and day out.",
+"Your potential is endless. Go do what you were created to do.",
+"Mathematics is the music of reason. Keep playing.",
+"Don't watch the clock; do what it does. Keep going.",
+"The expert in anything was once a beginner like you.",
+"Believe in yourself and all that you are capable of achieving.",
+"Each problem you solve makes you stronger and wiser.",
+"Mathematics reveals its secrets to those who approach it with patience.",
+"You're not just learning maths, you're training your mind to think.",
+"Every question answered is a step closer to mastery.",
+"Great things never come from comfort zones. Challenge yourself.",
+"The difference between ordinary and extraordinary is practice.",
+"Your dedication today is building your success tomorrow.",
+"Mathematics is a language worth learning. You're becoming fluent.",
+"Persistence guarantees that results are inevitable.",
+"The journey of a thousand problems begins with a single equation.",
+"You have within you right now, everything you need to excel.",
+"Don't aim for perfection, aim for progress and understanding.",
+"Every mathematician was once confused by what now seems simple.",
+"Your breakthrough is closer than you think. Keep pushing forward."
+];
+
+let currentQuoteIndex = 0;
+let isTyping = false;
+
+function typeQuote(text, element) {
+return new Promise((resolve) => {
+element.innerHTML = '';
+let charIndex = 0;
+
+function typeChar() {
+if (charIndex < text.length) {
+const char = text[charIndex];
+const span = document.createElement('span');
+span.className = 'quote-char';
+span.textContent = char;
+span.style.animationDelay = '0s';
+// Preserve spaces by using non-breaking space for display
+if (char === ' ') {
+span.innerHTML = '&nbsp;';
+}
+element.appendChild(span);
+charIndex++;
+setTimeout(typeChar, 30);
+} else {
+setTimeout(resolve, 5000); // Show complete quote for 5 seconds
+}
+}
+
+typeChar();
+});
+}
+
+async function cycleQuotes() {
+const quoteElement = document.getElementById('motivational-quote');
+if (!quoteElement) return;
+
+while (true) {
+isTyping = true;
+await typeQuote(motivationalQuotes[currentQuoteIndex], quoteElement);
+isTyping = false;
+
+currentQuoteIndex = (currentQuoteIndex + 1) % motivationalQuotes.length;
+
+// Fade out
+quoteElement.style.opacity = '0';
+await new Promise(resolve => setTimeout(resolve, 500));
+quoteElement.style.transition = 'opacity 0.5s ease';
+quoteElement.style.opacity = '1';
+}
+}
+
+// ========== LOAD PROGRESS FOR PROGRESS BARS ==========
+async function loadAllLectureProgress() {
+const userId = getUserId();
+if (!userId) return;
+
+try {
+const { data, error } = await supabase
+.from('lecture_progress')
+.select('*')
+.eq('user_id', userId);
+
+if (data && !error) {
+console.log('Loaded progress for', data.length, 'lectures');
+data.forEach(lecture => {
+updateProgressBar(lecture);
+});
+}
+} catch (err) {
+console.error('Failed to load progress:', err);
+}
+}  
 
 // ========== NAVIGATION FUNCTION - THIS OPENS THE LECTURE ==========
 window.navigateToLecture = function(topicNum, sectionIndex, sectionTitle) {
-  console.log('Navigate called:', topicNum, sectionIndex, sectionTitle);
-  
+console.log('Navigate called:', topicNum, sectionIndex, sectionTitle);
+
 const lectureURLs = {
-  '1': {
-    '0': '/lectures/0-product-of-prime-factors/',
-    '1': '/lectures/1-highest-common-factor/',
-    '2': '/lectures/2-lowest-common-multiple/',
-    '3': '/lectures/3-ordering-numbers-rounding/',
-    '4': '/lectures/4-number-conversions/',
-    '5': '/lectures/5-order-of-operations-BIDMAS/',
-    '6': '/lectures/6-inequalities-on-a-number-line/',
-    '7': '/lectures/7-error-intervals/',
-    '8': '/lectures/8-bounds-and-truncation/',
-    '9': '/lectures/9-rounding-decimal-significant/',
-     '10': '/lectures/10-multiplying-fractions/',
-    '11': '/lectures/11-dividing-fractions/',
-    '12': '/lectures/12-adding-fractions/',
-    '13': '/lectures/13-subtracting-fractions/',
-    '14': '/lectures/14-simplifying-fractions/',
-    '15': '/lectures/15-mixed-improper-fractions/',
-    '16': '/lectures/16-fractions-of-amount/',
-    '17': '/lectures/17-percentage-of-amount/',
-    '18': '/lectures/18-reverse-percentages/',
-    '19': '/lectures/19-simple-interest/',
-    '20': '/lectures/20-compound-interest/',
-    '21': '/lectures/21-depreciation/',
-    '22': '/lectures/22-percentage-profit/',
-    '23': '/lectures/23-value-for-money/',
-    '24': '/lectures/24-standard-form/',
-    '25': '/lectures/25-number-powers/',
-    '26': '/lectures/26-estimation/',
-    '27': '/lectures/27-negative-numbers-operations/',
-    '28': '/lectures/28-converting-fractions-decimals/',
-    '29': '/lectures/29-unit-conversions/',
-    '30': '/lectures/30-calculator-fluency/'
-  },
-  '2': {
-    '0': '/lectures/algebra-0-index-laws/',
-    '1': '/lectures/algebra-1-expression-vs-equation/',
-    '2': '/lectures/algebra-2-factorising-expressions/',
-    '3': '/lectures/algebra-3-powers-in-brackets/',
-    '4': '/lectures/algebra-4-expanding-simplifying-brackets/',
-    '5': '/lectures/algebra-5-make-x-subject/',
-    '6': '/lectures/algebra-6-substitution/',
-    '7': '/lectures/algebra-7-solving-linear-equations/',
-    '8': '/lectures/algebra-8-forming-equations/',
-    '9': '/lectures/algebra-9-collecting-like-terms/',
-    '10': '/lectures/algebra-10-nth-term-sequences/',
-    '11': '/lectures/algebra-11-inequalities-number-line/',
-    '12': '/lectures/algebra-12-drawing-linear-graphs/',
-    '13': '/lectures/algebra-13-equation-straight-line/',
-    '14': '/lectures/algebra-14-gradient-of-line/',
-    '15': '/lectures/algebra-15-coordinates/'
-  },
-  '3': {
-    '0': '/lectures/ratio-0-simplifying-ratios/',
-    '1': '/lectures/ratio-1-sharing-in-ratio/',
-    '2': '/lectures/ratio-2-three-part-ratios/',
-    '3': '/lectures/ratio-3-ratios-as-fractions/',
-    '4': '/lectures/ratio-4-direct-proportion-unitary/',
-    '5': '/lectures/ratio-5-recipe-scale-problems/',
-    '6': '/lectures/ratio-6-best-buys/',
-    '7': '/lectures/ratio-7-exchange-rates/',
-    '8': '/lectures/ratio-8-speed-distance-time/',
-    '9': '/lectures/ratio-9-distance-time-graphs/',
-    '10': '/lectures/ratio-10-unit-conversions-metric/'
-  },
+'1': {
+'0': '/lectures/0-product-of-prime-factors/',
+'1': '/lectures/1-highest-common-factor/',
+'2': '/lectures/2-lowest-common-multiple/',
+'3': '/lectures/3-ordering-numbers-rounding/',
+'4': '/lectures/4-number-conversions/',
+'5': '/lectures/5-order-of-operations-BIDMAS/',
+'6': '/lectures/6-inequalities-on-a-number-line/',
+'7': '/lectures/7-error-intervals/',
+'8': '/lectures/8-bounds-and-truncation/',
+'9': '/lectures/9-rounding-decimal-significant/',
+'10': '/lectures/10-multiplying-fractions/',
+'11': '/lectures/11-dividing-fractions/',
+'12': '/lectures/12-adding-fractions/',
+'13': '/lectures/13-subtracting-fractions/',
+'14': '/lectures/14-simplifying-fractions/',
+'15': '/lectures/15-mixed-improper-fractions/',
+'16': '/lectures/16-fractions-of-amount/',
+'17': '/lectures/17-percentage-of-amount/',
+'18': '/lectures/18-reverse-percentages/',
+'19': '/lectures/19-simple-interest/',
+'20': '/lectures/20-compound-interest/',
+'21': '/lectures/21-depreciation/',
+'22': '/lectures/22-percentage-profit/',
+'23': '/lectures/23-value-for-money/',
+'24': '/lectures/24-standard-form/',
+'25': '/lectures/25-number-powers/',
+'26': '/lectures/26-estimation/',
+'27': '/lectures/27-negative-numbers-operations/',
+'28': '/lectures/28-converting-fractions-decimals/',
+'29': '/lectures/29-unit-conversions/',
+'30': '/lectures/30-calculator-fluency/'
+},
+'2': {
+'0': '/lectures/algebra-0-index-laws/',
+'1': '/lectures/algebra-1-expression-vs-equation/',
+'2': '/lectures/algebra-2-factorising-expressions/',
+'3': '/lectures/algebra-3-powers-in-brackets/',
+'4': '/lectures/algebra-4-expanding-simplifying-brackets/',
+'5': '/lectures/algebra-5-make-x-subject/',
+'6': '/lectures/algebra-6-substitution/',
+'7': '/lectures/algebra-7-solving-linear-equations/',
+'8': '/lectures/algebra-8-forming-equations/',
+'9': '/lectures/algebra-9-collecting-like-terms/',
+'10': '/lectures/algebra-10-nth-term-sequences/',
+'11': '/lectures/algebra-11-inequalities-number-line/',
+'12': '/lectures/algebra-12-drawing-linear-graphs/',
+'13': '/lectures/algebra-13-equation-straight-line/',
+'14': '/lectures/algebra-14-gradient-of-line/',
+'15': '/lectures/algebra-15-coordinates/'
+},
+'3': {
+'0': '/lectures/ratio-0-simplifying-ratios/',
+'1': '/lectures/ratio-1-sharing-in-ratio/',
+'2': '/lectures/ratio-2-three-part-ratios/',
+'3': '/lectures/ratio-3-ratios-as-fractions/',
+'4': '/lectures/ratio-4-direct-proportion-unitary/',
+'5': '/lectures/ratio-5-recipe-scale-problems/',
+'6': '/lectures/ratio-6-best-buys/',
+'7': '/lectures/ratio-7-exchange-rates/',
+'8': '/lectures/ratio-8-speed-distance-time/',
+'9': '/lectures/ratio-9-distance-time-graphs/',
+'10': '/lectures/ratio-10-unit-conversions-metric/'
+},
 '4': {
-  '0': '/lectures/geometry-0-angle-facts/',
-  '1': '/lectures/geometry-1-angles-on-lines/',
-  '2': '/lectures/geometry-2-angles-triangles-polygons/',
-  '3': '/lectures/geometry-3-properties-2d-3d-shapes/',
-  '4': '/lectures/geometry-4-bearings/',
-  '5': '/lectures/geometry-5-transformations/',
-  '6': '/lectures/geometry-6-congruent-shapes/',
-  '7': '/lectures/geometry-7-similar-shapes/',
-  '8': '/lectures/geometry-8-area-perimeter-shapes/',
-  '9': '/lectures/geometry-9-area-triangles-parallelograms/',
-  '10': '/lectures/geometry-10-circles-area-circumference/',
-  '11': '/lectures/geometry-11-nets-3d-shapes/',
-  '12': '/lectures/geometry-12-volume-cuboids-prisms/',
-  '13': '/lectures/geometry-13-surface-area-prisms/',
-  '14': '/lectures/geometry-14-scale-diagrams/',
-  '15': '/lectures/geometry-15-loci-constructions/'
- },
-  '5': {
-    '0': '/lectures/trigonometry-0-pythagoras-theorem/',
-    '1': '/lectures/trigonometry-1-soh-cah-toa/',
-    '2': '/lectures/trigonometry-2-trigonometry-real-life/'
+'0': '/lectures/geometry-0-angle-facts/',
+'1': '/lectures/geometry-1-angles-on-lines/',
+'2': '/lectures/geometry-2-angles-triangles-polygons/',
+'3': '/lectures/geometry-3-properties-2d-3d-shapes/',
+'4': '/lectures/geometry-4-bearings/',
+'5': '/lectures/geometry-5-transformations/',
+'6': '/lectures/geometry-6-congruent-shapes/',
+'7': '/lectures/geometry-7-similar-shapes/',
+'8': '/lectures/geometry-8-area-perimeter-shapes/',
+'9': '/lectures/geometry-9-area-triangles-parallelograms/',
+'10': '/lectures/geometry-10-circles-area-circumference/',
+'11': '/lectures/geometry-11-nets-3d-shapes/',
+'12': '/lectures/geometry-12-volume-cuboids-prisms/',
+'13': '/lectures/geometry-13-surface-area-prisms/',
+'14': '/lectures/geometry-14-scale-diagrams/',
+'15': '/lectures/geometry-15-loci-constructions/'
+},
+'5': {
+'0': '/lectures/trigonometry-0-pythagoras-theorem/',
+'1': '/lectures/trigonometry-1-soh-cah-toa/',
+'2': '/lectures/trigonometry-2-trigonometry-real-life/'
 },
 '6': {
-  '0': '/lectures/probability-0-types-of-data/',
-  '1': '/lectures/probability-1-collecting-data-sampling/',
-  '2': '/lectures/probability-2-probability-scale-language/',
-  '3': '/lectures/probability-3-calculating-simple-probability/',
-  '4': '/lectures/probability-4-experimental-probability/',
-  '5': '/lectures/probability-5-frequency-tables/',
-  '6': '/lectures/probability-6-probability-from-tables/',
-  '7': '/lectures/probability-7-two-way-tables/',
-  '8': '/lectures/probability-8-averages-mean-median-mode/',
-  '9': '/lectures/probability-9-averages-from-frequency-tables/',
-  '10': '/lectures/probability-10-pictograms/',
-  '11': '/lectures/probability-11-bar-charts-frequency-charts/',
-  '12': '/lectures/probability-12-pie-charts/',
-  '13': '/lectures/probability-13-line-graphs-time-series/',
-  '14': '/lectures/probability-14-scatter-graphs/',
-  '15': '/lectures/probability-15-stem-leaf-trees/',
-  '16': '/lectures/probability-16-probability-trees-fractions/',
-  '17': '/lectures/probability-17-combined-events-and-or-not/'
+'0': '/lectures/probability-0-types-of-data/',
+'1': '/lectures/probability-1-collecting-data-sampling/',
+'2': '/lectures/probability-2-probability-scale-language/',
+'3': '/lectures/probability-3-calculating-simple-probability/',
+'4': '/lectures/probability-4-experimental-probability/',
+'5': '/lectures/probability-5-frequency-tables/',
+'6': '/lectures/probability-6-probability-from-tables/',
+'7': '/lectures/probability-7-two-way-tables/',
+'8': '/lectures/probability-8-averages-mean-median-mode/',
+'9': '/lectures/probability-9-averages-from-frequency-tables/',
+'10': '/lectures/probability-10-pictograms/',
+'11': '/lectures/probability-11-bar-charts-frequency-charts/',
+'12': '/lectures/probability-12-pie-charts/',
+'13': '/lectures/probability-13-line-graphs-time-series/',
+'14': '/lectures/probability-14-scatter-graphs/',
+'15': '/lectures/probability-15-stem-leaf-trees/',
+'16': '/lectures/probability-16-probability-trees-fractions/',
+'17': '/lectures/probability-17-combined-events-and-or-not/'
 }
 };
-  
-  const url = lectureURLs[topicNum]?.[sectionIndex];
-  
-  if (url) {
-    console.log('Opening:', url);
-    window.location.href = url;
-  } else {
-    alert('This lecture is coming soon!');
-  }
+
+const url = lectureURLs[topicNum]?.[sectionIndex];
+
+if (url) {
+console.log('Opening:', url);
+window.location.href = url;
+} else {
+alert('This lecture is coming soon!');
+}
 };
 
-// ========== LOAD PROGRESS ==========
-async function loadAllLectureProgress() {
-  const userId = getUserId();
-  if (!userId) return;
-  
-  try {
-    const { data, error } = await supabase
-      .from('lecture_progress')
-      .select('*')
-      .eq('user_id', userId);
-    
-    if (data && !error) {
-      console.log('Loaded progress for', data.length, 'lectures');
-      
-      // Update progress bars in accordions
-      data.forEach(lecture => {
-        updateProgressBar(lecture);
-      });
-      
-      // Calculate and update summary metrics
-      updateSummaryMetrics(data);
-    }
-  } catch (err) {
-    console.error('Failed to load progress:', err);
-  }
-}
 
-function updateSummaryMetrics(progressData) {
-  let totalQuestions = 0;
-  let correctCount = 0;
-  let partialCount = 0;
-  let incorrectCount = 0;
-  
-  progressData.forEach(lecture => {
-    totalQuestions += lecture.total_questions || 0;
-    correctCount += lecture.correct || 0;
-    partialCount += lecture.partial || 0;
-    incorrectCount += lecture.incorrect || 0;
-  });
-  
-  document.getElementById('total-questions').textContent = totalQuestions;
-  document.getElementById('correct-count').textContent = correctCount;
-  document.getElementById('partial-count').textContent = partialCount;
-  document.getElementById('incorrect-count').textContent = incorrectCount;
-}
 function updateProgressBar(progress) {
-  const lectureName = progress.lecture_name;
-  const accordionItems = document.querySelectorAll('.accordion-item');
-  
-  accordionItems.forEach(item => {
-    const headerText = item.querySelector('.accordion-header h3')?.textContent;
-    
-    if (headerText && headerText.includes(lectureName)) {
-      const progressContainer = item.querySelector('.lecture-progress-container');
-      const progressBar = item.querySelector('.lecture-progress-bar');
-      const statsSpan = item.querySelector('.progress-stats');
-      
-      if (progressContainer && progressBar && progress.total_questions > 0) {
-        const total = progress.total_questions;
-        const correctPercent = (progress.correct / total) * 100;
-        const partialPercent = (progress.partial / total) * 100;
-        const incorrectPercent = (progress.incorrect / total) * 100;
-        
-        progressBar.querySelector('.progress-correct').style.width = correctPercent + '%';
-        progressBar.querySelector('.progress-partial').style.width = partialPercent + '%';
-        progressBar.querySelector('.progress-incorrect').style.width = incorrectPercent + '%';
-        
-        statsSpan.textContent = `${progress.correct + progress.partial}/${total} complete`;
-        progressContainer.style.display = 'flex';
-      }
-    }
-  });
+const lectureName = progress.lecture_name;
+const accordionItems = document.querySelectorAll('.accordion-item');
+
+accordionItems.forEach(item => {
+const headerText = item.querySelector('.accordion-header h3')?.textContent;
+
+if (headerText && headerText.includes(lectureName)) {
+const progressContainer = item.querySelector('.lecture-progress-container');
+const progressBar = item.querySelector('.lecture-progress-bar');
+const statsSpan = item.querySelector('.progress-stats');
+
+if (progressContainer && progressBar && progress.total_questions > 0) {
+const total = progress.total_questions;
+const correctPercent = (progress.correct / total) * 100;
+const partialPercent = (progress.partial / total) * 100;
+const incorrectPercent = (progress.incorrect / total) * 100;
+
+progressBar.querySelector('.progress-correct').style.width = correctPercent + '%';
+progressBar.querySelector('.progress-partial').style.width = partialPercent + '%';
+progressBar.querySelector('.progress-incorrect').style.width = incorrectPercent + '%';
+
+statsSpan.textContent = `${progress.correct + progress.partial}/${total} complete`;
+progressContainer.style.display = 'flex';
+}
+}
+});
 }
 
 // ========== MAIN CODE - FIXED TOPIC CARD CLICKS ==========
 document.addEventListener('DOMContentLoaded', function() {
-  const navTabs = document.querySelectorAll('.nav-tab');
-  const tabContents = document.querySelectorAll('.tab-content');
+const navTabs = document.querySelectorAll('.nav-tab');
+const tabContents = document.querySelectorAll('.tab-content');
 
-  function switchTab(targetTabId) {
-    navTabs.forEach(t => t.classList.remove('active'));
-    tabContents.forEach(content => content.classList.add('hidden'));
+function switchTab(targetTabId) {
+navTabs.forEach(t => t.classList.remove('active'));
+tabContents.forEach(content => content.classList.add('hidden'));
 
-    const activeTab = document.querySelector(`.nav-tab[data-tab="${targetTabId}"]`);
-    if (activeTab) activeTab.classList.add('active');
+const activeTab = document.querySelector(`.nav-tab[data-tab="${targetTabId}"]`);
+if (activeTab) activeTab.classList.add('active');
 
-    const tabContent = document.getElementById(targetTabId);
-    if (tabContent) {
-      setTimeout(() => tabContent.classList.remove('hidden'), 50);
-    }
-  }
+const tabContent = document.getElementById(targetTabId);
+if (tabContent) {
+setTimeout(() => tabContent.classList.remove('hidden'), 50);
+}
+}
 
-  navTabs.forEach(tab => {
-    tab.addEventListener('click', function(e) {
-      e.preventDefault();
-      switchTab(this.getAttribute('data-tab'));
-    });
-  });
+navTabs.forEach(tab => {
+tab.addEventListener('click', function(e) {
+e.preventDefault();
+switchTab(this.getAttribute('data-tab'));
+});
+});
 
-  // Topic data - THIS IS YOUR LECTURE STRUCTURE
-  const topicData = {
-    1: { title: "Number", sections: [
-      { number: "1", title: "Product of Prime Factors / Index Form", content: "Master expressing numbers as products of prime factors and writing them in index form." },
-      { number: "2", title: "Highest Common Factor", content: "Master the full principles of the Highest Common Factor (HCF)." },
-      { number: "3", title: "Lowest Common Multiple", content: "Master the full principles of the Lowest Common Multiple (LCM)." },
-      { number: "4", title: "Ordering Numbers & Rounding", content: "Master ordering integers, decimals, fractions, and mixed numbers from smallest to largest." },
-      { number: "5", title: "Number Conversions", content: "Master converting between decimals, percentages, and fractions." },
-      { number: "6", title: "Order of Operations (BIDMAS)", content: "Master the correct order of operations in mathematical expressions." },
-      { number: "7", title: "Inequalities", content: "Work with inequality symbols and solve inequality problems." },
-      { number: "8", title: "Error Intervals", content: "Understand and calculate error intervals and bounds in measurements." },
-      { number: "9", title: "Bounds and Truncation", content: "Master the principles of using bounds and truncation to describe ranges of values and apply them accurately to real-life measurements." },
-      { number: "10", title: "Rounding (Decimals and Significant Figures)", content: "Master rounding techniques for decimals and significant figures." },
-      { number: "11", title: "Multiplying Fractions", content: "Master the principles on how to multiply fractions." },
-      { number: "12", title: "Dividing Fractions", content: "Learn techniques for dividing fractions effectively." },
-    { number: "13", title: "Adding Fractions", content: "Add fractions with different denominators." },
-    { number: "14", title: "Subtracting Fractions", content: "Subtract fractions with different denominators." },
-    { number: "15", title: "Simplifying Fractions", content: "Master the principles of simplifying fractions to their lowest terms using common factors and clear reasoning." },
-    { number: "16", title: "Mixed and Improper Fractions", content: "Convert between mixed numbers and improper fractions." },
-   { number: "17", title: "Fractions of an Amount", content: "Calculate fractions of quantities and amounts." },
+// Topic data - THIS IS YOUR LECTURE STRUCTURE
+const topicData = {
+1: { title: "Number", sections: [
+{ number: "1", title: "Product of Prime Factors / Index Form", content: "Master expressing numbers as products of prime factors and writing them in index form." },
+{ number: "2", title: "Highest Common Factor", content: "Master the full principles of the Highest Common Factor (HCF)." },
+{ number: "3", title: "Lowest Common Multiple", content: "Master the full principles of the Lowest Common Multiple (LCM)." },
+{ number: "4", title: "Ordering Numbers & Rounding", content: "Master ordering integers, decimals, fractions, and mixed numbers from smallest to largest." },
+{ number: "5", title: "Number Conversions", content: "Master converting between decimals, percentages, and fractions." },
+{ number: "6", title: "Order of Operations (BIDMAS)", content: "Master the correct order of operations in mathematical expressions." },
+{ number: "7", title: "Inequalities", content: "Work with inequality symbols and solve inequality problems." },
+{ number: "8", title: "Error Intervals", content: "Understand and calculate error intervals and bounds in measurements." },
+{ number: "9", title: "Bounds and Truncation", content: "Master the principles of using bounds and truncation to describe ranges of values and apply them accurately to real-life measurements." },
+{ number: "10", title: "Rounding (Decimals and Significant Figures)", content: "Master rounding techniques for decimals and significant figures." },
+{ number: "11", title: "Multiplying Fractions", content: "Master the principles on how to multiply fractions." },
+{ number: "12", title: "Dividing Fractions", content: "Learn techniques for dividing fractions effectively." },
+{ number: "13", title: "Adding Fractions", content: "Add fractions with different denominators." },
+{ number: "14", title: "Subtracting Fractions", content: "Subtract fractions with different denominators." },
+{ number: "15", title: "Simplifying Fractions", content: "Master the principles of simplifying fractions to their lowest terms using common factors and clear reasoning." },
+{ number: "16", title: "Mixed and Improper Fractions", content: "Convert between mixed numbers and improper fractions." },
+{ number: "17", title: "Fractions of an Amount", content: "Calculate fractions of quantities and amounts." },
 { number: "18", title: "Percentage of an Amount", content: "Calculate percentages of quantities and solve percentage problems." },
 { number: "19", title: "Reverse Percentages", content: "Work backwards from a percentage to find the original amount." },
-    { number: "20", title: "Simple Interest", content: "Calculate simple interest on loans and investments." },
-    { number: "21", title: "Compound Interest", content: "Master compound interest calculations and growth." },
-    { number: "22", title: "Depreciation", content: "Calculate depreciation and loss of value over time." },
-    { number: "23", title: "Percentage Profit", content: "Calculate profit as a percentage of cost or selling price." },
-    { number: "24", title: "Value for Money", content: "Compare prices and quantities to determine best value." },
-    { number: "25", title: "Standard Form / Ordinary Numbers", content: "Convert between standard form and ordinary numbers." },
-    { number: "26", title: "Number Powers Calculations", content: "Master calculations involving powers and indices." },
-    { number: "27", title: "Estimation", content: "Develop estimation skills for quick calculations." },
-    { number: "28", title: "Negative Numbers (Ordering & Operations)", content: "Work with negative numbers including ordering and operations." },
-    { number: "29", title: "Converting Between Fractions ↔ Decimals ↔ Percentages", content: "Master all conversions between fractions, decimals, and percentages." },
-    { number: "30", title: "Unit Conversions (Metric)", content: "Convert between different metric units of measurement." },
-    { number: "31", title: "Calculator Fluency (ANS Key & Multi-Step Calculations)", content: "Master calculator techniques for efficient problem-solving." }
-  ]},
+{ number: "20", title: "Simple Interest", content: "Calculate simple interest on loans and investments." },
+{ number: "21", title: "Compound Interest", content: "Master compound interest calculations and growth." },
+{ number: "22", title: "Depreciation", content: "Calculate depreciation and loss of value over time." },
+{ number: "23", title: "Percentage Profit", content: "Calculate profit as a percentage of cost or selling price." },
+{ number: "24", title: "Value for Money", content: "Compare prices and quantities to determine best value." },
+{ number: "25", title: "Standard Form / Ordinary Numbers", content: "Convert between standard form and ordinary numbers." },
+{ number: "26", title: "Number Powers Calculations", content: "Master calculations involving powers and indices." },
+{ number: "27", title: "Estimation", content: "Develop estimation skills for quick calculations." },
+{ number: "28", title: "Negative Numbers (Ordering & Operations)", content: "Work with negative numbers including ordering and operations." },
+{ number: "29", title: "Converting Between Fractions ↔ Decimals ↔ Percentages", content: "Master all conversions between fractions, decimals, and percentages." },
+{ number: "30", title: "Unit Conversions (Metric)", content: "Convert between different metric units of measurement." },
+{ number: "31", title: "Calculator Fluency (ANS Key & Multi-Step Calculations)", content: "Master calculator techniques for efficient problem-solving." }
+]},
 
-   
-    2: { title: "Algebra", sections: [
-  { number: "1", title: "Index Laws", content: "Master the laws of indices and how to manipulate powers." },
-  { number: "2", title: "Expression vs Equation", content: "Understand the difference between algebraic expressions and equations." },
-  { number: "3", title: "Factorising Expressions", content: "Learn to factorise algebraic expressions effectively." },
-  { number: "4", title: "Powers in Brackets", content: "Master calculations involving powers within brackets." },
-  { number: "5", title: "Expanding and Simplifying Brackets", content: "Expand and simplify algebraic expressions with brackets." },
-  { number: "6", title: "Make x the Subject", content: "Rearrange equations to make a specified variable the subject." },
-  { number: "7", title: "Substitution", content: "Substitute values into algebraic expressions and formulas." },
-  { number: "8", title: "Solving Linear Equations", content: "Solve linear equations involving one variable." },
-  { number: "9", title: "Forming Equations", content: "Form algebraic equations from word problems and scenarios." },
-  { number: "10", title: "Collecting Like Terms", content: "Simplify expressions by collecting like terms together." },
-  { number: "11", title: "Nth Term and Sequences", content: "Find the nth term of linear sequences and patterns." },
-  { number: "12", title: "Inequalities and Number Line Solutions", content: "Solve inequalities and represent solutions on a number line." },
-  { number: "13", title: "Drawing and Plotting Linear Graphs", content: "Plot and draw linear graphs from equations and tables." },
-  { number: "14", title: "Equation of a Straight Line (y = mx + c)", content: "Understand and use the equation of a straight line." },
-  { number: "15", title: "Gradient of a Line", content: "Calculate the gradient of a line from coordinates or graphs." },
-  { number: "16", title: "Coordinates", content: "Work with coordinates and plot points on a coordinate grid." }
+
+2: { title: "Algebra", sections: [
+{ number: "1", title: "Index Laws", content: "Master the laws of indices and how to manipulate powers." },
+{ number: "2", title: "Expression vs Equation", content: "Understand the difference between algebraic expressions and equations." },
+{ number: "3", title: "Factorising Expressions", content: "Learn to factorise algebraic expressions effectively." },
+{ number: "4", title: "Powers in Brackets", content: "Master calculations involving powers within brackets." },
+{ number: "5", title: "Expanding and Simplifying Brackets", content: "Expand and simplify algebraic expressions with brackets." },
+{ number: "6", title: "Make x the Subject", content: "Rearrange equations to make a specified variable the subject." },
+{ number: "7", title: "Substitution", content: "Substitute values into algebraic expressions and formulas." },
+{ number: "8", title: "Solving Linear Equations", content: "Solve linear equations involving one variable." },
+{ number: "9", title: "Forming Equations", content: "Form algebraic equations from word problems and scenarios." },
+{ number: "10", title: "Collecting Like Terms", content: "Simplify expressions by collecting like terms together." },
+{ number: "11", title: "Nth Term and Sequences", content: "Find the nth term of linear sequences and patterns." },
+{ number: "12", title: "Inequalities and Number Line Solutions", content: "Solve inequalities and represent solutions on a number line." },
+{ number: "13", title: "Drawing and Plotting Linear Graphs", content: "Plot and draw linear graphs from equations and tables." },
+{ number: "14", title: "Equation of a Straight Line (y = mx + c)", content: "Understand and use the equation of a straight line." },
+{ number: "15", title: "Gradient of a Line", content: "Calculate the gradient of a line from coordinates or graphs." },
+{ number: "16", title: "Coordinates", content: "Work with coordinates and plot points on a coordinate grid." }
 ]},
-    
-    
- 3: { title: "Ratio and Proportion", sections: [
-  { number: "1", title: "Simplifying Ratios", content: "Learn to simplify ratios to their simplest form." },
-  { number: "2", title: "Sharing in a Ratio", content: "Share quantities in given ratios." },
-  { number: "3", title: "Three-Part Ratios", content: "Work with ratios involving three or more parts." },
-  { number: "4", title: "Ratios as Fractions", content: "Express ratios as fractions and vice versa." },
-  { number: "5", title: "Direct Proportion (Unitary Method)", content: "Solve direct proportion problems using the unitary method." },
-  { number: "6", title: "Recipe and Scale Problems", content: "Scale recipes and solve proportion problems in real contexts." },
-  { number: "7", title: "Best Buys", content: "Compare prices and quantities to find the best value." },
-  { number: "8", title: "Exchange Rates", content: "Convert currencies using exchange rates." },
-  { number: "9", title: "Speed, Distance and Time", content: "Calculate speed, distance, and time using formulas." },
-  { number: "10", title: "Distance-Time Graphs", content: "Interpret and draw distance-time graphs." },
-  { number: "11", title: "Unit Conversions (Metric)", content: "Convert between different metric units of measurement." }
+
+
+3: { title: "Ratio and Proportion", sections: [
+{ number: "1", title: "Simplifying Ratios", content: "Learn to simplify ratios to their simplest form." },
+{ number: "2", title: "Sharing in a Ratio", content: "Share quantities in given ratios." },
+{ number: "3", title: "Three-Part Ratios", content: "Work with ratios involving three or more parts." },
+{ number: "4", title: "Ratios as Fractions", content: "Express ratios as fractions and vice versa." },
+{ number: "5", title: "Direct Proportion (Unitary Method)", content: "Solve direct proportion problems using the unitary method." },
+{ number: "6", title: "Recipe and Scale Problems", content: "Scale recipes and solve proportion problems in real contexts." },
+{ number: "7", title: "Best Buys", content: "Compare prices and quantities to find the best value." },
+{ number: "8", title: "Exchange Rates", content: "Convert currencies using exchange rates." },
+{ number: "9", title: "Speed, Distance and Time", content: "Calculate speed, distance, and time using formulas." },
+{ number: "10", title: "Distance-Time Graphs", content: "Interpret and draw distance-time graphs." },
+{ number: "11", title: "Unit Conversions (Metric)", content: "Convert between different metric units of measurement." }
 ]},   
-    
-    
- 
-  4: { title: "Geometry and Measures", sections: [
-  { number: "1", title: "Angle Facts", content: "Learn fundamental angle properties and relationships." },
-  { number: "2", title: "Angles on Lines", content: "Master angles on straight lines and around points." },
-  { number: "3", title: "Angles in Triangles and Polygons", content: "Calculate angles in triangles, quadrilaterals, and polygons." },
-  { number: "4", title: "Properties of 2D and 3D Shapes", content: "Identify and work with properties of geometric shapes." },
-  { number: "5", title: "Bearings", content: "Use three-figure bearings to describe direction and position." },
-  { number: "6", title: "Transformations (Reflection, Rotation, Translation, Enlargement)", content: "Perform and describe geometric transformations." },
-  { number: "7", title: "Congruent Shapes", content: "Identify and prove congruent shapes." },
-  { number: "8", title: "Similar Shapes (Scale Factor Only)", content: "Work with similar shapes and scale factors." },
-  { number: "9", title: "Area and Perimeter of Shapes", content: "Calculate area and perimeter of 2D shapes." },
-  { number: "10", title: "Area of Triangles, Parallelograms and Trapeziums", content: "Calculate areas of various quadrilaterals and triangles." },
-  { number: "11", title: "Circles (Area and Circumference)", content: "Calculate the area and circumference of circles." },
-  { number: "12", title: "Nets of 3D Shapes", content: "Draw and identify nets of 3D solids." },
-  { number: "13", title: "Volume of Cuboids, Prisms and Cylinders", content: "Calculate volumes of 3D shapes." },
-  { number: "14", title: "Surface Area of Prisms and Cylinders", content: "Calculate total surface area of 3D shapes." },
-  { number: "15", title: "Scale Diagrams", content: "Work with scale drawings and maps." },
-  { number: "16", title: "Loci and Constructions", content: "Draw loci and perform geometric constructions." }
+
+
+
+4: { title: "Geometry and Measures", sections: [
+{ number: "1", title: "Angle Facts", content: "Learn fundamental angle properties and relationships." },
+{ number: "2", title: "Angles on Lines", content: "Master angles on straight lines and around points." },
+{ number: "3", title: "Angles in Triangles and Polygons", content: "Calculate angles in triangles, quadrilaterals, and polygons." },
+{ number: "4", title: "Properties of 2D and 3D Shapes", content: "Identify and work with properties of geometric shapes." },
+{ number: "5", title: "Bearings", content: "Use three-figure bearings to describe direction and position." },
+{ number: "6", title: "Transformations (Reflection, Rotation, Translation, Enlargement)", content: "Perform and describe geometric transformations." },
+{ number: "7", title: "Congruent Shapes", content: "Identify and prove congruent shapes." },
+{ number: "8", title: "Similar Shapes (Scale Factor Only)", content: "Work with similar shapes and scale factors." },
+{ number: "9", title: "Area and Perimeter of Shapes", content: "Calculate area and perimeter of 2D shapes." },
+{ number: "10", title: "Area of Triangles, Parallelograms and Trapeziums", content: "Calculate areas of various quadrilaterals and triangles." },
+{ number: "11", title: "Circles (Area and Circumference)", content: "Calculate the area and circumference of circles." },
+{ number: "12", title: "Nets of 3D Shapes", content: "Draw and identify nets of 3D solids." },
+{ number: "13", title: "Volume of Cuboids, Prisms and Cylinders", content: "Calculate volumes of 3D shapes." },
+{ number: "14", title: "Surface Area of Prisms and Cylinders", content: "Calculate total surface area of 3D shapes." },
+{ number: "15", title: "Scale Diagrams", content: "Work with scale drawings and maps." },
+{ number: "16", title: "Loci and Constructions", content: "Draw loci and perform geometric constructions." }
 ]},
-    
-    
-    
-   5: { title: "Trigonometry", sections: [
-  { number: "1", title: "Pythagoras' Theorem", content: "Apply Pythagoras' theorem to find missing sides in right-angled triangles." },
-  { number: "2", title: "SOH CAH TOA (Finding Sides and Angles)", content: "Use sine, cosine, and tangent to find missing sides and angles in right-angled triangles." },
-  { number: "3", title: "Trigonometry in Real-Life Contexts", content: "Apply trigonometric principles to solve real-world problems involving angles and distances." }
+
+
+
+5: { title: "Trigonometry", sections: [
+{ number: "1", title: "Pythagoras' Theorem", content: "Apply Pythagoras' theorem to find missing sides in right-angled triangles." },
+{ number: "2", title: "SOH CAH TOA (Finding Sides and Angles)", content: "Use sine, cosine, and tangent to find missing sides and angles in right-angled triangles." },
+{ number: "3", title: "Trigonometry in Real-Life Contexts", content: "Apply trigonometric principles to solve real-world problems involving angles and distances." }
 ]}, 
-    
-    
-   6: { title: "Probability and Statistics", sections: [
-  { number: "1", title: "Types of Data", content: "Identify and classify different types of data including qualitative, quantitative, discrete, and continuous." },
-  { number: "2", title: "Collecting Data & Sampling Methods", content: "Understand data collection techniques and sampling methods." },
-  { number: "3", title: "Probability Scale & Probability Language", content: "Use probability language and understand the probability scale from 0 to 1." },
-  { number: "4", title: "Calculating Simple Probability", content: "Calculate theoretical probabilities for simple events." },
-  { number: "5", title: "Experimental Probability", content: "Conduct experiments and calculate experimental probability from results." },
-  { number: "6", title: "Frequency Tables", content: "Create and interpret frequency tables to organize data." },
-  { number: "7", title: "Probability from Tables", content: "Calculate probabilities using data from frequency tables." },
-  { number: "8", title: "Two-Way Tables", content: "Read, complete, and interpret two-way tables." },
-  { number: "9", title: "Averages (Mean, Median, Mode & Range)", content: "Calculate and interpret measures of central tendency and spread." },
-  { number: "10", title: "Averages from Frequency Tables", content: "Calculate mean, median, mode, and range from grouped and ungrouped frequency tables." },
-  { number: "11", title: "Pictograms", content: "Create and interpret pictograms to represent data." },
-  { number: "12", title: "Bar Charts & Frequency Charts", content: "Construct and interpret bar charts and frequency diagrams." },
-  { number: "13", title: "Pie Charts", content: "Create and interpret pie charts using angles and percentages." },
-  { number: "14", title: "Line Graphs (Time Series)", content: "Plot and interpret line graphs showing data over time." },
-  { number: "15", title: "Scatter Graphs", content: "Create scatter graphs and describe correlation." },
-  { number: "16", title: "Stem and Leaf Trees", content: "Construct and interpret stem and leaf diagrams." },
-  { number: "17", title: "Probability Trees (Fractions & Decimals)", content: "Use probability tree diagrams to calculate combined probabilities." },
-  { number: "18", title: "Combined Events (AND OR NOT)", content: "Calculate probabilities for combined events using AND, OR, and NOT." }
+
+
+6: { title: "Probability and Statistics", sections: [
+{ number: "1", title: "Types of Data", content: "Identify and classify different types of data including qualitative, quantitative, discrete, and continuous." },
+{ number: "2", title: "Collecting Data & Sampling Methods", content: "Understand data collection techniques and sampling methods." },
+{ number: "3", title: "Probability Scale & Probability Language", content: "Use probability language and understand the probability scale from 0 to 1." },
+{ number: "4", title: "Calculating Simple Probability", content: "Calculate theoretical probabilities for simple events." },
+{ number: "5", title: "Experimental Probability", content: "Conduct experiments and calculate experimental probability from results." },
+{ number: "6", title: "Frequency Tables", content: "Create and interpret frequency tables to organize data." },
+{ number: "7", title: "Probability from Tables", content: "Calculate probabilities using data from frequency tables." },
+{ number: "8", title: "Two-Way Tables", content: "Read, complete, and interpret two-way tables." },
+{ number: "9", title: "Averages (Mean, Median, Mode & Range)", content: "Calculate and interpret measures of central tendency and spread." },
+{ number: "10", title: "Averages from Frequency Tables", content: "Calculate mean, median, mode, and range from grouped and ungrouped frequency tables." },
+{ number: "11", title: "Pictograms", content: "Create and interpret pictograms to represent data." },
+{ number: "12", title: "Bar Charts & Frequency Charts", content: "Construct and interpret bar charts and frequency diagrams." },
+{ number: "13", title: "Pie Charts", content: "Create and interpret pie charts using angles and percentages." },
+{ number: "14", title: "Line Graphs (Time Series)", content: "Plot and interpret line graphs showing data over time." },
+{ number: "15", title: "Scatter Graphs", content: "Create scatter graphs and describe correlation." },
+{ number: "16", title: "Stem and Leaf Trees", content: "Construct and interpret stem and leaf diagrams." },
+{ number: "17", title: "Probability Trees (Fractions & Decimals)", content: "Use probability tree diagrams to calculate combined probabilities." },
+{ number: "18", title: "Combined Events (AND OR NOT)", content: "Calculate probabilities for combined events using AND, OR, and NOT." }
 ]}, 
-    
-      
-  
+
+
+
 };
 
-  const flashtileData = {
-    1: { title: "Number", sections: [
-      { number: "1", title: "Prime Factorization", content: "Rapid recall practice for expressing numbers as products of prime factors." },
-      { number: "2", title: "HCF & LCM", content: "Quick practice identifying highest common factors and lowest common multiples." },
-      { number: "3", title: "Fractions Operations", content: "Flash practice for adding, subtracting, multiplying, and dividing fractions." },
-      { number: "4", title: "Decimals & Percentages", content: "Speed conversions between decimals, fractions, and percentages." },
-      { number: "5", title: "Rounding & Estimation", content: "Quick recall of rounding rules and estimation techniques." }
-    ]},
-    2: { title: "Algebra", sections: [{ title: "Coming Soon", content: "Flashtiles for Algebra will be available soon." }]},
-    3: { title: "Graphs", sections: [{ title: "Coming Soon", content: "Flashtiles for Graphs will be available soon." }]},
-    4: { title: "Ratio", sections: [{ title: "Coming Soon", content: "Flashtiles for Ratio will be available soon." }]},
-    5: { title: "Geometry and Measures", sections: [{ title: "Coming Soon", content: "Flashtiles for Geometry and Measures will be available soon." }]},
-    6: { title: "Trigonometry", sections: [{ title: "Coming Soon", content: "Flashtiles for Trigonometry will be available soon." }]},
-    7: { title: "Probability and Statistics", sections: [{ title: "Coming Soon", content: "Flashtiles for Probability and Statistics will be available soon." }]}
-  };
+const flashtileData = {
+1: { title: "Number", sections: [
+{ number: "1", title: "Prime Factorization", content: "Rapid recall practice for expressing numbers as products of prime factors." },
+{ number: "2", title: "HCF & LCM", content: "Quick practice identifying highest common factors and lowest common multiples." },
+{ number: "3", title: "Fractions Operations", content: "Flash practice for adding, subtracting, multiplying, and dividing fractions." },
+{ number: "4", title: "Decimals & Percentages", content: "Speed conversions between decimals, fractions, and percentages." },
+{ number: "5", title: "Rounding & Estimation", content: "Quick recall of rounding rules and estimation techniques." }
+]},
+2: { title: "Algebra", sections: [{ title: "Coming Soon", content: "Flashtiles for Algebra will be available soon." }]},
+3: { title: "Graphs", sections: [{ title: "Coming Soon", content: "Flashtiles for Graphs will be available soon." }]},
+4: { title: "Ratio", sections: [{ title: "Coming Soon", content: "Flashtiles for Ratio will be available soon." }]},
+5: { title: "Geometry and Measures", sections: [{ title: "Coming Soon", content: "Flashtiles for Geometry and Measures will be available soon." }]},
+6: { title: "Trigonometry", sections: [{ title: "Coming Soon", content: "Flashtiles for Trigonometry will be available soon." }]},
+7: { title: "Probability and Statistics", sections: [{ title: "Coming Soon", content: "Flashtiles for Probability and Statistics will be available soon." }]}
+};
 
-  const overlay = document.getElementById('expandedOverlay');
+const overlay = document.getElementById('expandedOverlay');
 
-  // ========== FIX: LECTURE CARDS - THESE MUST WORK ==========
-  document.querySelectorAll('#lectures-content .topic-card').forEach(card => {
-    card.addEventListener('click', function() {
-      const topicNum = this.dataset.topic;
-      const topicTitle = this.dataset.title;
-      const rect = this.getBoundingClientRect();
-      createExpandedCard(topicNum, topicTitle, rect, topicData, 'lecture');
-    });
-  });
-
-  // Flashtile cards
-  document.querySelectorAll('#flash-content .flashtile-card').forEach(card => {
-    card.addEventListener('click', function() {
-      const topicNum = this.dataset.flashtopic;
-      const topicTitle = this.dataset.title;
-      const rect = this.getBoundingClientRect();
-      createExpandedCard(topicNum, topicTitle, rect, flashtileData, 'flashtile');
-    });
-  });
-
-  // ========== THIS CREATES THE POPUP WITH LECTURES ==========
-  function createExpandedCard(topicNum, topicTitle, rect, dataSource, cardType) {
-    const expandedCard = document.createElement('div');
-    expandedCard.className = 'expanded-card';
-    expandedCard.style.left = rect.left + 'px';
-    expandedCard.style.top = rect.top + 'px';
-    expandedCard.style.width = rect.width + 'px';
-    expandedCard.style.height = rect.height + 'px';
-
-    const data = dataSource[topicNum];
-    let accordionHTML = '';
-    
-    data.sections.forEach((section, index) => {
-      const titleWithNumber = section.number ? `${section.number}. ${section.title}` : section.title;
-      const buttonLabel = cardType === 'flashtile' ? 'Start' : 'Lecture';
-      const buttonLabel2 = cardType === 'flashtile' ? 'Review' : 'Quiz';
-      
-      accordionHTML += `
-        <div class="accordion-item">
-          <div class="accordion-header" data-index="${index}">
-            <h3>${titleWithNumber}</h3>
-            <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M6 9l6 6 6-6"/>
-            </svg>
-          </div>
-          <div class="accordion-body">
-            <p>${section.content}</p>
-            <div class="lecture-progress-container" style="display: none;">
-              <div class="lecture-progress-bar">
-                <div class="progress-correct" style="width: 0%"></div>
-                <div class="progress-partial" style="width: 0%"></div>
-                <div class="progress-incorrect" style="width: 0%"></div>
-              </div>
-              <span class="progress-stats"></span>
-            </div>
-            <div class="button-group">
-              <button class="action-btn" onclick="window.navigateToLecture('${topicNum}', '${index}', '${section.title}')">${buttonLabel}</button>
-              <button class="action-btn">${buttonLabel2}</button>
-            </div>
-          </div>
-        </div>
-      `;
-    });
-
-    expandedCard.innerHTML = `
-      <div class="expanded-card-header">
-        <button class="close-btn">×</button>
-        <div class="expanded-title">
-          <span class="expanded-number">${topicNum}</span>
-          <span>${topicTitle}</span>
-        </div>
-      </div>
-      <div class="accordion-content">${accordionHTML}</div>
-    `;
-
-    overlay.appendChild(expandedCard);
-    overlay.classList.add('active');
-
-    setTimeout(() => {
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const targetWidth = Math.min(800, viewportWidth - 40);
-
-      expandedCard.style.left = (viewportWidth - targetWidth) / 2 + 'px';
-      expandedCard.style.top = Math.max(60, (viewportHeight * 0.08)) + 'px';
-      expandedCard.style.width = targetWidth + 'px';
-      expandedCard.style.height = 'auto';
-      expandedCard.classList.add('animating');
-
-      setTimeout(() => {
-        loadAllLectureProgress();
-        const firstAccordion = expandedCard.querySelector('.accordion-header');
-        const firstBody = expandedCard.querySelector('.accordion-body');
-        const firstIcon = expandedCard.querySelector('.accordion-icon');
-        if (firstAccordion && firstBody && firstIcon) {
-          firstBody.classList.add('open');
-          firstIcon.classList.add('rotated');
-        }
-      }, 450);
-    }, 50);
-
-    expandedCard.querySelector('.close-btn').addEventListener('click', () => {
-      expandedCard.classList.remove('animating');
-      overlay.classList.remove('active');
-      setTimeout(() => expandedCard.remove(), 400);
-    });
-
-    expandedCard.querySelectorAll('.accordion-header').forEach(header => {
-      header.addEventListener('click', function() {
-        const body = this.nextElementSibling;
-        const icon = this.querySelector('.accordion-icon');
-        body.classList.toggle('open');
-        icon.classList.toggle('rotated');
-      });
-    });
-  }
-
-  overlay.addEventListener('click', function(e) {
-    if (e.target === overlay) {
-      const card = overlay.querySelector('.expanded-card');
-      if (card) card.remove();
-      overlay.classList.remove('active');
-    }
-  });
-
-  // ========== PAPERS CAROUSEL ==========
-  const paperCarousels = document.querySelectorAll('.paper-content-carousel');
-  
-  paperCarousels.forEach(carousel => {
-    const carouselId = carousel.dataset.carouselId;
-    const cards = carousel.querySelectorAll('.paper-content-card');
-    const leftBtn = document.querySelector(`.paper-nav-left[data-carousel="${carouselId}"]`);
-    const rightBtn = document.querySelector(`.paper-nav-right[data-carousel="${carouselId}"]`);
-    const dotsContainer = document.querySelector(`.carousel-dots[data-dots-for="${carouselId}"]`);
-    const dots = dotsContainer ? dotsContainer.querySelectorAll('.carousel-dot') : [];
-    
-    let currentIndex = 0;
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    function updatePaperCarousel() {
-      cards.forEach((card, index) => {
-        card.classList.remove('active');
-        if (index === currentIndex) {
-          setTimeout(() => {
-            card.classList.add('active');
-          }, 10);
-        }
-      });
-      
-      if (leftBtn && rightBtn) {
-        leftBtn.disabled = currentIndex === 0;
-        rightBtn.disabled = currentIndex === cards.length - 1;
-      }
-      
-      if (dots.length > 0) {
-        dots.forEach((dot, index) => {
-          dot.classList.toggle('active', index === currentIndex);
-        });
-      }
-    }
-    
-    if (leftBtn) {
-      leftBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (currentIndex > 0) {
-          currentIndex--;
-          updatePaperCarousel();
-        }
-      });
-    }
-    
-    if (rightBtn) {
-      rightBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (currentIndex < cards.length - 1) {
-          currentIndex++;
-          updatePaperCarousel();
-        }
-      });
-    }
-    
-    carousel.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-    
-    carousel.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    }, { passive: true });
-    
-    function handleSwipe() {
-      const swipeThreshold = 50;
-      const diff = touchStartX - touchEndX;
-      
-      if (Math.abs(diff) > swipeThreshold) {
-        if (diff > 0 && currentIndex < cards.length - 1) {
-          currentIndex++;
-          updatePaperCarousel();
-        } else if (diff < 0 && currentIndex > 0) {
-          currentIndex--;
-          updatePaperCarousel();
-        }
-      }
-    }
-    
-    dots.forEach((dot, index) => {
-      dot.addEventListener('click', () => {
-        currentIndex = index;
-        updatePaperCarousel();
-      });
-    });
-    
-    updatePaperCarousel();
-  });
-
-  switchTab('lectures-content');
+// ========== FIX: LECTURE CARDS - THESE MUST WORK ==========
+document.querySelectorAll('#lectures-content .topic-card').forEach(card => {
+card.addEventListener('click', function() {
+const topicNum = this.dataset.topic;
+const topicTitle = this.dataset.title;
+const rect = this.getBoundingClientRect();
+createExpandedCard(topicNum, topicTitle, rect, topicData, 'lecture');
 });
+});
+
+// Flashtile cards
+document.querySelectorAll('#flash-content .flashtile-card').forEach(card => {
+card.addEventListener('click', function() {
+const topicNum = this.dataset.flashtopic;
+const topicTitle = this.dataset.title;
+const rect = this.getBoundingClientRect();
+createExpandedCard(topicNum, topicTitle, rect, flashtileData, 'flashtile');
+});
+});
+
+// ========== THIS CREATES THE POPUP WITH LECTURES ==========
+function createExpandedCard(topicNum, topicTitle, rect, dataSource, cardType) {
+const expandedCard = document.createElement('div');
+expandedCard.className = 'expanded-card';
+expandedCard.style.left = rect.left + 'px';
+expandedCard.style.top = rect.top + 'px';
+expandedCard.style.width = rect.width + 'px';
+expandedCard.style.height = rect.height + 'px';
+
+const data = dataSource[topicNum];
+let accordionHTML = '';
+
+data.sections.forEach((section, index) => {
+const titleWithNumber = section.number ? `${section.number}. ${section.title}` : section.title;
+const buttonLabel = cardType === 'flashtile' ? 'Start' : 'Lecture';
+const buttonLabel2 = cardType === 'flashtile' ? 'Review' : 'Quiz';
+
+accordionHTML += `
+       <div class="accordion-item">
+         <div class="accordion-header" data-index="${index}">
+           <h3>${titleWithNumber}</h3>
+           <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+             <path d="M6 9l6 6 6-6"/>
+           </svg>
+         </div>
+         <div class="accordion-body">
+           <p>${section.content}</p>
+           <div class="lecture-progress-container" style="display: none;">
+             <div class="lecture-progress-bar">
+               <div class="progress-correct" style="width: 0%"></div>
+               <div class="progress-partial" style="width: 0%"></div>
+               <div class="progress-incorrect" style="width: 0%"></div>
+             </div>
+             <span class="progress-stats"></span>
+           </div>
+           <div class="button-group">
+             <button class="action-btn" onclick="window.navigateToLecture('${topicNum}', '${index}', '${section.title}')">${buttonLabel}</button>
+             <button class="action-btn">${buttonLabel2}</button>
+           </div>
+         </div>
+       </div>
+     `;
+});
+
+expandedCard.innerHTML = `
+     <div class="expanded-card-header">
+       <button class="close-btn">×</button>
+       <div class="expanded-title">
+         <span class="expanded-number">${topicNum}</span>
+         <span>${topicTitle}</span>
+       </div>
+     </div>
+     <div class="accordion-content">${accordionHTML}</div>
+   `;
+
+overlay.appendChild(expandedCard);
+overlay.classList.add('active');
+
+setTimeout(() => {
+const viewportWidth = window.innerWidth;
+const viewportHeight = window.innerHeight;
+const targetWidth = Math.min(800, viewportWidth - 40);
+
+expandedCard.style.left = (viewportWidth - targetWidth) / 2 + 'px';
+expandedCard.style.top = Math.max(60, (viewportHeight * 0.08)) + 'px';
+expandedCard.style.width = targetWidth + 'px';
+expandedCard.style.height = 'auto';
+expandedCard.classList.add('animating');
+
+setTimeout(() => {
+loadAllLectureProgress();
+const firstAccordion = expandedCard.querySelector('.accordion-header');
+const firstBody = expandedCard.querySelector('.accordion-body');
+const firstIcon = expandedCard.querySelector('.accordion-icon');
+if (firstAccordion && firstBody && firstIcon) {
+firstBody.classList.add('open');
+firstIcon.classList.add('rotated');
+}
+}, 450);
+}, 50);
+
+expandedCard.querySelector('.close-btn').addEventListener('click', () => {
+expandedCard.classList.remove('animating');
+overlay.classList.remove('active');
+setTimeout(() => expandedCard.remove(), 400);
+});
+
+expandedCard.querySelectorAll('.accordion-header').forEach(header => {
+header.addEventListener('click', function() {
+const body = this.nextElementSibling;
+const icon = this.querySelector('.accordion-icon');
+body.classList.toggle('open');
+icon.classList.toggle('rotated');
+});
+});
+}
+
+overlay.addEventListener('click', function(e) {
+if (e.target === overlay) {
+const card = overlay.querySelector('.expanded-card');
+if (card) card.remove();
+overlay.classList.remove('active');
+}
+});
+
+// ========== PAPERS CAROUSEL ==========
+const paperCarousels = document.querySelectorAll('.paper-content-carousel');
+
+paperCarousels.forEach(carousel => {
+const carouselId = carousel.dataset.carouselId;
+const cards = carousel.querySelectorAll('.paper-content-card');
+const leftBtn = document.querySelector(`.paper-nav-left[data-carousel="${carouselId}"]`);
+const rightBtn = document.querySelector(`.paper-nav-right[data-carousel="${carouselId}"]`);
+const dotsContainer = document.querySelector(`.carousel-dots[data-dots-for="${carouselId}"]`);
+const dots = dotsContainer ? dotsContainer.querySelectorAll('.carousel-dot') : [];
+
+let currentIndex = 0;
+let touchStartX = 0;
+let touchEndX = 0;
+
+function updatePaperCarousel() {
+cards.forEach((card, index) => {
+card.classList.remove('active');
+if (index === currentIndex) {
+setTimeout(() => {
+card.classList.add('active');
+}, 10);
+}
+});
+
+if (leftBtn && rightBtn) {
+leftBtn.disabled = currentIndex === 0;
+rightBtn.disabled = currentIndex === cards.length - 1;
+}
+
+if (dots.length > 0) {
+dots.forEach((dot, index) => {
+dot.classList.toggle('active', index === currentIndex);
+});
+}
+}
+
+if (leftBtn) {
+leftBtn.addEventListener('click', (e) => {
+e.preventDefault();
+e.stopPropagation();
+if (currentIndex > 0) {
+currentIndex--;
+updatePaperCarousel();
+}
+});
+}
+
+if (rightBtn) {
+rightBtn.addEventListener('click', (e) => {
+e.preventDefault();
+e.stopPropagation();
+if (currentIndex < cards.length - 1) {
+currentIndex++;
+updatePaperCarousel();
+}
+});
+}
+
+carousel.addEventListener('touchstart', (e) => {
+touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+carousel.addEventListener('touchend', (e) => {
+touchEndX = e.changedTouches[0].screenX;
+handleSwipe();
+}, { passive: true });
+
+function handleSwipe() {
+const swipeThreshold = 50;
+const diff = touchStartX - touchEndX;
+
+if (Math.abs(diff) > swipeThreshold) {
+if (diff > 0 && currentIndex < cards.length - 1) {
+currentIndex++;
+updatePaperCarousel();
+} else if (diff < 0 && currentIndex > 0) {
+currentIndex--;
+updatePaperCarousel();
+}
+}
+}
+
+dots.forEach((dot, index) => {
+dot.addEventListener('click', () => {
+currentIndex = index;
+updatePaperCarousel();
+});
+});
+
+updatePaperCarousel();
+});
+
+switchTab('lectures-content');
+
+// Start quote cycling
+cycleQuotes();
+
+// Dashboard button click handler
+document.getElementById('dashboard-btn').addEventListener('click', function() {
+window.location.href = '/dashboard.html';
+});
+});
+
+
+// Paper topic card click handlers
+document.querySelectorAll('.paper-topic-card').forEach(card => {
+card.addEventListener('click', function() {
+const paperType = this.dataset.paperType;
+const rect = this.getBoundingClientRect();
+createPaperModal(paperType, rect);
+});
+});
+
+function createPaperModal(paperType, rect) {
+const paperData = {
+'gcse-experience': {
+title: 'GCSE Experience',
+description: 'Hand-selected GCSE past paper questions to test your strengths and weaknesses',
+papers: [
+{ name: 'Paper 1 (Non Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
+{ name: 'Paper 2 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
+{ name: 'Paper 3 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' }
+]
+},
+'paper-mastery': {
+title: 'Paper 1 Mastery',
+description: 'All topics across paper 1, with each question of varying levels of difficulty to assess your maths skills',
+papers: [
+{ name: 'Paper 1 (Non Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
+{ name: 'Paper 2 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
+{ name: 'Paper 3 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' }
+]
+}
+};
+
+const data = paperData[paperType];
+const expandedCard = document.createElement('div');
+expandedCard.className = 'expanded-paper-card';
+expandedCard.style.left = rect.left + 'px';
+expandedCard.style.top = rect.top + 'px';
+expandedCard.style.width = rect.width + 'px';
+expandedCard.style.height = rect.height + 'px';
+
+let papersHTML = '';
+data.papers.forEach(paper => {
+papersHTML += `
+       <div class="paper-option">
+         <h3 class="paper-option-title">${paper.name}</h3>
+         <div class="paper-option-details">
+           <div class="paper-detail-row">
+             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+               <circle cx="12" cy="12" r="10"/>
+               <path d="M12 6v6l4 2"/>
+             </svg>
+             <span>${paper.time}</span>
+           </div>
+           <div class="paper-detail-row">
+             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+               <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+               <path d="M14 2v6h6"/>
+             </svg>
+             <span>${paper.questions}</span>
+           </div>
+           <div class="paper-detail-row">
+             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+               <path d="M9 11l3 3L22 4"/>
+               <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+             </svg>
+             <span>${paper.marks}</span>
+           </div>
+         </div>
+         <button class="paper-start-btn">Get Started →</button>
+       </div>
+     `;
+});
+
+expandedCard.innerHTML = `
+     <div class="paper-modal-header">
+       <button class="close-btn">×</button>
+       <h2 class="paper-modal-title">${data.title}</h2>
+       <p class="paper-modal-description">${data.description}</p>
+     </div>
+     <div class="paper-modal-content">
+       ${papersHTML}
+     </div>
+   `;
+
+overlay.appendChild(expandedCard);
+overlay.classList.add('active');
+
+setTimeout(() => {
+const viewportWidth = window.innerWidth;
+const viewportHeight = window.innerHeight;
+const targetWidth = Math.min(800, viewportWidth - 40);
+
+expandedCard.style.left = (viewportWidth - targetWidth) / 2 + 'px';
+expandedCard.style.top = Math.max(60, (viewportHeight * 0.08)) + 'px';
+expandedCard.style.width = targetWidth + 'px';
+expandedCard.style.height = 'auto';
+expandedCard.classList.add('animating');
+}, 50);
+
+expandedCard.querySelector('.close-btn').addEventListener('click', () => {
+expandedCard.classList.remove('animating');
+overlay.classList.remove('active');
+setTimeout(() => expandedCard.remove(), 400);
+});
+}
+
+
+ // Handle anchor navigation from dashboard
+const hash = window.location.hash;
+
+if (hash) {
+    // Remove the # from hash
+    const targetTabId = hash.substring(1);
+    
+    // Switch to the appropriate tab
+    if (targetTabId === 'lectures-content' || targetTabId === 'flash-content' || targetTabId === 'papers-content') {
+        switchTab(targetTabId);
+        
+        // Scroll to the section smoothly
+        setTimeout(() => {
+            const element = document.getElementById(targetTabId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    } else if (targetTabId === 'past-papers') {
+        // Special handling for past-papers anchor
+        switchTab('papers-content');
+        setTimeout(() => {
+            const element = document.getElementById('papers-content');
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    }
+}
+    
+checkAuth();
+  checkAuth();
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
