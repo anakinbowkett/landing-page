@@ -1,3 +1,7 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,9 +11,6 @@
 <!-- ADD SUPABASE HERE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,177 +21,6 @@
       padding: 0;
       box-sizing: border-box;
     }
-
-nav {
-      background: white;
-      border-bottom: 1px solid #e0e4e9;
-      padding: 1.25rem 3rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .nav-left img {
-      height: 28px;
-      width: auto;
-    }
-
-    .nav-left span {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: #111827;
-      letter-spacing: -0.02em;
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 0;
-    }
-
-    .nav-stats-container {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      border: 1px solid #e0e4e9;
-      border-radius: 10px;
-      background: white;
-      padding: 0.5rem 0;
-      margin-right: 2rem;
-    }
-
-    .streak-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0 1rem;
-      background: transparent;
-      border-right: 1px solid #e0e4e9;
-      border-radius: 0;
-      color: #111827;
-      font-weight: 600;
-      font-size: 0.875rem;
-      box-shadow: none;
-    }
-
-    .streak-badge::before {
-      content: "🔥";
-      font-size: 1.125rem;
-    }
-
-    .mastery-miles-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0 1rem;
-      background: transparent;
-      border-radius: 0;
-      color: #111827;
-      font-weight: 600;
-      font-size: 0.875rem;
-      box-shadow: none;
-    }
-
-    .mastery-miles-badge img {
-      width: 24px;
-      height: 24px;
-      object-fit: contain;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.5rem 1.25rem;
-      background: #f8f9fa;
-      border-radius: 10px;
-      border: 1px solid #e0e4e9;
-      cursor: pointer;
-    }
-
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-      font-size: 0.875rem;
-    }
-
-    .user-name {
-      font-size: 0.9375rem;
-      font-weight: 500;
-      color: #111827;
-    }
-
-    .user-profile-container {
-      position: relative;
-    }
-
-    .user-dropdown {
-      position: absolute;
-      top: calc(100% + 0.5rem);
-      right: 0;
-      background: white;
-      border: 1px solid #e0e4e9;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      min-width: 200px;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-10px);
-      transition: all 0.2s;
-      z-index: 1000;
-    }
-
-    .user-dropdown.active {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .dropdown-item {
-      padding: 0.75rem 1.25rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #111827;
-      cursor: pointer;
-      transition: all 0.2s;
-      border-bottom: 1px solid #f3f4f6;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .dropdown-item:last-child {
-      border-bottom: none;
-    }
-
-    .dropdown-item:hover {
-      background: #f8f9fa;
-    }
-
-    .dropdown-item.signout {
-      color: #ef4444;
-    }
-
-    .dropdown-item.signout:hover {
-      background: #fef2f2;
-    }
-
-
-    
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -795,19 +625,6 @@ nav {
       border-radius: 4px;
     }
 
-
-.carousel-dot.active {
-  background: #1a1a1a;
-  width: 24px;
-  border-radius: 4px;
-}
-
-
-/* Responsive design */
-@media (max-width: 768px) {
-
-
-    
     /* Responsive design */
     @media (max-width: 768px) {
   .container { 
@@ -901,203 +718,6 @@ nav {
   margin-top: 8px;
 }
 
-
-/* Paper Topic Cards */
-.paper-topic-card {
-  background: white;
-  border: 1px solid #d4d4d4;
-  border-radius: 12px;
-  padding: 32px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  box-sizing: border-box;
-}
-
-.paper-topic-card:hover {
-  border-color: #a0a0a0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
-
-.paper-card-header {
-  margin-bottom: 24px;
-}
-
-.paper-topic-title {
-  font-size: 26px;
-  font-weight: 600;
-  color: #000000;
-  letter-spacing: -0.02em;
-  line-height: 1.3;
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  font-family: 'Crimson Text', serif;
-  margin-bottom: 8px;
-}
-
-.paper-topic-number {
-  font-size: 26px;
-}
-
-.paper-subtitle {
-  font-size: 15px;
-  color: #6b7280;
-  line-height: 1.6;
-  margin-top: 8px;
-}
-
-.paper-card-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding-top: 20px;
-  border-top: 1px solid #f3f4f6;
-}
-
-.paper-stat-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 15px;
-  color: #444;
-}
-
-.paper-stat-icon {
-  font-size: 18px;
-  width: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.paper-stat-text {
-  font-weight: 500;
-}
-
-/* Expanded Paper Modal */
-.expanded-paper-card {
-  position: fixed;
-  background: white;
-  border: 1px solid #d4d4d4;
-  border-radius: 12px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
-  z-index: 1001;
-  opacity: 0;
-  transform: scale(0.92) translateZ(0);
-  transition: all 0.65s cubic-bezier(0.19, 1, 0.22, 1);
-  overflow: hidden;
-  max-height: 85vh;
-  overflow-y: auto;
-  box-sizing: border-box;
-  will-change: transform, opacity, left, top, width;
-}
-
-.expanded-paper-card.animating {
-  opacity: 1;
-  transform: scale(1) translateZ(0);
-}
-
-.paper-modal-header {
-  padding: 40px;
-  border-bottom: 1px solid #e8e8e8;
-  position: sticky;
-  top: 0;
-  background: white;
-  z-index: 10;
-}
-
-.paper-modal-title {
-  font-size: 36px;
-  font-weight: 600;
-  color: #000000;
-  letter-spacing: -0.02em;
-  line-height: 1.3;
-  font-family: 'Crimson Text', serif;
-  margin-bottom: 12px;
-}
-
-.paper-modal-description {
-  font-size: 16px;
-  color: #6b7280;
-  line-height: 1.6;
-}
-
-.paper-modal-content {
-  padding: 40px;
-}
-
-.paper-option {
-  background: #fafafa;
-  border: 1px solid #e8e8e8;
-  border-radius: 10px;
-  padding: 28px;
-  margin-bottom: 20px;
-  transition: all 0.2s ease;
-}
-
-.paper-option:hover {
-  background: #f5f5f5;
-  border-color: #d4d4d4;
-}
-
-.paper-option-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: #1a1a1a;
-  letter-spacing: -0.01em;
-  margin-bottom: 20px;
-  font-family: 'Crimson Text', serif;
-}
-
-.paper-option-details {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.paper-detail-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 15px;
-  color: #444;
-}
-
-.paper-detail-row svg {
-  flex-shrink: 0;
-  color: #666;
-}
-
-.paper-start-btn {
-  background: #000000;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 11px 22px;
-  font-family: 'Crimson Text', serif;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-block;
-}
-
-.paper-start-btn:hover {
-  background: #2a2a2a;
-  transform: translateY(-1px);
-}
-
-.paper-start-btn:active {
-  transform: translateY(0);
-}
-
-
 .lecture-progress-bar {
   width: 120px;
   height: 6px;
@@ -1138,50 +758,6 @@ nav {
   </style>
 </head>
 <body>
-
-
-
-<nav>
-    <div class="nav-left">
-      <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="GMM Logo">
-      <span>GCSE Maths Mastery</span>
-    </div>
-    <div class="nav-right">
-      <div class="nav-stats-container">
-        <div class="streak-badge" id="streak-badge">0 Day Streak</div>
-        <div class="mastery-miles-badge">
-          <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
-          <span id="mastery-miles">0</span>
-        </div>
-      </div>
-      <div class="user-profile-container">
-        <div class="user-info" id="user-profile-trigger">
-          <div class="user-avatar" id="user-avatar">S</div>
-          <span class="user-name" id="user-name">Student</span>
-        </div>
-        <div class="user-dropdown" id="user-dropdown">
-          <div class="dropdown-item">
-            <span>👤</span>
-            <span>My Profile</span>
-          </div>
-          <div class="dropdown-item">
-            <span>⚙️</span>
-            <span>Settings</span>
-          </div>
-          <div class="dropdown-item signout" id="signout-btn">
-            <span>🚪</span>
-            <span>Sign Out</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-
-
-
-
-  
   <div class="container">
     <div class="header-section">
     </div>
@@ -1301,57 +877,239 @@ nav {
 </div>
 
     <div id="papers-content" class="tab-content hidden">
-  <div class="topics-section">
-    <div class="topics-grid">
-      <!-- GCSE Experience Card -->
-      <div class="paper-topic-card" data-paper-type="gcse-experience">
-        <div class="paper-card-header">
-          <div class="paper-topic-title">
-            <span class="paper-topic-number">📝</span>
-            <span>GCSE Experience</span>
+      <div class="topics-section">
+        <div class="papers-grid">
+          <!-- GCSE Experience Card -->
+          <div class="paper-main-card">
+            <div class="paper-main-header">
+              <h2 class="paper-main-title">GCSE Experience</h2>
+              <p class="paper-main-description">Hand-selected GCSE past paper questions to test your strengths and weaknesses</p>
+            </div>
+            
+            <div class="paper-content-wrapper">
+              <button class="paper-nav-btn paper-nav-left" data-carousel="gcse-experience" type="button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </button>
+              
+              <div class="paper-content-carousel" data-carousel-id="gcse-experience">
+                <div class="paper-content-card active">
+                  <h3 class="paper-content-title">Paper 1 (Non Calculator)</h3>
+                  <div class="paper-info-list">
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      <span>90 Minutes</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6"/>
+                      </svg>
+                      <span>36 Questions</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                      </svg>
+                      <span>80 Marks</span>
+                    </div>
+                  </div>
+                  <button class="paper-action-btn">Get Started →</button>
+                </div>
+                
+                <div class="paper-content-card">
+                  <h3 class="paper-content-title">Paper 2 (Calculator)</h3>
+                  <div class="paper-info-list">
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      <span>90 Minutes</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6"/>
+                      </svg>
+                      <span>36 Questions</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                      </svg>
+                      <span>80 Marks</span>
+                    </div>
+                  </div>
+                  <button class="paper-action-btn">Get Started →</button>
+                </div>
+                
+                <div class="paper-content-card">
+                  <h3 class="paper-content-title">Paper 3 (Calculator)</h3>
+                  <div class="paper-info-list">
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      <span>90 Minutes</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6"/>
+                      </svg>
+                      <span>36 Questions</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                      </svg>
+                      <span>80 Marks</span>
+                    </div>
+                  </div>
+                  <button class="paper-action-btn">Get Started →</button>
+                </div>
+              </div>
+              
+              <button class="paper-nav-btn paper-nav-right" data-carousel="gcse-experience" type="button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="carousel-dots" data-dots-for="gcse-experience">
+              <span class="carousel-dot active" data-dot-index="0"></span>
+              <span class="carousel-dot" data-dot-index="1"></span>
+              <span class="carousel-dot" data-dot-index="2"></span>
+            </div>
           </div>
-          <div class="paper-subtitle">Hand-selected past paper questions</div>
-        </div>
-        <div class="paper-card-stats">
-          <div class="paper-stat-item">
-            <div class="paper-stat-icon">📄</div>
-            <div class="paper-stat-text">3 Papers</div>
-          </div>
-          <div class="paper-stat-item">
-            <div class="paper-stat-icon">⏱️</div>
-            <div class="paper-stat-text">90 min each</div>
-          </div>
-          <div class="paper-stat-item">
-            <div class="paper-stat-icon">✓</div>
-            <div class="paper-stat-text">240 marks total</div>
+
+          <!-- Paper 1 Mastery Card -->
+          <div class="paper-main-card">
+            <div class="paper-main-header">
+              <h2 class="paper-main-title">Paper 1 Mastery</h2>
+              <p class="paper-main-description">All topics across paper 1, with each question of varying levels of difficulty to assess your maths skills.</p>
+            </div>
+            
+            <div class="paper-content-wrapper">
+              <button class="paper-nav-btn paper-nav-left" data-carousel="paper-mastery" type="button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </button>
+              
+              <div class="paper-content-carousel" data-carousel-id="paper-mastery">
+                <div class="paper-content-card active">
+                  <h3 class="paper-content-title">Paper 1 (Non Calculator)</h3>
+                  <div class="paper-info-list">
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      <span>90 Minutes</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6"/>
+                      </svg>
+                      <span>36 Questions</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                      </svg>
+                      <span>80 Marks</span>
+                    </div>
+                  </div>
+                  <button class="paper-action-btn">Get Started →</button>
+                </div>
+                
+                <div class="paper-content-card">
+                  <h3 class="paper-content-title">Paper 2 (Calculator)</h3>
+                  <div class="paper-info-list">
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      <span>90 Minutes</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6"/>
+                      </svg>
+                      <span>36 Questions</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                      </svg>
+                      <span>80 Marks</span>
+                    </div>
+                  </div>
+                  <button class="paper-action-btn">Get Started →</button>
+                </div>
+                
+                <div class="paper-content-card">
+                  <h3 class="paper-content-title">Paper 3 (Calculator)</h3>
+                  <div class="paper-info-list">
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      <span>90 Minutes</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6"/>
+                      </svg>
+                      <span>36 Questions</span>
+                    </div>
+                    <div class="paper-info-row">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                      </svg>
+                      <span>80 Marks</span>
+                    </div>
+                  </div>
+                  <button class="paper-action-btn">Get Started →</button>
+                </div>
+              </div>
+              
+              <button class="paper-nav-btn paper-nav-right" data-carousel="paper-mastery" type="button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="carousel-dots" data-dots-for="paper-mastery">
+              <span class="carousel-dot active" data-dot-index="0"></span>
+              <span class="carousel-dot" data-dot-index="1"></span>
+              <span class="carousel-dot" data-dot-index="2"></span>
+            </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Paper 1 Mastery Card -->
-<div class="paper-topic-card" data-paper-type="paper-mastery">
-  <div class="paper-card-header">
-    <div class="paper-topic-title">
-      <span class="paper-topic-number">🎯</span>
-      <span>Paper 1 Mastery</span>
-    </div>
-    <div class="paper-subtitle">Varying difficulty levels across all topics</div>
-  </div>
-  <div class="paper-card-stats">
-    <div class="paper-stat-item">
-      <div class="paper-stat-icon">📄</div>
-      <div class="paper-stat-text">3 Papers</div>
-    </div>
-    <div class="paper-stat-item">
-      <div class="paper-stat-icon">⏱️</div>
-      <div class="paper-stat-text">90 min each</div>
-    </div>
-    <div class="paper-stat-item">
-      <div class="paper-stat-icon">✓</div>
-      <div class="paper-stat-text">240 marks total</div>
-    </div>
-  </div>
-</div>
     <div style="height: 60px;"></div>
   </div>
 
@@ -1362,153 +1120,6 @@ nav {
 const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
 
-
-const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-let userData = {
-  name: "Student",
-  userId: "00000000",
-  streak: 0,
-  masteryMiles: 0
-};
-
-// Update streak based on login
-async function updateStreak(userId) {
-  try {
-    const today = new Date().toISOString().split('T')[0];
-
-    const { data: existingStreak, error: fetchError } = await sbClient
-      .from('user_streaks')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
-
-    if (fetchError && fetchError.code !== 'PGRST116') {
-      throw fetchError;
-    }
-
-    if (!existingStreak) {
-      const { data: newStreak, error: insertError } = await sbClient
-        .from('user_streaks')
-        .insert([{
-          user_id: userId,
-          current_streak: 1,
-          last_login_date: today
-        }])
-        .select()
-        .single();
-
-      if (insertError) throw insertError;
-      return 1;
-    }
-
-    if (existingStreak.last_login_date === today) {
-      return existingStreak.current_streak;
-    }
-
-    const lastLogin = new Date(existingStreak.last_login_date);
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-    let newStreak;
-    if (existingStreak.last_login_date === yesterdayStr) {
-      newStreak = existingStreak.current_streak + 1;
-    } else {
-      newStreak = 1;
-    }
-
-    const { data: updatedStreak, error: updateError } = await sbClient
-      .from('user_streaks')
-      .update({
-        current_streak: newStreak,
-        last_login_date: today,
-        updated_at: new Date().toISOString()
-      })
-      .eq('user_id', userId)
-      .select()
-      .single();
-
-    if (updateError) throw updateError;
-    return newStreak;
-
-  } catch (error) {
-    console.error('Streak update error:', error);
-    return 0;
-  }
-}
-
-async function checkAuth() {
-  try {
-    const { data: { session }, error } = await sbClient.auth.getSession();
-
-    if (error) throw error;
-
-    if (!session) {
-      window.location.href = 'signin.html';
-      return;
-    }
-
-    const user = session.user;
-    const firstName = user.user_metadata.first_name || 'Student';
-    const userId = user.id;
-
-    const currentStreak = await updateStreak(userId);
-
-    userData.name = firstName;
-    userData.userId = userId.slice(0, 8);
-    userData.streak = currentStreak;
-    userData.masteryMiles = 1250; // You can fetch this from database later
-
-    updateUserData();
-
-  } catch (error) {
-    console.error('Auth check error:', error);
-    window.location.href = 'signin.html';
-  }
-}
-
-function updateUserData() {
-  document.getElementById('user-name').textContent = userData.name;
-  document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
-  document.getElementById('streak-badge').textContent = `${userData.streak} Day Streak`;
-  document.getElementById('mastery-miles').textContent = userData.masteryMiles;
-}
-
-// User dropdown functionality
-const userProfileTrigger = document.getElementById('user-profile-trigger');
-const userDropdown = document.getElementById('user-dropdown');
-const signoutBtn = document.getElementById('signout-btn');
-
-if (userProfileTrigger && userDropdown) {
-  userProfileTrigger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    userDropdown.classList.toggle('active');
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!userProfileTrigger.contains(e.target) && !userDropdown.contains(e.target)) {
-      userDropdown.classList.remove('active');
-    }
-  });
-}
-
-if (signoutBtn) {
-  signoutBtn.addEventListener('click', async () => {
-    try {
-      const { error } = await sbClient.auth.signOut();
-      if (error) throw error;
-      
-      localStorage.clear();
-      window.location.href = 'index.html';
-    } catch (error) {
-      console.error('Sign out error:', error);
-      alert('Error signing out. Please try again.');
-    }
-  });
-}
-
-
     
 function getUserId() {
   let userId = localStorage.getItem('userId');
@@ -1518,107 +1129,6 @@ function getUserId() {
   }
   return userId;
 }
-
-  // ========== MOTIVATIONAL QUOTES SYSTEM ==========
-const motivationalQuotes = [
-  "Every expert was once a beginner. Keep going.",
-  "Mathematics is not about numbers, it's about patterns and thinking.",
-  "Small progress is still progress. You're doing great.",
-  "The only way to learn mathematics is to do mathematics.",
-  "Mistakes are proof that you're trying. Embrace them.",
-  "Success is the sum of small efforts repeated day in and day out.",
-  "Your potential is endless. Go do what you were created to do.",
-  "Mathematics is the music of reason. Keep playing.",
-  "Don't watch the clock; do what it does. Keep going.",
-  "The expert in anything was once a beginner like you.",
-  "Believe in yourself and all that you are capable of achieving.",
-  "Each problem you solve makes you stronger and wiser.",
-  "Mathematics reveals its secrets to those who approach it with patience.",
-  "You're not just learning maths, you're training your mind to think.",
-  "Every question answered is a step closer to mastery.",
-  "Great things never come from comfort zones. Challenge yourself.",
-  "The difference between ordinary and extraordinary is practice.",
-  "Your dedication today is building your success tomorrow.",
-  "Mathematics is a language worth learning. You're becoming fluent.",
-  "Persistence guarantees that results are inevitable.",
-  "The journey of a thousand problems begins with a single equation.",
-  "You have within you right now, everything you need to excel.",
-  "Don't aim for perfection, aim for progress and understanding.",
-  "Every mathematician was once confused by what now seems simple.",
-  "Your breakthrough is closer than you think. Keep pushing forward."
-];
-
-let currentQuoteIndex = 0;
-let isTyping = false;
-
-function typeQuote(text, element) {
-  return new Promise((resolve) => {
-    element.innerHTML = '';
-    let charIndex = 0;
-    
-    function typeChar() {
-      if (charIndex < text.length) {
-        const char = text[charIndex];
-        const span = document.createElement('span');
-        span.className = 'quote-char';
-        span.textContent = char;
-        span.style.animationDelay = '0s';
-        // Preserve spaces by using non-breaking space for display
-        if (char === ' ') {
-          span.innerHTML = '&nbsp;';
-        }
-        element.appendChild(span);
-        charIndex++;
-        setTimeout(typeChar, 30);
-      } else {
-        setTimeout(resolve, 5000); // Show complete quote for 5 seconds
-      }
-    }
-    
-    typeChar();
-  });
-}
-
-async function cycleQuotes() {
-  const quoteElement = document.getElementById('motivational-quote');
-  if (!quoteElement) return;
-  
-  while (true) {
-    isTyping = true;
-    await typeQuote(motivationalQuotes[currentQuoteIndex], quoteElement);
-    isTyping = false;
-    
-    currentQuoteIndex = (currentQuoteIndex + 1) % motivationalQuotes.length;
-    
-    // Fade out
-    quoteElement.style.opacity = '0';
-    await new Promise(resolve => setTimeout(resolve, 500));
-    quoteElement.style.transition = 'opacity 0.5s ease';
-    quoteElement.style.opacity = '1';
-  }
-}
-
-// ========== LOAD PROGRESS FOR PROGRESS BARS ==========
-async function loadAllLectureProgress() {
-  const userId = getUserId();
-  if (!userId) return;
-  
-  try {
-    const { data, error } = await supabase
-      .from('lecture_progress')
-      .select('*')
-      .eq('user_id', userId);
-    
-    if (data && !error) {
-      console.log('Loaded progress for', data.length, 'lectures');
-      data.forEach(lecture => {
-        updateProgressBar(lecture);
-      });
-    }
-  } catch (err) {
-    console.error('Failed to load progress:', err);
-  }
-}  
 
 // ========== NAVIGATION FUNCTION - THIS OPENS THE LECTURE ==========
 window.navigateToLecture = function(topicNum, sectionIndex, sectionTitle) {
@@ -1744,7 +1254,51 @@ const lectureURLs = {
   }
 };
 
+// ========== LOAD PROGRESS ==========
+async function loadAllLectureProgress() {
+  const userId = getUserId();
+  if (!userId) return;
+  
+  try {
+    const { data, error } = await supabase
+      .from('lecture_progress')
+      .select('*')
+      .eq('user_id', userId);
+    
+    if (data && !error) {
+      console.log('Loaded progress for', data.length, 'lectures');
+      
+      // Update progress bars in accordions
+      data.forEach(lecture => {
+        updateProgressBar(lecture);
+      });
+      
+      // Calculate and update summary metrics
+      updateSummaryMetrics(data);
+    }
+  } catch (err) {
+    console.error('Failed to load progress:', err);
+  }
+}
 
+function updateSummaryMetrics(progressData) {
+  let totalQuestions = 0;
+  let correctCount = 0;
+  let partialCount = 0;
+  let incorrectCount = 0;
+  
+  progressData.forEach(lecture => {
+    totalQuestions += lecture.total_questions || 0;
+    correctCount += lecture.correct || 0;
+    partialCount += lecture.partial || 0;
+    incorrectCount += lecture.incorrect || 0;
+  });
+  
+  document.getElementById('total-questions').textContent = totalQuestions;
+  document.getElementById('correct-count').textContent = correctCount;
+  document.getElementById('partial-count').textContent = partialCount;
+  document.getElementById('incorrect-count').textContent = incorrectCount;
+}
 function updateProgressBar(progress) {
   const lectureName = progress.lecture_name;
   const accordionItems = document.querySelectorAll('.accordion-item');
@@ -2162,126 +1716,26 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   switchTab('lectures-content');
-  
-  // Start quote cycling
-  cycleQuotes();
-  
-  // Dashboard button click handler
-  document.getElementById('dashboard-btn').addEventListener('click', function() {
-    window.location.href = '/dashboard.html';
-  });
 });
-
-
-// Paper topic card click handlers
-  document.querySelectorAll('.paper-topic-card').forEach(card => {
-    card.addEventListener('click', function() {
-      const paperType = this.dataset.paperType;
-      const rect = this.getBoundingClientRect();
-      createPaperModal(paperType, rect);
-    });
-  });
-
- function createPaperModal(paperType, rect) {
-    const paperData = {
-      'gcse-experience': {
-        title: 'GCSE Experience',
-        description: 'Hand-selected GCSE past paper questions to test your strengths and weaknesses',
-        papers: [
-          { name: 'Paper 1 (Non Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
-          { name: 'Paper 2 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
-          { name: 'Paper 3 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' }
-        ]
-      },
-      'paper-mastery': {
-        title: 'Paper 1 Mastery',
-        description: 'All topics across paper 1, with each question of varying levels of difficulty to assess your maths skills',
-        papers: [
-          { name: 'Paper 1 (Non Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
-          { name: 'Paper 2 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
-          { name: 'Paper 3 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' }
-        ]
-      }
-    };
-
-    const data = paperData[paperType];
-    const expandedCard = document.createElement('div');
-    expandedCard.className = 'expanded-paper-card';
-    expandedCard.style.left = rect.left + 'px';
-    expandedCard.style.top = rect.top + 'px';
-    expandedCard.style.width = rect.width + 'px';
-    expandedCard.style.height = rect.height + 'px';
-
-    let papersHTML = '';
-    data.papers.forEach(paper => {
-      papersHTML += `
-        <div class="paper-option">
-          <h3 class="paper-option-title">${paper.name}</h3>
-          <div class="paper-option-details">
-            <div class="paper-detail-row">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 6v6l4 2"/>
-              </svg>
-              <span>${paper.time}</span>
-            </div>
-            <div class="paper-detail-row">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                <path d="M14 2v6h6"/>
-              </svg>
-              <span>${paper.questions}</span>
-            </div>
-            <div class="paper-detail-row">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 11l3 3L22 4"/>
-                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-              </svg>
-              <span>${paper.marks}</span>
-            </div>
-          </div>
-          <button class="paper-start-btn">Get Started →</button>
-        </div>
-      `;
-    });
-
-    expandedCard.innerHTML = `
-      <div class="paper-modal-header">
-        <button class="close-btn">×</button>
-        <h2 class="paper-modal-title">${data.title}</h2>
-        <p class="paper-modal-description">${data.description}</p>
-      </div>
-      <div class="paper-modal-content">
-        ${papersHTML}
-      </div>
-    `;
-
-    overlay.appendChild(expandedCard);
-    overlay.classList.add('active');
-
-    setTimeout(() => {
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const targetWidth = Math.min(800, viewportWidth - 40);
-
-      expandedCard.style.left = (viewportWidth - targetWidth) / 2 + 'px';
-      expandedCard.style.top = Math.max(60, (viewportHeight * 0.08)) + 'px';
-      expandedCard.style.width = targetWidth + 'px';
-      expandedCard.style.height = 'auto';
-      expandedCard.classList.add('animating');
-    }, 50);
-
-    expandedCard.querySelector('.close-btn').addEventListener('click', () => {
-      expandedCard.classList.remove('animating');
-      overlay.classList.remove('active');
-      setTimeout(() => expandedCard.remove(), 400);
-    });
-  }
-
-    
-  checkAuth();
 </script>
 
 </body>
 </html>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
