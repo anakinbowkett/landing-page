@@ -362,38 +362,35 @@
         }
 
         /* GIF Window */
-        .gif-window {
-            background: white;
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e5e7eb;
-            transition: all 0.3s;
-        }
+.gif-window {
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s;
+}
 
-        .gif-window:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 25px 60px -15px rgba(29, 127, 226, 0.35);
-        }
+.gif-window:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: #d1d5db;
+}
 
-        .gif-window-header {
-            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #d1d5db;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+.coming-soon-banner {
+    background: linear-gradient(135deg, #1d7fe2 0%, #1e88f5 100%);
+    color: white;
+    padding: 4rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
 
-        .window-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .dot-red { background: #ef4444; }
-        .dot-yellow { background: #eab308; }
-        .dot-green { background: #22c55e; }
+        
 
         .gif-content {
             width: 100%;
@@ -805,15 +802,12 @@
     <div class="features-container">
 
         <!-- Feature 1 -->
-        <div class="feature">
-            <div class="gif-window">
-                <div class="gif-window-header">
-                    <div class="window-dot dot-red"></div>
-                    <div class="window-dot dot-yellow"></div>
-                    <div class="window-dot dot-green"></div>
-                </div>
-                <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="Feature 1" class="gif-content">
-            </div>
+<div class="feature">
+    <div class="gif-window">
+        <img src="https://i.postimg.cc/kGNxtQ0j/lectur_image.jpg" alt="Interactive Lectures" class="gif-content">
+    </div>
+
+            
             <div class="feature-content">
                 <h2 class="feature-title">Interactive Lectures</h2>
                 <p class="feature-description">
@@ -871,25 +865,15 @@
                 </ul>
             </div>
             <div class="gif-window">
-                <div class="gif-window-header">
-                    <div class="window-dot dot-red"></div>
-                    <div class="window-dot dot-yellow"></div>
-                    <div class="window-dot dot-green"></div>
-                </div>
-                <img src="https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif" alt="Feature 2" class="gif-content">
-            </div>
-        </div>
+    <img src="https://i.postimg.cc/tJdhV3KS/fs_img.jpg" alt="Flashtiles" class="gif-content">
+</div>
 
+    
         <!-- Feature 3 -->
-        <div class="feature">
-            <div class="gif-window">
-                <div class="gif-window-header">
-                    <div class="window-dot dot-red"></div>
-                    <div class="window-dot dot-yellow"></div>
-                    <div class="window-dot dot-green"></div>
-                </div>
-                <img src="https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif" alt="Feature 3" class="gif-content">
-            </div>
+<div class="feature">
+    <div class="gif-window">
+        <div class="coming-soon-banner">Coming Soon</div>
+    </div>
             <div class="feature-content">
                 <h2 class="feature-title">Quizzes</h2>
                 <p class="feature-description">
@@ -941,13 +925,8 @@
                 </ul>
             </div>
             <div class="gif-window">
-                <div class="gif-window-header">
-                    <div class="window-dot dot-red"></div>
-                    <div class="window-dot dot-yellow"></div>
-                    <div class="window-dot dot-green"></div>
-                </div>
-                <img src="https://media.giphy.com/media/3oKIPEqDGUULpEU0aQ/giphy.gif" alt="Feature 4" class="gif-content">
-            </div>
+    <img src="https://i.postimg.cc/6q8kWQFJ/past-paper-img.jpg" alt="Past Papers" class="gif-content">
+</div>
         </div>
 
     </div>
@@ -1357,6 +1336,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
+
 
 
 
