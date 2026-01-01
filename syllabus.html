@@ -795,6 +795,134 @@ nav {
       border-radius: 4px;
     }
 
+
+.carousel-dot.active {
+  background: #1a1a1a;
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* Past Papers Accordion Styles */
+.exam-board-accordion {
+  margin-bottom: 16px;
+}
+
+.exam-board-header {
+  background: #f8f9fa;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 20px 24px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.exam-board-header:hover {
+  background: #f0f1f3;
+  border-color: #d4d4d4;
+}
+
+.exam-board-header h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  font-family: 'Crimson Text', serif;
+  letter-spacing: -0.01em;
+}
+
+.exam-board-icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s ease;
+}
+
+.exam-board-icon.rotated {
+  transform: rotate(180deg);
+}
+
+.exam-board-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  padding: 0 24px;
+}
+
+.exam-board-content.open {
+  max-height: 2000px;
+  padding: 20px 24px;
+}
+
+.year-group {
+  margin-bottom: 24px;
+}
+
+.year-group:last-child {
+  margin-bottom: 0;
+}
+
+.year-header {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  font-family: 'Crimson Text', serif;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e8e8e8;
+}
+
+.papers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.paper-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #1a1a1a;
+  transition: all 0.2s ease;
+  font-size: 15px;
+}
+
+.paper-link:hover {
+  background: #f8f9fa;
+  border-color: #1d7fe2;
+  transform: translateX(4px);
+}
+
+.paper-link-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.paper-link-icon {
+  color: #666;
+}
+
+.paper-link-arrow {
+  color: #1d7fe2;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.paper-link:hover .paper-link-arrow {
+  opacity: 1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+
+
+    
     /* Responsive design */
     @media (max-width: 768px) {
   .container { 
@@ -2170,87 +2298,143 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   function createPaperModal(paperType, rect) {
-    const paperData = {
-  'gcse-experience': {
-    title: 'GCSE Experience',
-    description: 'Hand-selected GCSE past paper questions to test your strengths and weaknesses',
-    papers: [
-      { name: 'Paper 1 (Non Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
-      { name: 'Paper 2 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
-      { name: 'Paper 3 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' }
-    ]
-  },
-  'past-papers': {
-    title: 'Past Papers',
-    description: '5 years series\' past papers - Foundation Tier only',
-    examBoards: [
-      {
-        name: 'AQA',
-        papers: [
-          { year: '2024', month: 'June', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
-          { year: '2024', month: 'June', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
-          { year: '2024', month: 'June', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
-          { year: '2023', month: 'November', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
-          { year: '2023', month: 'November', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
-          { year: '2023', month: 'November', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
-          { year: '2023', month: 'June', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
-          { year: '2023', month: 'June', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
-          { year: '2023', month: 'June', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
-          { year: '2022', month: 'November', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
-          { year: '2022', month: 'November', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
-          { year: '2022', month: 'November', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
-          { year: '2022', month: 'June', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
-          { year: '2022', month: 'June', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
-          { year: '2022', month: 'June', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
-          { year: '2021', month: 'November', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
-          { year: '2021', month: 'November', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
-          { year: '2021', month: 'November', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
-          { year: '2020', month: 'November', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
-          { year: '2020', month: 'November', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
-          { year: '2020', month: 'November', paper: 'Paper 3F', url: 'YOUR_URL_HERE' }
-        ]
-      },
-      {
-        name: 'Edexcel',
-        papers: [
-          { year: '2024', month: 'June', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
-          { year: '2024', month: 'June', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
-          { year: '2024', month: 'June', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
-          // Add more papers...
-        ]
-      },
-      {
-        name: 'Edexcel IGCSE',
-        papers: [
-          { year: '2024', month: 'June', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
-          { year: '2024', month: 'June', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
-          // Add more papers...
-        ]
-      },
-      {
-        name: 'OCR',
-        papers: [
-          { year: '2024', month: 'June', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
-          { year: '2024', month: 'June', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
-          { year: '2024', month: 'June', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
-          // Add more papers...
-        ]
-      }
-    ]
-  }
-};
+  const paperData = {
+    'gcse-experience': {
+      title: 'GCSE Experience',
+      description: 'Hand-selected GCSE past paper questions to test your strengths and weaknesses',
+      papers: [
+        { name: 'Paper 1 (Non Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
+        { name: 'Paper 2 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
+        { name: 'Paper 3 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' }
+      ]
+    },
+    'past-papers': {
+      title: 'Past Papers',
+      description: '5 years series\' past papers - Foundation Tier only',
+      examBoards: [
+        {
+          name: 'AQA',
+          papers: [
+            { year: '2024', month: 'June', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
+            { year: '2024', month: 'June', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
+            { year: '2024', month: 'June', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
+            { year: '2023', month: 'November', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
+            { year: '2023', month: 'November', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
+            { year: '2023', month: 'November', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
+            { year: '2023', month: 'June', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
+            { year: '2023', month: 'June', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
+            { year: '2023', month: 'June', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
+            { year: '2022', month: 'November', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
+            { year: '2022', month: 'November', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
+            { year: '2022', month: 'November', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
+            { year: '2022', month: 'June', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
+            { year: '2022', month: 'June', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
+            { year: '2022', month: 'June', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
+            { year: '2021', month: 'November', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
+            { year: '2021', month: 'November', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
+            { year: '2021', month: 'November', paper: 'Paper 3F', url: 'YOUR_URL_HERE' },
+            { year: '2020', month: 'November', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
+            { year: '2020', month: 'November', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
+            { year: '2020', month: 'November', paper: 'Paper 3F', url: 'YOUR_URL_HERE' }
+          ]
+        },
+        {
+          name: 'Edexcel',
+          papers: [
+            { year: '2024', month: 'June', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
+            { year: '2024', month: 'June', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
+            { year: '2024', month: 'June', paper: 'Paper 3F', url: 'YOUR_URL_HERE' }
+          ]
+        },
+        {
+          name: 'Edexcel IGCSE',
+          papers: [
+            { year: '2024', month: 'June', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
+            { year: '2024', month: 'June', paper: 'Paper 2F', url: 'YOUR_URL_HERE' }
+          ]
+        },
+        {
+          name: 'OCR',
+          papers: [
+            { year: '2024', month: 'June', paper: 'Paper 1F', url: 'YOUR_URL_HERE' },
+            { year: '2024', month: 'June', paper: 'Paper 2F', url: 'YOUR_URL_HERE' },
+            { year: '2024', month: 'June', paper: 'Paper 3F', url: 'YOUR_URL_HERE' }
+          ]
+        }
+      ]
+    }
+  };
 
-    const data = paperData[paperType];
-    const expandedCard = document.createElement('div');
-    expandedCard.className = 'expanded-paper-card';
-    expandedCard.style.left = rect.left + 'px';
-    expandedCard.style.top = rect.top + 'px';
-    expandedCard.style.width = rect.width + 'px';
-    expandedCard.style.height = rect.height + 'px';
+  const data = paperData[paperType];
+  const expandedCard = document.createElement('div');
+  expandedCard.className = 'expanded-paper-card';
+  expandedCard.style.left = rect.left + 'px';
+  expandedCard.style.top = rect.top + 'px';
+  expandedCard.style.width = rect.width + 'px';
+  expandedCard.style.height = rect.height + 'px';
 
-    let papersHTML = '';
+  let contentHTML = '';
+
+  if (paperType === 'past-papers') {
+    // Accordion style for past papers
+    data.examBoards.forEach((board, boardIndex) => {
+      // Group papers by year
+      const papersByYear = {};
+      board.papers.forEach(paper => {
+        if (!papersByYear[paper.year]) {
+          papersByYear[paper.year] = [];
+        }
+        papersByYear[paper.year].push(paper);
+      });
+
+      // Sort years descending
+      const sortedYears = Object.keys(papersByYear).sort((a, b) => b - a);
+
+      let yearGroupsHTML = '';
+      sortedYears.forEach(year => {
+        const yearPapers = papersByYear[year];
+        let papersHTML = '';
+        
+        yearPapers.forEach(paper => {
+          papersHTML += `
+            <a href="${paper.url}" class="paper-link" target="_blank">
+              <div class="paper-link-text">
+                <span class="paper-link-icon">📄</span>
+                <span>${paper.month} ${paper.year} - ${paper.paper}</span>
+              </div>
+              <span class="paper-link-arrow">→</span>
+            </a>
+          `;
+        });
+
+        yearGroupsHTML += `
+          <div class="year-group">
+            <div class="year-header">${year}</div>
+            <div class="papers-list">
+              ${papersHTML}
+            </div>
+          </div>
+        `;
+      });
+
+      contentHTML += `
+        <div class="exam-board-accordion">
+          <div class="exam-board-header" data-board="${boardIndex}">
+            <h3>${board.name}</h3>
+            <svg class="exam-board-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </div>
+          <div class="exam-board-content" data-board-content="${boardIndex}">
+            ${yearGroupsHTML}
+          </div>
+        </div>
+      `;
+    });
+  } else {
+    // Original GCSE Experience style
     data.papers.forEach(paper => {
-      papersHTML += `
+      contentHTML += `
         <div class="paper-option">
           <h3 class="paper-option-title">${paper.name}</h3>
           <div class="paper-option-details">
@@ -2280,39 +2464,55 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
       `;
     });
+  }
 
-    expandedCard.innerHTML = `
-      <div class="paper-modal-header">
-        <button class="close-btn">×</button>
-        <h2 class="paper-modal-title">${data.title}</h2>
-        <p class="paper-modal-description">${data.description}</p>
-      </div>
-      <div class="paper-modal-content">
-        ${papersHTML}
-      </div>
-    `;
+  expandedCard.innerHTML = `
+    <div class="paper-modal-header">
+      <button class="close-btn">×</button>
+      <h2 class="paper-modal-title">${data.title}</h2>
+      <p class="paper-modal-description">${data.description}</p>
+    </div>
+    <div class="paper-modal-content">
+      ${contentHTML}
+    </div>
+  `;
 
-    overlay.appendChild(expandedCard);
-    overlay.classList.add('active');
+  overlay.appendChild(expandedCard);
+  overlay.classList.add('active');
 
-    setTimeout(() => {
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const targetWidth = Math.min(800, viewportWidth - 40);
+  setTimeout(() => {
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const targetWidth = Math.min(800, viewportWidth - 40);
 
-      expandedCard.style.left = (viewportWidth - targetWidth) / 2 + 'px';
-      expandedCard.style.top = Math.max(60, (viewportHeight * 0.08)) + 'px';
-      expandedCard.style.width = targetWidth + 'px';
-      expandedCard.style.height = 'auto';
-      expandedCard.classList.add('animating');
-    }, 50);
+    expandedCard.style.left = (viewportWidth - targetWidth) / 2 + 'px';
+    expandedCard.style.top = Math.max(60, (viewportHeight * 0.08)) + 'px';
+    expandedCard.style.width = targetWidth + 'px';
+    expandedCard.style.height = 'auto';
+    expandedCard.classList.add('animating');
+  }, 50);
 
-    expandedCard.querySelector('.close-btn').addEventListener('click', () => {
-      expandedCard.classList.remove('animating');
-      overlay.classList.remove('active');
-      setTimeout(() => expandedCard.remove(), 400);
+  // Close button
+  expandedCard.querySelector('.close-btn').addEventListener('click', () => {
+    expandedCard.classList.remove('animating');
+    overlay.classList.remove('active');
+    setTimeout(() => expandedCard.remove(), 400);
+  });
+
+  // Accordion functionality for past papers
+  if (paperType === 'past-papers') {
+    expandedCard.querySelectorAll('.exam-board-header').forEach(header => {
+      header.addEventListener('click', function() {
+        const boardIndex = this.dataset.board;
+        const content = expandedCard.querySelector(`[data-board-content="${boardIndex}"]`);
+        const icon = this.querySelector('.exam-board-icon');
+        
+        content.classList.toggle('open');
+        icon.classList.toggle('rotated');
+      });
     });
   }
+}
 
     
   checkAuth();
