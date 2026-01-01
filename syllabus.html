@@ -1356,10 +1356,10 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let userData = {
-  name: "Student",
-  userId: "00000000",
-  streak: 0,
-  masteryMiles: 0
+    name: "Student",
+    userId: "00000000",
+    streak: 0,
+    masteryMiles: 0
 };
 
 // Update streak based on login
@@ -1445,10 +1445,10 @@ async function checkAuth() {
 
     const currentStreak = await updateStreak(userId);
 
-    userData.name = firstName;
-    userData.userId = userId.slice(0, 8);
-    userData.streak = currentStreak;
-    userData.masteryMiles = 1250; // You can fetch this from database later
+userData.name = firstName;
+userData.userId = userId.slice(0, 8);
+userData.streak = currentStreak;
+userData.masteryMiles = 1250; // You can fetch this from database later
 
     updateUserData();
 
@@ -1459,10 +1459,10 @@ async function checkAuth() {
 }
 
 function updateUserData() {
-  document.getElementById('user-name').textContent = userData.name;
-  document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
-  document.getElementById('streak-badge').textContent = `${userData.streak} Day Streak`;
-  document.getElementById('mastery-miles').textContent = userData.masteryMiles;
+    document.getElementById('user-name').textContent = userData.name;
+    document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
+    document.getElementById('streak-badge').textContent = `${userData.streak} Day Streak`;
+    document.getElementById('mastery-miles').textContent = userData.masteryMiles;
 }
 
 // User dropdown functionality
