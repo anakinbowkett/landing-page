@@ -888,6 +888,203 @@ nav {
   margin-top: 8px;
 }
 
+
+/* Paper Topic Cards */
+.paper-topic-card {
+  background: white;
+  border: 1px solid #d4d4d4;
+  border-radius: 12px;
+  padding: 32px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.paper-topic-card:hover {
+  border-color: #a0a0a0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.paper-card-header {
+  margin-bottom: 24px;
+}
+
+.paper-topic-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: #000000;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-family: 'Crimson Text', serif;
+  margin-bottom: 8px;
+}
+
+.paper-topic-number {
+  font-size: 26px;
+}
+
+.paper-subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.paper-card-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.paper-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  color: #444;
+}
+
+.paper-stat-icon {
+  font-size: 18px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paper-stat-text {
+  font-weight: 500;
+}
+
+/* Expanded Paper Modal */
+.expanded-paper-card {
+  position: fixed;
+  background: white;
+  border: 1px solid #d4d4d4;
+  border-radius: 12px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  z-index: 1001;
+  opacity: 0;
+  transform: scale(0.92) translateZ(0);
+  transition: all 0.65s cubic-bezier(0.19, 1, 0.22, 1);
+  overflow: hidden;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  will-change: transform, opacity, left, top, width;
+}
+
+.expanded-paper-card.animating {
+  opacity: 1;
+  transform: scale(1) translateZ(0);
+}
+
+.paper-modal-header {
+  padding: 40px;
+  border-bottom: 1px solid #e8e8e8;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}
+
+.paper-modal-title {
+  font-size: 36px;
+  font-weight: 600;
+  color: #000000;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  font-family: 'Crimson Text', serif;
+  margin-bottom: 12px;
+}
+
+.paper-modal-description {
+  font-size: 16px;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.paper-modal-content {
+  padding: 40px;
+}
+
+.paper-option {
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 28px;
+  margin-bottom: 20px;
+  transition: all 0.2s ease;
+}
+
+.paper-option:hover {
+  background: #f5f5f5;
+  border-color: #d4d4d4;
+}
+
+.paper-option-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a1a1a;
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+  font-family: 'Crimson Text', serif;
+}
+
+.paper-option-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.paper-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: #444;
+}
+
+.paper-detail-row svg {
+  flex-shrink: 0;
+  color: #666;
+}
+
+.paper-start-btn {
+  background: #000000;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 11px 22px;
+  font-family: 'Crimson Text', serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.paper-start-btn:hover {
+  background: #2a2a2a;
+  transform: translateY(-1px);
+}
+
+.paper-start-btn:active {
+  transform: translateY(0);
+}
+
+
 .lecture-progress-bar {
   width: 120px;
   height: 6px;
@@ -1091,239 +1288,60 @@ nav {
 </div>
 
     <div id="papers-content" class="tab-content hidden">
-      <div class="topics-section">
-        <div class="papers-grid">
-          <!-- GCSE Experience Card -->
-          <div class="paper-main-card">
-            <div class="paper-main-header">
-              <h2 class="paper-main-title">GCSE Experience</h2>
-              <p class="paper-main-description">Hand-selected GCSE past paper questions to test your strengths and weaknesses</p>
-            </div>
-            
-            <div class="paper-content-wrapper">
-              <button class="paper-nav-btn paper-nav-left" data-carousel="gcse-experience" type="button">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M15 18l-6-6 6-6"/>
-                </svg>
-              </button>
-              
-              <div class="paper-content-carousel" data-carousel-id="gcse-experience">
-                <div class="paper-content-card active">
-                  <h3 class="paper-content-title">Paper 1 (Non Calculator)</h3>
-                  <div class="paper-info-list">
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                      <span>90 Minutes</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                      </svg>
-                      <span>36 Questions</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                      </svg>
-                      <span>80 Marks</span>
-                    </div>
-                  </div>
-                  <button class="paper-action-btn">Get Started →</button>
-                </div>
-                
-                <div class="paper-content-card">
-                  <h3 class="paper-content-title">Paper 2 (Calculator)</h3>
-                  <div class="paper-info-list">
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                      <span>90 Minutes</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                      </svg>
-                      <span>36 Questions</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                      </svg>
-                      <span>80 Marks</span>
-                    </div>
-                  </div>
-                  <button class="paper-action-btn">Get Started →</button>
-                </div>
-                
-                <div class="paper-content-card">
-                  <h3 class="paper-content-title">Paper 3 (Calculator)</h3>
-                  <div class="paper-info-list">
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                      <span>90 Minutes</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                      </svg>
-                      <span>36 Questions</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                      </svg>
-                      <span>80 Marks</span>
-                    </div>
-                  </div>
-                  <button class="paper-action-btn">Get Started →</button>
-                </div>
-              </div>
-              
-              <button class="paper-nav-btn paper-nav-right" data-carousel="gcse-experience" type="button">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M9 18l6-6-6-6"/>
-                </svg>
-              </button>
-            </div>
-            
-            <div class="carousel-dots" data-dots-for="gcse-experience">
-              <span class="carousel-dot active" data-dot-index="0"></span>
-              <span class="carousel-dot" data-dot-index="1"></span>
-              <span class="carousel-dot" data-dot-index="2"></span>
-            </div>
+  <div class="topics-section">
+    <div class="topics-grid">
+      <!-- GCSE Experience Card -->
+      <div class="paper-topic-card" data-paper-type="gcse-experience">
+        <div class="paper-card-header">
+          <div class="paper-topic-title">
+            <span class="paper-topic-number">📝</span>
+            <span>GCSE Experience</span>
           </div>
+          <div class="paper-subtitle">Hand-selected past paper questions</div>
+        </div>
+        <div class="paper-card-stats">
+          <div class="paper-stat-item">
+            <div class="paper-stat-icon">📄</div>
+            <div class="paper-stat-text">3 Papers</div>
+          </div>
+          <div class="paper-stat-item">
+            <div class="paper-stat-icon">⏱️</div>
+            <div class="paper-stat-text">90 min each</div>
+          </div>
+          <div class="paper-stat-item">
+            <div class="paper-stat-icon">✓</div>
+            <div class="paper-stat-text">240 marks total</div>
+          </div>
+        </div>
+      </div>
 
-          <!-- Paper 1 Mastery Card -->
-          <div class="paper-main-card">
-            <div class="paper-main-header">
-              <h2 class="paper-main-title">Paper 1 Mastery</h2>
-              <p class="paper-main-description">All topics across paper 1, with each question of varying levels of difficulty to assess your maths skills.</p>
-            </div>
-            
-            <div class="paper-content-wrapper">
-              <button class="paper-nav-btn paper-nav-left" data-carousel="paper-mastery" type="button">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M15 18l-6-6 6-6"/>
-                </svg>
-              </button>
-              
-              <div class="paper-content-carousel" data-carousel-id="paper-mastery">
-                <div class="paper-content-card active">
-                  <h3 class="paper-content-title">Paper 1 (Non Calculator)</h3>
-                  <div class="paper-info-list">
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                      <span>90 Minutes</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                      </svg>
-                      <span>36 Questions</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                      </svg>
-                      <span>80 Marks</span>
-                    </div>
-                  </div>
-                  <button class="paper-action-btn">Get Started →</button>
-                </div>
-                
-                <div class="paper-content-card">
-                  <h3 class="paper-content-title">Paper 2 (Calculator)</h3>
-                  <div class="paper-info-list">
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                      <span>90 Minutes</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                      </svg>
-                      <span>36 Questions</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                      </svg>
-                      <span>80 Marks</span>
-                    </div>
-                  </div>
-                  <button class="paper-action-btn">Get Started →</button>
-                </div>
-                
-                <div class="paper-content-card">
-                  <h3 class="paper-content-title">Paper 3 (Calculator)</h3>
-                  <div class="paper-info-list">
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                      </svg>
-                      <span>90 Minutes</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                      </svg>
-                      <span>36 Questions</span>
-                    </div>
-                    <div class="paper-info-row">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/>
-                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                      </svg>
-                      <span>80 Marks</span>
-                    </div>
-                  </div>
-                  <button class="paper-action-btn">Get Started →</button>
-                </div>
-              </div>
-              
-              <button class="paper-nav-btn paper-nav-right" data-carousel="paper-mastery" type="button">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M9 18l6-6-6-6"/>
-                </svg>
-              </button>
-            </div>
-            
-            <div class="carousel-dots" data-dots-for="paper-mastery">
-              <span class="carousel-dot active" data-dot-index="0"></span>
-              <span class="carousel-dot" data-dot-index="1"></span>
-              <span class="carousel-dot" data-dot-index="2"></span>
-            </div>
+      <!-- Paper 1 Mastery Card -->
+      <div class="paper-topic-card" data-paper-type="paper-mastery">
+        <div class="paper-card-header">
+          <div class="paper-topic-title">
+            <span class="paper-topic-number">🎯</span>
+            <span>Paper 1 Mastery</span>
+          </div>
+          <div class="paper-subtitle">Varying difficulty levels across all topics</div>
+        </div>
+        <div class="paper-card-stats">
+          <div class="paper-stat-item">
+            <div class="paper-stat-icon">📄</div>
+            <div class="paper-stat-text">3 Papers</div>
+          </div>
+          <div class="paper-stat-item">
+            <div class="paper-stat-icon">⏱️</div>
+            <div class="paper-stat-text">90 min each</div>
+          </div>
+          <div class="paper-stat-item">
+            <div class="paper-stat-icon">✓</div>
+            <div class="paper-stat-text">240 marks total</div>
           </div>
         </div>
       </div>
     </div>
-
+  </div>
+</div>
     <div style="height: 60px;"></div>
   </div>
 
@@ -1530,10 +1548,15 @@ function typeQuote(text, element) {
     
     function typeChar() {
       if (charIndex < text.length) {
+        const char = text[charIndex];
         const span = document.createElement('span');
         span.className = 'quote-char';
-        span.textContent = text[charIndex];
+        span.textContent = char;
         span.style.animationDelay = '0s';
+        // Preserve spaces by using non-breaking space for display
+        if (char === ' ') {
+          span.innerHTML = '&nbsp;';
+        }
         element.appendChild(span);
         charIndex++;
         setTimeout(typeChar, 30);
@@ -2138,7 +2161,114 @@ document.addEventListener('DOMContentLoaded', function() {
     window.location.href = '/dashboard.html';
   });
 });
-    // Check authentication on page load
+
+
+// Paper topic card click handlers
+  document.querySelectorAll('.paper-topic-card').forEach(card => {
+    card.addEventListener('click', function() {
+      const paperType = this.dataset.paperType;
+      const rect = this.getBoundingClientRect();
+      createPaperModal(paperType, rect);
+    });
+  });
+
+  function createPaperModal(paperType, rect) {
+    const paperData = {
+      'gcse-experience': {
+        title: 'GCSE Experience',
+        description: 'Hand-selected GCSE past paper questions to test your strengths and weaknesses',
+        papers: [
+          { name: 'Paper 1 (Non Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
+          { name: 'Paper 2 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
+          { name: 'Paper 3 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' }
+        ]
+      },
+      'paper-mastery': {
+        title: 'Paper 1 Mastery',
+        description: 'All topics across paper 1, with each question of varying levels of difficulty to assess your maths skills',
+        papers: [
+          { name: 'Paper 1 (Non Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
+          { name: 'Paper 2 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' },
+          { name: 'Paper 3 (Calculator)', time: '90 Minutes', questions: '36 Questions', marks: '80 Marks' }
+        ]
+      }
+    };
+
+    const data = paperData[paperType];
+    const expandedCard = document.createElement('div');
+    expandedCard.className = 'expanded-paper-card';
+    expandedCard.style.left = rect.left + 'px';
+    expandedCard.style.top = rect.top + 'px';
+    expandedCard.style.width = rect.width + 'px';
+    expandedCard.style.height = rect.height + 'px';
+
+    let papersHTML = '';
+    data.papers.forEach(paper => {
+      papersHTML += `
+        <div class="paper-option">
+          <h3 class="paper-option-title">${paper.name}</h3>
+          <div class="paper-option-details">
+            <div class="paper-detail-row">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
+              <span>${paper.time}</span>
+            </div>
+            <div class="paper-detail-row">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <path d="M14 2v6h6"/>
+              </svg>
+              <span>${paper.questions}</span>
+            </div>
+            <div class="paper-detail-row">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 11l3 3L22 4"/>
+                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+              </svg>
+              <span>${paper.marks}</span>
+            </div>
+          </div>
+          <button class="paper-start-btn">Get Started →</button>
+        </div>
+      `;
+    });
+
+    expandedCard.innerHTML = `
+      <div class="paper-modal-header">
+        <button class="close-btn">×</button>
+        <h2 class="paper-modal-title">${data.title}</h2>
+        <p class="paper-modal-description">${data.description}</p>
+      </div>
+      <div class="paper-modal-content">
+        ${papersHTML}
+      </div>
+    `;
+
+    overlay.appendChild(expandedCard);
+    overlay.classList.add('active');
+
+    setTimeout(() => {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const targetWidth = Math.min(800, viewportWidth - 40);
+
+      expandedCard.style.left = (viewportWidth - targetWidth) / 2 + 'px';
+      expandedCard.style.top = Math.max(60, (viewportHeight * 0.08)) + 'px';
+      expandedCard.style.width = targetWidth + 'px';
+      expandedCard.style.height = 'auto';
+      expandedCard.classList.add('animating');
+    }, 50);
+
+    expandedCard.querySelector('.close-btn').addEventListener('click', () => {
+      expandedCard.classList.remove('animating');
+      overlay.classList.remove('active');
+      setTimeout(() => expandedCard.remove(), 400);
+    });
+  }
+
+    
   checkAuth();
 </script>
 
