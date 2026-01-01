@@ -114,9 +114,10 @@
 
     /* Course info section */
     .course-info {
-      padding: 40px 32px;
-      border-bottom: 1px solid #e5e5e5;
-    }
+  padding: 40px 32px;
+  border-bottom: 1px solid #e5e5e5;
+  position: relative;
+}
 
     .course-header {
       display: flex;
@@ -143,7 +144,92 @@
       line-height: 1.5;
     }
 
+/* Progress Box Styles */
+.progress-box {
+  position: absolute;
+  top: 40px;
+  right: 32px;
+  background: white;
+  border: 1px solid #d4d4d4;
+  border-radius: 12px;
+  padding: 24px;
+  width: 320px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
 
+.progress-box-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  font-family: 'Crimson Text', serif;
+}
+
+.progress-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #fafafa;
+  border-radius: 8px;
+  border: 1px solid #e8e8e8;
+}
+
+.metric-label {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.metric-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  font-family: 'Crimson Text', serif;
+}
+
+.metric-value.correct {
+  color: #10b981;
+}
+
+.metric-value.partial {
+  color: #f59e0b;
+}
+
+.metric-value.incorrect {
+  color: #ef4444;
+}
+
+.dashboard-btn {
+  background: #000000;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 28px;
+  font-family: 'Crimson Text', serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.dashboard-btn:hover {
+  background: #2a2a2a;
+  transform: translateY(-1px);
+}
+
+.dashboard-btn:active {
+  transform: translateY(0);
+}
     
 
     /* Topics Section */
@@ -563,19 +649,26 @@
 
     /* Responsive design */
     @media (max-width: 768px) {
-      .container { 
-        margin: 0; 
-      }
-      
-      .course-info, .topics-section, .tab-content { 
-        padding-left: 20px; 
-        padding-right: 20px; 
-      }
-      
-      .course-header { 
-        flex-direction: column; 
-        gap: 20px; 
-      }
+  .container { 
+    margin: 0; 
+  }
+  
+  .course-info, .topics-section, .tab-content { 
+    padding-left: 20px; 
+    padding-right: 20px; 
+  }
+
+  .progress-box {
+    position: static;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .course-header { 
+    flex-direction: column; 
+    gap: 20px; 
+  }
       
       .nav-tabs { 
         overflow-x: auto; 
@@ -688,16 +781,42 @@
     </div>
 
     <div class="course-info">
-      <div class="course-header">
-        <div class="course-details">
-          <h1 class="course-title">Foundation Tier</h1>
-          <p class="course-subtitle">
-            Question repeats from the past AQA, EDEXCEL and OCR Foundation Tier Examinations
-          </p>
-        </div>
-      </div>
+  <div class="course-header">
+    <div class="course-details">
+      <h1 class="course-title">Foundation Tier</h1>
+      <p class="course-subtitle">
+        Question repeats from the past AQA, EDEXCEL and OCR Foundation Tier Examinations
+      </p>
+    </div>
+  </div>
 
-      <div class="nav-tabs">
+  <!-- Progress Box -->
+  <div class="progress-box">
+    <h3 class="progress-box-title">Your Progress</h3>
+    <div class="progress-metrics">
+      <div class="metric-item">
+        <span class="metric-label">Total Questions</span>
+        <span class="metric-value" id="total-questions">0</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-label">Correct</span>
+        <span class="metric-value correct" id="correct-count">0</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-label">Partial</span>
+        <span class="metric-value partial" id="partial-count">0</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-label">Incorrect</span>
+        <span class="metric-value incorrect" id="incorrect-count">0</span>
+      </div>
+    </div>
+    <button class="dashboard-btn" onclick="window.location.href='/dashboard.html'">
+      Back to Dashboard
+    </button>
+  </div>
+
+  <div class="nav-tabs">
         <a class="nav-tab active" data-tab="lectures-content">Lectures & Quiz</a>
         <a class="nav-tab" data-tab="flash-content">Flashtiles</a>
         <a class="nav-tab" data-tab="papers-content">Past Papers</a>
@@ -1184,15 +1303,38 @@ async function loadAllLectureProgress() {
     
     if (data && !error) {
       console.log('Loaded progress for', data.length, 'lectures');
+      
+      // Update progress bars in accordions
       data.forEach(lecture => {
         updateProgressBar(lecture);
       });
+      
+      // Calculate and update summary metrics
+      updateSummaryMetrics(data);
     }
   } catch (err) {
     console.error('Failed to load progress:', err);
   }
 }
 
+function updateSummaryMetrics(progressData) {
+  let totalQuestions = 0;
+  let correctCount = 0;
+  let partialCount = 0;
+  let incorrectCount = 0;
+  
+  progressData.forEach(lecture => {
+    totalQuestions += lecture.total_questions || 0;
+    correctCount += lecture.correct || 0;
+    partialCount += lecture.partial || 0;
+    incorrectCount += lecture.incorrect || 0;
+  });
+  
+  document.getElementById('total-questions').textContent = totalQuestions;
+  document.getElementById('correct-count').textContent = correctCount;
+  document.getElementById('partial-count').textContent = partialCount;
+  document.getElementById('incorrect-count').textContent = incorrectCount;
+}
 function updateProgressBar(progress) {
   const lectureName = progress.lecture_name;
   const accordionItems = document.querySelectorAll('.accordion-item');
