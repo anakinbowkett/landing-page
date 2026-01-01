@@ -7,6 +7,9 @@
 <!-- ADD SUPABASE HERE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,6 +20,177 @@
       padding: 0;
       box-sizing: border-box;
     }
+
+nav {
+      background: white;
+      border-bottom: 1px solid #e0e4e9;
+      padding: 1.25rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-left img {
+      height: 28px;
+      width: auto;
+    }
+
+    .nav-left span {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #111827;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .nav-stats-container {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid #e0e4e9;
+      border-radius: 10px;
+      background: white;
+      padding: 0.5rem 0;
+      margin-right: 2rem;
+    }
+
+    .streak-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0 1rem;
+      background: transparent;
+      border-right: 1px solid #e0e4e9;
+      border-radius: 0;
+      color: #111827;
+      font-weight: 600;
+      font-size: 0.875rem;
+      box-shadow: none;
+    }
+
+    .streak-badge::before {
+      content: "🔥";
+      font-size: 1.125rem;
+    }
+
+    .mastery-miles-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0 1rem;
+      background: transparent;
+      border-radius: 0;
+      color: #111827;
+      font-weight: 600;
+      font-size: 0.875rem;
+      box-shadow: none;
+    }
+
+    .mastery-miles-badge img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1.25rem;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 1px solid #e0e4e9;
+      cursor: pointer;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .user-name {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: #111827;
+    }
+
+    .user-profile-container {
+      position: relative;
+    }
+
+    .user-dropdown {
+      position: absolute;
+      top: calc(100% + 0.5rem);
+      right: 0;
+      background: white;
+      border: 1px solid #e0e4e9;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      min-width: 200px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.2s;
+      z-index: 1000;
+    }
+
+    .user-dropdown.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-item {
+      padding: 0.75rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #111827;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background: #f8f9fa;
+    }
+
+    .dropdown-item.signout {
+      color: #ef4444;
+    }
+
+    .dropdown-item.signout:hover {
+      background: #fef2f2;
+    }
+
+
+    
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -754,6 +928,50 @@
   </style>
 </head>
 <body>
+
+
+
+<nav>
+    <div class="nav-left">
+      <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="GMM Logo">
+      <span>GCSE Maths Mastery</span>
+    </div>
+    <div class="nav-right">
+      <div class="nav-stats-container">
+        <div class="streak-badge" id="streak-badge">0 Day Streak</div>
+        <div class="mastery-miles-badge">
+          <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
+          <span id="mastery-miles">0</span>
+        </div>
+      </div>
+      <div class="user-profile-container">
+        <div class="user-info" id="user-profile-trigger">
+          <div class="user-avatar" id="user-avatar">S</div>
+          <span class="user-name" id="user-name">Student</span>
+        </div>
+        <div class="user-dropdown" id="user-dropdown">
+          <div class="dropdown-item">
+            <span>👤</span>
+            <span>My Profile</span>
+          </div>
+          <div class="dropdown-item">
+            <span>⚙️</span>
+            <span>Settings</span>
+          </div>
+          <div class="dropdown-item signout" id="signout-btn">
+            <span>🚪</span>
+            <span>Sign Out</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+
+
+
+  
   <div class="container">
     <div class="header-section">
     </div>
@@ -1115,6 +1333,153 @@
 // ========== SUPABASE CONFIGURATION - ONLY DECLARE ONCE ==========
 const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+
+
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let userData = {
+  name: "Student",
+  userId: "00000000",
+  streak: 0,
+  masteryMiles: 0
+};
+
+// Update streak based on login
+async function updateStreak(userId) {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+
+    const { data: existingStreak, error: fetchError } = await sbClient
+      .from('user_streaks')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      throw fetchError;
+    }
+
+    if (!existingStreak) {
+      const { data: newStreak, error: insertError } = await sbClient
+        .from('user_streaks')
+        .insert([{
+          user_id: userId,
+          current_streak: 1,
+          last_login_date: today
+        }])
+        .select()
+        .single();
+
+      if (insertError) throw insertError;
+      return 1;
+    }
+
+    if (existingStreak.last_login_date === today) {
+      return existingStreak.current_streak;
+    }
+
+    const lastLogin = new Date(existingStreak.last_login_date);
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    let newStreak;
+    if (existingStreak.last_login_date === yesterdayStr) {
+      newStreak = existingStreak.current_streak + 1;
+    } else {
+      newStreak = 1;
+    }
+
+    const { data: updatedStreak, error: updateError } = await sbClient
+      .from('user_streaks')
+      .update({
+        current_streak: newStreak,
+        last_login_date: today,
+        updated_at: new Date().toISOString()
+      })
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
+    return newStreak;
+
+  } catch (error) {
+    console.error('Streak update error:', error);
+    return 0;
+  }
+}
+
+async function checkAuth() {
+  try {
+    const { data: { session }, error } = await sbClient.auth.getSession();
+
+    if (error) throw error;
+
+    if (!session) {
+      window.location.href = 'signin.html';
+      return;
+    }
+
+    const user = session.user;
+    const firstName = user.user_metadata.first_name || 'Student';
+    const userId = user.id;
+
+    const currentStreak = await updateStreak(userId);
+
+    userData.name = firstName;
+    userData.userId = userId.slice(0, 8);
+    userData.streak = currentStreak;
+    userData.masteryMiles = 1250; // You can fetch this from database later
+
+    updateUserData();
+
+  } catch (error) {
+    console.error('Auth check error:', error);
+    window.location.href = 'signin.html';
+  }
+}
+
+function updateUserData() {
+  document.getElementById('user-name').textContent = userData.name;
+  document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
+  document.getElementById('streak-badge').textContent = `${userData.streak} Day Streak`;
+  document.getElementById('mastery-miles').textContent = userData.masteryMiles;
+}
+
+// User dropdown functionality
+const userProfileTrigger = document.getElementById('user-profile-trigger');
+const userDropdown = document.getElementById('user-dropdown');
+const signoutBtn = document.getElementById('signout-btn');
+
+if (userProfileTrigger && userDropdown) {
+  userProfileTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userDropdown.classList.toggle('active');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!userProfileTrigger.contains(e.target) && !userDropdown.contains(e.target)) {
+      userDropdown.classList.remove('active');
+    }
+  });
+}
+
+if (signoutBtn) {
+  signoutBtn.addEventListener('click', async () => {
+    try {
+      const { error } = await sbClient.auth.signOut();
+      if (error) throw error;
+      
+      localStorage.clear();
+      window.location.href = 'index.html';
+    } catch (error) {
+      console.error('Sign out error:', error);
+      alert('Error signing out. Please try again.');
+    }
+  });
+}
+
 
     
 function getUserId() {
@@ -1773,6 +2138,8 @@ document.addEventListener('DOMContentLoaded', function() {
     window.location.href = '/dashboard.html';
   });
 });
+    // Check authentication on page load
+  checkAuth();
 </script>
 
 </body>
