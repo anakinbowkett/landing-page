@@ -648,6 +648,26 @@
             margin-bottom: 1.25rem;
         }
 
+
+
+/* Past Papers specific styles */
+.journey-card.papers-mode .journey-duration-section {
+    display: none;
+}
+
+.journey-card.papers-mode .journey-main {
+    grid-template-columns: 50px 1fr 1fr 60px;
+}
+
+.journey-card.papers-mode .journey-topic {
+    font-size: 1.125rem;
+}
+
+
+
+
+        
+
         .topic-icon {
             width: 50px;
             height: 50px;
@@ -2165,8 +2185,41 @@ filterTabs.forEach(tab => {
         // Show/hide topic filters based on mode
         if (selectedMode === 'papers') {
             topicFiltersContainer.style.display = 'none';
+            
+            // Hide first two cards and show only last two for past papers
+            journeyCards.forEach((card, index) => {
+                if (index < 2) {
+                    card.style.display = 'none';
+                } else {
+                    card.style.display = 'block';
+                    card.classList.add('papers-mode');
+                    
+                    // Update content for past papers mode
+                    const dynamicTopic = card.querySelector('[data-dynamic-topic]');
+                    const xpElement = card.querySelector('.journey-xp');
+                    
+                    if (index === 2) {
+                        // Study grind card
+                        if (dynamicTopic) dynamicTopic.textContent = 'Commit to 1 Past Paper';
+                        if (xpElement) xpElement.innerHTML = '+17.5K<img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">';
+                    } else if (index === 3) {
+                        // Academic comeback card
+                        if (dynamicTopic) dynamicTopic.textContent = 'Commit to 2 Past Papers';
+                        if (xpElement) xpElement.innerHTML = '+25K<img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">';
+                    }
+                }
+            });
         } else {
             topicFiltersContainer.style.display = 'flex';
+            
+            // Show all cards and restore normal mode
+            journeyCards.forEach((card, index) => {
+                card.style.display = 'block';
+                card.classList.remove('papers-mode');
+                
+                // Restore original content
+                updateCardsForTopic(currentTopic);
+            });
         }
 
         // Show/hide buttons based on selected mode
@@ -2182,6 +2235,18 @@ filterTabs.forEach(tab => {
         });
     });
 });
+
+
+// Handle "Go to Past Papers" button clicks
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('go-to-btn') && 
+        e.target.dataset.journeyMode === 'papers') {
+        // Redirect to syllabus page Past Papers section
+        window.location.href = 'syllabus.html#past-papers';
+    }
+});
+
+        
 
 // Add rotation transition to replay button
 replayBtn.style.transition = 'transform 0.3s ease';
