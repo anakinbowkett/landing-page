@@ -1547,7 +1547,7 @@
                 </button>
                 Learning Goals
             </div>
-            <a href="syllabus.html" class="syllabus-btn">Go to Syllabus</a>
+            <a href="syllabus.html" class="syllabus-btn" id="syllabus-btn">Go to Syllabus</a>
             <div class="filter-tabs">
                 <button class="filter-tab active" data-mode="lectures">Lectures & Quiz</button>
                 <button class="filter-tab" data-mode="flashtiles">Flashtiles</button>
@@ -2236,6 +2236,25 @@ filterTabs.forEach(tab => {
     });
 });
 
+ // Dynamic syllabus button navigation based on active mode
+const syllabusBtn = document.getElementById('syllabus-btn');
+if (syllabusBtn) {
+    syllabusBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        let anchor = '';
+        
+        // Determine which section to navigate to based on current mode
+        if (currentMode === 'lectures') {
+            anchor = '#lectures-content';
+        } else if (currentMode === 'flashtiles') {
+            anchor = '#flash-content';
+        } else if (currentMode === 'papers') {
+            anchor = '#past-papers';
+        }
+        
+        window.location.href = 'syllabus.html' + anchor;
+    });
+}
 
 // Handle "Go to Past Papers" button clicks
 document.addEventListener('click', (e) => {
@@ -2244,9 +2263,7 @@ document.addEventListener('click', (e) => {
         // Redirect to syllabus page Past Papers section
         window.location.href = 'syllabus.html#past-papers';
     }
-});
-
-        
+});       
 
 // Add rotation transition to replay button
 replayBtn.style.transition = 'transform 0.3s ease';
@@ -2260,7 +2277,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Check auth on page load
 checkAuth();
-      
       
       
 </script>
