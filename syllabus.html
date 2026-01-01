@@ -1459,12 +1459,39 @@ userData.masteryMiles = 1250; // You can fetch this from database later
 }
 
 function updateUserData() {
-    document.getElementById('user-name').textContent = userData.name;
-    document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
-    document.getElementById('streak-badge').textContent = `${userData.streak} Day Streak`;
-    document.getElementById('mastery-miles').textContent = userData.masteryMiles;
+    const streakBadge = document.getElementById('streak-badge');
+    const masteryMiles = document.getElementById('mastery-miles');
+    const userName = document.getElementById('user-name');
+    const userAvatar = document.getElementById('user-avatar');
+    
+    // Update streak (remove the emoji since CSS ::before adds it)
+    if (streakBadge) {
+        streakBadge.childNodes.forEach(node => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                node.textContent = `${userData.streak} Day Streak`;
+            }
+        });
+        // If no text node exists, just set textContent
+        if (streakBadge.childNodes.length === 0 || !Array.from(streakBadge.childNodes).some(n => n.nodeType === Node.TEXT_NODE)) {
+            streakBadge.textContent = `${userData.streak} Day Streak`;
+        }
+    }
+    
+    // Update mastery miles
+    if (masteryMiles) {
+        masteryMiles.textContent = userData.masteryMiles;
+    }
+    
+    // Update user name
+    if (userName) {
+        userName.textContent = userData.name;
+    }
+    
+    // Update user avatar
+    if (userAvatar) {
+        userAvatar.textContent = userData.name.charAt(0).toUpperCase();
+    }
 }
-
 // User dropdown functionality
 const userProfileTrigger = document.getElementById('user-profile-trigger');
 const userDropdown = document.getElementById('user-dropdown');
