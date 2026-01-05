@@ -1900,37 +1900,39 @@ async function loadAllLectureProgress() {
 
 // Update individual accordion progress bar
 function updateAccordionProgressBar(topicNumber, lectureIndex, questionsCompleted, totalQuestions) {
-  const accordionItems = document.querySelectorAll('.accordion-item');
-  
-  accordionItems.forEach(item => {
-    const header = item.querySelector('.accordion-header');
-    if (!header) return;
+  // Wait a bit to ensure the accordion is rendered
+  setTimeout(() => {
+    const expandedCard = document.querySelector(`.expanded-card[data-topic-number="${topicNumber}"]`);
+    if (!expandedCard) return;
     
-    const headerIndex = header.dataset.index;
-    const parentCard = item.closest('.expanded-card');
+    const accordionItems = expandedCard.querySelectorAll('.accordion-item');
     
-    if (!parentCard) return;
-    
-    // Check if this accordion belongs to the correct topic
-    const topicNumberFromCard = parentCard.dataset.topicNumber;
-    
-    if (topicNumberFromCard === topicNumber.toString() && headerIndex === lectureIndex.toString()) {
-      const progressBar = item.querySelector('.accordion-progress-fill');
-      const progressText = item.querySelector('.accordion-progress-text');
+    accordionItems.forEach(item => {
+      const header = item.querySelector('.accordion-header');
+      if (!header) return;
       
-      if (progressBar && progressText) {
-        const percentage = totalQuestions > 0 ? (questionsCompleted / totalQuestions) * 100 : 0;
-        progressBar.style.width = percentage + '%';
-        progressText.textContent = `${questionsCompleted}/${totalQuestions} complete`;
-        
-        // Show the progress section
+      const headerIndex = header.dataset.index;
+      
+      if (headerIndex === lectureIndex.toString()) {
+        const progressBar = item.querySelector('.accordion-progress-fill');
+        const progressText = item.querySelector('.accordion-progress-text');
         const progressSection = item.querySelector('.accordion-quiz-right');
-        if (progressSection) {
+        
+        if (progressBar && progressText && progressSection) {
+          const percentage = totalQuestions > 0 ? (questionsCompleted / totalQuestions) * 100 : 0;
+          progressBar.style.width = percentage + '%';
+          progressText.textContent = `${questionsCompleted}/${totalQuestions} complete`;
+          
+          // Show the progress section
           progressSection.style.display = 'flex';
+          progressSection.style.flexDirection = 'column';
+          progressSection.style.gap = '6px';
+          
+          console.log(`Updated progress for topic ${topicNumber}, lecture ${lectureIndex}: ${questionsCompleted}/${totalQuestions}`);
         }
       }
-    }
-  });
+    });
+  }, 100);
 }
 
 // Load topic-level progress (aggregated from all lectures in that topic)
