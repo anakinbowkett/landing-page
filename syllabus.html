@@ -1869,22 +1869,32 @@ async function saveLectureProgress(topicNumber, lectureIndex, lectureName, quest
 async function loadAllLectureProgress() {
   try {
     const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
-    if (sessionError || !session) return;
+    if (sessionError || !session) {
+      console.log('No session found in loadAllLectureProgress');
+      return;
+    }
 
     const userId = session.user.id;
+    console.log('Loading progress for user:', userId);
 
     const { data, error } = await sbClient
       .from('lecture_progress')
       .select('*')
       .eq('user_id', userId);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error loading progress:', error);
+      throw error;
+    }
+
+    console.log('Raw progress data from database:', data);
 
     if (data && data.length > 0) {
       console.log('Loaded progress for', data.length, 'lectures');
       
       // Update each lecture's progress bar in the accordion
       data.forEach(lecture => {
+        console.log('Updating progress for:', lecture);
         updateAccordionProgressBar(
           lecture.topic_number,
           lecture.lecture_index,
@@ -1892,6 +1902,8 @@ async function loadAllLectureProgress() {
           lecture.total_questions
         );
       });
+    } else {
+      console.log('No progress data found in database');
     }
   } catch (error) {
     console.error('Error loading lecture progress:', error);
