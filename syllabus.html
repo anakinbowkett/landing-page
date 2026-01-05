@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Foundation Tier - GCSE Maths</title>
 <!-- ADD SUPABASE HERE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -398,12 +399,16 @@ width: 100%;
 background: white;
 border: 1px solid #d4d4d4;
 border-radius: 12px;
-padding: 32px;
+padding: 0;
 transition: all 0.2s ease;
 cursor: pointer;
 position: relative;
 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 box-sizing: border-box;
+display: flex;
+align-items: stretch;
+min-height: 80px;
+overflow: hidden;
 }
 
 .topic-card:hover {
@@ -411,7 +416,14 @@ border-color: #a0a0a0;
 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.topic-title {
+.topic-card-left {
+flex: 1;
+padding: 24px 28px;
+display: flex;
+align-items: center;
+}
+
+ .topic-title {
 font-size: 26px;
 font-weight: 600;
 color: #000000;
@@ -429,6 +441,51 @@ font-size: 26px;
 font-weight: 600;
 color: #999;
 letter-spacing: -0.02em;
+} 
+  
+.topic-card-divider {
+width: 1px;
+background: #e5e5e5;
+align-self: stretch;
+}
+
+.topic-card-right {
+width: 200px;
+padding: 24px 28px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+gap: 8px;
+background: #fafafa;
+}
+
+.topic-progress-label {
+font-size: 12px;
+color: #6b7280;
+font-weight: 500;
+margin-bottom: 4px;
+}
+
+.topic-progress-bar {
+width: 100%;
+height: 8px;
+background-color: #e5e5e7;
+border-radius: 10px;
+overflow: hidden;
+display: flex;
+}
+
+.topic-progress-fill {
+height: 100%;
+background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+transition: width 0.4s ease;
+border-radius: 10px;
+}
+
+.topic-progress-text {
+font-size: 13px;
+color: #1a1a1a;
+font-weight: 600;
 }
 
 /* Expanded card overlay */
@@ -529,7 +586,10 @@ padding: 0 40px 40px;
 
 .accordion-item {
 border-bottom: 1px solid #e8e8e8;
-overflow: hidden;
+overflow: visible;
+width: 100%;
+display: flex;
+flex-direction: column;
 }
 
 .accordion-item:last-child {
@@ -543,6 +603,8 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 transition: all 0.2s ease;
+width: 100%;
+min-height: 70px;
 }
 
 .accordion-header:hover {
@@ -553,6 +615,10 @@ color: #666;
 font-size: 22px;
 font-weight: 600;
 letter-spacing: -0.01em;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+max-width: 100%;
 }
 
 .accordion-icon {
@@ -588,7 +654,92 @@ margin-bottom: 20px;
 .button-group {
 display: flex;
 gap: 12px;
+flex-wrap: nowrap;
+}
+  
+  .accordion-quiz-section {
+display: flex;
+align-items: center;
+gap: 16px;
 margin-top: 20px;
+width: 100%;
+flex-wrap: nowrap;
+}
+  
+ @media (max-width: 768px) {
+  .accordion-header h3 {
+    font-size: 18px;
+    white-space: normal;
+    line-height: 1.4;
+  }
+  
+  .accordion-quiz-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  
+  .accordion-divider {
+    display: none;
+  }
+  
+  .accordion-quiz-right {
+    width: 100%;
+  }
+  
+  .button-group {
+    width: 100%;
+  }
+  
+  .action-btn {
+    max-width: none;
+    flex: 1;
+  }
+} 
+
+.accordion-quiz-left {
+flex-shrink: 0;
+}
+
+.accordion-divider {
+width: 1px;
+height: 40px;
+background: #e5e5e5;
+flex-shrink: 0;
+}
+
+.accordion-quiz-right {
+flex: 1;
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.accordion-progress-label {
+font-size: 11px;
+color: #6b7280;
+font-weight: 500;
+}
+
+.accordion-progress-bar {
+width: 100%;
+height: 6px;
+background-color: #e5e5e7;
+border-radius: 10px;
+overflow: hidden;
+display: flex;
+}
+
+.accordion-progress-fill {
+height: 100%;
+background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+transition: width 0.4s ease;
+}
+
+.accordion-progress-text {
+font-size: 12px;
+color: #444;
+font-weight: 500;
 }
 
 .action-btn {
@@ -841,8 +992,11 @@ margin-top: 32px;
 padding: 32px 24px; 
 }
 
-.accordion-content { 
-padding: 0 24px 32px; 
+.accordion-content {
+padding: 0 40px 40px;
+display: flex;
+flex-direction: column;
+width: 100%;
 }
 
 /* Mobile paper carousel adjustments */
@@ -1205,42 +1359,108 @@ Back to Dashboard
 <div class="topics-section">
 <div class="topics-grid">
 <div class="topic-card" data-topic="1" data-title="Number">
-<div class="topic-title">
-<span class="topic-number">1</span>
-<span>Number</span>
+  <div class="topic-card-left">
+    <div class="topic-title">
+      <span class="topic-number">1</span>
+      <span>Number</span>
+    </div>
+  </div>
+  <div class="topic-card-divider"></div>
+  <div class="topic-card-right">
+    <div class="topic-progress-label">Overall Progress</div>
+    <div class="topic-progress-bar">
+      <div class="topic-progress-fill" style="width: 0%" data-topic-progress="1"></div>
+    </div>
+    <div class="topic-progress-text">0/31 complete</div>
+  </div>
 </div>
-</div>
+
 <div class="topic-card" data-topic="2" data-title="Algebra">
-<div class="topic-title">
-<span class="topic-number">2</span>
-<span>Algebra</span>
+  <div class="topic-card-left">
+    <div class="topic-title">
+      <span class="topic-number">2</span>
+      <span>Algebra</span>
+    </div>
+  </div>
+  <div class="topic-card-divider"></div>
+  <div class="topic-card-right">
+    <div class="topic-progress-label">Overall Progress</div>
+    <div class="topic-progress-bar">
+      <div class="topic-progress-fill" style="width: 0%" data-topic-progress="2"></div>
+    </div>
+    <div class="topic-progress-text">0/16 complete</div>
+  </div>
 </div>
-</div>
+
 <div class="topic-card" data-topic="3" data-title="Ratio and Proportion">
-<div class="topic-title">
-<span class="topic-number">3</span>
-<span>Ratio and Proportion</span>
+  <div class="topic-card-left">
+    <div class="topic-title">
+      <span class="topic-number">3</span>
+      <span>Ratio and Proportion</span>
+    </div>
+  </div>
+  <div class="topic-card-divider"></div>
+  <div class="topic-card-right">
+    <div class="topic-progress-label">Overall Progress</div>
+    <div class="topic-progress-bar">
+      <div class="topic-progress-fill" style="width: 0%" data-topic-progress="3"></div>
+    </div>
+    <div class="topic-progress-text">0/11 complete</div>
+  </div>
 </div>
-</div>
+
 <div class="topic-card" data-topic="4" data-title="Geometry and Measures">
-<div class="topic-title">
-<span class="topic-number">4</span>
-<span>Geometry and Measures</span>
+  <div class="topic-card-left">
+    <div class="topic-title">
+      <span class="topic-number">4</span>
+      <span>Geometry and Measures</span>
+    </div>
+  </div>
+  <div class="topic-card-divider"></div>
+  <div class="topic-card-right">
+    <div class="topic-progress-label">Overall Progress</div>
+    <div class="topic-progress-bar">
+      <div class="topic-progress-fill" style="width: 0%" data-topic-progress="4"></div>
+    </div>
+    <div class="topic-progress-text">0/16 complete</div>
+  </div>
 </div>
-</div>
+
 <div class="topic-card" data-topic="5" data-title="Trigonometry">
-<div class="topic-title">
-<span class="topic-number">5</span>
-<span>Trigonometry</span>
+  <div class="topic-card-left">
+    <div class="topic-title">
+      <span class="topic-number">5</span>
+      <span>Trigonometry</span>
+    </div>
+  </div>
+  <div class="topic-card-divider"></div>
+  <div class="topic-card-right">
+    <div class="topic-progress-label">Overall Progress</div>
+    <div class="topic-progress-bar">
+      <div class="topic-progress-fill" style="width: 0%" data-topic-progress="5"></div>
+    </div>
+    <div class="topic-progress-text">0/3 complete</div>
+  </div>
 </div>
-</div>
+
 <div class="topic-card" data-topic="6" data-title="Probability and Statistics">
-<div class="topic-title">
-<span class="topic-number">6</span>
-<span>Probability and Statistics</span>
+  <div class="topic-card-left">
+    <div class="topic-title">
+      <span class="topic-number">6</span>
+      <span>Probability and Statistics</span>
+    </div>
+  </div>
+  <div class="topic-card-divider"></div>
+  <div class="topic-card-right">
+    <div class="topic-progress-label">Overall Progress</div>
+    <div class="topic-progress-bar">
+      <div class="topic-progress-fill" style="width: 0%" data-topic-progress="6"></div>
+    </div>
+    <div class="topic-progress-text">0/18 complete</div>
+  </div>
 </div>
-</div>
-</div>
+
+  </div>
 </div>
 </div>
 
@@ -1248,45 +1468,88 @@ Back to Dashboard
 <div class="topics-section">
 <div class="topics-grid">
 <div class="topic-card flashtile-card" data-flashtopic="1" data-title="Number">
+<div class="topic-card-left">
 <div class="topic-title">
 <span class="topic-number">1</span>
 <span>Number</span>
 </div>
 </div>
+<div class="topic-card-divider"></div>
+<div class="topic-card-right">
+<div class="topic-progress-label">Coming Soon</div>
+</div>
+</div>
+
 <div class="topic-card flashtile-card" data-flashtopic="2" data-title="Algebra">
+<div class="topic-card-left">
 <div class="topic-title">
 <span class="topic-number">2</span>
 <span>Algebra</span>
 </div>
 </div>
+<div class="topic-card-divider"></div>
+<div class="topic-card-right">
+<div class="topic-progress-label">Coming Soon</div>
+</div>
+</div>
+
 <div class="topic-card flashtile-card" data-flashtopic="3" data-title="Ratio and Proportion">
+<div class="topic-card-left">
 <div class="topic-title">
 <span class="topic-number">3</span>
 <span>Ratio and Proportion</span>
 </div>
 </div>
+<div class="topic-card-divider"></div>
+<div class="topic-card-right">
+<div class="topic-progress-label">Coming Soon</div>
+</div>
+</div>
+
 <div class="topic-card flashtile-card" data-flashtopic="4" data-title="Geometry and Measures">
+<div class="topic-card-left">
 <div class="topic-title">
 <span class="topic-number">4</span>
 <span>Geometry and Measures</span>
 </div>
 </div>
+<div class="topic-card-divider"></div>
+<div class="topic-card-right">
+<div class="topic-progress-label">Coming Soon</div>
+</div>
+</div>
+
 <div class="topic-card flashtile-card" data-flashtopic="5" data-title="Trigonometry">
+<div class="topic-card-left">
 <div class="topic-title">
 <span class="topic-number">5</span>
 <span>Trigonometry</span>
 </div>
 </div>
+<div class="topic-card-divider"></div>
+<div class="topic-card-right">
+<div class="topic-progress-label">Coming Soon</div>
+</div>
+</div>
+
 <div class="topic-card flashtile-card" data-flashtopic="6" data-title="Probability and Statistics">
+<div class="topic-card-left">
 <div class="topic-title">
 <span class="topic-number">6</span>
 <span>Probability and Statistics</span>
+</div>
+</div>
+<div class="topic-card-divider"></div>
+<div class="topic-card-right">
+<div class="topic-progress-label">Coming Soon</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 
+<div id="papers-content" class="tab-content hidden">
+  
 <div id="papers-content" class="tab-content hidden">
 <div class="topics-section">
 <div class="topics-grid">
@@ -1342,7 +1605,7 @@ Back to Dashboard
 </div>
 </div>
 </div>
-<div style="height: 60px;"></div>
+
 </div>
 
 <div class="expanded-overlay" id="expandedOverlay"></div>
@@ -1531,6 +1794,214 @@ alert('Error signing out. Please try again.');
 }
 
 
+  
+// ========== LECTURE PROGRESS TRACKING SYSTEM ==========
+
+// Save or update lecture progress to Supabase
+async function saveLectureProgress(topicNumber, lectureIndex, lectureName, questionsCompleted, totalQuestions) {
+  try {
+    const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
+    if (sessionError || !session) {
+      console.error('No active session');
+      return false;
+    }
+
+    const userId = session.user.id;
+    const completionPercentage = totalQuestions > 0 ? (questionsCompleted / totalQuestions) * 100 : 0;
+
+    // Check if progress record exists
+    const { data: existing, error: fetchError } = await sbClient
+      .from('lecture_progress')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('topic_number', topicNumber.toString())
+      .eq('lecture_index', lectureIndex.toString())
+      .single();
+
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      throw fetchError;
+    }
+
+    if (existing) {
+      // Update existing record
+      const { error: updateError } = await sbClient
+        .from('lecture_progress')
+        .update({
+          questions_completed: questionsCompleted,
+          total_questions: totalQuestions,
+          completion_percentage: completionPercentage,
+          last_accessed: new Date().toISOString()
+        })
+        .eq('user_id', userId)
+        .eq('topic_number', topicNumber.toString())
+        .eq('lecture_index', lectureIndex.toString());
+
+      if (updateError) throw updateError;
+    } else {
+      // Insert new record
+      const { error: insertError } = await sbClient
+        .from('lecture_progress')
+        .insert([{
+          user_id: userId,
+          topic_number: topicNumber.toString(),
+          lecture_index: lectureIndex.toString(),
+          lecture_name: lectureName,
+          questions_completed: questionsCompleted,
+          total_questions: totalQuestions,
+          completion_percentage: completionPercentage
+        }]);
+
+      if (insertError) throw insertError;
+    }
+
+    // Refresh all progress displays
+    await loadAllLectureProgress();
+    await loadTopicProgress();
+    
+    return true;
+  } catch (error) {
+    console.error('Error saving lecture progress:', error);
+    return false;
+  }
+}
+
+// Load all lecture progress from Supabase
+async function loadAllLectureProgress() {
+  try {
+    const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
+    if (sessionError || !session) return;
+
+    const userId = session.user.id;
+
+    const { data, error } = await sbClient
+      .from('lecture_progress')
+      .select('*')
+      .eq('user_id', userId);
+
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      console.log('Loaded progress for', data.length, 'lectures');
+      
+      // Update each lecture's progress bar in the accordion
+      data.forEach(lecture => {
+        updateAccordionProgressBar(
+          lecture.topic_number,
+          lecture.lecture_index,
+          lecture.questions_completed,
+          lecture.total_questions
+        );
+      });
+    }
+  } catch (error) {
+    console.error('Error loading lecture progress:', error);
+  }
+}
+
+// Update individual accordion progress bar
+function updateAccordionProgressBar(topicNumber, lectureIndex, questionsCompleted, totalQuestions) {
+  const accordionItems = document.querySelectorAll('.accordion-item');
+  
+  accordionItems.forEach(item => {
+    const header = item.querySelector('.accordion-header');
+    if (!header) return;
+    
+    const headerIndex = header.dataset.index;
+    const parentCard = item.closest('.expanded-card');
+    
+    if (!parentCard) return;
+    
+    // Check if this accordion belongs to the correct topic
+    const topicNumberFromCard = parentCard.dataset.topicNumber;
+    
+    if (topicNumberFromCard === topicNumber.toString() && headerIndex === lectureIndex.toString()) {
+      const progressBar = item.querySelector('.accordion-progress-fill');
+      const progressText = item.querySelector('.accordion-progress-text');
+      
+      if (progressBar && progressText) {
+        const percentage = totalQuestions > 0 ? (questionsCompleted / totalQuestions) * 100 : 0;
+        progressBar.style.width = percentage + '%';
+        progressText.textContent = `${questionsCompleted}/${totalQuestions} complete`;
+        
+        // Show the progress section
+        const progressSection = item.querySelector('.accordion-quiz-right');
+        if (progressSection) {
+          progressSection.style.display = 'flex';
+        }
+      }
+    }
+  });
+}
+
+// Load topic-level progress (aggregated from all lectures in that topic)
+async function loadTopicProgress() {
+  try {
+    const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
+    if (sessionError || !session) return;
+
+    const userId = session.user.id;
+
+    const { data, error } = await sbClient
+      .from('lecture_progress')
+      .select('*')
+      .eq('user_id', userId);
+
+    if (error) throw error;
+
+    // Topic lecture counts (must match your topicData structure)
+    const topicLectureCounts = {
+      '1': 31, // Number
+      '2': 16, // Algebra
+      '3': 11, // Ratio and Proportion
+      '4': 16, // Geometry and Measures
+      '5': 3,  // Trigonometry
+      '6': 18  // Probability and Statistics
+    };
+
+    // Calculate progress for each topic
+    Object.keys(topicLectureCounts).forEach(topicNum => {
+      const topicLectures = data.filter(lecture => lecture.topic_number === topicNum);
+      const completedLectures = topicLectures.filter(lecture => 
+        lecture.completion_percentage >= 100
+      ).length;
+      const totalLectures = topicLectureCounts[topicNum];
+      const percentage = totalLectures > 0 ? (completedLectures / totalLectures) * 100 : 0;
+
+      // Update topic card progress bar
+      const progressFill = document.querySelector(`[data-topic-progress="${topicNum}"]`);
+      const progressText = document.querySelector(`[data-topic="${topicNum}"] .topic-progress-text`);
+      
+      if (progressFill) {
+        progressFill.style.width = percentage + '%';
+      }
+      
+      if (progressText) {
+        progressText.textContent = `${completedLectures}/${totalLectures} complete`;
+      }
+    });
+
+  } catch (error) {
+    console.error('Error loading topic progress:', error);
+  }
+}
+
+// Listen for progress updates from lecture pages
+window.addEventListener('message', async (event) => {
+  // Verify origin for security (adjust if your lecture pages are on different domain)
+  if (event.origin !== window.location.origin) return;
+  
+  if (event.data.type === 'LECTURE_PROGRESS_UPDATE') {
+    const { topicNumber, lectureIndex, lectureName, questionsCompleted, totalQuestions } = event.data;
+    
+    await saveLectureProgress(
+      topicNumber,
+      lectureIndex,
+      lectureName,
+      questionsCompleted,
+      totalQuestions
+    );
+  }
+});
 
 function getUserId() {
 let userId = localStorage.getItem('userId');
@@ -1620,27 +2091,7 @@ quoteElement.style.opacity = '1';
 }
 }
 
-// ========== LOAD PROGRESS FOR PROGRESS BARS ==========
-async function loadAllLectureProgress() {
-const userId = getUserId();
-if (!userId) return;
 
-try {
-const { data, error } = await supabase
-.from('lecture_progress')
-.select('*')
-.eq('user_id', userId);
-
-if (data && !error) {
-console.log('Loaded progress for', data.length, 'lectures');
-data.forEach(lecture => {
-updateProgressBar(lecture);
-});
-}
-} catch (err) {
-console.error('Failed to load progress:', err);
-}
-}  
 
 // ========== NAVIGATION FUNCTION - THIS OPENS THE LECTURE ==========
 window.navigateToLecture = function(topicNum, sectionIndex, sectionTitle) {
@@ -1989,6 +2440,7 @@ createExpandedCard(topicNum, topicTitle, rect, flashtileData, 'flashtile');
 function createExpandedCard(topicNum, topicTitle, rect, dataSource, cardType) {
 const expandedCard = document.createElement('div');
 expandedCard.className = 'expanded-card';
+expandedCard.dataset.topicNumber = topicNum;
 expandedCard.style.left = rect.left + 'px';
 expandedCard.style.top = rect.top + 'px';
 expandedCard.style.width = rect.width + 'px';
@@ -2003,42 +2455,46 @@ const buttonLabel = cardType === 'flashtile' ? 'Start' : 'Lecture';
 const buttonLabel2 = cardType === 'flashtile' ? 'Review' : 'Quiz';
 
 accordionHTML += `
-       <div class="accordion-item">
-         <div class="accordion-header" data-index="${index}">
-           <h3>${titleWithNumber}</h3>
-           <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-             <path d="M6 9l6 6 6-6"/>
-           </svg>
-         </div>
-         <div class="accordion-body">
-           <p>${section.content}</p>
-           <div class="lecture-progress-container" style="display: none;">
-             <div class="lecture-progress-bar">
-               <div class="progress-correct" style="width: 0%"></div>
-               <div class="progress-partial" style="width: 0%"></div>
-               <div class="progress-incorrect" style="width: 0%"></div>
-             </div>
-             <span class="progress-stats"></span>
-           </div>
-           <div class="button-group">
-             <button class="action-btn" onclick="window.navigateToLecture('${topicNum}', '${index}', '${section.title}')">${buttonLabel}</button>
-             <button class="action-btn">${buttonLabel2}</button>
-           </div>
-         </div>
-       </div>
-     `;
+  <div class="accordion-item">
+    <div class="accordion-header" data-index="${index}">
+      <h3>${titleWithNumber}</h3>
+      <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 9l6 6 6-6"/>
+      </svg>
+    </div>
+    <div class="accordion-body">
+      <p>${section.content}</p>
+      <div class="accordion-quiz-section">
+        <div class="accordion-quiz-left">
+          <div class="button-group">
+            <button class="action-btn" onclick="window.navigateToLecture('${topicNum}', '${index}', '${section.title}')">${buttonLabel}</button>
+            <button class="action-btn">${buttonLabel2}</button>
+          </div>
+        </div>
+        <div class="accordion-divider"></div>
+        <div class="accordion-quiz-right" style="display: none;">
+          <div class="accordion-progress-label">Lecture Progress</div>
+          <div class="accordion-progress-bar">
+            <div class="accordion-progress-fill" style="width: 0%"></div>
+          </div>
+          <div class="accordion-progress-text">0/0 complete</div>
+        </div>
+      </div>
+    </div>
+  </div>
+`;
 });
 
 expandedCard.innerHTML = `
-     <div class="expanded-card-header">
-       <button class="close-btn">×</button>
-       <div class="expanded-title">
-         <span class="expanded-number">${topicNum}</span>
-         <span>${topicTitle}</span>
-       </div>
-     </div>
-     <div class="accordion-content">${accordionHTML}</div>
-   `;
+  <div class="expanded-card-header">
+    <button class="close-btn">×</button>
+    <div class="expanded-title">
+      <span class="expanded-number">${topicNum}</span>
+      <span>${topicTitle}</span>
+    </div>
+  </div>
+  <div class="accordion-content">${accordionHTML}</div>
+`;
 
 overlay.appendChild(expandedCard);
 overlay.classList.add('active');
@@ -2055,14 +2511,15 @@ expandedCard.style.height = 'auto';
 expandedCard.classList.add('animating');
 
 setTimeout(() => {
-loadAllLectureProgress();
-const firstAccordion = expandedCard.querySelector('.accordion-header');
-const firstBody = expandedCard.querySelector('.accordion-body');
-const firstIcon = expandedCard.querySelector('.accordion-icon');
-if (firstAccordion && firstBody && firstIcon) {
-firstBody.classList.add('open');
-firstIcon.classList.add('rotated');
-}
+  loadAllLectureProgress();
+  loadTopicProgress();
+  const firstAccordion = expandedCard.querySelector('.accordion-header');
+  const firstBody = expandedCard.querySelector('.accordion-body');
+  const firstIcon = expandedCard.querySelector('.accordion-icon');
+  if (firstAccordion && firstBody && firstIcon) {
+    firstBody.classList.add('open');
+    firstIcon.classList.add('rotated');
+  }
 }, 450);
 }, 50);
 
@@ -2331,6 +2788,12 @@ element.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 }
 
+  
+// Load all progress on page load
+loadTopicProgress();
+loadAllLectureProgress();  
+  
+  
 checkAuth();
 </script>
 
