@@ -4353,6 +4353,79 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeProgressBar();
 });
 
+// ========== PROGRESS TRACKING FOR SYLLABUS ==========
+
+// Configuration - SET THESE FOR THIS LECTURE
+const LECTURE_CONFIG = {
+  topicNumber: '1',        // Number topic
+  lectureIndex: '2',       // Third lecture (0-indexed: 0=first, 1=second, 2=third)
+  lectureName: 'Lowest Common Multiple'
+};
+
+// Track question progress
+let lectureProgress = {
+  questionsCompleted: 0,
+  totalQuestions: 6  // This lecture has 6 questions
+};
+
+// Function to update progress
+function updateLectureProgress(completed, total) {
+  lectureProgress.questionsCompleted = completed;
+  lectureProgress.totalQuestions = total;
+  
+  // Save to Supabase via parent window
+  if (window.opener && !window.opener.closed) {
+    window.opener.postMessage({
+      type: 'LECTURE_PROGRESS_UPDATE',
+      topicNumber: LECTURE_CONFIG.topicNumber,
+      lectureIndex: LECTURE_CONFIG.lectureIndex,
+      lectureName: LECTURE_CONFIG.lectureName,
+      questionsCompleted: completed,
+      totalQuestions: total
+    }, window.location.origin);
+  }
+  
+  console.log(`Progress: ${completed}/${total} questions completed`);
+}
+
+// Call this function after EVERY question submission
+// Hook into the existing recordAnswer function
+const originalRecordAnswer = window.recordAnswer;
+window.recordAnswer = function(questionNumber, resultType, marksEarned, marksPossible) {
+  // Call original function
+  originalRecordAnswer(questionNumber, resultType, marksEarned, marksPossible);
+  
+  // Count completed questions (any that aren't unanswered)
+  const completed = Object.values(questionStatuses).filter(status => status !== 'unanswered').length;
+  
+  // Update lecture progress
+  updateLectureProgress(completed, lectureProgress.totalQuestions);
+};
+
+// Also hook into reset to update progress
+const originalResetAnswerRecord = window.resetAnswerRecord;
+window.resetAnswerRecord = function(questionNumber) {
+  // Call original function
+  originalResetAnswerRecord(questionNumber);
+  
+  // Count completed questions
+  const completed = Object.values(questionStatuses).filter(status => status !== 'unanswered').length;
+  
+  // Update lecture progress
+  updateLectureProgress(completed, lectureProgress.totalQuestions);
+};
+
+// Initialize progress on page load
+window.addEventListener('DOMContentLoaded', () => {
+  console.log(`Lecture initialized: ${LECTURE_CONFIG.lectureName}`);
+  console.log(`Total questions: ${lectureProgress.totalQuestions}`);
+  
+  // Send initial progress (0/6)
+  updateLectureProgress(0, lectureProgress.totalQuestions);
+});
+
+</script>
+    
 </script>
   
 <!-- Results Summary Box -->
