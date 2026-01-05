@@ -4,6 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Lowest Common Multiple - Interactive Lecture</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- ADD THIS FONT LINK HERE -->
   <!-- ADD THIS FONT LINK HERE -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4353,75 +4355,121 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeProgressBar();
 });
 
-// ========== PROGRESS TRACKING FOR SYLLABUS ==========
+// ========== SUPABASE CONFIGURATION ==========
+const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
 
-// Configuration - SET THESE FOR THIS LECTURE
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ========== LECTURE CONFIGURATION ==========
 const LECTURE_CONFIG = {
   topicNumber: '1',        // Number topic
-  lectureIndex: '2',       // Third lecture (0-indexed: 0=first, 1=second, 2=third)
-  lectureName: 'Lowest Common Multiple'
+  lectureIndex: '2',       // Lowest Common Multiple (0=Product of Prime, 1=HCF, 2=LCM)
+  lectureName: 'Lowest Common Multiple',
+  totalQuestions: 6
 };
 
 // Track question progress
 let lectureProgress = {
   questionsCompleted: 0,
-  totalQuestions: 6  // This lecture has 6 questions
+  totalQuestions: LECTURE_CONFIG.totalQuestions
 };
 
-// Function to update progress
-function updateLectureProgress(completed, total) {
-  lectureProgress.questionsCompleted = completed;
-  lectureProgress.totalQuestions = total;
-  
-  // Save to Supabase via parent window
-  if (window.opener && !window.opener.closed) {
-    window.opener.postMessage({
-      type: 'LECTURE_PROGRESS_UPDATE',
-      topicNumber: LECTURE_CONFIG.topicNumber,
-      lectureIndex: LECTURE_CONFIG.lectureIndex,
-      lectureName: LECTURE_CONFIG.lectureName,
-      questionsCompleted: completed,
-      totalQuestions: total
-    }, window.location.origin);
+// ========== SAVE PROGRESS TO SUPABASE ==========
+async function saveLectureProgress() {
+  try {
+    const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
+    if (sessionError || !session) {
+      console.log('No active session - progress not saved');
+      return;
+    }
+
+    const userId = session.user.id;
+    const completed = Object.values(questionStatuses).filter(status => status !== 'unanswered').length;
+    const completionPercentage = (completed / LECTURE_CONFIG.totalQuestions) * 100;
+
+    console.log(`Saving progress: ${completed}/${LECTURE_CONFIG.totalQuestions} (${completionPercentage}%)`);
+
+    // Check if progress record exists
+    const { data: existing, error: fetchError } = await sbClient
+      .from('lecture_progress')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('topic_number', LECTURE_CONFIG.topicNumber)
+      .eq('lecture_index', LECTURE_CONFIG.lectureIndex)
+      .single();
+
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      throw fetchError;
+    }
+
+    if (existing) {
+      // Update existing record
+      const { error: updateError } = await sbClient
+        .from('lecture_progress')
+        .update({
+          questions_completed: completed,
+          total_questions: LECTURE_CONFIG.totalQuestions,
+          completion_percentage: completionPercentage,
+          last_accessed: new Date().toISOString()
+        })
+        .eq('user_id', userId)
+        .eq('topic_number', LECTURE_CONFIG.topicNumber)
+        .eq('lecture_index', LECTURE_CONFIG.lectureIndex);
+
+      if (updateError) throw updateError;
+      console.log('✅ Progress updated successfully');
+    } else {
+      // Insert new record
+      const { error: insertError } = await sbClient
+        .from('lecture_progress')
+        .insert([{
+          user_id: userId,
+          topic_number: LECTURE_CONFIG.topicNumber,
+          lecture_index: LECTURE_CONFIG.lectureIndex,
+          lecture_name: LECTURE_CONFIG.lectureName,
+          questions_completed: completed,
+          total_questions: LECTURE_CONFIG.totalQuestions,
+          completion_percentage: completionPercentage
+        }]);
+
+      if (insertError) throw insertError;
+      console.log('✅ Progress saved successfully');
+    }
+  } catch (error) {
+    console.error('❌ Error saving progress:', error);
   }
-  
-  console.log(`Progress: ${completed}/${total} questions completed`);
 }
 
-// Call this function after EVERY question submission
-// Hook into the existing recordAnswer function
+// ========== HOOK INTO EXISTING FUNCTIONS ==========
+// Hook into recordAnswer to save progress after each question
 const originalRecordAnswer = window.recordAnswer;
 window.recordAnswer = function(questionNumber, resultType, marksEarned, marksPossible) {
   // Call original function
   originalRecordAnswer(questionNumber, resultType, marksEarned, marksPossible);
   
-  // Count completed questions (any that aren't unanswered)
-  const completed = Object.values(questionStatuses).filter(status => status !== 'unanswered').length;
-  
-  // Update lecture progress
-  updateLectureProgress(completed, lectureProgress.totalQuestions);
+  // Save progress to Supabase
+  saveLectureProgress();
 };
 
-// Also hook into reset to update progress
+// Hook into reset to update progress when questions are reset
 const originalResetAnswerRecord = window.resetAnswerRecord;
 window.resetAnswerRecord = function(questionNumber) {
   // Call original function
   originalResetAnswerRecord(questionNumber);
   
-  // Count completed questions
-  const completed = Object.values(questionStatuses).filter(status => status !== 'unanswered').length;
-  
-  // Update lecture progress
-  updateLectureProgress(completed, lectureProgress.totalQuestions);
+  // Save progress to Supabase
+  saveLectureProgress();
 };
 
-// Initialize progress on page load
+// ========== INITIALIZE ON PAGE LOAD ==========
 window.addEventListener('DOMContentLoaded', () => {
-  console.log(`Lecture initialized: ${LECTURE_CONFIG.lectureName}`);
-  console.log(`Total questions: ${lectureProgress.totalQuestions}`);
+  console.log(`📚 Lecture: ${LECTURE_CONFIG.lectureName}`);
+  console.log(`📊 Total questions: ${LECTURE_CONFIG.totalQuestions}`);
+  console.log(`🎯 Topic ${LECTURE_CONFIG.topicNumber}, Lecture ${LECTURE_CONFIG.lectureIndex}`);
   
-  // Send initial progress (0/6)
-  updateLectureProgress(0, lectureProgress.totalQuestions);
+  // Save initial progress (0/6) when page loads
+  setTimeout(() => saveLectureProgress(), 500);
 });
 
 </script>
