@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Flashtile Step Sync Prototype — QType Buttons Integrated</title>
-  <!-- ADD THIS FONT LINK HERE -->
+<title>Highest Common Factor - Interactive Lecture</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
@@ -4418,6 +4420,122 @@ window.__flashtile = {
   saveSettings
 };
   
+ // ========== SUPABASE CONFIGURATION ==========
+const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ========== LECTURE CONFIGURATION ==========
+const LECTURE_CONFIG = {
+  topicNumber: '1',        // Number topic
+  lectureIndex: '1',       // Highest Common Factor (0=Product of Prime, 1=HCF, 2=LCM)
+  lectureName: 'Highest Common Factor',
+  totalQuestions: 6       // UPDATE THIS to match your actual number of questions
+};
+
+// Track question progress
+let lectureProgress = {
+  questionsCompleted: 0,
+  totalQuestions: LECTURE_CONFIG.totalQuestions
+};
+
+// ========== SAVE PROGRESS TO SUPABASE ==========
+async function saveLectureProgress() {
+  try {
+    const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
+    if (sessionError || !session) {
+      console.log('No active session - progress not saved');
+      return;
+    }
+
+    const userId = session.user.id;
+    const completed = Object.values(questionStatuses).filter(status => status !== 'unanswered').length;
+    const completionPercentage = (completed / LECTURE_CONFIG.totalQuestions) * 100;
+
+    console.log(`Saving progress: ${completed}/${LECTURE_CONFIG.totalQuestions} (${completionPercentage}%)`);
+
+    // Check if progress record exists
+    const { data: existing, error: fetchError } = await sbClient
+      .from('lecture_progress')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('topic_number', LECTURE_CONFIG.topicNumber)
+      .eq('lecture_index', LECTURE_CONFIG.lectureIndex)
+      .single();
+
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      throw fetchError;
+    }
+
+    if (existing) {
+      // Update existing record
+      const { error: updateError } = await sbClient
+        .from('lecture_progress')
+        .update({
+          questions_completed: completed,
+          total_questions: LECTURE_CONFIG.totalQuestions,
+          completion_percentage: completionPercentage,
+          last_accessed: new Date().toISOString()
+        })
+        .eq('user_id', userId)
+        .eq('topic_number', LECTURE_CONFIG.topicNumber)
+        .eq('lecture_index', LECTURE_CONFIG.lectureIndex);
+
+      if (updateError) throw updateError;
+      console.log('✅ Progress updated successfully');
+    } else {
+      // Insert new record
+      const { error: insertError } = await sbClient
+        .from('lecture_progress')
+        .insert([{
+          user_id: userId,
+          topic_number: LECTURE_CONFIG.topicNumber,
+          lecture_index: LECTURE_CONFIG.lectureIndex,
+          lecture_name: LECTURE_CONFIG.lectureName,
+          questions_completed: completed,
+          total_questions: LECTURE_CONFIG.totalQuestions,
+          completion_percentage: completionPercentage
+        }]);
+
+      if (insertError) throw insertError;
+      console.log('✅ Progress saved successfully');
+    }
+  } catch (error) {
+    console.error('❌ Error saving progress:', error);
+  }
+}
+
+// ========== HOOK INTO EXISTING FUNCTIONS ==========
+// Hook into recordAnswer to save progress after each question
+const originalRecordAnswer = window.recordAnswer;
+window.recordAnswer = function(questionNumber, resultType, marksEarned, marksPossible) {
+  // Call original function
+  originalRecordAnswer(questionNumber, resultType, marksEarned, marksPossible);
+  
+  // Save progress to Supabase
+  saveLectureProgress();
+};
+
+// Hook into reset to update progress when questions are reset
+const originalResetAnswerRecord = window.resetAnswerRecord;
+window.resetAnswerRecord = function(questionNumber) {
+  // Call original function
+  originalResetAnswerRecord(questionNumber);
+  
+  // Save progress to Supabase
+  saveLectureProgress();
+};
+
+// ========== INITIALIZE ON PAGE LOAD ==========
+window.addEventListener('DOMContentLoaded', () => {
+  console.log(`📚 Lecture: ${LECTURE_CONFIG.lectureName}`);
+  console.log(`📊 Total questions: ${LECTURE_CONFIG.totalQuestions}`);
+  console.log(`🎯 Topic ${LECTURE_CONFIG.topicNumber}, Lecture ${LECTURE_CONFIG.lectureIndex}`);
+  
+  // Save initial progress when page loads
+  setTimeout(() => saveLectureProgress(), 500);
+});   
   
   // Progress bar functionality
 const totalQuestions = 6;
