@@ -4,11 +4,20 @@
 <script src="https://cdn.jsdelivr.net/npm/@spabase/supabase-js@2"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GCSE Maths Mastery - Dashboard</title>
+    <title>GCSE Mastery - Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preeeee66666666666666connect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
+    
+  
+  
+  
+  <style>
+    
+    .hidden {
+    display: none !important;
+}
+    
         * {
     margin: 0;
     padding: 0;
@@ -1203,7 +1212,7 @@ nav {
     <nav>
         <div class="nav-left">
             <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="GMM Logo">
-            <span>GCSE Maths Mastery</span>
+            <span>GCSE Mastery</span>
         </div>
         <div class="nav-right">
             <div class="nav-stats-container">
@@ -1669,176 +1678,504 @@ nav {
 </div>
 
     <script>
-    const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
-    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      
+      
+    // REPLACE THE ENTIRE <script> SECTION IN YOUR DASHBOARD.HTML WITH THIS CODE
 
-    let userData = {
-        name: "Student",
-        userId: "00000000",
-        streak: 0
-    };
+const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Update streak based on login
-    async function updateStreak(userId) {
-        try {
-            const today = new Date().toISOString().split('T')[0];
+let userData = {
+    name: "Student",
+    userId: "00000000",
+    streak: 0,
+    trialStatus: 'active', // 'trial', 'active', 'expired'
+    trialEndDate: null
+};
 
-            const { data: existingStreak, error: fetchError } = await sbClient
+// Category mapping for organizing subjects
+const subjectCategories = {
+    'Mathematics': 'Mathematics',
+    'English Language': 'English',
+    'English Literature': 'English',
+    'Biology': 'Science',
+    'Chemistry': 'Science',
+    'Physics': 'Science',
+    'Combined Science': 'Science',
+    'History': 'Humanities & Social Sciences',
+    'Geography': 'Humanities & Social Sciences',
+    'Psychology': 'Humanities & Social Sciences',
+    'Religious Education': 'Humanities & Social Sciences',
+    'Business': 'Business & Technology',
+    'Computer Science': 'Business & Technology',
+    'Food & Nutrition': 'Practical Subjects'
+};
+
+// Update streak based on login
+async function updateStreak(userId) {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+
+        const { data: existingStreak, error: fetchError } = await sbClient
+            .from('user_streaks')
+            .select('*')
+            .eq('user_id', userId)
+            .single();
+
+        if (fetchError && fetchError.code !== 'PGRST116') {
+            throw fetchError;
+        }
+
+        if (!existingStreak) {
+            const { data: newStreak, error: insertError } = await sbClient
                 .from('user_streaks')
-                .select('*')
-                .eq('user_id', userId)
-                .single();
-
-            if (fetchError && fetchError.code !== 'PGRST116') {
-                throw fetchError;
-            }
-
-            if (!existingStreak) {
-                const { data: newStreak, error: insertError } = await sbClient
-                    .from('user_streaks')
-                    .insert([{
-                        user_id: userId,
-                        current_streak: 1,
-                        last_login_date: today
-                    }])
-                    .select()
-                    .single();
-
-                if (insertError) throw insertError;
-                return 1;
-            }
-
-            if (existingStreak.last_login_date === today) {
-                return existingStreak.current_streak;
-            }
-
-            const lastLogin = new Date(existingStreak.last_login_date);
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-            let newStreak;
-            if (existingStreak.last_login_date === yesterdayStr) {
-                newStreak = existingStreak.current_streak + 1;
-            } else {
-                newStreak = 1;
-            }
-
-            const { data: updatedStreak, error: updateError } = await sbClient
-                .from('user_streaks')
-                .update({
-                    current_streak: newStreak,
-                    last_login_date: today,
-                    updated_at: new Date().toISOString()
-                })
-                .eq('user_id', userId)
+                .insert([{
+                    user_id: userId,
+                    current_streak: 1,
+                    last_login_date: today
+                }])
                 .select()
                 .single();
 
-            if (updateError) throw updateError;
-            return newStreak;
-
-        } catch (error) {
-            console.error('Streak update error:', error);
-            return 0;
+            if (insertError) throw insertError;
+            return 1;
         }
+
+        if (existingStreak.last_login_date === today) {
+            return existingStreak.current_streak;
+        }
+
+        const lastLogin = new Date(existingStreak.last_login_date);
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+        let newStreak;
+        if (existingStreak.last_login_date === yesterdayStr) {
+            newStreak = existingStreak.current_streak + 1;
+        } else {
+            newStreak = 1;
+        }
+
+        const { data: updatedStreak, error: updateError } = await sbClient
+            .from('user_streaks')
+            .update({
+                current_streak: newStreak,
+                last_login_date: today,
+                updated_at: new Date().toISOString()
+            })
+            .eq('user_id', userId)
+            .select()
+            .single();
+
+        if (updateError) throw updateError;
+        return newStreak;
+
+    } catch (error) {
+        console.error('Streak update error:', error);
+        return 0;
     }
+}
 
-    async function checkAuth() {
-        try {
-            const { data: { session }, error } = await sbClient.auth.getSession();
+// Load user subjects from database
+async function loadUserSubjects(userId) {
+    try {
+        const { data: subjects, error } = await sbClient
+            .from('user_subjects')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: true });
 
-            if (error) throw error;
+        if (error) throw error;
 
-            if (!session) {
-                window.location.href = 'signin.html';
-                return;
-            }
+        return subjects || [];
+    } catch (error) {
+        console.error('Error loading subjects:', error);
+        return [];
+    }
+}
 
-            const user = session.user;
-            const firstName = user.user_metadata.first_name || 'Student';
-            const userId = user.id;
+// Render subjects dynamically
+function renderSubjects(subjects) {
+    const subjectsContainer = document.querySelector('.subjects-container');
+    
+    // Group subjects by category
+    const groupedSubjects = {};
+    subjects.forEach(subject => {
+        const category = subjectCategories[subject.subject_name] || 'Other';
+        if (!groupedSubjects[category]) {
+            groupedSubjects[category] = [];
+        }
+        groupedSubjects[category].push(subject);
+    });
 
-            const currentStreak = await updateStreak(userId);
+    // Clear existing content except header
+    const headerContainer = subjectsContainer.querySelector('.subjects-header-container');
+    subjectsContainer.innerHTML = '';
+    subjectsContainer.appendChild(headerContainer);
 
-            userData.name = firstName;
-            userData.userId = userId.slice(0, 8);
-            userData.streak = currentStreak;
+    // Render each category
+    Object.keys(groupedSubjects).forEach(category => {
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'subject-category';
+        
+        const categoryTitle = document.createElement('h3');
+        categoryTitle.className = 'category-title';
+        categoryTitle.textContent = category;
+        
+        const subjectsGrid = document.createElement('div');
+        subjectsGrid.className = 'subjects-grid';
+        
+        groupedSubjects[category].forEach(subject => {
+            const subjectBox = createSubjectCard(subject);
+            subjectsGrid.appendChild(subjectBox);
+        });
+        
+        categoryDiv.appendChild(categoryTitle);
+        categoryDiv.appendChild(subjectsGrid);
+        subjectsContainer.appendChild(categoryDiv);
+    });
+}
 
-            updateUserData();
+// Create subject card element
+function createSubjectCard(subject) {
+    const subjectBox = document.createElement('div');
+    subjectBox.className = `subject-box ${subject.color_variant}`;
+    subjectBox.dataset.subject = subject.subject_name.toLowerCase().replace(/\s+/g, '-');
+    
+    const tierText = subject.tier ? ` (${subject.tier} Tier)` : '';
+    
+    subjectBox.innerHTML = `
+        <div class="subject-top">
+            <div class="subject-name">${subject.subject_name}</div>
+            <div class="subject-exam-board">${subject.exam_board} GCSE 9-1${tierText}</div>
+        </div>
+        <div class="subject-bottom">
+            <div class="subject-progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${subject.progress_percentage || 0}%"></div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add click handler
+    subjectBox.addEventListener('click', () => {
+        // Check trial status before allowing access
+        if (userData.trialStatus === 'expired') {
+            showPaywall();
+        } else {
+            window.location.href = `lectures.html?subject=${subject.id}`;
+        }
+    });
+    
+    return subjectBox;
+}
 
-        } catch (error) {
-            console.error('Auth check error:', error);
+// Check trial status
+function checkTrialStatus(profile) {
+    const now = new Date();
+    const trialEnd = new Date(profile.trial_end_date);
+    
+    if (profile.subscription_status === 'active') {
+        return 'active';
+    } else if (profile.subscription_status === 'trial') {
+        if (now > trialEnd) {
+            return 'expired';
+        } else {
+            return 'trial';
+        }
+    } else {
+        return 'expired';
+    }
+}
+
+// Show paywall overlay
+function showPaywall() {
+    // Create paywall overlay if it doesn't exist
+    let paywall = document.getElementById('paywall-overlay');
+    
+    if (!paywall) {
+        paywall = document.createElement('div');
+        paywall.id = 'paywall-overlay';
+        paywall.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+        
+        paywall.innerHTML = `
+            <div style="background: white; border-radius: 16px; padding: 3rem; max-width: 500px; text-align: center;">
+                <h2 style="font-size: 2rem; font-weight: 700; color: #111827; margin-bottom: 1rem;">
+                    Your Free Trial Has Ended
+                </h2>
+                <p style="font-size: 1rem; color: #6b7280; margin-bottom: 2rem;">
+                    Continue your learning journey with full access to all subjects, lectures, and resources.
+                </p>
+                <button onclick="window.location.href='pricing.html'" style="
+                    background: #1d7fe2;
+                    color: white;
+                    border: none;
+                    padding: 1rem 2rem;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    font-family: 'Inter', sans-serif;
+                    margin-bottom: 1rem;
+                    width: 100%;
+                ">
+                    Become a Mastery Member
+                </button>
+                <button onclick="document.getElementById('paywall-overlay').remove()" style="
+                    background: transparent;
+                    color: #6b7280;
+                    border: none;
+                    padding: 0.5rem;
+                    font-size: 0.875rem;
+                    cursor: pointer;
+                    font-family: 'Inter', sans-serif;
+                ">
+                    Return to Dashboard
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(paywall);
+    }
+    
+    paywall.style.display = 'flex';
+}
+
+// Show trial banner
+function showTrialBanner(trialEndDate) {
+    const now = new Date();
+    const trialEnd = new Date(trialEndDate);
+    const hoursLeft = Math.floor((trialEnd - now) / (1000 * 60 * 60));
+    
+    if (hoursLeft <= 0) return;
+    
+    const banner = document.createElement('div');
+    banner.style.cssText = `
+        background: #fef3c7;
+        border: 1px solid #fbbf24;
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    `;
+    
+    banner.innerHTML = `
+        <div>
+            <strong style="color: #92400e;">Free Trial: ${hoursLeft} hours remaining</strong>
+            <p style="color: #78350f; font-size: 0.875rem; margin-top: 0.25rem;">
+                Upgrade now to keep your progress and unlock all features
+            </p>
+        </div>
+        <button onclick="window.location.href='pricing.html'" style="
+            background: #000000;
+            color: white;
+            border: none;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+        ">
+            Upgrade Now
+        </button>
+    `;
+    
+    const container = document.querySelector('.container');
+    const welcomeBox = document.querySelector('.welcome-box');
+    container.insertBefore(banner, welcomeBox.nextSibling);
+}
+
+// Main auth check function
+async function checkAuth() {
+    try {
+        const { data: { session }, error } = await sbClient.auth.getSession();
+
+        if (error) throw error;
+
+        if (!session) {
             window.location.href = 'signin.html';
+            return;
         }
-    }
 
-    function updateUserData() {
-        document.querySelector('.card-member-name').textContent = userData.name;
-        document.querySelector('.card-member-id').textContent = userData.userId;
-        document.getElementById('welcome-name').textContent = userData.name;
-        document.getElementById('nav-user-name').textContent = userData.name;
-        document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
+        const user = session.user;
+        const userId = user.id;
+
+        // Load user profile
+        const { data: profile, error: profileError } = await sbClient
+            .from('user_profiles')
+            .select('*')
+            .eq('id', userId)
+            .single();
+
+        if (profileError) {
+            console.error('Profile error:', profileError);
+            // If no profile, redirect to onboarding
+            window.location.href = 'onboarding-step1.html';
+            return;
+        }
+
+        // Update user data
+        const firstName = profile.first_name || user.user_metadata.first_name || 'Student';
+        const currentStreak = await updateStreak(userId);
         
-        document.querySelector('.streak-badge').textContent = `${userData.streak} Day Streak`;
+        userData.name = firstName;
+        userData.userId = userId.slice(0, 8);
+        userData.streak = currentStreak;
+        userData.trialStatus = checkTrialStatus(profile);
+        userData.trialEndDate = profile.trial_end_date;
+
+        // Update UI with user data
+        updateUserData();
+
+        // Load and render subjects
+        const subjects = await loadUserSubjects(userId);
         
-        const streakStatNumber = document.querySelectorAll('.stat-number')[3];
-        if (streakStatNumber) {
-            streakStatNumber.textContent = userData.streak;
+        if (subjects.length === 0) {
+            // No subjects, show empty state
+            document.querySelector('.subjects-container').innerHTML = `
+                <div class="subjects-header-container">
+                    <h2 class="subjects-header">Your Subjects</h2>
+                    <button class="add-subjects-btn" onclick="window.location.href='add-subjects.html'">+ Subjects</button>
+                </div>
+                <div style="text-align: center; padding: 3rem; color: #6b7280;">
+                    <p style="font-size: 1.125rem; margin-bottom: 1rem;">No subjects added yet</p>
+                    <p style="font-size: 0.875rem;">Click "+ Subjects" to get started!</p>
+                </div>
+            `;
+        } else {
+            renderSubjects(subjects);
         }
+
+        // Show trial banner if on trial
+        if (userData.trialStatus === 'trial') {
+            showTrialBanner(userData.trialEndDate);
+        }
+
+        // If trial expired, show paywall immediately
+        if (userData.trialStatus === 'expired') {
+            // Optional: show it immediately or wait for user interaction
+            // showPaywall();
+        }
+
+    } catch (error) {
+        console.error('Auth check error:', error);
+        window.location.href = 'signin.html';
     }
+}
 
-    const userProfileTrigger = document.getElementById('user-profile-trigger');
-    const userDropdown = document.getElementById('user-dropdown');
-    const signoutBtn = document.getElementById('signout-btn');
+// Update user data in UI
+function updateUserData() {
+    document.getElementById('welcome-name').textContent = userData.name;
+    document.getElementById('nav-user-name').textContent = userData.name;
+    document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
+    document.querySelector('.streak-badge').textContent = `${userData.streak} Day Streak`;
+    document.getElementById('streak-metric').textContent = userData.streak;
+}
 
-    userProfileTrigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        userDropdown.classList.toggle('active');
-    });
+// User dropdown handlers
+const userProfileTrigger = document.getElementById('user-profile-trigger');
+const userDropdown = document.getElementById('user-dropdown');
+const signoutBtn = document.getElementById('signout-btn');
 
-    document.addEventListener('click', (e) => {
-        if (!userProfileTrigger.contains(e.target) && !userDropdown.contains(e.target)) {
-            userDropdown.classList.remove('active');
-        }
-    });
+userProfileTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userDropdown.classList.toggle('active');
+});
 
-    signoutBtn.addEventListener('click', async () => {
-        try {
-            const { error } = await sbClient.auth.signOut();
-            if (error) throw error;
-            
-            localStorage.clear();
-            window.location.href = 'index.html';
-        } catch (error) {
-            console.error('Sign out error:', error);
-            alert('Error signing out. Please try again.');
-        }
-    });
+document.addEventListener('click', (e) => {
+    if (!userProfileTrigger.contains(e.target) && !userDropdown.contains(e.target)) {
+        userDropdown.classList.remove('active');
+    }
+});
 
-    const filterTabs = document.querySelectorAll('.filter-tab');
-    const journeyCards = document.querySelectorAll('.journey-card');
+signoutBtn.addEventListener('click', async () => {
+    try {
+        const { error } = await sbClient.auth.signOut();
+        if (error) throw error;
+        
+        localStorage.clear();
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error('Sign out error:', error);
+        alert('Error signing out. Please try again.');
+    }
+});
 
-    filterTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            filterTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
+// Add subjects button handler
+document.querySelector('.add-subjects-btn')?.addEventListener('click', () => {
+    if (userData.trialStatus === 'expired') {
+        showPaywall();
+    } else {
+        window.location.href = 'add-subjects.html';
+    }
+});
 
-            const selectedMode = tab.dataset.mode;
+// Learning goals accordion
+const learningGoalsToggle = document.getElementById('learning-goals-toggle');
+const learningGoalsFilters = document.getElementById('learning-goals-filters');
+const learningGoalsContent = document.getElementById('learning-goals-content');
+const accordionIcon = document.querySelector('.accordion-icon');
 
-            journeyCards.forEach(card => {
-                const buttons = card.querySelectorAll('.go-to-btn');
-                buttons.forEach(btn => {
-                    if (btn.dataset.journeyMode === selectedMode) {
-                        btn.classList.remove('hidden');
-                    } else {
-                        btn.classList.add('hidden');
-                    }
-                });
+let accordionExpanded = false;
+
+learningGoalsToggle.addEventListener('click', () => {
+    accordionExpanded = !accordionExpanded;
+    
+    if (accordionExpanded) {
+        learningGoalsFilters.classList.remove('collapsed');
+        learningGoalsContent.classList.remove('collapsed');
+        accordionIcon.classList.add('expanded');
+    } else {
+        learningGoalsFilters.classList.add('collapsed');
+        learningGoalsContent.classList.add('collapsed');
+        accordionIcon.classList.remove('expanded');
+    }
+});
+
+// Filter tabs functionality
+const filterTabs = document.querySelectorAll('.filter-tab');
+const journeyCards = document.querySelectorAll('.journey-card');
+
+filterTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        filterTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        const selectedMode = tab.dataset.mode;
+
+        journeyCards.forEach(card => {
+            const buttons = card.querySelectorAll('.go-to-btn');
+            buttons.forEach(btn => {
+                if (btn.dataset.journeyMode === selectedMode) {
+                    btn.classList.remove('hidden');
+                } else {
+                    btn.classList.add('hidden');
+                }
             });
         });
     });
+});
+
+// Initialize on page load
+checkAuth();
 
       
    // Topic data structure
