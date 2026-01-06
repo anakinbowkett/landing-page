@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Subjects - GCSE Mastery</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1d7fe2;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .page-container {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        .add-subject-btn {
+            background: #1d7fe2;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .add-subject-btn:hover {
+            background: #1a6dc4;
+        }
+
+        .selected-subjects {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            min-height: 200px;
+        }
+
+        .subject-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .subject-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+
+        .subject-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .remove-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-btn:hover {
+            background: #fecaca;
+        }
+
+        .subject-details {
+            font-size: 0.875rem;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #6b7280;
+            border: 2px dashed #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            grid-column: 1 / -1;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #1d7fe2;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: #1d7fe2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a6dc4;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .tier-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .tier-option {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tier-option:hover {
+            border-color: #1d7fe2;
+        }
+
+        .tier-option.selected {
+            border-color: #1d7fe2;
+            background: #eff6ff;
+        }
+
+        .tier-option input[type="radio"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1>Add Subjects</h1>
+        <p class="subtitle">Add more subjects to your learning journey</p>
+
+        <button class="add-subject-btn" id="add-subject-btn">+ Add Subject</button>
+
+        <div id="selected-subjects" class="selected-subjects">
+            <div class="empty-state">
+                <p>No subjects selected yet. Click "Add Subject" to get started!</p>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='dashboard.html'">
+                Cancel
+            </button>
+            <button type="button" class="btn btn-primary" id="save-btn" disabled>
+                Save Subjects
+            </button>
+        </div>
+    </div>
+
+    <!-- Add Subject Modal -->
+    <div class="modal" id="subject-modal">
+        <div class="modal-content">
+            <h2 class="modal-header">Add a Subject</h2>
+            
+            <form id="subject-form">
+                <div class="form-group">
+                    <label class="form-label">Subject</label>
+                    <select id="subject-select" required>
+                        <option value="">Select a subject...</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="English Language">English Language</option>
+                        <option value="English Literature">English Literature</option>
+                        <option value="Biology">Biology (Separate Science)</option>
+                        <option value="Chemistry">Chemistry (Separate Science)</option>
+                        <option value="Physics">Physics (Separate Science)</option>
+                        <option value="Combined Science">Combined Science (Trilogy)</option>
+                        <option value="History">History</option>
+                        <option value="Geography">Geography</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Business">Business</option>
+                        <option value="Psychology">Psychology</option>
+                        <option value="Religious Education">Religious Education (RS)</option>
+                        <option value="Food & Nutrition">Food & Nutrition</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Exam Board</label>
+                    <select id="exam-board-select" required>
+                        <option value="">Select exam board...</option>
+                        <option value="AQA">AQA</option>
+                        <option value="EDEXCEL">EDEXCEL</option>
+                        <option value="OCR">OCR</option>
+                        <option value="WJEC">WJEC</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="tier-group" style="display: none;">
+                    <label class="form-label">Tier</label>
+                    <div class="tier-options">
+                        <label class="tier-option">
+                            <input type="radio" name="tier" value="Foundation">
+                            <div>Foundation</div>
+                        </label>
+                        <label class="tier-option">
+                            <input type="radio" name="tier" value="Higher">
+                            <div>Higher</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-secondary" id="cancel-modal-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Subject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let selectedSubjects = [];
+        let userId = null;
+        const tieredSubjects = ['Mathematics', 'Combined Science', 'Biology', 'Chemistry', 'Physics'];
+        const subjectColors = ['color-blue', 'color-green', 'color-orange', 'color-purple', 'color-pink', 'color-yellow', 'color-red', 'color-teal'];
+
+        // Check if user is authenticated
+        async function checkAuth() {
+            const { data: { session } } = await sbClient.auth.getSession();
+            if (!session) {
+                window.location.href = 'signin.html';
+                return;
+            }
+            userId = session.user.id;
+        }
+        checkAuth();
+
+        // Show/hide tier selection based on subject
+        document.getElementById('subject-select').addEventListener('change', function() {
+            const tierGroup = document.getElementById('tier-group');
+            if (tieredSubjects.includes(this.value)) {
+                tierGroup.style.display = 'block';
+            } else {
+                tierGroup.style.display = 'none';
+                document.querySelectorAll('input[name="tier"]').forEach(r => r.checked = false);
+            }
+        });
+
+        // Tier option click handler
+        document.querySelectorAll('.tier-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const radio = this.querySelector('input[type="radio"]');
+                document.querySelectorAll('.tier-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                radio.checked = true;
+            });
+        });
+
+        // Open modal
+        document.getElementById('add-subject-btn').addEventListener('click', () => {
+            document.getElementById('subject-modal').classList.add('active');
+        });
+
+        // Close modal
+        document.getElementById('cancel-modal-btn').addEventListener('click', () => {
+            document.getElementById('subject-modal').classList.remove('active');
+            document.getElementById('subject-form').reset();
+            document.getElementById('tier-group').style.display = 'none';
+            document.querySelectorAll('.tier-option').forEach(opt => opt.classList.remove('selected'));
+        });
+
+        // Add subject
+        document.getElementById('subject-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const subject = document.getElementById('subject-select').value;
+            const examBoard = document.getElementById('exam-board-select').value;
+            const tierInput = document.querySelector('input[name="tier"]:checked');
+            const tier = tierInput ? tierInput.value : null;
+
+            if (tieredSubjects.includes(subject) && !tier) {
+                alert('Please select a tier for this subject');
+                return;
+            }
+
+            const duplicate = selectedSubjects.find(s => 
+                s.subject === subject && s.examBoard === examBoard && s.tier === tier
+            );
+
+            if (duplicate) {
+                alert('This subject with the same exam board and tier is already added');
+                return;
+            }
+
+            const colorIndex = selectedSubjects.length % subjectColors.length;
+            selectedSubjects.push({
+                subject,
+                examBoard,
+                tier,
+                color: subjectColors[colorIndex]
+            });
+
+            renderSubjects();
+            
+            document.getElementById('subject-modal').classList.remove('active');
+            document.getElementById('subject-form').reset();
+            document.getElementById('tier-group').style.display = 'none';
+            document.querySelectorAll('.tier-option').forEach(opt => opt.classList.remove('selected'));
+            
+            checkSaveButton();
+        });
+
+        // Render subjects
+        function renderSubjects() {
+            const container = document.getElementById('selected-subjects');
+            
+            if (selectedSubjects.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>No subjects selected yet. Click "Add Subject" to get started!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = selectedSubjects.map((sub, index) => `
+                <div class="subject-card">
+                    <div class="subject-card-header">
+                        <div class="subject-name">${sub.subject}</div>
+                        <button class="remove-btn" onclick="removeSubject(${index})">×</button>
+                    </div>
+                    <div class="subject-details">
+                        ${sub.examBoard} GCSE 9-1<br>
+                        ${sub.tier ? sub.tier + ' Tier' : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Remove subject
+        window.removeSubject = function(index) {
+            selectedSubjects.splice(index, 1);
+            renderSubjects();
+            checkSaveButton();
+        };
+
+        // Check if save button should be enabled
+        function checkSaveButton() {
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.disabled = selectedSubjects.length === 0;
+        }
+
+        // Save subjects
+        document.getElementById('save-btn').addEventListener('click', async () => {
+            if (selectedSubjects.length === 0) return;
+
+            try {
+                const subjectsToInsert = selectedSubjects.map(sub => ({
+                    user_id: userId,
+                    subject_name: sub.subject,
+                    exam_board: sub.examBoard,
+                    tier: sub.tier,
+                    color_variant: sub.color
+                }));
+
+                const { error } = await sbClient
+                    .from('user_subjects')
+                    .insert(subjectsToInsert);
+
+                if (error) throw error;
+
+                window.location.href = 'dashboard.html';
+
+            } catch (error) {
+                console.error('Error saving subjects:', error);
+                alert('There was an error saving your subjects. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>
