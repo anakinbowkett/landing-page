@@ -2529,23 +2529,6 @@ learningGoalsToggle.addEventListener('click', () => {
     }
 });
 
-// Subject navigation
-const subjectBoxes = document.querySelectorAll('.subject-box');
-subjectBoxes.forEach(box => {
-    box.addEventListener('click', () => {
-        const subject = box.dataset.subject;
-        // Navigate to subject page - adjust URL as needed
-        window.location.href = `syllabus.html#${subject}`;
-    });
-});
-
-// Update streak metric
-function updateStreakMetric() {
-    const streakMetric = document.getElementById('streak-metric');
-    if (streakMetric) {
-        streakMetric.textContent = userData.streak;
-    }
-}
 
 // Call after updating userData
 const originalUpdateUserData = updateUserData;
