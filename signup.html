@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - GCSE Maths Mastery v2</title>
+    <title>Sign Up - GCSE Mastery</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -327,11 +327,11 @@
         <div class="left-side">
             <div class="logo">
                 <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="GMM Logo">
-                <span class="logo-text">GCSE Maths Mastery</span>
+                <span class="logo-text">GCSE Mastery</span>
             </div>
 
             <div class="form-header">
-                <h1>Try GCSE Maths Mastery for free</h1>
+                <h1>Try GCSE Mastery for free</h1>
                 <p>Sign up to get started on your all-in-one exam platform.</p>
                 <div class="login-link">
                     Already have an account? <a href="signin.html">Log in</a>
@@ -406,85 +406,112 @@
     </div>
 
     <script>
-        const supabaseUrl = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+        // REPLACE THE ENTIRE <script> SECTION IN YOUR signup.html WITH THIS:
+
+const supabaseUrl = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
 const sbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.classList.add('show');
-            setTimeout(() => errorDiv.classList.remove('show'), 5000);
-        }
+function showError(message) {
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.textContent = message;
+    errorDiv.classList.add('show');
+    setTimeout(() => errorDiv.classList.remove('show'), 5000);
+}
 
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.classList.add('show');
-        }
+function showSuccess(message) {
+    const successDiv = document.getElementById('successMessage');
+    successDiv.textContent = message;
+    successDiv.classList.add('show');
+}
 
-        document.getElementById('signupForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const submitBtn = document.getElementById('signupBtn');
+
+    if (password.length < 6) {
+        showError('Password must be at least 6 characters long');
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        showError('Passwords do not match');
+        return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creating Account...';
+
+    try {
+        const { data, error } = await sbClient.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: {
+                    first_name: firstName,
+                    last_name: lastName,
+                    full_name: firstName + ' ' + lastName,
+                    phone: phone
+                },
+                emailRedirectTo: window.location.origin + '/onboarding-step1.html'
+            }
+        });
+
+        if (error) throw error;
+
+        // Check if email confirmation is required
+        if (data.user && !data.session) {
+            // Email confirmation required
+            showSuccess('Please check your email to verify your account!');
+            localStorage.setItem('signupEmail', email);
+            document.getElementById('signupForm').reset();
             
-            const firstName = document.getElementById('firstName').value.trim();
-            const lastName = document.getElementById('lastName').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const submitBtn = document.getElementById('signupBtn');
+            setTimeout(() => {
+                window.location.href = 'verify-email.html?email=' + encodeURIComponent(email);
+            }, 2000);
+        } else if (data.session) {
+            // Auto-confirmed (no email verification needed) - go straight to onboarding
+            showSuccess('Account created successfully! Redirecting...');
+            
+            setTimeout(() => {
+                window.location.href = 'onboarding-step1.html';
+            }, 1500);
+        }
 
-            if (password.length < 6) {
-                showError('Password must be at least 6 characters long');
-                return;
-            }
+    } catch (error) {
+        showError(error.message || 'An error occurred during sign up');
+        console.error('Sign up error:', error);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign up';
+    }
+});
 
-            if (password !== confirmPassword) {
-                showError('Passwords do not match');
-                return;
-            }
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Creating Account...';
-
-            try {
-                const { data, error } = await sbClient.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: {
-                        data: {
-                            first_name: firstName,
-                            last_name: lastName,
-                            full_name: firstName + ' ' + lastName,
-                            phone: phone
-                        }
-                    }
-                });
-
-                if (error) throw error;
-
-                showSuccess('Account created successfully!');
-                localStorage.setItem('signupEmail', email);
-                document.getElementById('signupForm').reset();
-                
-                setTimeout(() => {
-                    window.location.href = 'verify-email.html?email=' + encodeURIComponent(email);
-                }, 2000);
-
-            } catch (error) {
-                showError(error.message || 'An error occurred during sign up');
-                console.error('Sign up error:', error);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Sign up';
-            }
-        });
-
-        sbClient.auth.getSession().then(({ data: { session } }) => {
-            if (session) {
-                window.location.href = 'dashboard.html';
-            }
-        });
+// Check if user is already logged in
+sbClient.auth.getSession().then(({ data: { session } }) => {
+    if (session) {
+        // Check if they've completed onboarding
+        sbClient
+            .from('user_profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single()
+            .then(({ data: profile }) => {
+                if (profile) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    window.location.href = 'onboarding-step1.html';
+                }
+            });
+    }
+});
     </script>
 </body>
 </html>
