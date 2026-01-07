@@ -1,0 +1,9 @@
+{
+  "name": "gcse-mastery-backend",
+  "version": "1.0.0",
+  "description": "Stripe integration for GCSE Mastery",
+  "dependencies": {
+    "stripe": "^14.10.0",
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}
