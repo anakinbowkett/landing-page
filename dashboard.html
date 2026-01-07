@@ -1860,7 +1860,7 @@ function createSubjectCard(subject) {
         </div>
     `;
     
-    // Add click handler
+    /// Add click handler with trial enforcement
     subjectBox.addEventListener('click', () => {
         // Check trial status before allowing access
         if (userData.trialStatus === 'expired') {
@@ -1870,8 +1870,29 @@ function createSubjectCard(subject) {
         }
     });
     
+    // Visual lock if trial expired
+    if (userData.trialStatus === 'expired') {
+        subjectBox.style.opacity = '0.6';
+        subjectBox.style.cursor = 'not-allowed';
+        subjectBox.style.filter = 'grayscale(50%)';
+        
+        // Add lock icon
+        const lockOverlay = document.createElement('div');
+        lockOverlay.style.cssText = `
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            z-index: 10;
+            pointer-events: none;
+        `;
+        lockOverlay.textContent = '🔒';
+        subjectBox.style.position = 'relative';
+        subjectBox.appendChild(lockOverlay);
+    }
+    
     return subjectBox;
-}
 
 // Check trial status
 function checkTrialStatus(profile) {
