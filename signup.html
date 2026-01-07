@@ -474,7 +474,7 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
             document.getElementById('signupForm').reset();
             
             setTimeout(() => {
-                window.location.href = 'verify-email.html?email=' + encodeURIComponent(email);
+                window.location.href = 'onboarding-step1.html';
             }, 2000);
         } else if (data.session) {
             // Auto-confirmed (no email verification needed) - go straight to onboarding
