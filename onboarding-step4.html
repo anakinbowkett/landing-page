@@ -278,19 +278,27 @@
                 const trialEndDate = new Date();
                 trialEndDate.setHours(trialEndDate.getHours() + 24);
 
-                // Update user profile
-                const { error: profileError } = await sbClient
-                    .from('user_profiles')
-                    .update({
-                        year_group: yearGroup,
-                        referral_source: referralSource,
-                        join_reason: joinReasons,
-                        subscription_status: 'trial',
-                        trial_end_date: trialEndDate.toISOString(),
-                        onboarding_completed: true,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', userId);
+                // Create or update user profile in Supabase
+const firstName = session.user.user_metadata.first_name || '';
+const lastName = session.user.user_metadata.last_name || '';
+
+const { error: profileError } = await supabase
+    .from('user_profiles')
+    .upsert({
+        id: userId,
+        first_name: firstName,
+        last_name: lastName,
+        email: session.user.email,
+        year_group: yearGroup,
+        referral_source: referralSource,
+        join_reason: joinReasons,
+        subscription_status: 'trial',
+        trial_end_date: trialEndDate.toISOString(),
+        onboarding_completed: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+    })
+    .select();
 
                 if (profileError) throw profileError;
 
