@@ -2529,37 +2529,6 @@ window.addEventListener('DOMContentLoaded', () => {
 // Check auth on page load
 checkAuth();
       
-// Accordion functionality
-const learningGoalsToggle = document.getElementById('learning-goals-toggle');
-const learningGoalsFilters = document.getElementById('learning-goals-filters');
-const learningGoalsContent = document.getElementById('learning-goals-content');
-const accordionIcon = document.querySelector('.accordion-icon');
-
-let accordionExpanded = false;
-
-learningGoalsToggle.addEventListener('click', () => {
-    accordionExpanded = !accordionExpanded;
-    
-    if (accordionExpanded) {
-        learningGoalsFilters.classList.remove('collapsed');
-        learningGoalsContent.classList.remove('collapsed');
-        accordionIcon.classList.add('expanded');
-    } else {
-        learningGoalsFilters.classList.add('collapsed');
-        learningGoalsContent.classList.add('collapsed');
-        accordionIcon.classList.remove('expanded');
-    }
-});
-
-
-// Call after updating userData
-const originalUpdateUserData = updateUserData;
-updateUserData = function() {
-    originalUpdateUserData();
-    updateStreakMetric();
-};      
-      
-      
       
 </script>
 </body>
