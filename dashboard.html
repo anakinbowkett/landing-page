@@ -2048,11 +2048,18 @@ async function checkAuth() {
             .single();
 
         if (profileError) {
-            console.error('Profile error:', profileError);
-            // If no profile, redirect to onboarding
-            window.location.href = 'onboarding-step1.html';
-            return;
-        }
+    console.error('Profile error:', profileError);
+    
+    // Check if profile doesn't exist vs other error
+    if (profileError.code === 'PGRST116') {
+        // Profile doesn't exist, redirect to onboarding
+        window.location.href = 'onboarding-step1.html';
+    } else {
+        // Other error, try to continue anyway
+        console.warn('Continuing despite profile error');
+    }
+    return;
+}
 
         // Update user data
         const firstName = profile.first_name || user.user_metadata.first_name || 'Student';
