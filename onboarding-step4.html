@@ -282,22 +282,21 @@
 const firstName = session.user.user_metadata.first_name || '';
 const lastName = session.user.user_metadata.last_name || '';
 
-const { error: profileError } = await supabase
+const { error: profileError } = await sbClient
     .from('user_profiles')
     .upsert({
-        id: userId,
-        first_name: firstName,
-        last_name: lastName,
-        email: session.user.email,
-        year_group: yearGroup,
-        referral_source: referralSource,
-        join_reason: joinReasons,
-        subscription_status: 'trial',
-        trial_end_date: trialEndDate.toISOString(),
-        onboarding_completed: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-    })
+    id: userId,
+    first_name: firstName,
+    last_name: lastName,
+    year_group: yearGroup,
+    referral_source: referralSource,
+    join_reason: joinReasons,
+    subscription_status: 'trial',
+    trial_end_date: trialEndDate.toISOString(),
+    onboarding_completed: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+}, { onConflict: 'id' }) 
     .select();
 
                 if (profileError) throw profileError;
