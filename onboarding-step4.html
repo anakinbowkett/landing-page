@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Join GCSE Mastery?</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo img {
+            height: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .progress-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+        }
+
+        .progress-step.active {
+            background: #3b82f6;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .option-card {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9375rem;
+            color: #111827;
+            font-weight: 500;
+        }
+
+        .option-card:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .option-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .helper-text {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .continue-btn {
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .continue-btn:hover {
+            background: #2563eb;
+        }
+
+        .continue-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            width: 100%;
+            background: transparent;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .back-btn:hover {
+            background: #f9fafb;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="Logo">
+            <span class="logo-text">GCSE Mastery</span>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-step active"></div>
+            <div class="progress-step active"></div>
+            <div class="progress-step active"></div>
+            <div class="progress-step active"></div>
+        </div>
+
+        <h1>Why join GCSE Mastery?</h1>
+        <p class="subtitle">Select all that apply (we'll personalize your experience)</p>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <div class="options-list">
+            <div class="option-card" data-reason="improve-grades">I want to improve my grades</div>
+            <div class="option-card" data-reason="exam-prep">Preparing for upcoming exams</div>
+            <div class="option-card" data-reason="catch-up">Need to catch up on topics I missed</div>
+            <div class="option-card" data-reason="understand-better">I want to understand topics better</div>
+            <div class="option-card" data-reason="practice-questions">Need more practice questions</div>
+            <div class="option-card" data-reason="target-grade">Working towards a target grade</div>
+            <div class="option-card" data-reason="confidence">Build confidence in my subjects</div>
+        </div>
+
+        <p class="helper-text">Select at least one option to continue</p>
+
+        <button class="back-btn" onclick="window.location.href='onboarding-step3.html'">Back</button>
+        <button class="continue-btn" id="continueBtn" disabled>Complete Setup</button>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const selectedReasons = new Set();
+        const options = document.querySelectorAll('.option-card');
+        const continueBtn = document.getElementById('continueBtn');
+
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                const reason = option.dataset.reason;
+                
+                if (selectedReasons.has(reason)) {
+                    selectedReasons.delete(reason);
+                    option.classList.remove('selected');
+                } else {
+                    selectedReasons.add(reason);
+                    option.classList.add('selected');
+                }
+
+                continueBtn.disabled = selectedReasons.size === 0;
+            });
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            setTimeout(() => errorDiv.classList.remove('show'), 5000);
+        }
+
+        continueBtn.addEventListener('click', async () => {
+            if (selectedReasons.size === 0) return;
+
+            continueBtn.disabled = true;
+            continueBtn.textContent = 'Saving...';
+
+            try {
+                // Get current user
+                const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
+                
+                if (sessionError || !session) {
+                    throw new Error('Not authenticated');
+                }
+
+                const userId = session.user.id;
+
+                // Get all onboarding data from localStorage
+                const yearGroup = localStorage.getItem('onboarding_year');
+                const subjectsData = JSON.parse(localStorage.getItem('onboarding_subjects') || '[]');
+                const referralSource = localStorage.getItem('onboarding_referral');
+                const joinReasons = Array.from(selectedReasons);
+
+                // Calculate trial end date (24 hours from now)
+                const trialEndDate = new Date();
+                trialEndDate.setHours(trialEndDate.getHours() + 24);
+
+                // Update user profile
+                const { error: profileError } = await sbClient
+                    .from('user_profiles')
+                    .update({
+                        year_group: yearGroup,
+                        referral_source: referralSource,
+                        join_reason: joinReasons,
+                        subscription_status: 'trial',
+                        trial_end_date: trialEndDate.toISOString(),
+                        onboarding_completed: true,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', userId);
+
+                if (profileError) throw profileError;
+
+                // Add subjects to user_subjects table
+                const subjectInserts = subjectsData.map(subject => ({
+                    user_id: userId,
+                    subject_name: subject.name,
+                    exam_board: subject.examBoard,
+                    tier: subject.tier,
+                    progress_percentage: 0,
+                    color_variant: getColorVariant(subject.name)
+                }));
+
+                const { error: subjectsError } = await sbClient
+                    .from('user_subjects')
+                    .insert(subjectInserts);
+
+                if (subjectsError) throw subjectsError;
+
+                // Clear localStorage
+                localStorage.removeItem('onboarding_year');
+                localStorage.removeItem('onboarding_subjects');
+                localStorage.removeItem('onboarding_referral');
+
+                // Success! Redirect to dashboard
+                window.location.href = 'dashboard.html';
+
+            } catch (error) {
+                console.error('Error completing onboarding:', error);
+                showError('An error occurred. Please try again.');
+                continueBtn.disabled = false;
+                continueBtn.textContent = 'Complete Setup';
+            }
+        });
+
+        // Helper function to assign color variants
+        function getColorVariant(subjectName) {
+            const colorMap = {
+                'Mathematics': 'color-blue',
+                'English Language': 'color-green',
+                'English Literature': 'color-green',
+                'Biology': 'color-orange',
+                'Chemistry': 'color-orange',
+                'Physics': 'color-orange',
+                'Combined Science': 'color-orange',
+                'History': 'color-purple',
+                'Geography': 'color-teal',
+                'Computer Science': 'color-purple',
+                'Business': 'color-blue',
+                'Psychology': 'color-pink',
+                'Religious Education': 'color-yellow',
+                'Food & Nutrition': 'color-red'
+            };
+            return colorMap[subjectName] || 'color-blue';
+        }
+    </script>
+</body>
+</html>
