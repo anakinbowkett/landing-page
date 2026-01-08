@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Choose Your Year</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo img {
+            height: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .progress-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+        }
+
+        .progress-step.active {
+            background: #3b82f6;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .year-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .year-card {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .year-card:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .year-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .year-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .year-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .continue-btn {
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .continue-btn:hover {
+            background: #2563eb;
+        }
+
+        .continue-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .year-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="Logo">
+            <span class="logo-text">GCSE Mastery</span>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-step active"></div>
+            <div class="progress-step"></div>
+            <div class="progress-step"></div>
+            <div class="progress-step"></div>
+        </div>
+
+        <h1>What year are you in?</h1>
+        <p class="subtitle">This helps us personalize your learning journey</p>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <div class="year-grid">
+            <div class="year-card" data-year="7">
+                <div class="year-number">Year 7</div>
+                <div class="year-label">Ages 11-12</div>
+            </div>
+            <div class="year-card" data-year="8">
+                <div class="year-number">Year 8</div>
+                <div class="year-label">Ages 12-13</div>
+            </div>
+            <div class="year-card" data-year="9">
+                <div class="year-number">Year 9</div>
+                <div class="year-label">Ages 13-14</div>
+            </div>
+            <div class="year-card" data-year="10">
+                <div class="year-number">Year 10</div>
+                <div class="year-label">Ages 14-15</div>
+            </div>
+            <div class="year-card" data-year="11">
+                <div class="year-number">Year 11</div>
+                <div class="year-label">Ages 15-16</div>
+            </div>
+        </div>
+
+        <button class="continue-btn" id="continueBtn" disabled>Continue</button>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let selectedYear = null;
+        let currentUser = null;
+
+        // Check authentication
+        async function checkAuth() {
+            const { data: { session }, error } = await sbClient.auth.getSession();
+            
+            if (error || !session) {
+                window.location.href = 'signup.html';
+                return;
+            }
+
+            currentUser = session.user;
+        }
+
+        // Year card selection
+        const yearCards = document.querySelectorAll('.year-card');
+        const continueBtn = document.getElementById('continueBtn');
+
+        yearCards.forEach(card => {
+            card.addEventListener('click', () => {
+                yearCards.forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedYear = card.dataset.year;
+                continueBtn.disabled = false;
+            });
+        });
+
+        // Continue button
+        continueBtn.addEventListener('click', async () => {
+            if (!selectedYear || !currentUser) return;
+
+            continueBtn.disabled = true;
+            continueBtn.textContent = 'Saving...';
+
+            try {
+                // Save year group to localStorage for now
+                localStorage.setItem('onboarding_year', selectedYear);
+
+                // Redirect to next step
+                window.location.href = 'onboarding-step2.html';
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('errorMessage').textContent = 'An error occurred. Please try again.';
+                document.getElementById('errorMessage').classList.add('show');
+                continueBtn.disabled = false;
+                continueBtn.textContent = 'Continue';
+            }
+        });
+
+        checkAuth();
+    </script>
+</body>
+</html>
