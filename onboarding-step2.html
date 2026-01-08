@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Subjects</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo img {
+            height: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .progress-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+        }
+
+        .progress-step.active {
+            background: #3b82f6;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .subject-card {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .subject-card:hover {
+            border-color: #3b82f6;
+        }
+
+        .subject-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .subject-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .subject-options {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .subject-card.selected .subject-options {
+            display: block;
+        }
+
+        .option-group {
+            margin-bottom: 1rem;
+        }
+
+        .option-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-family: 'Inter', sans-serif;
+            background: white;
+        }
+
+        .continue-btn {
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .continue-btn:hover {
+            background: #2563eb;
+        }
+
+        .continue-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            width: 100%;
+            background: transparent;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .back-btn:hover {
+            background: #f9fafb;
+        }
+
+        .selected-count {
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+
+            .subject-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="Logo">
+            <span class="logo-text">GCSE Mastery</span>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-step active"></div>
+            <div class="progress-step active"></div>
+            <div class="progress-step"></div>
+            <div class="progress-step"></div>
+        </div>
+
+        <h1>Choose your subjects</h1>
+        <p class="subtitle">Select the subjects you're studying and we'll customize your experience</p>
+
+        <div class="selected-count" id="selectedCount">0 subjects selected</div>
+
+        <div class="subject-grid" id="subjectGrid"></div>
+
+        <button class="back-btn" onclick="window.location.href='onboarding-step1.html'">Back</button>
+        <button class="continue-btn" id="continueBtn" disabled>Continue</button>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const subjects = [
+            { name: 'Mathematics', requiresTier: true },
+            { name: 'English Language', requiresTier: false },
+            { name: 'English Literature', requiresTier: false },
+            { name: 'Biology', requiresTier: true },
+            { name: 'Chemistry', requiresTier: true },
+            { name: 'Physics', requiresTier: true },
+            { name: 'Combined Science', requiresTier: true },
+            { name: 'History', requiresTier: false },
+            { name: 'Geography', requiresTier: false },
+            { name: 'Computer Science', requiresTier: false },
+            { name: 'Business', requiresTier: false },
+            { name: 'Psychology', requiresTier: false },
+            { name: 'Religious Education', requiresTier: false },
+            { name: 'Food & Nutrition', requiresTier: false }
+        ];
+
+        const examBoards = ['AQA', 'Edexcel', 'OCR', 'WJEC'];
+        const selectedSubjects = new Map();
+
+        function renderSubjects() {
+            const grid = document.getElementById('subjectGrid');
+            grid.innerHTML = '';
+
+            subjects.forEach(subject => {
+                const card = document.createElement('div');
+                card.className = 'subject-card';
+                card.dataset.subject = subject.name;
+
+                card.innerHTML = `
+                    <div class="subject-name">${subject.name}</div>
+                    <div class="subject-options">
+                        <div class="option-group">
+                            <label class="option-label">Exam Board</label>
+                            <select class="exam-board-select">
+                                <option value="">Select exam board</option>
+                                ${examBoards.map(board => `<option value="${board}">${board}</option>`).join('')}
+                            </select>
+                        </div>
+                        ${subject.requiresTier ? `
+                            <div class="option-group">
+                                <label class="option-label">Tier</label>
+                                <select class="tier-select">
+                                    <option value="">Select tier</option>
+                                    <option value="Foundation">Foundation</option>
+                                    <option value="Higher">Higher</option>
+                                </select>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                // Card click to select/deselect
+                card.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'SELECT') return;
+                    
+                    if (card.classList.contains('selected')) {
+                        card.classList.remove('selected');
+                        selectedSubjects.delete(subject.name);
+                    } else {
+                        card.classList.add('selected');
+                        if (!selectedSubjects.has(subject.name)) {
+                            selectedSubjects.set(subject.name, {
+                                name: subject.name,
+                                examBoard: '',
+                                tier: subject.requiresTier ? '' : null,
+                                requiresTier: subject.requiresTier
+                            });
+                        }
+                    }
+                    updateUI();
+                });
+
+                // Exam board change
+                const examBoardSelect = card.querySelector('.exam-board-select');
+                examBoardSelect.addEventListener('change', (e) => {
+                    if (selectedSubjects.has(subject.name)) {
+                        selectedSubjects.get(subject.name).examBoard = e.target.value;
+                        updateUI();
+                    }
+                });
+
+                // Tier change (if applicable)
+                const tierSelect = card.querySelector('.tier-select');
+                if (tierSelect) {
+                    tierSelect.addEventListener('change', (e) => {
+                        if (selectedSubjects.has(subject.name)) {
+                            selectedSubjects.get(subject.name).tier = e.target.value;
+                            updateUI();
+                        }
+                    });
+                }
+
+                grid.appendChild(card);
+            });
+        }
+
+        function updateUI() {
+            const count = selectedSubjects.size;
+            document.getElementById('selectedCount').textContent = `${count} subject${count !== 1 ? 's' : ''} selected`;
+
+            // Check if all selected subjects have required fields filled
+            let allValid = count > 0;
+            for (const [name, data] of selectedSubjects) {
+                if (!data.examBoard) allValid = false;
+                if (data.requiresTier && !data.tier) allValid = false;
+            }
+
+            document.getElementById('continueBtn').disabled = !allValid;
+        }
+
+        document.getElementById('continueBtn').addEventListener('click', () => {
+            // Save subjects to localStorage
+            const subjectsArray = Array.from(selectedSubjects.values());
+            localStorage.setItem('onboarding_subjects', JSON.stringify(subjectsArray));
+            window.location.href = 'onboarding-step3.html';
+        });
+
+        renderSubjects();
+    </script>
+</body>
+</html>
