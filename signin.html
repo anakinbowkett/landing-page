@@ -438,10 +438,21 @@
                     localStorage.setItem('rememberMe', 'true');
                 }
 
-                // Redirect to dashboard
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
+                // Check if onboarding is completed
+const { data: profile } = await sbClient
+    .from('user_profiles')
+    .select('onboarding_completed')
+    .eq('id', data.session.user.id)
+    .single();
+
+// Redirect to dashboard
+setTimeout(() => {
+    if (profile && profile.onboarding_completed) {
+        window.location.href = 'dashboard.html';
+    } else {
+        window.location.href = 'onboarding-step1.html';
+    }
+}, 1500);
 
             } catch (error) {
                 if (error.message.includes('Invalid login credentials')) {
