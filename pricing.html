@@ -448,59 +448,18 @@
             currentUser = session.user;
         }
 
+        
         // Handle Bundle Subscription
-        document.getElementById('bundle-btn').addEventListener('click', async () => {
-            if (!currentUser) {
-                window.location.href = 'signup.html';
-                return;
-            }
+document.getElementById('bundle-btn').addEventListener('click', () => {
+    alert('Stripe checkout coming soon! For now, enjoy your free trial.');
+    window.location.href = 'dashboard.html';
+});
 
-            showLoading(true);
-
-            try {
-                // Create Stripe Checkout Session
-                const response = await fetch('/api/create-checkout-session', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        priceId: STRIPE_PRICES.bundle,
-                        userId: currentUser.id,
-                        userEmail: currentUser.email,
-                        successUrl: window.location.origin + '/success.html',
-                        cancelUrl: window.location.origin + '/pricing.html'
-                    })
-                });
-
-                const session = await response.json();
-
-                // Redirect to Stripe Checkout
-                const result = await stripe.redirectToCheckout({
-                    sessionId: session.id
-                });
-
-                if (result.error) {
-                    throw new Error(result.error.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('There was an error processing your request. Please try again.');
-                showLoading(false);
-            }
-        });
-
-        // Handle Per Subject Subscription
-        document.getElementById('persubject-btn').addEventListener('click', async () => {
-            if (!currentUser) {
-                window.location.href = 'signup.html';
-                return;
-            }
-
-            // For now, redirect to add-subjects page
-            // In the future, you can integrate Stripe here too
-            window.location.href = 'add-subjects.html?subscription=per-subject';
-        });
+// Handle Per Subject Subscription
+document.getElementById('persubject-btn').addEventListener('click', () => {
+    alert('Per-subject billing coming soon! For now, enjoy your free trial.');
+    window.location.href = 'dashboard.html';
+});
 
         // Show/hide loading
         function showLoading(show) {
