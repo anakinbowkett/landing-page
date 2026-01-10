@@ -2228,8 +2228,176 @@ filterTabs.forEach(tab => {
     });
 });
 
+
+
+
+
+// Handle payment success callback
+// ADD THIS BETWEEN LINE 554 (END OF checkAuth) AND LINE 560 (checkAuth() CALL)
+async function handlePaymentSuccess() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    const paymentSuccess = urlParams.get('payment_success');
+    
+    if (paymentSuccess === 'true' && sessionId) {
+        try {
+            // Show loading indicator
+            showPaymentProcessing();
+            
+            // Verify the payment with your backend
+            const response = await fetch('/api/verify-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    sessionId: sessionId,
+                    userId: userData.userId 
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Update user's subscription status in Supabase
+                const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
+                
+                if (session) {
+                    const { error: updateError } = await sbClient
+                        .from('user_profiles')
+                        .update({
+                            subscription_status: 'active',
+                            subscription_type: data.productType,
+                            subscription_start_date: new Date().toISOString(),
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('id', session.user.id);
+                    
+                    if (updateError) {
+                        console.error('Error updating subscription:', updateError);
+                    }
+                }
+                
+                // Show success message
+                showPaymentSuccessMessage();
+                
+                // Reload user data to reflect new subscription status
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 2000);
+            } else {
+                showPaymentErrorMessage();
+            }
+            
+        } catch (error) {
+            console.error('Payment verification error:', error);
+            showPaymentErrorMessage();
+        }
+        
+        // Clean up URL
+        window.history.replaceState({}, document.title, 'dashboard.html');
+    }
+}
+
+// Show payment processing overlay
+function showPaymentProcessing() {
+    const overlay = document.createElement('div');
+    overlay.id = 'payment-processing-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
+    
+    overlay.innerHTML = `
+        <div style="background: white; border-radius: 16px; padding: 3rem; max-width: 400px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem;">
+                Processing Payment...
+            </h2>
+            <p style="font-size: 0.875rem; color: #6b7280;">
+                Please wait while we confirm your payment
+            </p>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+}
+
+// Show payment success message
+function showPaymentSuccessMessage() {
+    const overlay = document.getElementById('payment-processing-overlay');
+    if (overlay) {
+        overlay.innerHTML = `
+            <div style="background: white; border-radius: 16px; padding: 3rem; max-width: 400px; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
+                <h2 style="font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem;">
+                    Payment Successful!
+                </h2>
+                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">
+                    Welcome to GCSE Mastery! You now have full access to all features.
+                </p>
+                <p style="font-size: 0.75rem; color: #9ca3af;">
+                    Redirecting to your dashboard...
+                </p>
+            </div>
+        `;
+    }
+}
+
+// Show payment error message
+function showPaymentErrorMessage() {
+    const overlay = document.getElementById('payment-processing-overlay');
+    if (overlay) {
+        overlay.innerHTML = `
+            <div style="background: white; border-radius: 16px; padding: 3rem; max-width: 400px; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">❌</div>
+                <h2 style="font-size: 1.5rem; font-weight: 700; color: #ef4444; margin-bottom: 0.5rem;">
+                    Payment Verification Failed
+                </h2>
+                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1.5rem;">
+                    There was an issue verifying your payment. Please contact support.
+                </p>
+                <button onclick="document.getElementById('payment-processing-overlay').remove()" style="
+                    background: #000000;
+                    color: white;
+                    border: none;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 8px;
+                    font-size: 0.875rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    font-family: 'Inter', sans-serif;
+                ">
+                    Close
+                </button>
+            </div>
+        `;
+    }
+}
+
+// Call this function after checkAuth completes
+// Modify the checkAuth function to call handlePaymentSuccess at the end
+
+
+
+
+        
+
 // Initialize on page load
-checkAuth();
+async function initializeDashboard() {
+    await checkAuth();
+    await handlePaymentSuccess();
+}
+
+initializeDashboard();
 
       
    // Topic data structure
