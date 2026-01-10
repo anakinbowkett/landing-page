@@ -492,7 +492,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Initialize Stripe (replace with your publishable key)
-const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY');
+const stripe = Stripe('pk_test_51SmnlDCCyjUNoytRnAlshvKhxX8V89a5pNjkGYPGPqdKmehBMqiQ7DKXOJA9eWUU1ctApl19QDsicD5j3SodCYF000aOR1Nezb');
 
 // Handle purchase button clicks
 async function handlePurchase(priceId, productType) {
@@ -560,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const coreBundleBtn = document.querySelector('[data-product="core-bundle"]');
     if (coreBundleBtn) {
         coreBundleBtn.addEventListener('click', () => {
-            handlePurchase('price_XXXXX', 'core_bundle'); // Replace with your Stripe Price ID
+            handlePurchase('price_XXXXX', 'price_1SnrXYCCyjUNoytRDb7qBP2B'); // Replace with your Stripe Price ID
         });
     }
     
@@ -568,7 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const perSubjectBtn = document.querySelector('[data-product="per-subject"]');
     if (perSubjectBtn) {
         perSubjectBtn.addEventListener('click', () => {
-            handlePurchase('price_YYYYY', 'per_subject'); // Replace with your Stripe Price ID
+            handlePurchase('price_YYYYY', 'price_1SnrcsCCyjUNoytRgOaf7vag'); // Replace with your Stripe Price ID
         });
     }
     
