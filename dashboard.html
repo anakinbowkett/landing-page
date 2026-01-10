@@ -1677,12 +1677,8 @@ nav {
 </div>
 </div>
 
-    <script>
-      
-      
-    // REPLACE THE ENTIRE <script> SECTION IN YOUR DASHBOARD.HTML WITH THIS CODE
-
-// FINAL FIXED DASHBOARD SCRIPT - COPY THIS ENTIRE CODE
+   <script>
+// FINAL FIXED DASHBOARD SCRIPT
 
 const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
@@ -2022,7 +2018,6 @@ function updateUserData() {
     document.getElementById('streak-metric').textContent = userData.streak;
 }
 
-// User dropdown handlers
 const userProfileTrigger = document.getElementById('user-profile-trigger');
 const userDropdown = document.getElementById('user-dropdown');
 const signoutBtn = document.getElementById('signout-btn');
@@ -2054,7 +2049,6 @@ if (signoutBtn) {
     });
 }
 
-// Add subjects button
 document.querySelector('.add-subjects-btn')?.addEventListener('click', () => {
     if (userData.trialStatus === 'expired') {
         showPaywall();
@@ -2063,7 +2057,6 @@ document.querySelector('.add-subjects-btn')?.addEventListener('click', () => {
     }
 });
 
-// Learning goals accordion
 const learningGoalsToggle = document.getElementById('learning-goals-toggle');
 const learningGoalsFilters = document.getElementById('learning-goals-filters');
 const learningGoalsContent = document.getElementById('learning-goals-content');
@@ -2085,7 +2078,6 @@ if (learningGoalsToggle) {
     });
 }
 
-// Filter tabs functionality
 const filterTabs = document.querySelectorAll('.filter-tab');
 const journeyCards = document.querySelectorAll('.journey-card');
 
@@ -2107,7 +2099,6 @@ filterTabs.forEach(tab => {
     });
 });
 
-// Payment success handler
 async function handlePaymentSuccess() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
@@ -2230,13 +2221,15 @@ function showPaymentErrorMessage(errorMsg) {
     }
 }
 
-// Initialize
 async function initializeDashboard() {
     await checkAuth();
     await handlePaymentSuccess();
 }
 
 initializeDashboard();
-
+</script>
+<script src="auth-check.js"></script>
+</body>
+</html>
       
   
