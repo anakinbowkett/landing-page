@@ -29,30 +29,37 @@ export default async function handler(req, res) {
         }
         
         // Create Stripe Checkout Session
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
-            line_items: [
-                {
-                    price: priceId,
-                    quantity: quantity,
-                },
-            ],
-            mode: 'subscription',
-            success_url: successUrl || `${req.headers.origin}/dashboard.html?session_id={CHECKOUT_SESSION_ID}&payment_success=true`,
-            cancel_url: cancelUrl || `${req.headers.origin}/pricing.html`,
-            customer_email: userEmail,
-            client_reference_id: userId,
-            metadata: {
-    userId: userId,
-    userEmail: userEmail,
-    productType: req.body.productType || 'standard',
-},
-            subscription_data: {
-                metadata: {
-                    userId: userId,
-                }
-            }
-        });
+const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: [
+        {
+            price: priceId,
+            quantity: quantity,
+        },
+    ],
+    mode: 'subscription',
+    success_url: `${req.headers.origin}/dashboard.html?session_id={CHECKOUT_SESSION_ID}&payment_success=true`,
+    cancel_url: cancelUrl || `${req.headers.origin}/pricing.html`,
+    customer_email: userEmail,
+    client_reference_id: userId,
+    metadata: {
+        userId: userId,
+        userEmail: userEmail,
+        productType: req.body.productType || 'standard',
+    },
+    subscription_data: {
+        metadata: {
+            userId: userId,
+        }
+    },
+    // ADD THIS LINE to skip Stripe's success page
+    after_completion: {
+        type: 'redirect',
+        redirect: {
+            url: `${req.headers.origin}/dashboard.html?session_id={CHECKOUT_SESSION_ID}&payment_success=true`
+        }
+    }
+});
         
         return res.status(200).json({ 
             id: session.id,
