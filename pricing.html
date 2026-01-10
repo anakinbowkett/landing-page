@@ -476,5 +476,126 @@ document.getElementById('persubject-btn').addEventListener('click', () => {
         // Initialize
         checkAuth();
     </script>
+
+
+
+
+
+
+
+// Add this script to pricing.html before </body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Initialize Stripe (replace with your publishable key)
+const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY');
+
+// Handle purchase button clicks
+async function handlePurchase(priceId, productType) {
+    try {
+        // Show loading state
+        const button = event.target;
+        button.disabled = true;
+        button.textContent = 'Processing...';
+        
+        // Get current user
+        const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
+        
+        if (sessionError || !session) {
+            alert('Please sign in to continue');
+            window.location.href = 'signin.html';
+            return;
+        }
+        
+        const userId = session.user.id;
+        const userEmail = session.user.email;
+        
+        // Create checkout session
+        const response = await fetch('/api/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                priceId: priceId,
+                userId: userId,
+                userEmail: userEmail,
+                productType: productType,
+                successUrl: `${window.location.origin}/dashboard.html?session_id={CHECKOUT_SESSION_ID}&payment_success=true`,
+                cancelUrl: `${window.location.origin}/pricing.html?canceled=true`,
+            }),
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to create checkout session');
+        }
+        
+        const data = await response.json();
+        
+        // Redirect to Stripe Checkout
+        const result = await stripe.redirectToCheckout({
+            sessionId: data.id
+        });
+        
+        if (result.error) {
+            throw new Error(result.error.message);
+        }
+        
+    } catch (error) {
+        console.error('Checkout error:', error);
+        alert('An error occurred. Please try again.');
+        button.disabled = false;
+        button.textContent = 'Try Again';
+    }
+}
+
+// Add click handlers to your purchase buttons
+// Example: If your buttons have a class like 'purchase-btn'
+document.addEventListener('DOMContentLoaded', () => {
+    // Core Subjects Bundle button
+    const coreBundleBtn = document.querySelector('[data-product="core-bundle"]');
+    if (coreBundleBtn) {
+        coreBundleBtn.addEventListener('click', () => {
+            handlePurchase('price_XXXXX', 'core_bundle'); // Replace with your Stripe Price ID
+        });
+    }
+    
+    // Pay Per Subject button
+    const perSubjectBtn = document.querySelector('[data-product="per-subject"]');
+    if (perSubjectBtn) {
+        perSubjectBtn.addEventListener('click', () => {
+            handlePurchase('price_YYYYY', 'per_subject'); // Replace with your Stripe Price ID
+        });
+    }
+    
+    // Or if you have data attributes on buttons:
+    document.querySelectorAll('.purchase-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const priceId = btn.dataset.priceId;
+            const productType = btn.dataset.productType;
+            if (priceId && productType) {
+                handlePurchase(priceId, productType);
+            }
+        });
+    });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>
