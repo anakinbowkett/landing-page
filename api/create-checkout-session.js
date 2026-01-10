@@ -38,14 +38,15 @@ export default async function handler(req, res) {
                 },
             ],
             mode: 'subscription',
-            success_url: successUrl || `${req.headers.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+            success_url: successUrl || `${req.headers.origin}/dashboard.html?session_id={CHECKOUT_SESSION_ID}&payment_success=true`,
             cancel_url: cancelUrl || `${req.headers.origin}/pricing.html`,
             customer_email: userEmail,
             client_reference_id: userId,
             metadata: {
-                userId: userId,
-                userEmail: userEmail,
-            },
+    userId: userId,
+    userEmail: userEmail,
+    productType: req.body.productType || 'standard',
+},
             subscription_data: {
                 metadata: {
                     userId: userId,
