@@ -38,7 +38,7 @@ const session = await stripe.checkout.sessions.create({
         },
     ],
     mode: 'subscription',
-    success_url: `${req.headers.origin}/dashboard.html?session_id={CHECKOUT_SESSION_ID}&payment_success=true`,
+    success_url: successUrl || `${req.headers.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: cancelUrl || `${req.headers.origin}/pricing.html`,
     customer_email: userEmail,
     client_reference_id: userId,
@@ -51,7 +51,8 @@ const session = await stripe.checkout.sessions.create({
         metadata: {
             userId: userId,
         }
-    },
+    }
+});
     // ADD THIS LINE to skip Stripe's success page
     after_completion: {
         type: 'redirect',
