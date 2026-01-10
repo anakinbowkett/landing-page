@@ -2233,7 +2233,6 @@ filterTabs.forEach(tab => {
 
 
 // Handle payment success callback
-// ADD THIS BETWEEN LINE 554 (END OF checkAuth) AND LINE 560 (checkAuth() CALL)
 async function handlePaymentSuccess() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
@@ -2244,6 +2243,13 @@ async function handlePaymentSuccess() {
             // Show loading indicator
             showPaymentProcessing();
             
+            // Get current session
+            const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
+            
+            if (sessionError || !session) {
+                throw new Error('User not authenticated');
+            }
+            
             // Verify the payment with your backend
             const response = await fetch('/api/verify-payment', {
                 method: 'POST',
@@ -2252,38 +2258,28 @@ async function handlePaymentSuccess() {
                 },
                 body: JSON.stringify({ 
                     sessionId: sessionId,
-                    userId: userData.userId 
+                    userId: session.user.id
                 })
             });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Payment verification failed');
+            }
             
             const data = await response.json();
             
             if (data.success) {
-                // Update user's subscription status in Supabase
-                const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
-                
-                if (session) {
-                    const { error: updateError } = await sbClient
-                        .from('user_profiles')
-                        .update({
-                            subscription_status: 'active',
-                            subscription_type: data.productType,
-                            subscription_start_date: new Date().toISOString(),
-                            updated_at: new Date().toISOString()
-                        })
-                        .eq('id', session.user.id);
-                    
-                    if (updateError) {
-                        console.error('Error updating subscription:', updateError);
-                    }
-                }
-                
                 // Show success message
-                showPaymentSuccessMessage();
+                showPaymentSuccessMessage(data.productType);
                 
-                // Reload user data to reflect new subscription status
+                // Redirect based on product type
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    if (data.productType === 'core_bundle') {
+                        window.location.href = 'add-subjects.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
                 }, 2000);
             } else {
                 showPaymentErrorMessage();
@@ -2291,11 +2287,13 @@ async function handlePaymentSuccess() {
             
         } catch (error) {
             console.error('Payment verification error:', error);
-            showPaymentErrorMessage();
+            showPaymentErrorMessage(error.message);
         }
         
-        // Clean up URL
-        window.history.replaceState({}, document.title, 'dashboard.html');
+        // Clean up URL (do this after a delay to allow redirect)
+        setTimeout(() => {
+            window.history.replaceState({}, document.title, 'dashboard.html');
+        }, 2500);
     }
 }
 
@@ -2332,8 +2330,14 @@ function showPaymentProcessing() {
 }
 
 // Show payment success message
-function showPaymentSuccessMessage() {
+function showPaymentSuccessMessage(productType) {
     const overlay = document.getElementById('payment-processing-overlay');
+    
+    let redirectMessage = 'Redirecting to your dashboard...';
+    if (productType === 'core_bundle') {
+        redirectMessage = 'Redirecting to select your subjects...';
+    }
+    
     if (overlay) {
         overlay.innerHTML = `
             <div style="background: white; border-radius: 16px; padding: 3rem; max-width: 400px; text-align: center;">
@@ -2345,7 +2349,7 @@ function showPaymentSuccessMessage() {
                     Welcome to GCSE Mastery! You now have full access to all features.
                 </p>
                 <p style="font-size: 0.75rem; color: #9ca3af;">
-                    Redirecting to your dashboard...
+                    ${redirectMessage}
                 </p>
             </div>
         `;
@@ -2353,7 +2357,7 @@ function showPaymentSuccessMessage() {
 }
 
 // Show payment error message
-function showPaymentErrorMessage() {
+function showPaymentErrorMessage(errorMsg) {
     const overlay = document.getElementById('payment-processing-overlay');
     if (overlay) {
         overlay.innerHTML = `
@@ -2362,10 +2366,14 @@ function showPaymentErrorMessage() {
                 <h2 style="font-size: 1.5rem; font-weight: 700; color: #ef4444; margin-bottom: 0.5rem;">
                     Payment Verification Failed
                 </h2>
-                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1.5rem;">
-                    There was an issue verifying your payment. Please contact support.
+                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem;">
+                    There was an issue verifying your payment.
                 </p>
-                <button onclick="document.getElementById('payment-processing-overlay').remove()" style="
+                ${errorMsg ? `<p style="font-size: 0.75rem; color: #9ca3af; margin-bottom: 1.5rem;">${errorMsg}</p>` : ''}
+                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1.5rem;">
+                    Don't worry - your payment was successful. Please contact support or refresh the page.
+                </p>
+                <button onclick="window.location.reload()" style="
                     background: #000000;
                     color: white;
                     border: none;
@@ -2375,8 +2383,22 @@ function showPaymentErrorMessage() {
                     font-weight: 600;
                     cursor: pointer;
                     font-family: 'Inter', sans-serif;
+                    margin-right: 0.5rem;
                 ">
-                    Close
+                    Refresh Page
+                </button>
+                <button onclick="window.location.href='dashboard.html'" style="
+                    background: #f3f4f6;
+                    color: #111827;
+                    border: none;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 8px;
+                    font-size: 0.875rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    font-family: 'Inter', sans-serif;
+                ">
+                    Go to Dashboard
                 </button>
             </div>
         `;
