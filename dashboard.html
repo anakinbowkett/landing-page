@@ -1860,15 +1860,16 @@ function createSubjectCard(subject) {
         </div>
     `;
     
-          /// Add click handler with trial enforcement
+        /// Add click handler with trial enforcement
     subjectBox.addEventListener('click', () => {
-    // Temporarily disabled trial check for testing
-    // if (userData.trialStatus === 'expired') {
-    //     showPaywall();
-    // } else {
-        window.location.href = `lectures.html`;
-        window.location.href = `aqa-f-tier-maths-lectures.html`;
-    // }
+        // Check trial status before allowing access
+        if (userData.trialStatus === 'expired') {
+            showPaywall();
+        } else {
+            window.location.href = `lectures.html?subject=${subject.id}`;
+            window.location.href = `lectures.html`;
+        }
+    });
 
     
     // Visual lock if trial expired
