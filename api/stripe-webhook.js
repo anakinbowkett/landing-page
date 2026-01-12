@@ -79,13 +79,24 @@ export default async function handler(req, res) {
 async function handleCheckoutCompleted(session) {
     console.log('Checkout completed:', session.id);
 
-    const userId = session.client_reference_id || session.metadata.userId;
+    const userId = session.client_reference_id || session.metadata?.userId;
     const customerId = session.customer;
     const subscriptionId = session.subscription;
 
     if (!userId) {
         console.error('No userId found in session');
         return;
+    }
+
+    // Determine which product was purchased by checking the line items
+    let productType = 'core_bundle'; // default
+    
+    if (session.line_items?.data?.[0]?.price?.id) {
+        const priceId = session.line_items.data[0].price.id;
+        // Check if it's the per-subject price
+        if (priceId === 'price_1Sn40vCCgLNEbNJs0VMTqmej') {
+            productType = 'per_subject';
+        }
     }
 
     // Update user profile in Supabase
@@ -105,7 +116,7 @@ async function handleCheckoutCompleted(session) {
         throw error;
     }
 
-    console.log(`User ${userId} subscription activated`);
+    console.log(`User ${userId} subscription activated with product type: ${productType}`);
 }
 
 async function handleSubscriptionUpdated(subscription) {
