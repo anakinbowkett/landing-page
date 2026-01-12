@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - GCSE Mastery</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: white;
+            border-bottom: 1px solid #e0e4e9;
+            padding: 1.25rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-left img {
+            height: 28px;
+        }
+
+        .nav-left span {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .back-btn {
+            background: #f3f4f6;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #111827;
+        }
+
+        .back-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 2rem;
+        }
+
+        .settings-section {
+            background: white;
+            border: 1px solid #e0e4e9;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1.5rem;
+        }
+
+        .subject-item {
+            border: 1px solid #e0e4e9;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: #f9fafb;
+        }
+
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .subject-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .default-badge {
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .subject-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        select {
+            padding: 0.625rem;
+            border: 1px solid #e0e4e9;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-family: 'Inter', sans-serif;
+            background: white;
+        }
+
+        .save-btn {
+            background: #000000;
+            color: white;
+            border: none;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .save-btn:hover {
+            background: #1a1a1a;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="Logo">
+            <span>GCSE Mastery</span>
+        </div>
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">← Back to Dashboard</button>
+    </nav>
+
+    <div class="container">
+        <h1>Account Settings</h1>
+
+        <div id="successMessage" class="success-message"></div>
+
+        <div class="settings-section">
+            <h2 class="section-title">Your Subjects</h2>
+            <div id="subjects-list"></div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const examBoards = ['AQA', 'Edexcel', 'OCR', 'WJEC', 'CCEA'];
+        const tiers = ['Foundation', 'Higher'];
+
+        async function loadSubjects() {
+            try {
+                const { data: { session } } = await sbClient.auth.getSession();
+                if (!session) {
+                    window.location.href = 'signin.html';
+                    return;
+                }
+
+                const { data: subjects, error } = await sbClient
+                    .from('user_subjects')
+                    .select('*')
+                    .eq('user_id', session.user.id)
+                    .order('created_at');
+
+                if (error) throw error;
+
+                renderSubjects(subjects);
+            } catch (error) {
+                console.error('Error loading subjects:', error);
+            }
+        }
+
+        function renderSubjects(subjects) {
+            const container = document.getElementById('subjects-list');
+            container.innerHTML = '';
+
+            subjects.forEach(subject => {
+                const subjectDiv = document.createElement('div');
+                subjectDiv.className = 'subject-item';
+
+                const hasTier = !['English Language', 'English Literature'].includes(subject.subject_name);
+
+                subjectDiv.innerHTML = `
+                    <div class="subject-header">
+                        <div class="subject-name">${subject.subject_name}</div>
+                        ${subject.is_default ? '<span class="default-badge">Default Subject</span>' : ''}
+                    </div>
+                    <div class="subject-controls">
+                        <div class="control-group">
+                            <label class="control-label">Exam Board</label>
+                            <select id="board-${subject.id}" data-subject-id="${subject.id}" data-field="exam_board">
+                                ${examBoards.map(board => `
+                                    <option value="${board}" ${subject.exam_board === board ? 'selected' : ''}>${board}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        ${hasTier ? `
+                        <div class="control-group">
+                            <label class="control-label">Tier</label>
+                            <select id="tier-${subject.id}" data-subject-id="${subject.id}" data-field="tier">
+                                ${tiers.map(tier => `
+                                    <option value="${tier}" ${subject.tier === tier ? 'selected' : ''}>${tier}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        ` : '<div></div>'}
+                    </div>
+                    <button class="save-btn" onclick="saveSubject('${subject.id}', ${hasTier})">Save Changes</button>
+                `;
+
+                container.appendChild(subjectDiv);
+            });
+        }
+
+        async function saveSubject(subjectId, hasTier) {
+            try {
+                const examBoard = document.getElementById(`board-${subjectId}`).value;
+                const tier = hasTier ? document.getElementById(`tier-${subjectId}`).value : null;
+
+                const { error } = await sbClient
+                    .from('user_subjects')
+                    .update({
+                        exam_board: examBoard,
+                        tier: tier,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', subjectId);
+
+                if (error) throw error;
+
+                showSuccess('Subject updated successfully!');
+            } catch (error) {
+                console.error('Error saving subject:', error);
+                alert('Error saving changes. Please try again.');
+            }
+        }
+
+        function showSuccess(message) {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.textContent = message;
+            successMsg.classList.add('show');
+            setTimeout(() => successMsg.classList.remove('show'), 3000);
+        }
+
+        loadSubjects();
+    </script>
+    <script src="auth-check.js"></script>
+</body>
+</html>
