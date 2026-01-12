@@ -3,9 +3,175 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Lowest Common Multiple - Interactive Lecture</title>
+<title>Product of Prime Factors - Interactive Lecture</title>
+
+<!-- ADD SUPABASE HERE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- ADD THIS FONT LINK HERE -->
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+<script>
+// ========== DEEPSEEK AI CONFIGURATION ==========
+const DEEPSEEK_API_KEY = 'sk-cede2c0d57e84bc3be95fdaac2abf4c2'; // Get from platform.deepseek.com
+
+const QUESTION_BANK = {
+  'Mathematics_Foundation_Number_L1_Q1': {
+    question: 'What is the Lowest Common Multiple (LCM)?',
+    answer: 'The smallest number that is a multiple of two or more numbers',
+    topic: 'Lowest Common Multiple',
+    difficulty: 'Easy',
+    marks: 1,
+    examBoard: 'AQA'
+  },
+  'Mathematics_Foundation_Number_L1_Q2': {
+    question: 'Find the LCM of 4 and 6',
+    answer: '12',
+    topic: 'Lowest Common Multiple',
+    difficulty: 'Easy',
+    marks: 1,
+    examBoard: 'AQA'
+  },
+  'Mathematics_Foundation_Number_L1_Q3': {
+    question: 'Find the LCM of 6 and 8',
+    answer: '24',
+    topic: 'Lowest Common Multiple',
+    difficulty: 'Medium',
+    marks: 1,
+    examBoard: 'AQA'
+  },
+  'Mathematics_Foundation_Number_L1_Q4': {
+    question: 'Find the LCM of 12 and 15',
+    answer: '60',
+    topic: 'Lowest Common Multiple',
+    difficulty: 'Medium',
+    marks: 1,
+    examBoard: 'AQA'
+  },
+  'Mathematics_Foundation_Number_L1_Q5': {
+    question: 'Find the LCM of 18 and 24',
+    answer: '72',
+    topic: 'Lowest Common Multiple',
+    difficulty: 'Hard',
+    marks: 1,
+    examBoard: 'AQA'
+  },
+  'Mathematics_Foundation_Number_L1_Q6': {
+    question: 'Find the LCM of 20 and 30',
+    answer: '60',
+    topic: 'Lowest Common Multiple',
+    difficulty: 'Hard',
+    marks: 1,
+    examBoard: 'AQA'
+  }
+};
+
+// Current question being worked on
+let currentQuestionId = 'Mathematics_Foundation_Number_L1_Q1';
+
+// Conversation history (only keep last 2 exchanges to save tokens)
+let conversationHistory = [];
+
+// Generate ultra-compressed system prompt
+function getCompressedPrompt(questionData) {
+  return `GCSE Maths tutor. Foundation tier. Topic: ${questionData.topic}.
+
+Q: "${questionData.question}"
+Marks: ${questionData.marks} | Exam: ${questionData.examBoard}
+
+Rules:
+- Give 1 focused explanation (2-4 sentences max)
+- Show method clearly
+- If student asks "why X?", explain ONLY that specific part
+- No introductions or fluff
+- Target: <150 tokens per response`;
+}
+
+// Send message to DeepSeek API
+async function sendChatMessage(userMessage) {
+  const questionData = QUESTION_BANK[currentQuestionId];
+  
+  // Add user message to history
+  conversationHistory.push({
+    role: 'user',
+    content: userMessage
+  });
+  
+  // Keep only last 4 messages (2 exchanges) to save tokens
+  if (conversationHistory.length > 4) {
+    conversationHistory = conversationHistory.slice(-4);
+  }
+  
+  // Build conversation with compressed prompt
+  const messages = [
+    { role: 'system', content: getCompressedPrompt(questionData) },
+    ...conversationHistory
+  ];
+  
+  try {
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: messages,
+        temperature: 0.3,
+        max_tokens: 200
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.error) {
+      throw new Error(data.error.message);
+    }
+    
+    const aiResponse = data.choices[0].message.content;
+    
+    // Add AI response to history
+    conversationHistory.push({
+      role: 'assistant',
+      content: aiResponse
+    });
+    
+    return aiResponse;
+    
+  } catch (error) {
+    console.error('DeepSeek API Error:', error);
+    return `Error: ${error.message}. Please check your API key.`;
+  }
+}
+</script>  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
   <!-- ADD THIS FONT LINK HERE -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,15 +198,162 @@
      Theme variables & base
      ========================== */
   :root{
-    --bg:#ffffff;
-    --muted:#6b7280;
-    --accent:#1d7fe2;
-    --card:#f8fafc;
-    --panel-gap:24px;
-    --step-bg:#fff;
-    --arrow:#cbd5e1;
-    --glass: rgba(255,255,255,0.6);
-  }
+  --bg:#ffffff;
+  --muted:#6b7280;
+  --accent:#1d7fe2;
+  --card:#f8fafc;
+  --panel-gap:24px;
+  --step-bg:#fff;
+  --arrow:#cbd5e1;
+  --glass: rgba(255,255,255,0.6);
+}
+
+/* ========================================
+   SECTION 3: HEADER BAR 1 (TOP)
+   Progress bar spanning full width
+   ======================================== */
+.header-bar-1 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 55px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  z-index: 100;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.lectures-back-btn {
+  position: absolute;
+  left: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lectures-back-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.lectures-back-btn:hover {
+  opacity: 0.8;
+}
+  
+.formula-sheet-btn {
+  position: absolute;
+  right: 80px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: white;
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.formula-sheet-btn:hover {
+  background: #f9fafb;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.progress-container {
+  width: 50%;
+  max-width: 600px;
+  height: 8px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+}
+
+.progress-segment {
+  height: 100%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: white;
+}
+
+/* ========================================
+   SECTION 4: HEADER BAR 2 (BELOW BAR 1)
+   Multiple Choice / Exam Format toggle
+   ======================================== */
+.header-bar-2 {
+  position: fixed;
+  top: 55px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 55px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  z-index: 99;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.format-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 4px;
+  border: 1px solid var(--border);
+}
+
+.format-btn {
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.format-btn.active {
+  background: #ffffff;
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.format-btn:hover:not(.active) {
+  color: var(--text-primary);
+}
+
+.format-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+}
+  
+  
+  
+  
+  
+  
+  
   /* ==========================
    PROGRESS BAR - FIXED AT TOP
    ========================== */
@@ -597,1001 +910,144 @@ color:var(--muted);
 
 
 
-/* --- SECTION: QUESTION 2 STYLES --- */
-.question-box-2 {
-    position: relative;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    background-color: white;
-    transition: border-color 0.3s ease;
-}
-
-.question-box-2.incorrect-selection {
-    border: 1px solid #e16280;
-}
-
-.question-box-2.partial-correct {
-    border: 1px solid #f7deb5;
-}
-
-.question-box-2.correct {
-    border: 1px solid #54d3ab;
-}
-
-.question-number-label-2 {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    padding: 5px 15px;
-    border-radius: 0 0 0 5px;
-}
-
-.mark-counter-2 {
-    position: absolute;
-    bottom: 25px;
-    left: 40px;
-    font-size: 15.5px;
-    color: #555;
-    border: 1px solid #1d7fe2;
-    padding: 6px 16px;
-    height: 30px;
-    line-height: 18px;
-    border-radius: 5px;
-    letter-spacing: 2px;
-    background-color: transparent;
-    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-/* Using !important to ensure these styles take precedence */
-.mark-counter-2.correct {
-    background-color: #54d3ab !important;
-    color: white !important;
-    border-color: #54d3ab !important;
-}
-
-.mark-counter-2.incorrect {
-    background-color: #e16280 !important;
-    color: white !important;
-    border-color: #e16280 !important;
-}
-
-.mark-counter-2.partial-correct {
-    background-color: #f7deb5 !important;
-    color: #555 !important;
-    border-color: #f7deb5 !important;
-}
-
-.question-title-2 {
-    padding-top: px;
-    margin-bottom: 32px;
-    text-align: center;
-    font-weight: 350;
-    font-family: "Arial Greek", Arial, sans-serif;
-    color: #464e5a;
-}
-
-.answer-container-2 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.answer-option-2-1,
-.answer-option-2-2,
-.answer-option-2-3,
-.answer-option-2-4 {
-    width: 80%;
-    max-width: 400px;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: white;
-    text-align: center;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-.answer-option-2-1.selected,
-.answer-option-2-2.selected,
-.answer-option-2-3.selected,
-.answer-option-2-4.selected {
-    background-color: #1d7fe2;
-    color: #ffffff;
-    border-color: #1d7fe2;
-}
-
-.answer-option-2-1.correct-answer,
-.answer-option-2-2.correct-answer,
-.answer-option-2-3.correct-answer,
-.answer-option-2-4.correct-answer {
-    border: 1px solid #54d3ab;
-    box-sizing: border-box;
-}
-
-.answer-option-2-1.correct-answer.selected,
-.answer-option-2-2.correct-answer.selected,
-.answer-option-2-3.correct-answer.selected,
-.answer-option-2-4.correct-answer.selected {
-    background-color: #54d3ab;
-    color: #ffffff;
-    border-color: #54d3ab;
-}
-
-.submit-button-2 {
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    transition: background-color 0.3s ease;
-}
-
-.submit-button-2:hover {
-    background-color: #1a70c5;
-}
-
-/* Additional styles from question 2 that weren't in question 1 */
-.extra-line {
-    text-align: center;
-    margin-bottom: 20px;
-    font-family: "Arial Greek", Arial, sans-serif;
-    color: #464e5a;
-}
-
-.selection-limit-note {
-    text-align: center;
-    color: #777;
-    font-size: 14px;
-    margin-top: 10px;
-    font-style: italic;
-}
-
-
-
-  
-  
-/* Question 1 Styles */
-.question-box-1 {
-    position: relative;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    background-color: white;
-    transition: border-color 0.3s ease;
-}
-
-.question-box-1.incorrect-selection {
-    border: 1px solid #e16280;
-}
-
-.question-box-1.partial-correct {
-    border: 1px solid #f7deb5;
-}
-
-.question-box-1.correct {
-    border: 1px solid #54d3ab;
-}
-
-.question-number-label-1 {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    padding: 5px 15px;
-    border-radius: 0 0 0 5px;
-}
-
-.mark-counter-1 {
-    position: absolute;
-    bottom: 25px;
-    left: 40px;
-    font-size: 15.5px;
-    color: #555;
-    border: 1px solid #1d7fe2;
-    padding: 6px 16px;
-    height: 30px;
-    line-height: 18px;
-    border-radius: 5px;
-    letter-spacing: 2px;
-    background-color: transparent;
-    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-.mark-counter-1.correct {
-    background-color: #54d3ab !important;
-    color: white !important;
-    border-color: #54d3ab !important;
-}
-
-.mark-counter-1.incorrect {
-    background-color: #e16280 !important;
-    color: white !important;
-    border-color: #e16280 !important;
-}
-
-.mark-counter-1.partial-correct {
-    background-color: #f7deb5 !important;
-    color: #555 !important;
-    border-color: #f7deb5 !important;
-}
-
-.question-title-1 {
-    padding-top: 20px;
-    margin-bottom: 32px;
-    text-align: center;
-    font-weight: 350;
-    font-family: "Arial Greek", Arial, sans-serif;
-    color: #464e5a;
-}
-
-.answer-container-1 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.answer-option-1-1,
-.answer-option-1-2,
-.answer-option-1-3,
-.answer-option-1-4 {
-    width: 80%;
-    max-width: 400px;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: white;
-    text-align: center;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-.answer-option-1-1.selected,
-.answer-option-1-2.selected,
-.answer-option-1-3.selected,
-.answer-option-1-4.selected {
-    background-color: #1d7fe2;
-    color: #ffffff;
-    border-color: #1d7fe2;
-}
-
-.answer-option-1-1.correct-answer,
-.answer-option-1-2.correct-answer,
-.answer-option-1-3.correct-answer,
-.answer-option-1-4.correct-answer {
-    border: 1px solid #54d3ab;
-    box-sizing: border-box;
-}
-
-.answer-option-1-1.correct-answer.selected,
-.answer-option-1-2.correct-answer.selected,
-.answer-option-1-3.correct-answer.selected,
-.answer-option-1-4.correct-answer.selected {
-    background-color: #54d3ab;
-    color: #ffffff;
-    border-color: #54d3ab;
-}
-
-.submit-button-1 {
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    transition: background-color 0.3s ease;
-}
-
-.submit-button-1:hover {
-    background-color: #1a70c5;
-}  
-  
-  
-  
-  
-  
-
-
-/* --- SECTION: QUESTION 3 STYLES --- */
-.question-box-3 {
-    position: relative;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    background-color: white;
-    transition: border-color 0.3s ease;
-}
-
-.question-box-3.incorrect-selection {
-    border: 1px solid #e16280;
-}
-
-.question-box-3.partial-correct {
-    border: 1px solid #f7deb5;
-}
-
-.question-box-3.correct {
-    border: 1px solid #54d3ab;
-}
-
-.question-number-label-3 {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    padding: 5px 15px;
-    border-radius: 0 0 0 5px;
-}
-
-.mark-counter-3 {
-    position: absolute;
-    bottom: 25px;
-    left: 40px;
-    font-size: 15.5px;
-    color: #555;
-    border: 1px solid #1d7fe2;
-    padding: 6px 16px;
-    height: 30px;
-    line-height: 18px;
-    border-radius: 5px;
-    letter-spacing: 2px;
-    background-color: transparent;
-    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-/* Using !important to ensure these styles take precedence */
-.mark-counter-3.correct {
-    background-color: #54d3ab !important;
-    color: white !important;
-    border-color: #54d3ab !important;
-}
-
-.mark-counter-3.incorrect {
-    background-color: #e16280 !important;
-    color: white !important;
-    border-color: #e16280 !important;
-}
-
-.mark-counter-3.partial-correct {
-    background-color: #f7deb5 !important;
-    color: #555 !important;
-    border-color: #f7deb5 !important;
-}
-
-.question-title-3 {
-    padding-top: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-weight: 350;
-    font-family: "Arial Greek", Arial, sans-serif;
-    color: #464e5a;
-}
-
-/* Image container style */
-.question-image-container-3 {
-    text-align: center;
-    margin-bottom: 30px;
-    width: 100%;
-}
-
-.question-image-3 {
-    max-width: 48%;
-    height: auto;
-    margin: 0 auto;
-    display: block;
-    border-radius: 5px;
-}
-
-.answer-container-3 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.answer-option-3-1,
-.answer-option-3-2,
-.answer-option-3-3,
-.answer-option-3-4 {
-    width: 80%;
-    max-width: 400px;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: white;
-    text-align: center;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-/* Style for selected answers */
-.answer-option-3-1.selected,
-.answer-option-3-2.selected,
-.answer-option-3-3.selected,
-.answer-option-3-4.selected {
-    background-color: #1d7fe2;
-    color: #ffffff;
-    border-color: #1d7fe2;
-}
-
-/* New style for correct answers after submission */
-.answer-option-3-1.correct-answer,
-.answer-option-3-2.correct-answer,
-.answer-option-3-3.correct-answer,
-.answer-option-3-4.correct-answer {
-    border: 1px solid #54d3ab;
-    box-sizing: border-box;
-}
-
-/* Style for correct answers that were selected */
-.answer-option-3-1.correct-answer.selected,
-.answer-option-3-2.correct-answer.selected,
-.answer-option-3-3.correct-answer.selected,
-.answer-option-3-4.correct-answer.selected {
-    background-color: #54d3ab;
-    color: #ffffff;
-    border-color: #54d3ab;
-}
-
-.submit-button-3 {
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    transition: background-color 0.3s ease;
-}
-
-.submit-button-3:hover {
-    background-color: #1a70c5;
-}
-
-/* Additional styles specific to question 3 */
-.extra-line {
-    text-align: center;
-    margin-bottom: 20px;
-    font-family: "Arial Greek", Arial, sans-serif;
-    color: #464e5a;
-}
-
-.selection-limit-note {
-    text-align: center;
-    color: #777;
-    font-size: 14px;
-    margin-top: 10px;
-    font-style: italic;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-/* Question 4 Styles */
-.question-box-4 {
-  position: relative;
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  background-color: white;
-  transition: border-color 0.3s ease;
-}
-
-.question-box-4.incorrect-selection {
-  border: 1px solid #e16280;
-}
-
-.question-box-4.partial-correct {
-  border: 1px solid #f7deb5;
-}
-
-.question-box-4.correct {
-  border: 1px solid #54d3ab;
-}
-
-.question-number-label-4 {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: #1d7fe2;
-  color: white;
-  font-size: 14px;
-  padding: 5px 15px;
-  border-radius: 0 0 0 5px;
-}
-
-.mark-counter-4 {
-  position: absolute;
-  bottom: 25px;
-  left: 40px;
-  font-size: 15.5px;
-  color: #555;
-  border: 1px solid #1d7fe2;
-  padding: 6px 16px;
-  height: 30px;
-  line-height: 18px;
-  border-radius: 5px;
-  letter-spacing: 2px;
-  background-color: transparent;
-  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-/* Using !important to ensure these styles take precedence */
-.mark-counter-4.correct {
-  background-color: #54d3ab !important;
-  color: white !important;
-  border-color: #54d3ab !important;
-}
-
-.mark-counter-4.incorrect {
-  background-color: #e16280 !important;
-  color: white !important;
-  border-color: #e16280 !important;
-}
-
-.mark-counter-4.partial-correct {
-  background-color: #f7deb5 !important;
-  color: #555 !important;
-  border-color: #f7deb5 !important;
-}
-
-.question-title-4 {
-  padding-top: 20px;
-  margin-bottom: 32px;
-  text-align: center;
-  font-weight: 350;
-  font-family: "Arial Greek", Arial, sans-serif;
-  color: #464e5a;
-}
-
-.answer-container-4 {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.answer-option-4-1,
-.answer-option-4-2,
-.answer-option-4-3,
-.answer-option-4-4 {
-  width: 80%;
-  max-width: 400px;
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: white;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-}
-
-/* Style for selected answers */
-.answer-option-4-1.selected,
-.answer-option-4-2.selected,
-.answer-option-4-3.selected,
-.answer-option-4-4.selected {
-  background-color: #1d7fe2;
-  color: #ffffff;
-  border-color: #1d7fe2;
-}
-
-/* New style for correct answers after submission */
-.answer-option-4-1.correct-answer,
-.answer-option-4-2.correct-answer,
-.answer-option-4-3.correct-answer,
-.answer-option-4-4.correct-answer {
-  border: 1px solid #54d3ab;
-  box-sizing: border-box;
-}
-
-/* Style for correct answers that were selected */
-.answer-option-4-1.correct-answer.selected,
-.answer-option-4-2.correct-answer.selected,
-.answer-option-4-3.correct-answer.selected,
-.answer-option-4-4.correct-answer.selected {
-  background-color: #54d3ab;
-  color: #ffffff;
-  border-color: #54d3ab;
-}
-
-.submit-button-4 {
-  background-color: #1d7fe2;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 26px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  transition: background-color 0.3s ease;
-}
-
-.submit-button-4:hover {
-  background-color: #1666c7;
-}
-
-
-
-
-
-
-
-/* Question 5 Styles */
-/* Question 5 Styles - Updated to match Question 8 structure */
-.question-box-5 {
-  position: relative;
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  background-color: white;
-  transition: border-color 0.3s ease;
-}
-
-.question-box-5.incorrect-selection {
-  border: 1px solid #e16280;
-}
-
-.question-box-5.partial-correct {
-  border: 1px solid #f7deb5;
-}
-
-.question-box-5.correct {
-  border: 1px solid #54d3ab;
-}
-
-.question-number-label-5 {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: #1d7fe2;
-  color: white;
-  font-size: 14px;
-  padding: 5px 15px;
-  border-radius: 0 0 0 5px;
-}
-
-.mark-counter-5 {
-  position: absolute;
-  bottom: 25px;
-  left: 40px;
-  font-size: 15.5px;
-  color: #555;
-  border: 1px solid #1d7fe2;
-  padding: 6px 16px;
-  height: 30px;
-  line-height: 18px;
-  border-radius: 5px;
-  letter-spacing: 2px;
-  background-color: transparent;
-  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-/* Using !important to ensure these styles take precedence */
-.mark-counter-5.correct {
-  background-color: #54d3ab !important;
-  color: white !important;
-  border-color: #54d3ab !important;
-}
-
-.mark-counter-5.incorrect {
-  background-color: #e16280 !important;
-  color: white !important;
-  border-color: #e16280 !important;
-}
-
-.mark-counter-5.partial-correct {
-  background-color: #f7deb5 !important;
-  color: #555 !important;
-  border-color: #f7deb5 !important;
-}
-
-.question-title-5 {
-  padding-top: 20px;
-  margin-bottom: 20px;
-  text-align: center;
-  font-weight: 350;
-  font-family: "Arial Greek", Arial, sans-serif;
-  color: #464e5a;
-}
-
-.answer-container-5 {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.answer-option-5-1,
-.answer-option-5-2,
-.answer-option-5-3,
-.answer-option-5-4 {
-  width: 80%;
-  max-width: 400px;
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: white;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-}
-
-/* Style for selected answers */
-.answer-option-5-1.selected,
-.answer-option-5-2.selected,
-.answer-option-5-3.selected,
-.answer-option-5-4.selected {
-  background-color: #1d7fe2;
-  color: #ffffff;
-  border-color: #1d7fe2;
-}
-
-/* New style for correct answers after submission */
-.answer-option-5-1.correct-answer,
-.answer-option-5-2.correct-answer,
-.answer-option-5-3.correct-answer,
-.answer-option-5-4.correct-answer {
-  border: 1px solid #54d3ab;
-  box-sizing: border-box;
-}
-
-/* Style for correct answers that were selected */
-.answer-option-5-1.correct-answer.selected,
-.answer-option-5-2.correct-answer.selected,
-.answer-option-5-3.correct-answer.selected,
-.answer-option-5-4.correct-answer.selected {
-  background-color: #54d3ab;
-  color: #ffffff;
-  border-color: #54d3ab;
-}
-
-.submit-button-5 {
-  background-color: #1d7fe2;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 26px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  transition: background-color 0.3s ease;
-}
-
-.submit-button-5:hover {
-  background-color: #1666c7;
-}
-
-/* Legacy styles - kept for backwards compatibility */
-.answer-box-5 {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: sans-serif;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: white;
-}
-
-.answer-box-5.selected {
-    background-color: #f0f0f0;
-    color: black;
-    cursor: default;
-}
-
-.answer-box-5.correct {
-    background-color: #54d3ab;
-    color: white;
-}
-
-
-
-
-
-
-/* Question 6 Styles */
+/* Question Box Styling */
+.question-box-1,
+.question-box-2,
+.question-box-3,
+.question-box-4,
+.question-box-5,
 .question-box-6 {
-    position: relative;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    background-color: white;
-    transition: border-color 0.3s ease;
-}
-.question-box-6.incorrect-selection {
-    border: 1px solid #e16280;
-}
-.question-box-6.partial-correct {
-    border: 1px solid #f7deb5;
-}
-.question-box-6.correct {
-    border: 1px solid #54d3ab;
-}
-.question-number-label-6 {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    padding: 5px 15px;
-    border-radius: 0 0 0 5px;
-}
-.mark-counter-6 {
-    position: absolute;
-    bottom: 25px;
-    left: 40px;
-    font-size: 15.5px;
-    color: #555;
-    border: 1px solid #1d7fe2;
-    padding: 6px 16px;
-    height: 30px;
-    line-height: 18px;
-    border-radius: 5px;
-    letter-spacing: 2px;
-    background-color: transparent;
-    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-/* Using !important to ensure these styles take precedence */
-.mark-counter-6.correct {
-    background-color: #54d3ab !important;
-    color: white !important;
-    border-color: #54d3ab !important;
-}
-.mark-counter-6.incorrect {
-    background-color: #e16280 !important;
-    color: white !important;
-    border-color: #e16280 !important;
-}
-.mark-counter-6.partial-correct {
-    background-color: #f7deb5 !important;
-    color: #555 !important;
-    border-color: #f7deb5 !important;
-}
-.question-title-6 {
-    padding-top: 20px;
-    margin-bottom: 32px;
-    text-align: center;
-    font-weight: 350;
-    font-family: "Arial Greek", Arial, sans-serif;
-    color: #464e5a;
-}
-.answer-container-6 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.answer-option-6-1,
-.answer-option-6-2,
-.answer-option-6-3,
-.answer-option-6-4 {
-    width: 80%;
-    max-width: 400px;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: white;
-    text-align: center;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-/* Style for selected answers */
-.answer-option-6-1.selected,
-.answer-option-6-2.selected,
-.answer-option-6-3.selected,
-.answer-option-6-4.selected {
-    background-color: #1d7fe2;
-    color: #ffffff;
-    border-color: #1d7fe2;
-}
-/* New style for correct answers after submission */
-.answer-option-6-1.correct-answer,
-.answer-option-6-2.correct-answer,
-.answer-option-6-3.correct-answer,
-.answer-option-6-4.correct-answer {
-    border: 1px solid #54d3ab;
-    box-sizing: border-box;
-}
-/* Style for correct answers that were selected */
-.answer-option-6-1.correct-answer.selected,
-.answer-option-6-2.correct-answer.selected,
-.answer-option-6-3.correct-answer.selected,
-.answer-option-6-4.correct-answer.selected {
-    background-color: #54d3ab;
-    color: #ffffff;
-    border-color: #54d3ab;
-}
-.submit-button-6 {
-    background-color: #1d7fe2;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    transition: background-color 0.3s ease;
-}
-.submit-button-6:hover {
-    background-color: #1a70c5;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 32px;
+  margin: 20px 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  position: relative;
+  transition: all 0.3s ease;
+  max-width: 1400px;
+  width: calc(100% - 64px);
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
 }
 
-  
-/* Make all answer options use the same font as question titles - applies to both desktop and iPhone */
+.question-box-1.correct,
+.question-box-2.correct,
+.question-box-3.correct,
+.question-box-4.correct,
+.question-box-5.correct,
+.question-box-6.correct {
+  border-color: #54d3ab;
+  background: #f0fdf4;
+}
+
+.question-box-1.incorrect-selection,
+.question-box-2.incorrect-selection,
+.question-box-3.incorrect-selection,
+.question-box-4.incorrect-selection,
+.question-box-5.incorrect-selection,
+.question-box-6.incorrect-selection {
+  border-color: #e16280;
+  background: #fef2f2;
+}
+
+.question-number-label-1,
+.question-number-label-2,
+.question-number-label-3,
+.question-number-label-4,
+.question-number-label-5,
+.question-number-label-6 {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.mark-counter-1,
+.mark-counter-2,
+.mark-counter-3,
+.mark-counter-4,
+.mark-counter-5,
+.mark-counter-6 {
+  position: absolute;
+  bottom: 16px;
+  left: 32px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f9fafb;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.mark-counter-1.correct,
+.mark-counter-2.correct,
+.mark-counter-3.correct,
+.mark-counter-4.correct,
+.mark-counter-5.correct,
+.mark-counter-6.correct {
+  background: #54d3ab !important;
+  color: white !important;
+  border-color: #54d3ab !important;
+}
+
+.mark-counter-1.incorrect,
+.mark-counter-2.incorrect,
+.mark-counter-3.incorrect,
+.mark-counter-4.incorrect,
+.mark-counter-5.incorrect,
+.mark-counter-6.incorrect {
+  background: #e16280 !important;
+  color: white !important;
+  border-color: #e16280 !important;
+}
+
+.mark-counter-1.partial-correct,
+.mark-counter-2.partial-correct,
+.mark-counter-3.partial-correct,
+.mark-counter-4.partial-correct,
+.mark-counter-5.partial-correct,
+.mark-counter-6.partial-correct {
+  background: #f7deb5 !important;
+  color: #555 !important;
+  border-color: #f7deb5 !important;
+}
+
+.question-title-1,
+.question-title-2,
+.question-title-3,
+.question-title-4,
+.question-title-5,
+.question-title-6 {
+  font-size: 16px !important;
+  font-weight: 500;
+  color: #111827;
+  text-align: center;
+  margin: 32px 0 28px 0;
+  line-height: 1.6;
+}
+
+.answer-container-1,
+.answer-container-2,
+.answer-container-3,
+.answer-container-4,
+.answer-container-5,
+.answer-container-6 {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
 .answer-option-1-1,
 .answer-option-1-2,
 .answer-option-1-3,
@@ -1616,70 +1072,135 @@ color:var(--muted);
 .answer-option-6-2,
 .answer-option-6-3,
 .answer-option-6-4 {
-    font-family: "Arial Greek", Arial, sans-serif !important;
-    font-weight: 350 !important;
-    font-size: 15px !important;
+  padding: 16px 20px !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 10px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: #ffffff !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.55 !important;
+  letter-spacing: -0.01em !important;
 }
 
-/* Make all question titles slightly smaller */
-.question-title-1,
-.question-title-2,
-.question-title-3,
-.question-title-4,
-.question-title-5,
-.question-title-6 {
-    font-size: 15px !important;  /* Slightly smaller - adjust as needed */
-}
-  
-  
-  
-  
-  
-  
-  
-  
-  
-/* Make all question boxes match the combined width of the two panels */
-[class^="question-box-"] {
-    max-width: 1400px;  /* Same as .wrap max-width */
-    width: calc(100% - 56px);  /* Same as .wrap minus padding */
-    margin-left: auto;
-    margin-right: auto;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-/* Desktop - match .wrap width exactly */
-@media (min-width: 980px) {
-    [class^="question-box-"] {
-        max-width: 1400px;
-        width: calc(100% - 56px);  /* Matches .wrap with 28px padding on each side */
-    }
+.answer-option-1-1:hover:not(:disabled),
+.answer-option-1-2:hover:not(:disabled),
+.answer-option-1-3:hover:not(:disabled),
+.answer-option-1-4:hover:not(:disabled),
+.answer-option-2-1:hover:not(:disabled),
+.answer-option-2-2:hover:not(:disabled),
+.answer-option-2-3:hover:not(:disabled),
+.answer-option-2-4:hover:not(:disabled),
+.answer-option-3-1:hover:not(:disabled),
+.answer-option-3-2:hover:not(:disabled),
+.answer-option-3-3:hover:not(:disabled),
+.answer-option-3-4:hover:not(:disabled),
+.answer-option-4-1:hover:not(:disabled),
+.answer-option-4-2:hover:not(:disabled),
+.answer-option-4-3:hover:not(:disabled),
+.answer-option-4-4:hover:not(:disabled),
+.answer-option-5-1:hover:not(:disabled),
+.answer-option-5-2:hover:not(:disabled),
+.answer-option-5-3:hover:not(:disabled),
+.answer-option-5-4:hover:not(:disabled),
+.answer-option-6-1:hover:not(:disabled),
+.answer-option-6-2:hover:not(:disabled),
+.answer-option-6-3:hover:not(:disabled),
+.answer-option-6-4:hover:not(:disabled) {
+  border-color: #1d7fe2 !important;
+  background: #f0f9ff !important;
 }
 
-/* Tablet - single column, follow .wrap */
-@media (max-width: 980px) {
-    [class^="question-box-"] {
-        width: calc(100% - 32px);  /* Matches .wrap mobile padding */
-        padding: 18px;
-    }
+.answer-option-1-1.selected,
+.answer-option-1-2.selected,
+.answer-option-1-3.selected,
+.answer-option-1-4.selected,
+.answer-option-2-1.selected,
+.answer-option-2-2.selected,
+.answer-option-2-3.selected,
+.answer-option-2-4.selected,
+.answer-option-3-1.selected,
+.answer-option-3-2.selected,
+.answer-option-3-3.selected,
+.answer-option-3-4.selected,
+.answer-option-4-1.selected,
+.answer-option-4-2.selected,
+.answer-option-4-3.selected,
+.answer-option-4-4.selected,
+.answer-option-5-1.selected,
+.answer-option-5-2.selected,
+.answer-option-5-3.selected,
+.answer-option-5-4.selected,
+.answer-option-6-1.selected,
+.answer-option-6-2.selected,
+.answer-option-6-3.selected,
+.answer-option-6-4.selected {
+  border-color: #1d7fe2 !important;
+  background: #1d7fe2 !important;
+  color: white !important;
 }
 
-/* Mobile portrait */
-@media (max-width: 768px) {
-    [class^="question-box-"] {
-        width: calc(100% - 32px);
-        padding: 16px;
-    }
+.answer-option-1-1.correct-answer,
+.answer-option-1-2.correct-answer,
+.answer-option-1-3.correct-answer,
+.answer-option-1-4.correct-answer,
+.answer-option-2-1.correct-answer,
+.answer-option-2-2.correct-answer,
+.answer-option-2-3.correct-answer,
+.answer-option-2-4.correct-answer,
+.answer-option-3-1.correct-answer,
+.answer-option-3-2.correct-answer,
+.answer-option-3-3.correct-answer,
+.answer-option-3-4.correct-answer,
+.answer-option-4-1.correct-answer,
+.answer-option-4-2.correct-answer,
+.answer-option-4-3.correct-answer,
+.answer-option-4-4.correct-answer,
+.answer-option-5-1.correct-answer,
+.answer-option-5-2.correct-answer,
+.answer-option-5-3.correct-answer,
+.answer-option-5-4.correct-answer,
+.answer-option-6-1.correct-answer,
+.answer-option-6-2.correct-answer,
+.answer-option-6-3.correct-answer,
+.answer-option-6-4.correct-answer {
+  border-color: #54d3ab !important;
+  background: #54d3ab !important;
+  color: white !important;
 }
 
-/* iPhone landscape mode */
-@media (max-width: 932px) and (orientation: landscape) {
-    [class^="question-box-"] {
-        max-width: 600px;
-        width: 70%;
-        padding: 12px;
-    }
+.submit-button-1,
+.submit-button-2,
+.submit-button-3,
+.submit-button-4,
+.submit-button-5,
+.submit-button-6 {
+  margin: 24px auto 0 !important;
+  padding: 12px 32px !important;
+  background: #1d7fe2 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block;
+}
+
+.submit-button-1:hover,
+.submit-button-2:hover,
+.submit-button-3:hover,
+.submit-button-4:hover,
+.submit-button-5:hover,
+.submit-button-6:hover {
+  background: #1d6fd1 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3);
 } 
 .lecture-objective-box {
     background: #fff;
@@ -1966,6 +1487,7 @@ color:var(--muted);
 }
   
  .results-summary-box {
+   display: none;
     background: #fff;
     border-radius: 12px;
     padding: 32px 40px;
@@ -2490,17 +2012,242 @@ color:var(--muted);
 }
   
   
-/* Move mark counter down for all devices */
+/* Move mark counter up for all devices */
 .mark-counter-1,
 .mark-counter-2,
 .mark-counter-3,
 .mark-counter-4,
 .mark-counter-5,
 .mark-counter-6 {
-    bottom: 11px !important;  /* Changed from 20px to 15px */
+    bottom: 32px !important;  /* Moved up from 11px to 20px */
 }
 
+/* Hide the animated panels */
+.wrap {
+    display: none !important;
+}
+  
+  
+  
+ /* ========================================
+   MAIN CONTAINER LAYOUT
+   ======================================== */
+.main-container {
+  display: flex;
+  height: calc(100vh - 110px);
+  width: 100%;
+  margin-top: 110px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
 
+.content-side {
+  width: 66.666%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #ffffff;
+}
+
+.chat-side {
+  width: 33.333%;
+  height: 100%;
+  background: #ffffff;
+  border-left: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+} 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  /* ========================================
+   SECTION 8: CHAT INTERFACE (RIGHT SIDE)
+   ======================================== */
+.chat-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  background: white;
+  flex-shrink: 0;
+}
+
+.chat-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.chat-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  background: #f9fafb;
+}
+
+.message {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message-user {
+  align-items: flex-end;
+}
+
+.message-assistant {
+  align-items: flex-start;
+}
+
+.message-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.message-bubble {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.message-user .message-bubble {
+  background: var(--accent);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message-assistant .message-bubble {
+  background: white;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-input-area {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  background: white;
+  flex-shrink: 0;
+}
+
+.prompts-btn {
+  width: 100%;
+  padding: 12px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.prompts-btn:hover {
+  background: #f9fafb;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chat-input-wrapper {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  resize: none;
+  min-height: 56px;
+  max-height: 120px;
+  outline: none;
+  transition: border-color 0.2s;
+  line-height: 1.5;
+}
+
+.chat-input:focus {
+  border-color: var(--accent);
+}
+
+.chat-send-btn {
+  padding: 12px 20px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chat-send-btn:hover {
+  background: #1d6fd1;
+}
+
+.chat-send-btn:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   SECTION 9: RESPONSIVE ADJUSTMENTS
+   ======================================== */
+@media (max-width: 1200px) {
+  .main-container {
+    flex-direction: column;
+  }
+  
+  .content-side {
+    width: 100%;
+    height: 60vh;
+  }
+  
+  .chat-side {
+    width: 100%;
+    height: 40vh;
+    position: relative;
+    top: 0; 
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
+} 
+  
+  
+  
+  
+  
+  
 
 </style>
 </head>
@@ -2513,49 +2260,58 @@ color:var(--muted);
 </a>
   
   
-<div class="lecture-objective-box">
+      <div class="lecture-objective-box">
   <div class="objective-content-wrapper">
-    <h1 class="lecture-objective-title">Lowest Common Multiple</h1>
+    <h1 class="lecture-objective-title">Product of Prime Factors</h1>
     <div class="lecture-objective-content">
       <p style="margin: 0 0 8px 0; font-weight: 600; color: #0b2546;">Lecture Objective:</p>
       <ul class="lecture-objective-list">
-        <li>Master the full principles of the Lowest Common Multiple (LCM)</li>
+        <li>Master the full principles of the Product of Prime Factors</li>
       </ul>
     </div>
   </div>
 </div>
-  
-  
-<!-- Video Container -->
-<div class="video-container">
-    <iframe 
-        src="https://www.youtube-nocookie.com/embed/Jx4kl2fVQ0U" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-    </iframe>
-</div>
+
   
   
   
 
-<!-- ===== PROGRESS BAR AT TOP ===== -->
-<div class="sticky-progress-bar">
-<a href="https://gmmmaths.mykajabi.com/lectures" class="video-lectures-link video-lectures-container">
-    <span class="video-lectures-arrow"></span>
-    <span class="lectures-text">Lectures</span>
-</a>
-
-    <div class="quiz-progress-container">
-        <div class="quiz-progress-segments" id="quiz-progress-segments">
-            <!-- Progress segments will be generated by JS -->
-        </div>
-        <div class="cherry-petal-overlay" id="cherry-petal-overlay">
-            <!-- Petals will be generated by JS -->
-        </div>
+<!-- ========================================
+     HEADER BAR 1: PROGRESS BAR
+     ======================================== -->
+<div class="header-bar-1">
+  <a href="#" class="lectures-back-btn">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    <span>Lectures</span>
+  </a>
+  
+  <div class="quiz-progress-container">
+    <div class="quiz-progress-segments" id="progress-segments">
     </div>
+  </div>
+  
+  <button class="formula-sheet-btn" id="formulaSheetBtn">
+    Formula Sheet
+  </button>
 </div>
-<!-- ===== END PROGRESS BAR ===== -->
+
+<!-- ========================================
+     HEADER BAR 2: FORMAT TOGGLE
+     ======================================== -->
+<div class="header-bar-2">
+  <div class="format-toggle">
+    <button class="format-btn active" id="multipleChoiceBtn" onclick="switchFormat('multiple-choice')">
+      Multiple Choice
+    </button>
+    <div class="format-divider"></div>
+    <button class="format-btn" id="examFormatBtn" onclick="switchFormat('exam')">
+      Exam Format
+    </button>
+  </div>
+</div>
 
 <div class="wrap">
   <!-- LEFT: SVG + selectors -->
@@ -2682,6 +2438,31 @@ color:var(--muted);
   </div>
 </div>
   </div> <!-- End of .wrap -->
+  
+  
+  
+ <!-- ========================================
+     MAIN CONTAINER: SPLIT LAYOUT
+     ======================================== -->
+<div class="main-container">
+  
+  <!-- LEFT SIDE: CONTENT (2/3) -->
+  <div class="content-side" id="contentSide">
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 <!-- ===================================
      PRACTICE QUESTIONS SECTION BELOW
@@ -2697,108 +2478,139 @@ color:var(--muted);
   
   
 <!-- Question 1 -->
-<div class="question-box-1" id="question-box-1">
+<div class="question-box-1" id="question-box-1" onclick="setCurrentQuestion(1)">
     <div class="question-number-label-1">Q1 of 6</div>
     <div class="mark-counter-1" id="mark-counter-1">0/1</div>
-    <div style="height: 15px;"></div>
     <div class="question-title-1">
-        What is a multiple?
+        What is the Lowest Common Multiple (LCM)?
     </div>
     <div class="answer-container-1">
-        <button class="answer-option-1-1" onclick="toggleSingleAnswer1('option1', this)">A number that divides the given number exactly (i.e. a factor).</button>
-        <button class="answer-option-1-2" onclick="toggleSingleAnswer1('option2', this)">A number you get when you multiply a number by 1, 2, 3, and so on.</button>
-        <button class="answer-option-1-3" onclick="toggleSingleAnswer1('option3', this)">The total you get when you add the digits of the number.</button>
+        <button class="answer-option-1-1" onclick="toggleSingleAnswer1('option1', this)">The smallest number that is a multiple of two or more numbers</button>
+        <button class="answer-option-1-2" onclick="toggleSingleAnswer1('option2', this)">The largest number that is a multiple of two or more numbers</button>
+        <button class="answer-option-1-3" onclick="toggleSingleAnswer1('option3', this)">Any number that appears in both multiple lists</button>
+        <button class="answer-option-1-4" onclick="toggleSingleAnswer1('option4', this)">The smallest number that divides exactly into two or more numbers</button>
     </div>
     <button class="submit-button-1" id="submit-button-1" onclick="submitAnswer1()">Submit</button>
 </div>
 
 <!-- Question 2 -->
-<div class="question-box-2" id="question-box-2">
+<div class="question-box-2" id="question-box-2" onclick="setCurrentQuestion(2)">
     <div class="question-number-label-2">Q2 of 6</div>
     <div class="mark-counter-2" id="mark-counter-2">0/1</div>
     <div style="height: 15px;"></div>
     <div class="question-title-2">
-        Give 120 as a Product of its Prime Factors
+        Find the LCM of 4 and 6
     </div>
     <div class="answer-container-2">
-        <button class="answer-option-2-1" onclick="toggleSingleAnswer2('option1', this)">2 × 3 × 5</button>
-        <button class="answer-option-2-2" onclick="toggleSingleAnswer2('option2', this)">2³ × 3 × 5</button>
-        <button class="answer-option-2-3" onclick="toggleSingleAnswer2('option3', this)">2² × 3² × 5</button>
-        <button class="answer-option-2-4" onclick="toggleSingleAnswer2('option4', this)">2³ × 15</button>
+        <button class="answer-option-2-1" onclick="toggleSingleAnswer2('option1', this)">8</button>
+        <button class="answer-option-2-2" onclick="toggleSingleAnswer2('option2', this)">12</button>
+        <button class="answer-option-2-3" onclick="toggleSingleAnswer2('option3', this)">18</button>
+        <button class="answer-option-2-4" onclick="toggleSingleAnswer2('option4', this)">24</button>
     </div>
     <button class="submit-button-2" id="submit-button-2" onclick="submitAnswer2()">Submit</button>
 </div>
 
 <!-- Question 3 -->
-<div class="question-box-3" id="question-box-3">
+<div class="question-box-3" id="question-box-3" onclick="setCurrentQuestion(3)">
     <div class="question-number-label-3">Q3 of 6</div>
     <div class="mark-counter-3" id="mark-counter-3">0/1</div>
     <div style="height: 15px;"></div>
     <div class="question-title-3">
-        Give 36 as a Product of its Prime Factors
+        Find the LCM of 6 and 8
     </div>
     <div class="answer-container-3">
-        <button class="answer-option-3-1" onclick="toggleSingleAnswer3('option1', this)">2 × 3²</button>
-        <button class="answer-option-3-2" onclick="toggleSingleAnswer3('option2', this)">2² × 3²</button>
-        <button class="answer-option-3-3" onclick="toggleSingleAnswer3('option3', this)">4 × 9</button>
-        <button class="answer-option-3-4" onclick="toggleSingleAnswer3('option4', this)">2³ × 3</button>
+        <button class="answer-option-3-1" onclick="toggleSingleAnswer3('option1', this)">16</button>
+        <button class="answer-option-3-2" onclick="toggleSingleAnswer3('option2', this)">18</button>
+        <button class="answer-option-3-3" onclick="toggleSingleAnswer3('option3', this)">24</button>
+        <button class="answer-option-3-4" onclick="toggleSingleAnswer3('option4', this)">48</button>
     </div>
     <button class="submit-button-3" id="submit-button-3" onclick="submitAnswer3()">Submit</button>
 </div>
 
 <!-- Question 4 -->
-<div class="question-box-4" id="question-box-4">
+<div class="question-box-4" id="question-box-4" onclick="setCurrentQuestion(4)">
     <div class="question-number-label-4">Q4 of 6</div>
     <div class="mark-counter-4" id="mark-counter-4">0/1</div>
     <div style="height: 15px;"></div>
     <div class="question-title-4">
-        Give 84 as a Product of its Prime Factors<br><br>
-        Give your answer in index form
+        Find the LCM of 12 and 15
     </div>
     <div class="answer-container-4">
-        <button class="answer-option-4-1" onclick="toggleSingleAnswer4('option1', this)">2 × 3 × 7</button>
-        <button class="answer-option-4-2" onclick="toggleSingleAnswer4('option2', this)">2² × 3 × 7</button>
-        <button class="answer-option-4-3" onclick="toggleSingleAnswer4('option3', this)">2² × 21</button>
-        <button class="answer-option-4-4" onclick="toggleSingleAnswer4('option4', this)">2³ × 3 × 7</button>
+        <button class="answer-option-4-1" onclick="toggleSingleAnswer4('option1', this)">30</button>
+        <button class="answer-option-4-2" onclick="toggleSingleAnswer4('option2', this)">45</button>
+        <button class="answer-option-4-3" onclick="toggleSingleAnswer4('option3', this)">60</button>
+        <button class="answer-option-4-4" onclick="toggleSingleAnswer4('option4', this)">180</button>
     </div>
     <button class="submit-button-4" id="submit-button-4" onclick="submitAnswer4()">Submit</button>
 </div>
 
 <!-- Question 5 -->
-<div class="question-box-5" id="question-box-5">
+<div class="question-box-5" id="question-box-5" onclick="setCurrentQuestion(5)">
     <div class="question-number-label-5">Q5 of 6</div>
     <div class="mark-counter-5" id="mark-counter-5">0/1</div>
     <div style="height: 15px;"></div>
     <div class="question-title-5">
-        Find the LCM of 8 and 12.
+        Find the LCM of 18 and 24
     </div>
     <div class="answer-container-5">
-        <button class="answer-option-5-1" onclick="toggleSingleAnswer5('option1', this)">36</button>
-        <button class="answer-option-5-2" onclick="toggleSingleAnswer5('option2', this)">24</button>
-        <button class="answer-option-5-3" onclick="toggleSingleAnswer5('option3', this)">12</button>
+        <button class="answer-option-5-1" onclick="toggleSingleAnswer5('option1', this)">48</button>
+        <button class="answer-option-5-2" onclick="toggleSingleAnswer5('option2', this)">72</button>
+        <button class="answer-option-5-3" onclick="toggleSingleAnswer5('option3', this)">96</button>
+        <button class="answer-option-5-4" onclick="toggleSingleAnswer5('option4', this)">144</button>
     </div>
     <button class="submit-button-5" id="submit-button-5" onclick="submitAnswer5()">Submit</button>
 </div>
 
 <!-- Question 6 -->
-<div class="question-box-6" id="question-box-6">
+<div class="question-box-6" id="question-box-6" onclick="setCurrentQuestion(6)">
     <div class="question-number-label-6">Q6 of 6</div>
     <div class="mark-counter-6" id="mark-counter-6">0/1</div>
     <div style="height: 15px;"></div>
     <div class="question-title-6">
-        Give 405 as a Product of its Prime Factors<br><br>
-        Give your answer in index form
+        Find the LCM of 20 and 30
     </div>
     <div class="answer-container-6">
-        <button class="answer-option-6-1" onclick="toggleSingleAnswer6('option1', this)">3⁴ × 5</button>
-        <button class="answer-option-6-2" onclick="toggleSingleAnswer6('option2', this)">3³ × 5</button>
-        <button class="answer-option-6-3" onclick="toggleSingleAnswer6('option3', this)">3⁴ × 5²</button>
-        <button class="answer-option-6-4" onclick="toggleSingleAnswer6('option4', this)">81 × 5</button>
+        <button class="answer-option-6-1" onclick="toggleSingleAnswer6('option1', this)">30</button>
+        <button class="answer-option-6-2" onclick="toggleSingleAnswer6('option2', this)">60</button>
+        <button class="answer-option-6-3" onclick="toggleSingleAnswer6('option3', this)">90</button>
+        <button class="answer-option-6-4" onclick="toggleSingleAnswer6('option4', this)">120</button>
     </div>
     <button class="submit-button-6" id="submit-button-6" onclick="submitAnswer6()">Submit</button>
 </div>
   
-  
+  </div> <!-- Close content-side -->
+
+  <!-- RIGHT SIDE: CHAT (1/3) -->
+  <div class="chat-side">
+    
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="message message-assistant">
+        <div class="message-label">AI Assistant</div>
+        <div class="message-bubble">
+          Hi! I'm here to help you understand the Product of Prime Factors. Feel free to ask me any questions!
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <button class="prompts-btn" id="promptsBtn">
+        Prompts
+      </button>
+      
+      <div class="chat-input-wrapper">
+        <textarea 
+          id="chatInput" 
+          class="chat-input" 
+          placeholder="Ask a question..."
+          rows="2"
+        ></textarea>
+        <button id="sendBtn" class="chat-send-btn">Execute</button>
+      </div>
+    </div>
+  </div> <!-- Close chat-side -->
+
+</div> <!-- Close main-container -->
   
   
   
@@ -2941,6 +2753,7 @@ function resetAnswerRecord(questionNumber) {
         resultsTracker.unanswered++;
         questionStatuses[questionNumber] = 'unanswered';
         updateResultsSummary();
+saveLectureProgress();
     }
 }
 
@@ -2951,19 +2764,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     
     
+    
 const DATA = {
   1: {
-    label: 'LCM Type 1',
+    label: 'HCF using factor lists',
     steps: [
       {
-        text: 'Find the Lowest Common Multiple (LCM) of 12 and 18',
+        text: 'Find the Highest Common Factor (HCF) of 18 and 24',
         sub: '',
         svgAction: 'showQuestion',
         imageUrl: 'https://i.postimg.cc/yYZ1wnrn/Find-the-hcf.jpg'
       },
       {
-        text: 'List the multiples of each number',
-        sub: 'Write down the first several multiples of each number.',
+        text: 'List the factors of each number',
+        sub: 'Write down all the numbers that go into it exactly — without any remainders left.',
         svgAction: 'showFactorLists',
         imageUrl: 'https://i.postimg.cc/x8TnCJMN/21.jpg'
       },
@@ -2975,17 +2789,17 @@ const DATA = {
       },
       {
         text: 'Circle the numbers they both have',
-        sub: 'Look at both lists and circle the numbers that appear in both lists.\n\nThese are your common multiples.',
+        sub: 'Look at both lists and circle the numbers that appear in both lists.\n\nThese are your common factors.',
         svgAction: 'highlightCommonFactors',
         imageUrl: 'https://i.postimg.cc/Bnf7BW7N/23.jpg'
       },
       {
-        text: 'Pick the smallest number',
-        sub: 'The smallest number that appears in both lists is your Lowest Common Multiple.',
+        text: 'Pick the biggest number',
+        sub: 'The biggest number that appears in both lists is your Highest Common Factor — that\'s the one we want.',
         svgAction: 'showHCF',
         imageUrl: 'https://i.postimg.cc/RZvyz57k/24.jpg',
         endSlide: {
-          text: 'The LCM of 12 and 18 is 36',
+          text: 'The HCF of 18 and 24 is 6',
           sub: ''
         }
       }
@@ -2993,17 +2807,17 @@ const DATA = {
   },
 
   2: {
-    label: 'LCM Type 2',
+    label: 'Solve linear eqn',
     steps: [
       {
-        text: 'Find the Lowest Common Multiple (LCM) of 15 and 20',
+        text: 'Its essentially asking you to find the Highest Common Factor (HCF) of 84 and 108',
         sub: '',
         svgAction: 'showQuestion2',
         imageUrl: 'https://i.postimg.cc/Ssxpbg3S/25.jpg'
       },
       {
-        text: 'List the multiples of each number',
-        sub: 'Write down the first several multiples of each number.',
+        text: 'List the factors of each number',
+        sub: 'Write down all the numbers that go into it exactly — without any remainders left.',
         svgAction: 'isolate',
         imageUrl: 'https://i.postimg.cc/jSTxk4x5/26.jpg'
       },
@@ -3015,97 +2829,17 @@ const DATA = {
       },
       {
         text: 'Circle the numbers they both have',
-        sub: 'Look at both lists and circle the numbers that appear in both lists. These are your common multiples.',
+        sub: 'Look at both lists and circle the numbers that appear in both lists. These are your common factors.',
         svgAction: 'verifyAnswer',
         imageUrl: 'https://i.postimg.cc/bwPyF9ys/28.jpg'
       },
       {
-        text: 'Pick the smallest number',
-        sub: 'The smallest number that appears in both lists is your Lowest Common Multiple.',
+        text: 'Pick the biggest number',
+        sub: 'The biggest number that appears in both lists is your Highest Common Factor - This is the one we want.',
         svgAction: 'showFinalAnswer',
         imageUrl: 'https://i.postimg.cc/4xGfFQfY/29.jpg',
         endSlide: {
-          text: 'The LCM of 15 and 20 is 60',
-          sub: 'Always check your work!'
-        }
-      }
-    ]
-  },
-
-  3: {
-    label: 'LCM Type 3',
-    steps: [
-      {
-        text: 'Find the Lowest Common Multiple (LCM) of 8 and 12',
-        sub: '',
-        svgAction: 'showQuestion',
-        imageUrl: 'https://i.postimg.cc/yYZ1wnrn/Find-the-hcf.jpg'
-      },
-      {
-        text: 'List the multiples of each number',
-        sub: 'Write down the first several multiples of each number.',
-        svgAction: 'showFactorLists',
-        imageUrl: 'https://i.postimg.cc/x8TnCJMN/21.jpg'
-      },
-      {
-        text: 'Then do the same for your second number',
-        sub: '',
-        svgAction: 'showSecondNumber',
-        imageUrl: 'https://i.postimg.cc/SsxvYW1y/22.jpg'
-      },
-      {
-        text: 'Circle the numbers they both have',
-        sub: 'Look at both lists and circle the numbers that appear in both lists.\n\nThese are your common multiples.',
-        svgAction: 'highlightCommonFactors',
-        imageUrl: 'https://i.postimg.cc/Bnf7BW7N/23.jpg'
-      },
-      {
-        text: 'Pick the smallest number',
-        sub: 'The smallest number that appears in both lists is your Lowest Common Multiple.',
-        svgAction: 'showHCF',
-        imageUrl: 'https://i.postimg.cc/RZvyz57k/24.jpg',
-        endSlide: {
-          text: 'The LCM of 8 and 12 is 24',
-          sub: ''
-        }
-      }
-    ]
-  },
-
-  4: {
-    label: 'LCM Type 4',
-    steps: [
-      {
-        text: 'Find the Lowest Common Multiple (LCM) of 6 and 9',
-        sub: '',
-        svgAction: 'showQuestion2',
-        imageUrl: 'https://i.postimg.cc/Ssxpbg3S/25.jpg'
-      },
-      {
-        text: 'List the multiples of each number',
-        sub: 'Write down the first several multiples of each number.',
-        svgAction: 'isolate',
-        imageUrl: 'https://i.postimg.cc/jSTxk4x5/26.jpg'
-      },
-      {
-        text: 'Then do the same for your second number',
-        sub: '',
-        svgAction: 'finalOk',
-        imageUrl: 'https://i.postimg.cc/Bn3SwBSb/27.jpg'
-      },
-      {
-        text: 'Circle the numbers they both have',
-        sub: 'Look at both lists and circle the numbers that appear in both lists. These are your common multiples.',
-        svgAction: 'verifyAnswer',
-        imageUrl: 'https://i.postimg.cc/bwPyF9ys/28.jpg'
-      },
-      {
-        text: 'Pick the smallest number',
-        sub: 'The smallest number that appears in both lists is your Lowest Common Multiple.',
-        svgAction: 'showFinalAnswer',
-        imageUrl: 'https://i.postimg.cc/4xGfFQfY/29.jpg',
-        endSlide: {
-          text: 'The LCM of 6 and 9 is 18',
+          text: 'The HCF of 84 and 108 is 12',
           sub: 'Always check your work!'
         }
       }
@@ -3609,7 +3343,8 @@ if (document.readyState === 'loading'){
 
 <!-- JAVASCRIPT - Question 1 -->
 
-// ============= QUESTION 1 =============
+// Question 1 Functions
+// Ensure the mark counter shows "0/1" initially
 document.addEventListener('DOMContentLoaded', function() {
   const markCounter = document.getElementById('mark-counter-1');
   if (markCounter) {
@@ -3617,56 +3352,76 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// Question 1 specific functions with unique names to avoid conflicts
 function toggleSingleAnswer1(answer, button) {
   const questionBox = document.getElementById('question-box-1');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-1"]');
 
+  // First, deselect all the answer buttons
   allButtons.forEach(btn => {
     btn.classList.remove('selected');
   });
 
+  // Now, toggle the 'selected' class on the button that was just clicked
   button.classList.toggle('selected');
 }
 
+// Helper functions for setting styles directly
 function setCorrectStyles1(markCounter) {
+  // Apply background and text color directly
   markCounter.style.backgroundColor = '#54d3ab';
   markCounter.style.color = 'white';
   markCounter.style.borderColor = '#54d3ab';
 }
 
 function setIncorrectStyles1(markCounter) {
+  // Apply background and text color directly
   markCounter.style.backgroundColor = '#e16280';
   markCounter.style.color = 'white';
   markCounter.style.borderColor = '#e16280';
 }
 
 function resetStyles1(markCounter) {
+  // Clear all styles and set defaults
   markCounter.style.backgroundColor = 'transparent';
   markCounter.style.color = '#555';
   markCounter.style.borderColor = '#1d7fe2';
 }
 
 function submitAnswer1() {
-  const correctAnswerButton = document.querySelector('.answer-option-1-2');
+  // The correct answer - OPTION 1
+  const correctAnswer = 'The smallest number that is a multiple of two or more numbers';
   
   const questionBox = document.getElementById('question-box-1');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-1"].selected');
   const markCounter = document.getElementById('mark-counter-1');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-1"]');
 
-  const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
+  // Check if correct button was selected
+  const gotItRight = Array.from(selectedButtons).some(btn => btn.textContent.trim() === correctAnswer);
   
+  // Set score: 1 if correct, 0 if not
   const yourScore = gotItRight ? 1 : 0;
+
+  // NEW: Determine result type and record answer
   const resultType = yourScore === 1 ? 'correct' : 'incorrect';
   recordAnswer(1, resultType, yourScore, 1);
   
+  // FORCE the mark counter text to "1/1" if correct, "0/1" if incorrect
   markCounter.innerHTML = `${yourScore}/1`;
   
+  // Reset classes
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
 
-  correctAnswerButton.classList.add('correct-answer');
+  // Highlight correct answer
+  allButtons.forEach(button => {
+    if (button.textContent.trim() === correctAnswer) {
+      button.classList.add('correct-answer');
+    }
+  });
 
+  // Apply styling based on score
   if (yourScore === 1) {
     setCorrectStyles1(markCounter);
     markCounter.classList.add('correct');
@@ -3677,15 +3432,18 @@ function submitAnswer1() {
     questionBox.classList.add('incorrect-selection');
   }
 
+  // Update progress bar
   if (typeof updateProgressSegment === 'function') {
     updateProgressSegment(1);
   }
 
+  // Disable buttons after submission
   allButtons.forEach(button => {
     button.disabled = true;
     button.style.cursor = 'not-allowed';
   });
 
+  // Change submit button to reset
   const submitBtn = document.getElementById('submit-button-1');
   submitBtn.innerText = 'Reset';
   submitBtn.disabled = false;
@@ -3696,26 +3454,29 @@ function submitAnswer1() {
 }
 
 function resetQuestion1() {
-  resetAnswerRecord(1);
   const questionBox = document.getElementById('question-box-1');
   const buttons = questionBox.querySelectorAll('[class^="answer-option-1"]');
   const markCounter = document.getElementById('mark-counter-1');
   const submitBtn = document.getElementById('submit-button-1');
 
+  // Reset progress bar
   if (typeof resetProgressSegment === 'function') {
     resetProgressSegment(1);
   }
 
+  // Reset all the buttons
   buttons.forEach(button => {
     button.classList.remove('selected', 'correct-answer');
     button.disabled = false;
     button.style.cursor = 'pointer';
   });
 
+  // Reset the mark counter to ALWAYS show 0/1
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   resetStyles1(markCounter);
 
+  // Reset the submit button
   submitBtn.innerText = 'Submit';
   submitBtn.disabled = false;
   submitBtn.style.cursor = 'pointer';
@@ -3723,10 +3484,26 @@ function resetQuestion1() {
     submitAnswer1();
   };
 
+  // Reset the question box classes
   questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
+  
+  // Reset answer record
+  resetAnswerRecord(1);
 }
 
-// ============= QUESTION 2 =============
+
+
+
+
+
+
+
+
+
+
+
+   // Question 2 Functions
+// Ensure the mark counter shows "0/1" initially
 document.addEventListener('DOMContentLoaded', function() {
   const markCounter = document.getElementById('mark-counter-2');
   if (markCounter) {
@@ -3734,55 +3511,69 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// Question 2 specific functions with unique names to avoid conflicts
 function toggleSingleAnswer2(answer, button) {
   const questionBox = document.getElementById('question-box-2');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-2"]');
 
+  // First, deselect all the answer buttons
   allButtons.forEach(btn => {
     btn.classList.remove('selected');
   });
 
+  // Now, toggle the 'selected' class on the button that was just clicked
   button.classList.toggle('selected');
 }
 
+// Helper functions for setting styles directly
 function setCorrectStyles2(markCounter) {
+  // Apply background and text color directly
   markCounter.style.backgroundColor = '#54d3ab';
   markCounter.style.color = 'white';
   markCounter.style.borderColor = '#54d3ab';
 }
 
 function setIncorrectStyles2(markCounter) {
+  // Apply background and text color directly
   markCounter.style.backgroundColor = '#e16280';
   markCounter.style.color = 'white';
   markCounter.style.borderColor = '#e16280';
 }
 
 function resetStyles2(markCounter) {
+  // Clear all styles and set defaults
   markCounter.style.backgroundColor = 'transparent';
   markCounter.style.color = '#555';
   markCounter.style.borderColor = '#1d7fe2';
 }
 
 function submitAnswer2() {
+  // The SECOND button is the correct answer (12)
   const correctAnswerButton = document.querySelector('.answer-option-2-2');
   const questionBox = document.getElementById('question-box-2');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-2"].selected');
   const markCounter = document.getElementById('mark-counter-2');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-2"]');
 
+  // Check if correct button was selected
   const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
   
+  // Set score: 1 if correct, 0 if not
   const yourScore = gotItRight ? 1 : 0;
   const resultType = yourScore === 1 ? 'correct' : 'incorrect';
   recordAnswer(2, resultType, yourScore, 1);
   
+  // FORCE the mark counter text to "1/1" if correct, "0/1" if incorrect
   markCounter.innerHTML = `${yourScore}/1`;
   
+  // Reset classes
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
 
+  // Highlight correct answer
   correctAnswerButton.classList.add('correct-answer');
 
+  // Apply styling based on score
   if (yourScore === 1) {
     setCorrectStyles2(markCounter);
     markCounter.classList.add('correct');
@@ -3793,15 +3584,18 @@ function submitAnswer2() {
     questionBox.classList.add('incorrect-selection');
   }
 
+  // Update progress bar
   if (typeof updateProgressSegment === 'function') {
     updateProgressSegment(2);
   }
 
+  // Disable buttons after submission
   allButtons.forEach(button => {
     button.disabled = true;
     button.style.cursor = 'not-allowed';
   });
 
+  // Change submit button to reset
   const submitBtn = document.getElementById('submit-button-2');
   submitBtn.innerText = 'Reset';
   submitBtn.disabled = false;
@@ -3812,26 +3606,29 @@ function submitAnswer2() {
 }
 
 function resetQuestion2() {
-  resetAnswerRecord(2); 
   const questionBox = document.getElementById('question-box-2');
   const buttons = questionBox.querySelectorAll('[class^="answer-option-2"]');
   const markCounter = document.getElementById('mark-counter-2');
   const submitBtn = document.getElementById('submit-button-2');
 
+  // Reset progress bar
   if (typeof resetProgressSegment === 'function') {
     resetProgressSegment(2);
   }
 
+  // Reset all the buttons
   buttons.forEach(button => {
     button.classList.remove('selected', 'correct-answer');
     button.disabled = false;
     button.style.cursor = 'pointer';
   });
 
+  // Reset the mark counter to ALWAYS show 0/1
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   resetStyles2(markCounter);
 
+  // Reset the submit button
   submitBtn.innerText = 'Submit';
   submitBtn.disabled = false;
   submitBtn.style.cursor = 'pointer';
@@ -3839,59 +3636,89 @@ function resetQuestion2() {
     submitAnswer2();
   };
 
+  // Reset the question box classes
   questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
+  
+  // Reset answer record
+  resetAnswerRecord(2);
 }
 
-// ============= QUESTION 3 =============
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Question 3 specific functions with unique names to avoid conflicts
 function toggleSingleAnswer3(answer, button) {
   const questionBox = document.getElementById('question-box-3');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-3"]');
 
+  // First, deselect all the answer buttons
   allButtons.forEach(btn => {
     btn.classList.remove('selected');
   });
 
+  // Now, toggle the 'selected' class on the button that was just clicked
   button.classList.toggle('selected');
 }
 
+// Helper functions for setting styles directly
 function setCorrectStyles3(markCounter) {
+  // Apply background and text color directly
   markCounter.style.backgroundColor = '#54d3ab';
   markCounter.style.color = 'white';
   markCounter.style.borderColor = '#54d3ab';
 }
 
 function setIncorrectStyles3(markCounter) {
+  // Apply background and text color directly
   markCounter.style.backgroundColor = '#e16280';
   markCounter.style.color = 'white';
   markCounter.style.borderColor = '#e16280';
 }
 
 function resetStyles3(markCounter) {
+  // Clear all styles and set defaults
   markCounter.style.backgroundColor = 'transparent';
   markCounter.style.color = '#555';
   markCounter.style.borderColor = '#1d7fe2';
 }
 
 function submitAnswer3() {
-  const correctAnswerButton = document.querySelector('.answer-option-3-2');
+  // The THIRD button is the correct answer (24)
+  const correctAnswerButton = document.querySelector('.answer-option-3-3');
   const questionBox = document.getElementById('question-box-3');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-3"].selected');
   const markCounter = document.getElementById('mark-counter-3');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-3"]');
 
+  // Check if correct button was selected
   const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
   
+  // Set score: 1 if correct, 0 if not
   const yourScore = gotItRight ? 1 : 0;
   const resultType = yourScore === 1 ? 'correct' : 'incorrect';
   recordAnswer(3, resultType, yourScore, 1);
   
+  // FORCE the mark counter text to "1/1" if correct, "0/1" if incorrect
   markCounter.innerHTML = `${yourScore}/1`;
   
+  // Reset classes
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
 
+  // Highlight correct answer
   correctAnswerButton.classList.add('correct-answer');
 
+  // Apply styling based on score
   if (yourScore === 1) {
     setCorrectStyles3(markCounter);
     markCounter.classList.add('correct');
@@ -3902,15 +3729,18 @@ function submitAnswer3() {
     questionBox.classList.add('incorrect-selection');
   }
 
+  // Update progress bar
   if (typeof updateProgressSegment === 'function') {
     updateProgressSegment(3);
   }
 
+  // Disable buttons after submission
   allButtons.forEach(button => {
     button.disabled = true;
     button.style.cursor = 'not-allowed';
   });
 
+  // Change submit button to reset
   const submitBtn = document.getElementById('submit-button-3');
   submitBtn.innerText = 'Reset';
   submitBtn.disabled = false;
@@ -3921,26 +3751,29 @@ function submitAnswer3() {
 }
 
 function resetQuestion3() {
-  resetAnswerRecord(3);
   const questionBox = document.getElementById('question-box-3');
   const buttons = questionBox.querySelectorAll('[class^="answer-option-3"]');
   const markCounter = document.getElementById('mark-counter-3');
   const submitBtn = document.getElementById('submit-button-3');
 
+  // Reset progress bar
   if (typeof resetProgressSegment === 'function') {
     resetProgressSegment(3);
   }
 
+  // Reset all the buttons
   buttons.forEach(button => {
     button.classList.remove('selected', 'correct-answer');
     button.disabled = false;
     button.style.cursor = 'pointer';
   });
 
+  // Reset the mark counter to ALWAYS show 0/1
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   resetStyles3(markCounter);
 
+  // Reset the submit button
   submitBtn.innerText = 'Submit';
   submitBtn.disabled = false;
   submitBtn.style.cursor = 'pointer';
@@ -3948,21 +3781,34 @@ function resetQuestion3() {
     submitAnswer3();
   };
 
+  // Reset the question box classes
   questionBox.classList.remove('correct', 'incorrect', 'incorrect-selection', 'partial-correct');
+  
+  // Reset answer record
+  resetAnswerRecord(3);
 }
 
-// ============= QUESTION 4 =============
+
+
+
+
+
+
+// Question 4 specific functions with same functionality
 function toggleSingleAnswer4(answer, button) {
   const questionBox = document.getElementById('question-box-4');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-4"]');
 
+  // First, deselect all the answer buttons
   allButtons.forEach(btn => {
     btn.classList.remove('selected');
   });
 
+  // Now, toggle the 'selected' class on the button that was just clicked
   button.classList.toggle('selected');
 }
 
+// Helper functions for setting styles directly
 function setCorrectStyles4(markCounter) {
   markCounter.style.backgroundColor = '#54d3ab';
   markCounter.style.color = 'white';
@@ -3982,23 +3828,28 @@ function resetStyles4(markCounter) {
 }
 
 function submitAnswer4() {
-  const correctAnswerButton = document.querySelector('.answer-option-4-2');
+  // The THIRD button is the correct answer (60)
+  const correctAnswerButton = document.querySelector('.answer-option-4-3');
   const questionBox = document.getElementById('question-box-4');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-4"].selected');
   const markCounter = document.getElementById('mark-counter-4');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-4"]');
 
+  // Check if correct button was selected
   const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
   const yourScore = gotItRight ? 1 : 0;
   const resultType = yourScore === 1 ? 'correct' : 'incorrect';
   recordAnswer(4, resultType, yourScore, 1);
   markCounter.innerHTML = `${yourScore}/1`;
 
+  // Reset classes
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
 
+  // Highlight correct answer
   correctAnswerButton.classList.add('correct-answer');
 
+  // Apply styling based on score
   if (yourScore === 1) {
     setCorrectStyles4(markCounter);
     markCounter.classList.add('correct');
@@ -4009,15 +3860,18 @@ function submitAnswer4() {
     questionBox.classList.add('incorrect-selection');
   }
 
+  // Update progress bar
   if (typeof updateProgressSegment === 'function') {
     updateProgressSegment(4);
   }
 
+  // Disable buttons after submission
   allButtons.forEach(button => {
     button.disabled = true;
     button.style.cursor = 'not-allowed';
   });
 
+  // Change submit button to reset
   const submitBtn = document.getElementById('submit-button-4');
   submitBtn.innerText = 'Reset';
   submitBtn.disabled = false;
@@ -4028,35 +3882,52 @@ function submitAnswer4() {
 }
 
 function resetQuestion4() {
-  resetAnswerRecord(4);
   const questionBox = document.getElementById('question-box-4');
   const buttons = questionBox.querySelectorAll('[class^="answer-option-4"]');
   const markCounter = document.getElementById('mark-counter-4');
   const submitBtn = document.getElementById('submit-button-4');
 
+  // Reset progress bar
   if (typeof resetProgressSegment === 'function') {
     resetProgressSegment(4);
   }
 
+  // Reset all the buttons
   buttons.forEach(button => {
     button.classList.remove('selected', 'correct-answer');
     button.disabled = false;
     button.style.cursor = 'pointer';
   });
 
+  // Reset the mark counter
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect');
   resetStyles4(markCounter);
 
+  // Reset the submit button
   submitBtn.innerText = 'Submit';
   submitBtn.onclick = function() {
     submitAnswer4();
   };
 
+  // Reset the question box classes
   questionBox.classList.remove('correct', 'incorrect-selection');
+  
+  // Reset answer record
+  resetAnswerRecord(4);
 }
 
-// ============= QUESTION 5 =============
+
+
+    
+    
+    
+    
+    
+
+
+
+// Ensure the mark counter shows "0/1" initially
 document.addEventListener('DOMContentLoaded', function() {
   const markCounter = document.getElementById('mark-counter-5');
   if (markCounter) {
@@ -4064,17 +3935,21 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// Question 5 specific functions
 function toggleSingleAnswer5(answer, button) {
   const questionBox = document.getElementById('question-box-5');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-5"]');
   
+  // Deselect all buttons first (single-select behavior)
   allButtons.forEach(btn => {
     btn.classList.remove('selected');
   });
   
+  // Select the clicked button
   button.classList.add('selected');
 }
 
+// Helper functions for setting styles directly
 function setCorrectStyles5(markCounter) {
   markCounter.style.backgroundColor = '#54d3ab';
   markCounter.style.color = 'white';
@@ -4094,26 +3969,44 @@ function resetStyles5(markCounter) {
 }
 
 function submitAnswer5() {
-  const correctAnswerButton = document.querySelector('.answer-option-5-2');
+  // The correct answer (SECOND option - 72)
+  const correctAnswer = '72';
   
   const questionBox = document.getElementById('question-box-5');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-5"].selected');
   const markCounter = document.getElementById('mark-counter-5');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-5"]');
 
-  const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
+  // Get selected value
+  let selectedValue = '';
+  if (selectedButtons.length > 0) {
+    selectedValue = selectedButtons[0].textContent.trim();
+  }
   
+  // Check if the answer is correct
+  const gotItRight = selectedValue === correctAnswer;
+  
+  // Set score: 1 if correct, 0 if not
   const yourScore = gotItRight ? 1 : 0;
   const resultType = yourScore === 1 ? 'correct' : 'incorrect';
   recordAnswer(5, resultType, yourScore, 1);
   
+  // Update the mark counter text (1/1 or 0/1)
   markCounter.innerHTML = `${yourScore}/1`;
   
+  // Reset classes
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
 
-  correctAnswerButton.classList.add('correct-answer');
+  // Highlight correct answer
+  allButtons.forEach(button => {
+    const value = button.textContent.trim();
+    if (value === correctAnswer) {
+      button.classList.add('correct-answer');
+    }
+  });
 
+  // Apply styling based on score
   if (yourScore === 1) {
     setCorrectStyles5(markCounter);
     markCounter.classList.add('correct');
@@ -4124,15 +4017,18 @@ function submitAnswer5() {
     questionBox.classList.add('incorrect-selection');
   }
 
+  // Update progress bar
   if (typeof updateProgressSegment === 'function') {
     updateProgressSegment(5);
   }
 
+  // Disable buttons after submission
   allButtons.forEach(button => {
     button.disabled = true;
     button.style.cursor = 'not-allowed';
   });
 
+  // Change submit button to reset
   const submitBtn = document.getElementById('submit-button-5');
   submitBtn.innerText = 'Reset';
   submitBtn.disabled = false;
@@ -4143,26 +4039,29 @@ function submitAnswer5() {
 }
 
 function resetQuestion5() {
-  resetAnswerRecord(5);
   const questionBox = document.getElementById('question-box-5');
   const buttons = questionBox.querySelectorAll('[class^="answer-option-5"]');
   const markCounter = document.getElementById('mark-counter-5');
   const submitBtn = document.getElementById('submit-button-5');
 
+  // Reset progress bar
   if (typeof resetProgressSegment === 'function') {
     resetProgressSegment(5);
   }
 
+  // Reset all the buttons
   buttons.forEach(button => {
     button.classList.remove('selected', 'correct-answer');
     button.disabled = false;
     button.style.cursor = 'pointer';
   });
 
+  // Reset the mark counter to ALWAYS show 0/1
   markCounter.innerHTML = '0/1';
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   resetStyles5(markCounter);
 
+  // Reset the submit button
   submitBtn.innerText = 'Submit';
   submitBtn.disabled = false;
   submitBtn.style.cursor = 'pointer';
@@ -4170,21 +4069,42 @@ function resetQuestion5() {
     submitAnswer5();
   };
 
+  // Reset the question box classes
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
+  
+  // Reset answer record
+  resetAnswerRecord(5);
 }
 
-// ============= QUESTION 6 =============
+
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+
+
+// Question 6 Functions
 function toggleSingleAnswer6(answer, button) {
   const questionBox = document.getElementById('question-box-6');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-6"]');
 
+  // First, deselect all the answer buttons
   allButtons.forEach(btn => {
     btn.classList.remove('selected');
   });
 
+  // Now, toggle the 'selected' class on the button that was just clicked
   button.classList.toggle('selected');
 }
 
+// Helper functions for setting styles directly
 function setCorrectStyles6(markCounter) {
   markCounter.style.backgroundColor = '#54d3ab';
   markCounter.style.color = 'white';
@@ -4204,23 +4124,28 @@ function resetStyles6(markCounter) {
 }
 
 function submitAnswer6() {
+  // The correct answer button (second option - 60)
   const correctAnswerButton = document.querySelector('.answer-option-6-2');
   const questionBox = document.getElementById('question-box-6');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-6"].selected');
   const markCounter = document.getElementById('mark-counter-6');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-6"]');
 
+  // Check if correct button was selected
   const gotItRight = Array.from(selectedButtons).includes(correctAnswerButton);
   const yourScore = gotItRight ? 1 : 0;
   const resultType = yourScore === 1 ? 'correct' : 'incorrect';
   recordAnswer(6, resultType, yourScore, 1);
   markCounter.innerHTML = `${yourScore}/1`;
 
+  // Reset classes
   markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
   questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
 
+  // Highlight correct answer
   correctAnswerButton.classList.add('correct-answer');
 
+  // Apply styling based on score
   if (yourScore === 1) {
     setCorrectStyles6(markCounter);
     markCounter.classList.add('correct');
@@ -4231,15 +4156,18 @@ function submitAnswer6() {
     questionBox.classList.add('incorrect-selection');
   }
 
+  // Update progress bar
   if (typeof updateProgressSegment === 'function') {
     updateProgressSegment(6);
   }
 
+  // Disable buttons after submission
   allButtons.forEach(button => {
     button.disabled = true;
     button.style.cursor = 'not-allowed';
   });
 
+  // Change submit button to reset
   const submitBtn = document.getElementById('submit-button-6');
   submitBtn.innerText = 'Reset';
   submitBtn.disabled = false;
@@ -4250,33 +4178,47 @@ function submitAnswer6() {
 }
 
 function resetQuestion6() {
-  resetAnswerRecord(6);
   const questionBox = document.getElementById('question-box-6');
   const buttons = questionBox.querySelectorAll('[class^="answer-option-6"]');
   const markCounter = document.getElementById('mark-counter-6');
   const submitBtn = document.getElementById('submit-button-6');
 
+  // Reset progress bar
   if (typeof resetProgressSegment === 'function') {
     resetProgressSegment(6);
   }
 
+  // Reset all the buttons
   buttons.forEach(button => {
     button.classList.remove('selected', 'correct-answer');
     button.disabled = false;
     button.style.cursor = 'pointer';
   });
 
+  // Reset the mark counter
   markCounter.innerHTML = '0/1';
-markCounter.classList.remove('correct', 'incorrect', 'partial-correct');
-resetStyles6(markCounter);
-submitBtn.innerText = 'Submit';
-submitBtn.disabled = false;
-submitBtn.style.cursor = 'pointer';
-submitBtn.onclick = function() {
-submitAnswer6();
-};
-questionBox.classList.remove('correct', 'incorrect-selection', 'partial-correct');
+  markCounter.classList.remove('correct', 'incorrect');
+  resetStyles6(markCounter);
+
+  // Reset the submit button
+  submitBtn.innerText = 'Submit';
+  submitBtn.onclick = function() {
+    submitAnswer6();
+  };
+
+  // Reset the question box classes
+  questionBox.classList.remove('correct', 'incorrect-selection');
+  
+  // Reset answer record
+  resetAnswerRecord(6);
 }
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -4297,7 +4239,7 @@ const totalQuestions = 6;
 let questionStatuses = {};
 
 function initializeProgressBar() {
-    const container = document.getElementById('quiz-progress-segments');
+    const container = document.getElementById('progress-segments');  // CHANGED THIS LINE
     if (!container) return;
     
     container.innerHTML = '';
@@ -4355,125 +4297,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeProgressBar();
 });
 
-// ========== SUPABASE CONFIGURATION ==========
-const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
-
-const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// ========== LECTURE CONFIGURATION ==========
-const LECTURE_CONFIG = {
-  topicNumber: '1',        // Number topic
-  lectureIndex: '2',       // Lowest Common Multiple (0=Product of Prime, 1=HCF, 2=LCM)
-  lectureName: 'Lowest Common Multiple',
-  totalQuestions: 6
-};
-
-// Track question progress
-let lectureProgress = {
-  questionsCompleted: 0,
-  totalQuestions: LECTURE_CONFIG.totalQuestions
-};
-
-// ========== SAVE PROGRESS TO SUPABASE ==========
-async function saveLectureProgress() {
-  try {
-    const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
-    if (sessionError || !session) {
-      console.log('No active session - progress not saved');
-      return;
-    }
-
-    const userId = session.user.id;
-    const completed = Object.values(questionStatuses).filter(status => status !== 'unanswered').length;
-    const completionPercentage = (completed / LECTURE_CONFIG.totalQuestions) * 100;
-
-    console.log(`Saving progress: ${completed}/${LECTURE_CONFIG.totalQuestions} (${completionPercentage}%)`);
-
-    // Check if progress record exists
-    const { data: existing, error: fetchError } = await sbClient
-      .from('lecture_progress')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('topic_number', LECTURE_CONFIG.topicNumber)
-      .eq('lecture_index', LECTURE_CONFIG.lectureIndex)
-      .single();
-
-    if (fetchError && fetchError.code !== 'PGRST116') {
-      throw fetchError;
-    }
-
-    if (existing) {
-      // Update existing record
-      const { error: updateError } = await sbClient
-        .from('lecture_progress')
-        .update({
-          questions_completed: completed,
-          total_questions: LECTURE_CONFIG.totalQuestions,
-          completion_percentage: completionPercentage,
-          last_accessed: new Date().toISOString()
-        })
-        .eq('user_id', userId)
-        .eq('topic_number', LECTURE_CONFIG.topicNumber)
-        .eq('lecture_index', LECTURE_CONFIG.lectureIndex);
-
-      if (updateError) throw updateError;
-      console.log('✅ Progress updated successfully');
-    } else {
-      // Insert new record
-      const { error: insertError } = await sbClient
-        .from('lecture_progress')
-        .insert([{
-          user_id: userId,
-          topic_number: LECTURE_CONFIG.topicNumber,
-          lecture_index: LECTURE_CONFIG.lectureIndex,
-          lecture_name: LECTURE_CONFIG.lectureName,
-          questions_completed: completed,
-          total_questions: LECTURE_CONFIG.totalQuestions,
-          completion_percentage: completionPercentage
-        }]);
-
-      if (insertError) throw insertError;
-      console.log('✅ Progress saved successfully');
-    }
-  } catch (error) {
-    console.error('❌ Error saving progress:', error);
-  }
-}
-
-// ========== HOOK INTO EXISTING FUNCTIONS ==========
-// Hook into recordAnswer to save progress after each question
-const originalRecordAnswer = window.recordAnswer;
-window.recordAnswer = function(questionNumber, resultType, marksEarned, marksPossible) {
-  // Call original function
-  originalRecordAnswer(questionNumber, resultType, marksEarned, marksPossible);
-  
-  // Save progress to Supabase
-  saveLectureProgress();
-};
-
-// Hook into reset to update progress when questions are reset
-const originalResetAnswerRecord = window.resetAnswerRecord;
-window.resetAnswerRecord = function(questionNumber) {
-  // Call original function
-  originalResetAnswerRecord(questionNumber);
-  
-  // Save progress to Supabase
-  saveLectureProgress();
-};
-
-// ========== INITIALIZE ON PAGE LOAD ==========
-window.addEventListener('DOMContentLoaded', () => {
-  console.log(`📚 Lecture: ${LECTURE_CONFIG.lectureName}`);
-  console.log(`📊 Total questions: ${LECTURE_CONFIG.totalQuestions}`);
-  console.log(`🎯 Topic ${LECTURE_CONFIG.topicNumber}, Lecture ${LECTURE_CONFIG.lectureIndex}`);
-  
-  // Save initial progress (0/6) when page loads
-  setTimeout(() => saveLectureProgress(), 500);
-});
-
 </script>
-    
   
 <!-- Results Summary Box -->
 <div class="results-summary-box" id="results-summary-box">
@@ -4482,16 +4306,16 @@ window.addEventListener('DOMContentLoaded', () => {
     <!-- Tabs -->
     <div class="results-tabs">
         <div class="results-tab">
-            Lowest Common Multiple
-            <span class="percentage" id="hcf-percentage">(0%)</span>
+            Product of Prime Factors
+            <span class="percentage" id="hcf-percentage">(91%)</span>
         </div>
     </div>
     
     <!-- Progress Section -->
     <div class="results-progress-wrapper">
         <div class="results-progress-header">
-            <div class="results-progress-label">Lowest Common Multiple</div>
-            <div class="results-progress-percentage" id="progress-percentage">0%</div>
+            <div class="results-progress-label">Product of Prime Factors</div>
+            <div class="results-progress-percentage" id="progress-percentage">91%</div>
         </div>
         
         <div class="results-progress-bar">
@@ -4507,8 +4331,8 @@ window.addEventListener('DOMContentLoaded', () => {
             <div class="legend-item">
                 <div class="legend-icon correct">✓</div>
                 <div class="legend-text">
-                    <span class="legend-count" id="correct-count">0</span>
-                    <span class="legend-label">/ 6 correct</span>
+                    <span class="legend-count" id="correct-count">10</span>
+                    <span class="legend-label">/ 11 correct</span>
                 </div>
             </div>
             
@@ -4516,23 +4340,23 @@ window.addEventListener('DOMContentLoaded', () => {
                 <div class="legend-icon partial">○</div>
                 <div class="legend-text">
                     <span class="legend-count" id="partial-count">0</span>
-                    <span class="legend-label">/ 6 partially correct</span>
+                    <span class="legend-label">/ 11 partially correct</span>
                 </div>
             </div>
             
             <div class="legend-item">
                 <div class="legend-icon incorrect">✗</div>
                 <div class="legend-text">
-                    <span class="legend-count" id="incorrect-count">0</span>
-                    <span class="legend-label">/ 6 wrong</span>
+                    <span class="legend-count" id="incorrect-count">1</span>
+                    <span class="legend-label">/ 11 wrong</span>
                 </div>
             </div>
             
             <div class="legend-item">
                 <div class="legend-icon missed"></div>
                 <div class="legend-text">
-                    <span class="legend-count" id="unanswered-count">6</span>
-                    <span class="legend-label">/ 6 missed</span>
+                    <span class="legend-count" id="unanswered-count">0</span>
+                    <span class="legend-label">/ 11 missed</span>
                 </div>
             </div>
         </div>
@@ -4554,6 +4378,210 @@ window.addEventListener('DOMContentLoaded', () => {
 </div>
 
 </div>
+
+
+
+
+
+<script>
+// ========== SUPABASE CONFIGURATION ==========
+const SUPABASE_URL = 'YOUR_PROJECT_URL_HERE';  // Replace with your actual URL
+const SUPABASE_KEY = 'YOUR_ANON_KEY_HERE';     // Replace with your actual key
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const LECTURE_NAME = 'Product of Prime Factors';  // This lecture's name
+
+// Get or create user ID
+function getUserId() {
+  let userId = localStorage.getItem('userId');
+  if (!userId) {
+    userId = 'user_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('userId', userId);
+  }
+  return userId;
+}
+
+// Save lecture progress to Supabase
+async function saveLectureProgress() {
+  const userId = getUserId();
+  
+  try {
+    const { data, error } = await supabase
+      .from('lecture_progress')
+      .upsert({
+        user_id: userId,
+        lecture_name: LECTURE_NAME,
+        correct: resultsTracker.correct,
+        partial: resultsTracker.partial,
+        incorrect: resultsTracker.incorrect,
+        total_questions: resultsTracker.totalQuestions
+      }, {
+        onConflict: 'user_id,lecture_name'  // Update if exists
+      });
+    
+    if (error) {
+      console.error('Error saving:', error);
+    } else {
+      console.log('Progress saved for', LECTURE_NAME);
+    }
+  } catch (err) {
+    console.error('Save failed:', err);
+  }
+}
+
+// Load lecture progress when page loads
+async function loadLectureProgress() {
+  const userId = getUserId();
+  
+  try {
+    const { data, error } = await supabase
+      .from('lecture_progress')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('lecture_name', LECTURE_NAME)
+      .single();
+    
+    if (data && !error) {
+      resultsTracker.correct = data.correct || 0;
+      resultsTracker.partial = data.partial || 0;
+      resultsTracker.incorrect = data.incorrect || 0;
+      resultsTracker.unanswered = resultsTracker.totalQuestions - (data.correct + data.partial + data.incorrect);
+      updateResultsSummary();
+      console.log('Loaded progress for', LECTURE_NAME);
+    }
+  } catch (err) {
+    console.log('No previous progress - starting fresh');
+  }
+}
+
+/* ========================================
+   FORMAT SWITCHING FUNCTIONALITY
+   ======================================== */
+let currentFormat = 'multiple-choice';
+
+function switchFormat(format) {
+  currentFormat = format;
+  const questionBoxes = document.querySelectorAll('[class^="question-box-"]');
+  const mcBtn = document.getElementById('multipleChoiceBtn');
+  const examBtn = document.getElementById('examFormatBtn');
+  
+  if (format === 'multiple-choice') {
+    questionBoxes.forEach(box => box.classList.remove('exam-format'));
+    mcBtn.classList.add('active');
+    examBtn.classList.remove('active');
+  } else {
+    questionBoxes.forEach(box => box.classList.add('exam-format'));
+    examBtn.classList.add('active');
+    mcBtn.classList.remove('active');
+  }
+}
+
+// Load on page load - COMBINED
+document.addEventListener('DOMContentLoaded', function() {
+  loadLectureProgress();
+  initializeProgressBar();
+  
+  // Formula Sheet Button
+  const formulaBtn = document.getElementById('formulaSheetBtn');
+  if (formulaBtn) {
+    formulaBtn.addEventListener('click', function() {
+      alert('Formula Sheet feature - You can customize this');
+    });
+  }
+});
+
+  
+  
+  
+  
+  
+  
+  
+  
+<script>
+// ========== CHAT INTERFACE ==========
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const promptsBtn = document.getElementById('promptsBtn');
+
+function addMessageToChat(content, isUser = false) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${isUser ? 'message-user' : 'message-assistant'}`;
+  
+  const label = document.createElement('div');
+  label.className = 'message-label';
+  label.textContent = isUser ? 'You' : 'AI Assistant';
+  
+  const bubble = document.createElement('div');
+  bubble.className = 'message-bubble';
+  bubble.textContent = content;
+  
+  messageDiv.appendChild(label);
+  messageDiv.appendChild(bubble);
+  chatMessages.appendChild(messageDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+async function handleSendMessage() {
+  const message = chatInput.value.trim();
+  if (!message) return;
+  
+  addMessageToChat(message, true);
+  chatInput.value = '';
+  
+  sendBtn.disabled = true;
+  sendBtn.textContent = 'Thinking...';
+  
+  const aiResponse = await sendChatMessage(message);
+  addMessageToChat(aiResponse, false);
+  
+  sendBtn.disabled = false;
+  sendBtn.textContent = 'Execute';
+}
+
+sendBtn.addEventListener('click', handleSendMessage);
+
+chatInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSendMessage();
+  }
+});
+
+promptsBtn.addEventListener('click', () => {
+  const prompts = [
+    "I don't understand this question",
+    "Can you explain what prime factors are?",
+    "How do I break down a number?",
+    "What does index form mean?",
+    "Show me the method step by step"
+  ];
+  
+  const selected = prompts[Math.floor(Math.random() * prompts.length)];
+  chatInput.value = selected;
+  chatInput.focus();
+});
+
+function setCurrentQuestion(questionNumber) {
+  currentQuestionId = `Mathematics_Foundation_Number_L1_Q${questionNumber}`;
+  conversationHistory = [];
+  
+  const questionData = QUESTION_BANK[currentQuestionId];
+  if (questionData) {
+    document.getElementById('chatSubtitle').textContent = `Q${questionNumber}: ${questionData.topic}`;
+    addMessageToChat(`Now helping with Q${questionNumber}. What would you like to know?`, false);
+  }
+  
+  document.querySelectorAll('[class^="question-box-"]').forEach(box => {
+    box.style.borderColor = '#e5e7eb';
+  });
+  
+  document.getElementById(`question-box-${questionNumber}`).style.borderColor = '#1d7fe2';
+}
+</script>
+
+
 
 </body>
 
