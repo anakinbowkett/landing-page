@@ -1689,7 +1689,8 @@ let userData = {
     userId: "00000000",
     streak: 0,
     trialStatus: 'active',
-    trialEndDate: null
+    trialEndDate: null,
+    subscriptionStatus: 'trial'
 };
 
 const subjectCategories = {
@@ -1819,6 +1820,9 @@ function createSubjectCard(subject) {
     
     const tierText = subject.tier ? ` (${subject.tier} Tier)` : '';
     
+    // Check if subject should be locked
+    const isLocked = shouldSubjectBeLocked(subject);
+    
     subjectBox.innerHTML = `
         <div class="subject-top">
             <div class="subject-name">${subject.subject_name}</div>
@@ -1834,14 +1838,14 @@ function createSubjectCard(subject) {
     `;
     
     subjectBox.addEventListener('click', () => {
-        if (userData.trialStatus === 'expired') {
+        if (isLocked) {
             showPaywall();
         } else {
             window.location.href = `lectures.html?subject=${subject.id}`;
         }
     });
 
-    if (userData.trialStatus === 'expired') {
+    if (isLocked) {
         subjectBox.style.opacity = '0.6';
         subjectBox.style.cursor = 'not-allowed';
         subjectBox.style.filter = 'grayscale(50%)';
@@ -1862,6 +1866,25 @@ function createSubjectCard(subject) {
     }
     
     return subjectBox;
+}
+
+function shouldSubjectBeLocked(subject) {
+    // During trial or active subscription, nothing is locked
+    if (userData.trialStatus === 'trial' || userData.subscriptionStatus === 'active') {
+        return false;
+    }
+    
+    // Trial has expired
+    if (userData.trialStatus === 'expired') {
+        // If user has Core Bundle subscription, only non-default subjects are locked
+        if (userData.subscriptionStatus === 'active') {
+            return !subject.is_default;
+        }
+        // No subscription - everything is locked
+        return true;
+    }
+    
+    return false;
 }
 
 function checkTrialStatus(profile) {
@@ -1981,6 +2004,7 @@ async function checkAuth() {
         userData.streak = currentStreak;
         userData.trialStatus = checkTrialStatus(profile);
         userData.trialEndDate = profile.trial_end_date;
+        userData.subscriptionStatus = profile.subscription_status;
 
         updateUserData();
 
