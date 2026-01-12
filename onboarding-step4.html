@@ -315,21 +315,55 @@ const { error: profileError } = await sbClient
 
                 if (profileError) throw profileError;
 
-                // Add subjects to user_subjects table
-                const subjectInserts = subjectsData.map(subject => ({
-                    user_id: userId,
-                    subject_name: subject.name,
-                    exam_board: subject.examBoard,
-                    tier: subject.tier,
-                    progress_percentage: 0,
-                    color_variant: getColorVariant(subject.name)
-                }));
+                // Define default subjects
+const defaultSubjects = [
+    { name: 'Mathematics', examBoard: 'AQA', tier: 'Foundation' },
+    { name: 'English Language', examBoard: 'AQA', tier: null },
+    { name: 'English Literature', examBoard: 'AQA', tier: null },
+    { name: 'Combined Science - Biology', examBoard: 'AQA', tier: 'Foundation' },
+    { name: 'Combined Science - Chemistry', examBoard: 'AQA', tier: 'Foundation' },
+    { name: 'Combined Science - Physics', examBoard: 'AQA', tier: 'Foundation' }
+];
 
-                const { error: subjectsError } = await sbClient
-                    .from('user_subjects')
-                    .insert(subjectInserts);
+// Combine default subjects with user-selected subjects
+const allSubjects = [...defaultSubjects];
 
-                if (subjectsError) throw subjectsError;
+// Add user-selected subjects if they're not already in defaults
+subjectsData.forEach(userSubject => {
+    const isDuplicate = allSubjects.some(s => 
+        s.name === userSubject.name && 
+        s.examBoard === userSubject.examBoard && 
+        s.tier === userSubject.tier
+    );
+    if (!isDuplicate) {
+        allSubjects.push({
+            name: userSubject.name,
+            examBoard: userSubject.examBoard,
+            tier: userSubject.tier
+        });
+    }
+});
+
+// Add all subjects to user_subjects table
+const subjectInserts = allSubjects.map(subject => ({
+    user_id: userId,
+    subject_name: subject.name,
+    exam_board: subject.examBoard,
+    tier: subject.tier,
+    progress_percentage: 0,
+    is_default: defaultSubjects.some(d => 
+        d.name === subject.name && 
+        d.examBoard === subject.examBoard && 
+        d.tier === subject.tier
+    ),
+    color_variant: getColorVariant(subject.name)
+}));
+
+const { error: subjectsError } = await sbClient
+    .from('user_subjects')
+    .insert(subjectInserts);
+
+if (subjectsError) throw subjectsError;
 
                 // Clear localStorage
                 localStorage.removeItem('onboarding_year');
