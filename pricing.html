@@ -449,14 +449,32 @@
         }
 
         
-        // Handle Bundle Subscription
-document.getElementById('bundle-btn').addEventListener('click', () => {
-    window.location.href = 'https://buy.stripe.com/test_3cI4gy49RfTW6g5btge3e00';
+// Handle Bundle Subscription
+document.getElementById('bundle-btn').addEventListener('click', async () => {
+    if (!currentUser) {
+        window.location.href = 'signup.html';
+        return;
+    }
+    
+    const paymentUrl = new URL('https://buy.stripe.com/test_3cI4gy49RfTW6g5btge3e00');
+    paymentUrl.searchParams.append('client_reference_id', currentUser.id);
+    paymentUrl.searchParams.append('prefilled_email', currentUser.email);
+    
+    window.location.href = paymentUrl.toString();
 });
 
 // Handle Per Subject Subscription
-document.getElementById('persubject-btn').addEventListener('click', () => {
-    window.location.href = 'https://buy.stripe.com/test_dRmaEWbCj2365c17d0e3e01';
+document.getElementById('persubject-btn').addEventListener('click', async () => {
+    if (!currentUser) {
+        window.location.href = 'signup.html';
+        return;
+    }
+    
+    const paymentUrl = new URL('https://buy.stripe.com/test_dRmaEWbCj2365c17d0e3e01');
+    paymentUrl.searchParams.append('client_reference_id', currentUser.id);
+    paymentUrl.searchParams.append('prefilled_email', currentUser.email);
+    
+    window.location.href = paymentUrl.toString();
 });
 
         // Show/hide loading
