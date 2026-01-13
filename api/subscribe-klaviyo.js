@@ -21,11 +21,10 @@ export default async function handler(req, res) {
 
   try {
     console.log('Attempting to subscribe:', email, tiktokUsername);
-    console.log('Using List ID:', process.env.KLAVIYO_LIST_ID);
 
-    // Step 1: Create or update profile
-    const profileResponse = await fetch(
-      'https://a.klaviyo.com/api/profiles/',
+    // Step 1: Subscribe profile to list (this handles both new and existing profiles)
+    const subscribeResponse = await fetch(
+      `https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/`,
       {
         method: 'POST',
         headers: {
@@ -35,12 +34,29 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           data: {
-            type: 'profile',
+            type: 'profile-subscription-bulk-create-job',
             attributes: {
-              email: email,
-              properties: {
-                tiktok_username: tiktokUsername,
-                signup_source: 'homepage'
+              profiles: {
+                data: [
+                  {
+                    type: 'profile',
+                    attributes: {
+                      email: email,
+                      properties: {
+                        tiktok_username: tiktokUsername,
+                        signup_source: 'homepage'
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            relationships: {
+              list: {
+                data: {
+                  type: 'list',
+                  id: process.env.KLAVIYO_LIST_ID
+                }
               }
             }
           }
@@ -48,44 +64,15 @@ export default async function handler(req, res) {
       }
     );
 
-    if (!profileResponse.ok) {
-      const errorData = await profileResponse.json();
-      console.error('Profile creation error:', errorData);
-      throw new Error(`Profile API error: ${JSON.stringify(errorData)}`);
+    if (!subscribeResponse.ok) {
+      const errorData = await subscribeResponse.json();
+      console.error('Subscription error:', errorData);
+      throw new Error(`Klaviyo API error: ${JSON.stringify(errorData)}`);
     }
 
-    const profileData = await profileResponse.json();
-    const profileId = profileData.data.id;
-    console.log('Profile created/updated:', profileId);
-
-    // Step 2: Add profile to list
-    const listResponse = await fetch(
-      `https://a.klaviyo.com/api/lists/${process.env.KLAVIYO_LIST_ID}/relationships/profiles/`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_PRIVATE_KEY}`,
-          'revision': '2024-10-15'
-        },
-        body: JSON.stringify({
-          data: [
-            {
-              type: 'profile',
-              id: profileId
-            }
-          ]
-        })
-      }
-    );
-
-    if (!listResponse.ok) {
-      const errorData = await listResponse.json();
-      console.error('List subscription error:', errorData);
-      throw new Error(`List API error: ${JSON.stringify(errorData)}`);
-    }
-
-    console.log('Successfully added to list');
+    const subscribeData = await subscribeResponse.json();
+    console.log('Successfully subscribed:', subscribeData);
+    
     return res.status(200).json({ success: true });
 
   } catch (error) {
