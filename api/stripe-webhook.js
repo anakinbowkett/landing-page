@@ -1,5 +1,4 @@
 // api/stripe-webhook.js
-
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
