@@ -28,9 +28,20 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const buf = await buffer(req);
-    const sig = req.headers['stripe-signature'];
+    let buf;
+    let sig = req.headers['stripe-signature'];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    // Handle different request body formats
+    if (req.body && typeof req.body === 'string') {
+        buf = Buffer.from(req.body);
+    } else if (req.body && req.body.type === 'Buffer') {
+        buf = Buffer.from(req.body.data);
+    } else if (Buffer.isBuffer(req.body)) {
+        buf = req.body;
+    } else {
+        buf = await buffer(req);
+    }
 
     let event;
 
