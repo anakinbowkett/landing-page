@@ -20,15 +20,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log('Attempting to subscribe:', email, tiktokUsername);
+    console.log('Subscribing:', email);
 
-    // Step 1: Subscribe profile to list (this handles both new and existing profiles)
-    const subscribeResponse = await fetch(
+    // Create profile and subscribe to list in one call
+    const response = await fetch(
       `https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/`,
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'accept': 'application/json',
+          'content-type': 'application/json',
           'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_PRIVATE_KEY}`,
           'revision': '2024-10-15'
         },
@@ -36,6 +37,7 @@ export default async function handler(req, res) {
           data: {
             type: 'profile-subscription-bulk-create-job',
             attributes: {
+              custom_source: 'Website Signup',
               profiles: {
                 data: [
                   {
@@ -43,8 +45,7 @@ export default async function handler(req, res) {
                     attributes: {
                       email: email,
                       properties: {
-                        tiktok_username: tiktokUsername,
-                        signup_source: 'homepage'
+                        tiktok_username: tiktokUsername
                       }
                     }
                   }
@@ -64,19 +65,24 @@ export default async function handler(req, res) {
       }
     );
 
-    if (!subscribeResponse.ok) {
-      const errorData = await subscribeResponse.json();
-      console.error('Subscription error:', errorData);
-      throw new Error(`Klaviyo API error: ${JSON.stringify(errorData)}`);
+    const responseText = await response.text();
+    console.log('Raw response:', responseText);
+
+    if (!response.ok) {
+      console.error('API Error:', responseText);
+      throw new Error(`Klaviyo returned ${response.status}`);
     }
 
-    const subscribeData = await subscribeResponse.json();
-    console.log('Successfully subscribed:', subscribeData);
-    
+    const data = responseText ? JSON.parse(responseText) : {};
+    console.log('Success:', data);
+
     return res.status(200).json({ success: true });
 
   } catch (error) {
-    console.error('Klaviyo subscription error:', error);
-    return res.status(500).json({ error: error.message || 'Failed to subscribe' });
+    console.error('Error:', error.message);
+    return res.status(500).json({ 
+      success: false,
+      error: error.message 
+    });
   }
 }
