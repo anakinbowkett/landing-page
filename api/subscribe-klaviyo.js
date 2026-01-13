@@ -23,34 +23,71 @@ export default async function handler(req, res) {
     console.log('Attempting to subscribe:', email, tiktokUsername);
     console.log('Using List ID:', process.env.KLAVIYO_LIST_ID);
 
-    const response = await fetch(
-      `https://a.klaviyo.com/api/v2/list/${process.env.KLAVIYO_LIST_ID}/subscribe`,
+    // Step 1: Create or update profile
+    const profileResponse = await fetch(
+      'https://a.klaviyo.com/api/profiles/',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'api-key': process.env.KLAVIYO_PRIVATE_KEY
+          'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_PRIVATE_KEY}`,
+          'revision': '2024-10-15'
         },
         body: JSON.stringify({
-          profiles: [{
-            email: email,
-            properties: {
-              tiktok_username: tiktokUsername,
-              signup_source: 'homepage'
+          data: {
+            type: 'profile',
+            attributes: {
+              email: email,
+              properties: {
+                tiktok_username: tiktokUsername,
+                signup_source: 'homepage'
+              }
             }
-          }]
+          }
         })
       }
     );
 
-    const responseData = await response.json();
-    console.log('Klaviyo response:', responseData);
-
-    if (!response.ok) {
-      throw new Error(`Klaviyo API error: ${JSON.stringify(responseData)}`);
+    if (!profileResponse.ok) {
+      const errorData = await profileResponse.json();
+      console.error('Profile creation error:', errorData);
+      throw new Error(`Profile API error: ${JSON.stringify(errorData)}`);
     }
 
+    const profileData = await profileResponse.json();
+    const profileId = profileData.data.id;
+    console.log('Profile created/updated:', profileId);
+
+    // Step 2: Add profile to list
+    const listResponse = await fetch(
+      `https://a.klaviyo.com/api/lists/${process.env.KLAVIYO_LIST_ID}/relationships/profiles/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_PRIVATE_KEY}`,
+          'revision': '2024-10-15'
+        },
+        body: JSON.stringify({
+          data: [
+            {
+              type: 'profile',
+              id: profileId
+            }
+          ]
+        })
+      }
+    );
+
+    if (!listResponse.ok) {
+      const errorData = await listResponse.json();
+      console.error('List subscription error:', errorData);
+      throw new Error(`List API error: ${JSON.stringify(errorData)}`);
+    }
+
+    console.log('Successfully added to list');
     return res.status(200).json({ success: true });
+
   } catch (error) {
     console.error('Klaviyo subscription error:', error);
     return res.status(500).json({ error: error.message || 'Failed to subscribe' });
