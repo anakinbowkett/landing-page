@@ -1370,10 +1370,11 @@ document.addEventListener('DOMContentLoaded', function() {
       
       
 <!-- Email Signup Modal -->
-<div id="email-signup-modal" class="hidden" style="
+<div id="email-signup-modal" style="
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.8); z-index: 10001;
-    display: flex; align-items: center; justify-content: center;
+    display: none;
+    align-items: center; justify-content: center;
 ">
     <div style="
         background: white; border-radius: 20px; padding: 0;
@@ -1397,7 +1398,7 @@ document.addEventListener('DOMContentLoaded', function() {
             >
         </div>
         
-      <!-- Content Section -->
+        <!-- Content Section -->
         <div style="padding: 0 3rem 3rem 3rem;">
             <h2 style="font-size: 1.875rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem; line-height: 1.2;">
                 One time only
@@ -1538,15 +1539,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Open modal when clicking CTA banner
     emailCTABanner?.addEventListener('click', (e) => {
-        if (e.target.id !== 'close-cta-banner') {
-            emailModal.classList.remove('hidden');
+        if (e.target.id !== 'close-cta-banner' && !e.target.closest('#close-cta-banner')) {
+            emailModal.style.display = 'flex';
             emailCTABanner.style.display = 'none';
         }
     });
 
     // Close modal
     closeModalBtn?.addEventListener('click', () => {
-        emailModal.classList.add('hidden');
+        emailModal.style.display = 'none';
     });
 
     // Close CTA banner
@@ -1592,7 +1593,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Close modal after 2 seconds
                 setTimeout(() => {
-                    emailModal.classList.add('hidden');
+                    emailModal.style.display = 'none';
                     emailForm.reset();
                 }, 2000);
             } else {
@@ -1612,8 +1613,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close modal when clicking outside
     emailModal?.addEventListener('click', (e) => {
         if (e.target.id === 'email-signup-modal') {
-            emailModal.classList.add('hidden');
+            emailModal.style.display = 'none';
         }
+    });
+
+    // Make modal work with any "open-email-modal" buttons
+    document.querySelectorAll('.open-email-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+            emailModal.style.display = 'flex';
+            emailCTABanner.style.display = 'none';
+        });
     });
 })();
 </script>
@@ -1624,6 +1633,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
 </body>
 </html>
+
 
 
 
