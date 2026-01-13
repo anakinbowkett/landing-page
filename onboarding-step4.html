@@ -274,9 +274,9 @@
                 const referralSource = localStorage.getItem('onboarding_referral');
                 const joinReasons = Array.from(selectedReasons);
 
-                // Calculate trial end date (24 hours from now)
-                const trialEndDate = new Date();
-                trialEndDate.setHours(trialEndDate.getHours() + 24);
+                // Calculate trial end date (2 minutes from now for testing)
+const trialEndDate = new Date();
+trialEndDate.setMinutes(trialEndDate.getMinutes() + 1);
 
                 // Create or update user profile in Supabase
 const firstName = session.user.user_metadata.first_name || '';
