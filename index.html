@@ -788,7 +788,7 @@
             </div>
         </div>
       
-     <button class="open-email-modal" style="
+<button onclick="window._klOnsite = window._klOnsite || []; window._klOnsite.push(['openForm', 'VV4gAU']);" style="
     background: white; color: #1d7fe2; border: 2px solid #1d7fe2;
     padding: 0.75rem 1.5rem; border-radius: 12px;
     font-size: 0.9375rem; font-weight: 600; cursor: pointer;
@@ -799,14 +799,7 @@
     ⚡ Join the Waitlist Now
 </button>
 
-<script>
-document.querySelectorAll('.open-email-modal').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.getElementById('email-signup-modal').classList.remove('hidden');
-        document.getElementById('email-cta-banner').style.display = 'none';
-    });
-});
-</script>
+
       
       
       
@@ -1412,72 +1405,51 @@ document.addEventListener('DOMContentLoaded', function() {
     ">×</button>
 </div>
 
-<!-- Klaviyo Script -->
+<!-- Klaviyo Triggers -->
 <script async type="text/javascript" src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=W3se7M"></script>
 
+<!-- Floating CTA Banner -->
+<div id="email-cta-banner" onclick="window._klOnsite = window._klOnsite || []; window._klOnsite.push(['openForm', 'VV4gAU']);" style="
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;
+    background: linear-gradient(135deg, #1d7fe2 0%, #1e88f5 100%);
+    color: white; padding: 1.25rem 1.5rem; border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(29,127,226,0.35); cursor: pointer;
+    max-width: 340px; transition: all 0.3s; display: none;
+    border: 1px solid rgba(255,255,255,0.2);
+">
+    <div style="display: flex; align-items: center; gap: 1rem; pointer-events: none;">
+        <div style="font-size: 2rem;">⚡</div>
+        <div>
+            <div style="font-weight: 700; font-size: 1rem; margin-bottom: 0.25rem;">
+                Join the Waitlist Now
+            </div>
+            <div style="font-size: 0.8125rem; opacity: 0.95;">
+                Be first in line for our early bird launch
+            </div>
+        </div>
+    </div>
+    <button id="close-cta-banner" onclick="event.stopPropagation(); this.parentElement.style.display='none'; localStorage.setItem('email_cta_dismissed', 'true');" style="
+        position: absolute; top: 0.5rem; right: 0.5rem;
+        background: rgba(255,255,255,0.15); border: none; color: white;
+        font-size: 1.25rem; cursor: pointer; width: 28px; height: 28px;
+        border-radius: 50%; display: flex; align-items: center;
+        justify-content: center; transition: all 0.2s;
+    ">×</button>
+</div>
+
 <script>
-// Show floating CTA after 10 seconds
+// Show floating banner after 10 seconds
 if (!localStorage.getItem('email_signed_up') && !localStorage.getItem('email_cta_dismissed')) {
     setTimeout(() => {
         document.getElementById('email-cta-banner').style.display = 'block';
     }, 10000);
 }
 </script>
-
-<!-- Klaviyo Script -->
-<script async type="text/javascript" src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=W3se7M"></script>
-
-<script>
-(function() {
-    const emailModal = document.getElementById('email-signup-modal');
-    const emailCTABanner = document.getElementById('email-cta-banner');
-    const closeModalBtn = document.getElementById('close-modal');
-    const closeCTABtn = document.getElementById('close-cta-banner');
-
-    const hasSignedUp = localStorage.getItem('email_signed_up');
-    const hasDismissed = localStorage.getItem('email_cta_dismissed');
-
-    if (!hasSignedUp && !hasDismissed) {
-        setTimeout(() => {
-            emailCTABanner.style.display = 'block';
-        }, 10000);
-    }
-
-    emailCTABanner?.addEventListener('click', (e) => {
-        if (e.target.id !== 'close-cta-banner' && !e.target.closest('#close-cta-banner')) {
-            emailModal.style.display = 'flex';
-            emailCTABanner.style.display = 'none';
-        }
-    });
-
-    closeModalBtn?.addEventListener('click', () => {
-        emailModal.style.display = 'none';
-    });
-
-    closeCTABtn?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        emailCTABanner.style.display = 'none';
-        localStorage.setItem('email_cta_dismissed', 'true');
-    });
-
-    emailModal?.addEventListener('click', (e) => {
-        if (e.target.id === 'email-signup-modal') {
-            emailModal.style.display = 'none';
-        }
-    });
-
-    document.querySelectorAll('.open-email-modal').forEach(btn => {
-        btn.addEventListener('click', () => {
-            emailModal.style.display = 'flex';
-            emailCTABanner.style.display = 'none';
-        });
-    });
-})();
-</script>
       
       
 </body>
 </html>
+
 
 
 
