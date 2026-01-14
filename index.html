@@ -737,8 +737,6 @@
 </head>
 <body>
 
-<div class="klaviyo-form-VV4gAU" style="position: fixed; top: 100px; left: 50%; transform: translateX(-50%); z-index: 99999; background: white; padding: 20px; border: 2px solid red;"></div>    
-
 <!-- Navigation -->
 <nav>
     <div class="nav-container">
@@ -1371,7 +1369,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       
       
-<!-- Email Signup Modal -->
+<!-- Email Signup Modal - Simplified -->
 <div id="email-signup-modal" style="
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.8); z-index: 10001;
@@ -1380,51 +1378,19 @@ document.addEventListener('DOMContentLoaded', function() {
     padding: 1rem;
 ">
     <div style="
-        background: white; border-radius: 20px; padding: 2rem 3rem;
-        max-width: 520px; width: 100%; position: relative;
-        overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        max-height: 90vh; overflow-y: auto;
+        background: white; border-radius: 16px;
+        max-width: 600px; width: 100%; position: relative;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     ">
         <button id="close-modal" style="
-            position: absolute; top: 1.25rem; right: 1.25rem;
-            background: rgba(0,0,0,0.05); border: none; font-size: 1.5rem;
-            cursor: pointer; color: #6b7280; width: 32px; height: 32px;
+            position: absolute; top: 1rem; right: 1rem;
+            background: rgba(0,0,0,0.1); border: none; font-size: 1.5rem;
+            cursor: pointer; color: #111827; width: 32px; height: 32px;
             border-radius: 50%; display: flex; align-items: center;
             justify-content: center; z-index: 10; transition: all 0.2s;
-        " onmouseover="this.style.background='rgba(0,0,0,0.1)'" onmouseout="this.style.background='rgba(0,0,0,0.05)'">×</button>
+        ">×</button>
         
-        <!-- Logo -->
-        <div style="margin-bottom: 1.5rem;">
-            <img 
-                src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" 
-                alt="GMM Logo"
-                style="height: 50px; width: auto; object-fit: contain;"
-            >
-        </div>
-        
-        <!-- Title -->
-        <h2 style="font-size: 1.875rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem; line-height: 1.2; font-family: 'Inter', sans-serif;">
-            One time only
-        </h2>
-        <p style="font-size: 0.9375rem; color: #4b5563; margin-bottom: 1.5rem; line-height: 1.5; font-family: 'Inter', sans-serif;">
-            Be the first in line to the UK's fastest growing educational learning platform launch for an early bird price.
-        </p>
-        
-        <!-- FOMO Badge -->
-        <div style="
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-left: 4px solid #f59e0b;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            text-align: center;
-        ">
-            <p style="font-size: 0.875rem; font-weight: 700; color: #92400e; margin: 0; line-height: 1.4; font-family: 'Inter', sans-serif;">
-                ⚡ Early bird price ends on 6pm Jan 31st
-            </p>
-        </div>
-        
-        <!-- Klaviyo Form -->
+        <!-- Klaviyo Form Container -->
         <div class="klaviyo-form-VV4gAU"></div>
         
     </div>
@@ -1456,32 +1422,28 @@ document.addEventListener('DOMContentLoaded', function() {
         font-size: 1.25rem; cursor: pointer; width: 28px; height: 28px;
         border-radius: 50%; display: flex; align-items: center;
         justify-content: center; transition: all 0.2s;
-    " onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">×</button>
+    ">×</button>
 </div>
 
 <!-- Klaviyo Script -->
-<script type="text/javascript" src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=W3se7M"></script>
+<script async type="text/javascript" src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=W3se7M"></script>
 
 <script>
-// Simplified Modal Logic
 (function() {
     const emailModal = document.getElementById('email-signup-modal');
     const emailCTABanner = document.getElementById('email-cta-banner');
     const closeModalBtn = document.getElementById('close-modal');
     const closeCTABtn = document.getElementById('close-cta-banner');
 
-    // Check if user has already signed up or dismissed
     const hasSignedUp = localStorage.getItem('email_signed_up');
     const hasDismissed = localStorage.getItem('email_cta_dismissed');
 
-    // Show CTA banner after 10 seconds if not signed up or dismissed
     if (!hasSignedUp && !hasDismissed) {
         setTimeout(() => {
             emailCTABanner.style.display = 'block';
         }, 10000);
     }
 
-    // Open modal when clicking CTA banner
     emailCTABanner?.addEventListener('click', (e) => {
         if (e.target.id !== 'close-cta-banner' && !e.target.closest('#close-cta-banner')) {
             emailModal.style.display = 'flex';
@@ -1489,76 +1451,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Close modal
     closeModalBtn?.addEventListener('click', () => {
         emailModal.style.display = 'none';
     });
 
-    // Close CTA banner
     closeCTABtn?.addEventListener('click', (e) => {
         e.stopPropagation();
         emailCTABanner.style.display = 'none';
         localStorage.setItem('email_cta_dismissed', 'true');
     });
 
-    // Close modal when clicking outside
     emailModal?.addEventListener('click', (e) => {
         if (e.target.id === 'email-signup-modal') {
             emailModal.style.display = 'none';
         }
     });
 
-    // Make modal work with any "open-email-modal" buttons
     document.querySelectorAll('.open-email-modal').forEach(btn => {
         btn.addEventListener('click', () => {
             emailModal.style.display = 'flex';
             emailCTABanner.style.display = 'none';
         });
     });
-
-    // Listen for successful Klaviyo form submission
-    window.addEventListener('message', function(e) {
-        if (e.data && e.data.type === 'klaviyoForms' && e.data.event === 'submit') {
-            localStorage.setItem('email_signed_up', 'true');
-            setTimeout(() => {
-                emailModal.style.display = 'none';
-            }, 2000);
-        }
-    });
 })();
 </script>
       
       
-<button onclick="testAPI()" style="position: fixed; top: 100px; right: 20px; z-index: 9999; padding: 10px; background: red; color: white;">Test API</button>
-
-<script>
-async function testAPI() {
-    try {
-        const response = await fetch('/api/subscribe-klaviyo', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: 'test@test.com',
-                tiktokUsername: '@testuser'
-            })
-        });
-        
-        const data = await response.json();
-        console.log('Response status:', response.status);
-        console.log('Response data:', data);
-        alert('Check console for details');
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Error: ' + error.message);
-    }
-}
-</script>      
-      
-      
 </body>
 </html>
+
 
 
 
