@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCSE Mastery - Quiz / Quick Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: transparent;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+            margin: 20px;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 2.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.875rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: #374151;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-item.active {
+            background: #ffffff;
+            color: #111827;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.125rem;
+        }
+
+        .nav-spacer {
+            flex: 1;
+        }
+
+        .live-study-btn {
+            background: #000000;
+            color: white;
+            padding: 0.875rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .live-study-btn:hover {
+            background: #1a1a1a;
+            transform: translateY(-1px);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 320px;
+            margin-right: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e0e4e9;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+        .content-wrapper {
+            background: #97b6e5;
+            padding: 8rem 0;
+            min-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .subject-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .subject-line-left {
+            height: 1px;
+            background: #d1d5db;
+            flex: 0 0 60px;
+        }
+
+        .subject-name {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #111827;
+            padding: 0 2rem;
+            letter-spacing: -0.03em;
+        }
+
+        .subject-line-right {
+            height: 1px;
+            background: #d1d5db;
+            flex: 1;
+        }
+
+        .coming-soon-container {
+            background: white;
+            border-radius: 16px;
+            padding: 4rem 3rem;
+            text-align: center;
+            max-width: 600px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .coming-soon-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .coming-soon-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .coming-soon-subtitle {
+            font-size: 1.125rem;
+            color: #6b7280;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .back-btn {
+            background: #000000;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: #1a1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 240px;
+                margin: 15px;
+                height: calc(100vh - 30px);
+            }
+
+            .main-content {
+                margin-left: 270px;
+            }
+
+            .subject-name {
+                font-size: 2rem;
+                padding: 0 1.5rem;
+            }
+
+            .coming-soon-container {
+                padding: 3rem 2rem;
+                margin: 0 1.5rem;
+            }
+
+            .coming-soon-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="logo">GCSE Mastery</div>
+        
+        <a href="dashboard.html" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="aqa-f-tier-maths-lectures.html" class="nav-item">
+            <span class="nav-icon">∞</span>
+            <span>Lectures</span>
+        </a>
+
+        <a href="aqa-f-tier-maths-flashtiles.html" class="nav-item">
+            <span class="nav-icon">⚡</span>
+            <span>Flashtiles</span>
+        </a>
+
+        <a href="aqa-f-tier-maths-quick-test.html" class="nav-item active">
+            <span class="nav-icon">🕐</span>
+            <span>Quiz / Quick Test</span>
+        </a>
+
+        <a href="aqa-f-tier-maths-past-papers.html" class="nav-item">
+            <span class="nav-icon">📄</span>
+            <span>Past Papers</span>
+        </a>
+
+        <div class="nav-spacer"></div>
+
+        <button class="live-study-btn">Allow Live Study</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="subject-header">
+                <div class="subject-line-left"></div>
+                <h1 class="subject-name">Quiz / Quick Test</h1>
+                <div class="subject-line-right"></div>
+            </div>
+
+            <div class="coming-soon-container">
+                <div class="coming-soon-icon">🕐</div>
+                <h2 class="coming-soon-title">Coming Soon!</h2>
+                <p class="coming-soon-subtitle">
+                    We're building an amazing quiz system to help you test your knowledge. 
+                    Quick assessments with instant feedback to track your progress.
+                </p>
+                <a href="aqa-f-tier-maths-lectures.html" class="back-btn">← Back to Lectures</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
