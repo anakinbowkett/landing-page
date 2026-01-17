@@ -1841,7 +1841,10 @@ function createSubjectCard(subject) {
         if (isLocked) {
             showPaywall();
         } else {
-            window.location.href = `aqa-f-tier-maths-lectures.html`;
+            // Build dynamic URL based on exam board and tier
+const examBoard = subject.exam_board.toLowerCase(); // "aqa", "edexcel", "ocr", "wjec"
+const tierLetter = subject.tier ? subject.tier.toLowerCase().charAt(0) : 'f'; // "f" or "h"
+window.location.href = `${examBoard}-${tierLetter}-tier-maths-lectures.html`;
         }
     });
 
