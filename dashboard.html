@@ -1844,7 +1844,7 @@ function createSubjectCard(subject) {
             // Build dynamic URL based on exam board and tier
 const examBoard = subject.exam_board.toLowerCase(); // "aqa", "edexcel", "ocr", "wjec"
 const tierLetter = subject.tier ? subject.tier.toLowerCase().charAt(0) : 'f'; // "f" or "h"
-window.location.href = `${examBoard}-${tierLetter}-tier-maths-lectures.html`;
+window.location.href = `lectures/${examBoard}-${tierLetter}-tier/lectures.html`;
         }
     });
 
