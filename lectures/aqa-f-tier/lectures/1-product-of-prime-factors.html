@@ -3128,13 +3128,7 @@ function resetQuestion6() {
   <!-- END OF HEADER -->
 
   <div class="chat-messages" id="chatMessages">
-      <div class="message message-assistant">
-        <div class="message-label">AI Assistant</div>
-        <div class="message-bubble">
-          Hi! I'm here to help you understand the Product of Prime Factors. Feel free to ask me any questions!
-        </div>
-      </div>
-    </div>
+     </div>
 
     <div class="chat-input-area">
       <button class="prompts-btn" id="promptsBtn">
@@ -4414,12 +4408,18 @@ function updateNavigationButtons() {
 document.addEventListener('DOMContentLoaded', function() {
   initializeQuestionNavigation();
   
-  // Add click handlers to all question boxes
+  // Add click handlers to all question boxes - WITH AI INTEGRATION
   for (let i = 1; i <= totalQuestionsCount; i++) {
     const questionBox = document.getElementById(`question-box-${i}`);
     if (questionBox) {
-      questionBox.addEventListener('click', function() {
+      questionBox.addEventListener('click', function(e) {
+        e.stopPropagation();
         showQuestion(i);
+        
+        // Also update the AI chat context
+        if (typeof window.setCurrentQuestion === 'function') {
+          window.setCurrentQuestion(i);
+        }
       });
     }
   }
