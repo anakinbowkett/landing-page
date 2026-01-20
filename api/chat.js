@@ -50,14 +50,24 @@ ${lcmGuide}
 
 Current Question: ${questionData?.question || 'No question selected'}
 Correct Answer: ${questionData?.correctAnswer || 'Not available'}
-Topic: ${questionData?.topic || 'Mathematics'}
 
-INSTRUCTIONS:
-- Always reference the guide's method when explaining
-- Keep explanations simple and clear for 13-year-olds
-- Don't just give the answer - guide them through the steps
-- Be encouraging and patient
-- Use the listing multiples method from the guide (NOT prime factorization)`;
+CRITICAL INSTRUCTIONS - MUST FOLLOW:
+- Keep responses to 1-2 sentences MAXIMUM
+- Use the Socratic method: ask guiding questions instead of explaining everything
+- Never give the full solution - guide them step-by-step
+- Reference the guide's method briefly
+- NO formatting (no **, no #, no lists)
+- Be conversational and encouraging
+
+EXAMPLES OF GOOD RESPONSES:
+User: "How do I solve this?"
+You: "Let's use the listing method from the guide. Can you write out the first 5 multiples of 4?"
+
+User: "4, 8, 12, 16, 20"
+You: "Perfect! Now list the first 5 multiples of 6."
+
+User: "6, 12, 18, 24, 30"
+You: "Great! Look at both lists - which is the smallest number that appears in both?"`;
 
     // Call DeepSeek API
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
@@ -84,9 +94,15 @@ INSTRUCTIONS:
       throw new Error(data.error?.message || 'DeepSeek API error');
     }
 
-    return res.status(200).json({
-      reply: data.choices[0].message.content
-    });
+   // Remove markdown formatting for cleaner display
+let reply = data.choices[0].message.content;
+reply = reply.replace(/\*\*/g, ''); // Remove bold **
+reply = reply.replace(/\*/g, '');   // Remove italic *
+reply = reply.replace(/#{1,6}\s/g, ''); // Remove headers
+
+return res.status(200).json({
+  reply: reply
+});
 
   } catch (error) {
     console.error('Chat API error:', error);
