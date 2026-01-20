@@ -958,6 +958,15 @@ html,body{
 
   
   
+
+
+
+
+      
+</div>
+
+
+
 <!-- Reference Guide Modal -->
 <div id="referenceModal" style="
   display: none;
@@ -1226,505 +1235,235 @@ html,body{
   ">Close</button>
   
   <div id="guideContent">
-    <!-- Your LCM guide content stays here - don't touch this part -->
-    <!-- Reference Guide Modal -->
-<div id="referenceModal" style="
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 1000;
-  overflow-y: auto;
-  padding: 40px 20px;
-">
-  <style>
-    #referenceModal .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 12px;
-      padding: 60px 40px 100px;
-      position: relative;
-    }
-    
-    #referenceModal h1 {
-      font-size: 48px;
-      font-weight: 600;
-      margin-bottom: 70px;
-      color: #000000;
-      letter-spacing: -0.09em;
-      line-height: 1.2;
-      font-family: 'Crimson Text', serif;
-    }
-    
-    #referenceModal .definition {
-      font-size: 21px;
-      color: #2a2a2a;
-      margin-bottom: 90px;
-      padding-left: 24px;
-      border-left: 4px solid #daa98a;
-      line-height: 1.6;
-    }
-    
-    #referenceModal .mark-scheme-container {
-      background: white;
-      border: 2px solid #000;
-      margin-bottom: 50px;
-      border-radius: 13px;
-      overflow: hidden;
-    }
-    
-    #referenceModal .mark-scheme-header {
-      background: #000;
-      color: white;
-      padding: 12px 20px;
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    
-    #referenceModal .mark-scheme-content {
-      display: flex;
-    }
-    
-    #referenceModal .marks-column {
-      width: 80px;
-      background: #f5f5f5;
-      border-right: 2px solid #000;
-      flex-shrink: 0;
-    }
-    
-    #referenceModal .mark-item {
-      padding: 18px 0;
-      text-align: center;
-      border-bottom: 1px solid #d0d0d0;
-      font-size: 16px;
-      font-weight: 600;
-      color: #000;
-    }
-    
-    #referenceModal .mark-item:last-child {
-      border-bottom: none;
-    }
-    
-    #referenceModal .mistakes-column {
-      flex: 1;
-    }
-    
-    #referenceModal .mistake-row {
-      padding: 18px 20px;
-      border-bottom: 1px solid #d0d0d0;
-      font-size: 17px;
-      line-height: 1.6;
-      color: #1a1a1a;
-    }
-    
-    #referenceModal .mistake-row:last-child {
-      border-bottom: none;
-    }
-    
-    #referenceModal .mistake-bold {
-      font-weight: 600;
-      color: #000;
-    }
-    
-    #referenceModal .question-variations {
-      background: linear-gradient(135deg, rgba(218, 169, 138, 0.03) 0%, rgba(218, 169, 138, 0.06) 100%);
-      padding: 0;
-      border-radius: 13px;
-      margin-bottom: 56px;
-      border: 0.5px solid rgba(218, 169, 138, 0.12);
-      overflow: hidden;
-      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
-    }
-    
-    #referenceModal .variations-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: rgba(0, 0, 0, 0.45);
-      margin-bottom: 0;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      padding: 24px 28px 12px;
-    }
-    
-    #referenceModal .variation-item {
-      font-size: 17px;
-      color: #1a1a1a;
-      margin-bottom: 0;
-      padding: 14px 28px;
-      border-top: 0.5px solid rgba(0, 0, 0, 0.06);
-      transition: all 0.25s;
-      font-weight: 400;
-    }
-    
-    #referenceModal .variation-item:first-of-type {
-      border-top: none;
-    }
-    
-    #referenceModal .variation-item:hover {
-      background: rgba(218, 169, 138, 0.08);
-      padding-left: 32px;
-    }
-    
-    #referenceModal .main-content {
-      background: white;
-      padding: 60px 55px;
-      border-radius: 13px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      margin-bottom: 90px;
-    }
-    
-    #referenceModal .question {
-      font-size: 28px;
-      font-weight: 600;
-      color: #000000;
-      margin-bottom: 55px;
-      letter-spacing: -0.02em;
-      line-height: 1.3;
-    }
-    
-    #referenceModal .method-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #daa98a;
-      margin-bottom: 35px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    #referenceModal .steps-container {
-      margin: 45px 0;
-    }
-
-    #referenceModal .step {
-      margin-bottom: 60px;
-      display: flex;
-      gap: 40px;
-      align-items: flex-start;
-    }
-
-    #referenceModal .step-left {
-      flex: 1;
-      padding: 28px 0;
-    }
-
-    #referenceModal .step-right {
-      flex: 1;
-      background: white;
-      border: 3px solid #daa98a;
-      border-radius: 13px;
-      padding: 40px;
-      height: 220px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #referenceModal .step-number {
-      font-size: 15px;
-      font-weight: 700;
-      color: #daa98a;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 12px;
-    }
-
-    #referenceModal .step-intro {
-      font-size: 20px;
-      font-weight: 600;
-      color: #000;
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-
-    #referenceModal .step-detail {
-      font-size: 18px;
-      color: #444;
-      line-height: 1.7;
-    }
-
-    #referenceModal .step-canvas {
-      width: 100%;
-      height: 100%;
-    }
-
-    #referenceModal .final-answer {
-      font-size: 24px;
-      font-weight: 700;
-      color: #000;
-      margin-top: 25px;
-      padding: 30px;
-      background: #fafafa;
-      border-radius: 13px;
-      border: 2px solid #daa98a;
-      text-align: center;
-    }
-    
-    @media (max-width: 968px) {
-      #referenceModal .step {
-        flex-direction: column;
-      }
+    <div class="container">
+      <h1>Lowest Common Multiple (LCM)</h1>
       
-      #referenceModal .step-right {
-        width: 100%;
-        height: 200px;
-      }
-    }
-  </style>
-  
-  <button id="closeModalBtn" style="
-    position: fixed;
-    top: 60px;
-    right: 60px;
-    background: #daa98a;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 15px;
-    z-index: 1001;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    font-family: 'Crimson Text', serif;
-  ">Close</button>
-  
-  <div id="guideContent">
-    <!-- Your LCM guide content stays here - don't touch this part -->
-  </div>
-</div>
-  </div>
-</div>
-</div>
-        
-        <div class="mark-scheme-container">
-            <div class="mark-scheme-header">Common Errors & Mark Deductions</div>
-            <div class="mark-scheme-content">
-                <div class="marks-column">
-                    <div class="mark-item">-1</div>
-                    <div class="mark-item">-1</div>
-                    <div class="mark-item">-1</div>
-                </div>
-                <div class="mistakes-column">
-                    <div class="mistake-row">
-                        <span class="mistake-bold">Finding HCF instead of LCM</span> (e.g., writing 6 for LCM of 12 and 18). LCM must be larger than or equal to both numbers, not smaller.
-                    </div>
-                    <div class="mistake-row">
-                        <span class="mistake-bold">Just multiplying the numbers</span> (e.g., 12 × 18 = 216). This only works when numbers have no common factors. Use prime factorization for accuracy.
-                    </div>
-                    <div class="mistake-row">
-                        <span class="mistake-bold">Missing a prime factor power</span> (e.g., writing 2² × 3 instead of 2² × 3²). You must take the highest power of each prime that appears.
-                    </div>
-                </div>
+      <div class="definition">
+        The smallest number that is a multiple of two or more numbers.
+      </div>
+      
+      <div class="mark-scheme-container">
+        <div class="mark-scheme-header">Common Errors & Mark Deductions</div>
+        <div class="mark-scheme-content">
+          <div class="marks-column">
+            <div class="mark-item">-1</div>
+            <div class="mark-item">-1</div>
+            <div class="mark-item">-1</div>
+          </div>
+          <div class="mistakes-column">
+            <div class="mistake-row">
+              <span class="mistake-bold">Finding HCF instead of LCM</span> (e.g., writing 6 for LCM of 12 and 18). LCM must be larger than or equal to both numbers, not smaller.
             </div>
-        </div>
-        
-        <div class="question-variations">
-            <div class="variations-title">How Questions Ask This</div>
-            <div class="variation-item">Find the lowest common multiple (LCM) of 12 and 18</div>
-            <div class="variation-item">What is the LCM of 12 and 18?</div>
-            <div class="variation-item">Calculate the smallest number that is a multiple of both 12 and 18</div>
-            <div class="variation-item">Work out the least common multiple of 12 and 18</div>
-            <div class="variation-item">Find the LCM of 12 and 18 using prime factorization</div>
-        </div>
-        
-        <div class="main-content">
-            <div class="question">Find the lowest common multiple (LCM) of 12 and 18.</div>
-            
-            <div class="method-title">The Method</div>
-            
-            <div class="steps-container">
-                <div class="step">
-                    <div class="step-left">
-                        <div class="step-number">Step One</div>
-                        <div class="step-intro">Write both numbers as products of primes</div>
-                        <div class="step-detail">Break down each number into its prime factors using factor trees. Circle all the prime numbers at the bottom.</div>
-                    </div>
-                    <div class="step-right">
-                        <canvas class="step-canvas" id="canvas-step1"></canvas>
-                    </div>
-                </div>
-                
-                <div class="step">
-                    <div class="step-left">
-                        <div class="step-number">Step Two</div>
-                        <div class="step-intro">Identify all unique prime factors</div>
-                        <div class="step-detail">List every different prime that appears in either factorization (in this case: 2 and 3).</div>
-                    </div>
-                    <div class="step-right">
-                        <canvas class="step-canvas" id="canvas-step2"></canvas>
-                    </div>
-                </div>
-                
-                <div class="step">
-                    <div class="step-left">
-                        <div class="step-number">Step Three</div>
-                        <div class="step-intro">Take the highest power of each prime</div>
-                        <div class="step-detail">For each prime, use whichever number has it raised to the higher power. Then multiply them together to get the LCM.</div>
-                    </div>
-                    <div class="step-right">
-                        <canvas class="step-canvas" id="canvas-step3"></canvas>
-                    </div>
-                </div>
+            <div class="mistake-row">
+              <span class="mistake-bold">Just multiplying the numbers</span> (e.g., 12 × 18 = 216). This only works when numbers have no common factors. Use prime factorization for accuracy.
             </div>
+            <div class="mistake-row">
+              <span class="mistake-bold">Missing a prime factor power</span> (e.g., writing 2² × 3 instead of 2² × 3²). You must take the highest power of each prime that appears.
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="question-variations">
+        <div class="variations-title">How Questions Ask This</div>
+        <div class="variation-item">Find the lowest common multiple (LCM) of 12 and 18</div>
+        <div class="variation-item">What is the LCM of 12 and 18?</div>
+        <div class="variation-item">Calculate the smallest number that is a multiple of both 12 and 18</div>
+        <div class="variation-item">Work out the least common multiple of 12 and 18</div>
+        <div class="variation-item">Find the LCM of 12 and 18 using prime factorization</div>
+      </div>
+      
+      <div class="main-content">
+        <div class="question">Find the lowest common multiple (LCM) of 12 and 18.</div>
+        
+        <div class="method-title">The Method</div>
+        
+        <div class="steps-container">
+          <div class="step">
+            <div class="step-left">
+              <div class="step-number">Step One</div>
+              <div class="step-intro">Write both numbers as products of primes</div>
+              <div class="step-detail">Break down each number into its prime factors using factor trees. Circle all the prime numbers at the bottom.</div>
+            </div>
+            <div class="step-right">
+              <canvas class="step-canvas" id="canvas-step1"></canvas>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-left">
+              <div class="step-number">Step Two</div>
+              <div class="step-intro">Identify all unique prime factors</div>
+              <div class="step-detail">List every different prime that appears in either factorization (in this case: 2 and 3).</div>
+            </div>
+            <div class="step-right">
+              <canvas class="step-canvas" id="canvas-step2"></canvas>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-left">
+              <div class="step-number">Step Three</div>
+              <div class="step-intro">Take the highest power of each prime</div>
+              <div class="step-detail">For each prime, use whichever number has it raised to the higher power. Then multiply them together to get the LCM.</div>
+            </div>
+            <div class="step-right">
+              <canvas class="step-canvas" id="canvas-step3"></canvas>
+            </div>
+          </div>
+        </div>
 
-            <div class="final-answer">
-                LCM of 12 and 18 = 36
-            </div>
+        <div class="final-answer">
+          LCM of 12 and 18 = 36
         </div>
+      </div>
     </div>
     
     <script>
-        function setupCanvas(canvas) {
-            const dpr = window.devicePixelRatio || 1;
-            const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
-            const ctx = canvas.getContext('2d');
-            ctx.scale(dpr, dpr);
-            ctx.lineWidth = Math.max(1.5, rect.width * 0.005);
-            ctx.strokeStyle = '#daa98a';
-            ctx.fillStyle = '#1a1a1a';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            return ctx;
-        }
+      function setupCanvas(canvas) {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+        ctx.lineWidth = Math.max(1.5, rect.width * 0.005);
+        ctx.strokeStyle = '#daa98a';
+        ctx.fillStyle = '#1a1a1a';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        return ctx;
+      }
 
-        function text(ctx, p, value, size) {
-            const minSize = Math.max(10, size);
-            ctx.font = `${minSize}px Crimson Text`;
-            ctx.fillText(value, p.x, p.y);
-        }
+      function text(ctx, p, value, size) {
+        const minSize = Math.max(10, size);
+        ctx.font = `${minSize}px Crimson Text`;
+        ctx.fillText(value, p.x, p.y);
+      }
 
-        function circle(ctx, p, r, value, size) {
-            const minR = Math.max(8, r);
-            const minSize = Math.max(9, size);
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, minR, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.font = `${minSize}px Crimson Text`;
-            ctx.fillText(value, p.x, p.y);
-        }
+      function circle(ctx, p, r, value, size) {
+        const minR = Math.max(8, r);
+        const minSize = Math.max(9, size);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, minR, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.font = `${minSize}px Crimson Text`;
+        ctx.fillText(value, p.x, p.y);
+      }
 
-        function drawStep1() {
-            const canvas = document.getElementById('canvas-step1');
-            if (!canvas) return;
-            const ctx = setupCanvas(canvas);
-            const w = canvas.getBoundingClientRect().width;
-            const h = canvas.getBoundingClientRect().height;
+      function drawStep1() {
+        const canvas = document.getElementById('canvas-step1');
+        if (!canvas) return;
+        const ctx = setupCanvas(canvas);
+        const w = canvas.getBoundingClientRect().width;
+        const h = canvas.getBoundingClientRect().height;
 
-            const leftX = w * 0.25;
-            const rightX = w * 0.75;
-            const topY = h * 0.2;
-            const midY = h * 0.5;
-            const botY = h * 0.8;
+        const leftX = w * 0.25;
+        const rightX = w * 0.75;
+        const topY = h * 0.2;
+        const midY = h * 0.5;
+        const botY = h * 0.8;
 
-            // 12 tree
-            ctx.beginPath();
-            ctx.moveTo(leftX, topY + 15);
-            ctx.lineTo(leftX - w*0.08, midY - 15);
-            ctx.moveTo(leftX, topY + 15);
-            ctx.lineTo(leftX + w*0.08, midY - 15);
-            ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(leftX, topY + 15);
+        ctx.lineTo(leftX - w*0.08, midY - 15);
+        ctx.moveTo(leftX, topY + 15);
+        ctx.lineTo(leftX + w*0.08, midY - 15);
+        ctx.stroke();
 
-            text(ctx, {x: leftX, y: topY}, '12', w * 0.055);
-            text(ctx, {x: leftX - w*0.08, y: midY}, '2', w * 0.05);
-            text(ctx, {x: leftX + w*0.08, y: midY}, '6', w * 0.05);
+        text(ctx, {x: leftX, y: topY}, '12', w * 0.055);
+        text(ctx, {x: leftX - w*0.08, y: midY}, '2', w * 0.05);
+        text(ctx, {x: leftX + w*0.08, y: midY}, '6', w * 0.05);
 
-            ctx.beginPath();
-            ctx.moveTo(leftX + w*0.08, midY + 15);
-            ctx.lineTo(leftX, botY - 15);
-            ctx.moveTo(leftX + w*0.08, midY + 15);
-            ctx.lineTo(leftX + w*0.16, botY - 15);
-            ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(leftX + w*0.08, midY + 15);
+        ctx.lineTo(leftX, botY - 15);
+        ctx.moveTo(leftX + w*0.08, midY + 15);
+        ctx.lineTo(leftX + w*0.16, botY - 15);
+        ctx.stroke();
 
-            circle(ctx, {x: leftX, y: botY}, w*0.03, '2', w*0.045);
-            circle(ctx, {x: leftX + w*0.16, y: botY}, w*0.03, '3', w*0.045);
+        circle(ctx, {x: leftX, y: botY}, w*0.03, '2', w*0.045);
+        circle(ctx, {x: leftX + w*0.16, y: botY}, w*0.03, '3', w*0.045);
 
-            // 18 tree
-            ctx.beginPath();
-            ctx.moveTo(rightX, topY + 15);
-            ctx.lineTo(rightX - w*0.08, midY - 15);
-            ctx.moveTo(rightX, topY + 15);
-            ctx.lineTo(rightX + w*0.08, midY - 15);
-            ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(rightX, topY + 15);
+        ctx.lineTo(rightX - w*0.08, midY - 15);
+        ctx.moveTo(rightX, topY + 15);
+        ctx.lineTo(rightX + w*0.08, midY - 15);
+        ctx.stroke();
 
-            text(ctx, {x: rightX, y: topY}, '18', w * 0.055);
-            text(ctx, {x: rightX - w*0.08, y: midY}, '2', w * 0.05);
-            text(ctx, {x: rightX + w*0.08, y: midY}, '9', w * 0.05);
+        text(ctx, {x: rightX, y: topY}, '18', w * 0.055);
+        text(ctx, {x: rightX - w*0.08, y: midY}, '2', w * 0.05);
+        text(ctx, {x: rightX + w*0.08, y: midY}, '9', w * 0.05);
 
-            ctx.beginPath();
-            ctx.moveTo(rightX + w*0.08, midY + 15);
-            ctx.lineTo(rightX, botY - 15);
-            ctx.moveTo(rightX + w*0.08, midY + 15);
-            ctx.lineTo(rightX + w*0.16, botY - 15);
-            ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(rightX + w*0.08, midY + 15);
+        ctx.lineTo(rightX, botY - 15);
+        ctx.moveTo(rightX + w*0.08, midY + 15);
+        ctx.lineTo(rightX + w*0.16, botY - 15);
+        ctx.stroke();
 
-            circle(ctx, {x: rightX, y: botY}, w*0.03, '3', w*0.045);
-            circle(ctx, {x: rightX + w*0.16, y: botY}, w*0.03, '3', w*0.045);
+        circle(ctx, {x: rightX, y: botY}, w*0.03, '3', w*0.045);
+        circle(ctx, {x: rightX + w*0.16, y: botY}, w*0.03, '3', w*0.045);
 
-            // Labels
-            ctx.font = `${w * 0.04}px Crimson Text`;
-            ctx.fillText('12 = 2² × 3', leftX, h * 0.95);
-            ctx.fillText('18 = 2 × 3²', rightX, h * 0.95);
-        }
+        ctx.font = `${w * 0.04}px Crimson Text`;
+        ctx.fillText('12 = 2² × 3', leftX, h * 0.95);
+        ctx.fillText('18 = 2 × 3²', rightX, h * 0.95);
+      }
 
-        function drawStep2() {
-            const canvas = document.getElementById('canvas-step2');
-            if (!canvas) return;
-            const ctx = setupCanvas(canvas);
-            const w = canvas.getBoundingClientRect().width;
-            const h = canvas.getBoundingClientRect().height;
+      function drawStep2() {
+        const canvas = document.getElementById('canvas-step2');
+        if (!canvas) return;
+        const ctx = setupCanvas(canvas);
+        const w = canvas.getBoundingClientRect().width;
+        const h = canvas.getBoundingClientRect().height;
 
-            ctx.font = `${w * 0.055}px Crimson Text`;
-            ctx.fillText('Prime factors:', w * 0.5, h * 0.3);
-            
-            ctx.font = `bold ${w * 0.08}px Crimson Text`;
-            ctx.fillStyle = '#daa98a';
-            ctx.fillText('2  and  3', w * 0.5, h * 0.6);
-        }
+        ctx.font = `${w * 0.055}px Crimson Text`;
+        ctx.fillText('Prime factors:', w * 0.5, h * 0.3);
+        
+        ctx.font = `bold ${w * 0.08}px Crimson Text`;
+        ctx.fillStyle = '#daa98a';
+        ctx.fillText('2  and  3', w * 0.5, h * 0.6);
+      }
 
-        function drawStep3() {
-            const canvas = document.getElementById('canvas-step3');
-            if (!canvas) return;
-            const ctx = setupCanvas(canvas);
-            const w = canvas.getBoundingClientRect().width;
-            const h = canvas.getBoundingClientRect().height;
+      function drawStep3() {
+        const canvas = document.getElementById('canvas-step3');
+        if (!canvas) return;
+        const ctx = setupCanvas(canvas);
+        const w = canvas.getBoundingClientRect().width;
+        const h = canvas.getBoundingClientRect().height;
 
-            ctx.font = `${w * 0.045}px Crimson Text`;
-            ctx.fillStyle = '#1a1a1a';
-            ctx.fillText('Highest power of 2: 2²', w * 0.5, h * 0.3);
-            ctx.fillText('Highest power of 3: 3²', w * 0.5, h * 0.45);
+        ctx.font = `${w * 0.045}px Crimson Text`;
+        ctx.fillStyle = '#1a1a1a';
+        ctx.fillText('Highest power of 2: 2²', w * 0.5, h * 0.3);
+        ctx.fillText('Highest power of 3: 3²', w * 0.5, h * 0.45);
 
-            ctx.beginPath();
-            ctx.moveTo(w * 0.25, h * 0.55);
-            ctx.lineTo(w * 0.75, h * 0.55);
-            ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(w * 0.25, h * 0.55);
+        ctx.lineTo(w * 0.75, h * 0.55);
+        ctx.stroke();
 
-            ctx.font = `bold ${w * 0.07}px Crimson Text`;
-            ctx.fillStyle = '#daa98a';
-            ctx.fillText('2² × 3² = 36', w * 0.5, h * 0.75);
-        }
+        ctx.font = `bold ${w * 0.07}px Crimson Text`;
+        ctx.fillStyle = '#daa98a';
+        ctx.fillText('2² × 3² = 36', w * 0.5, h * 0.75);
+      }
 
-        function initializeCanvases() {
-            drawStep1();
-            drawStep2();
-            drawStep3();
-        }
-
-        window.addEventListener('DOMContentLoaded', initializeCanvases);
-        window.addEventListener('resize', initializeCanvases);
+      setTimeout(function() {
+        drawStep1();
+        drawStep2();
+        drawStep3();
+      }, 500);
     </script>
-
-
-
-      
+  </div>
 </div>
+
+
+
+
+
+
+
+
   
 <script>
 // Reference button functionality
