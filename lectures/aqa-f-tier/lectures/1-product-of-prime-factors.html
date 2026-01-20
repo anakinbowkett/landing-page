@@ -1233,228 +1233,220 @@ html,body{
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     font-family: 'Crimson Text', serif;
   ">Close</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   <div id="guideContent">
     <div class="container">
-      <h1>Lowest Common Multiple (LCM)</h1>
-      
-      <div class="definition">
-        The smallest number that is a multiple of two or more numbers.
+  <h1>Lowest Common Multiple (LCM)</h1>
+  
+  <div class="definition">
+    The smallest number that appears in both times tables.
+  </div>
+  
+  <div class="mark-scheme-container">
+    <div class="mark-scheme-header">Common Errors & Mark Deductions</div>
+    <div class="mark-scheme-content">
+      <div class="marks-column">
+        <div class="mark-item">-1</div>
+        <div class="mark-item">-1</div>
+        <div class="mark-item">-1</div>
       </div>
-      
-      <div class="mark-scheme-container">
-        <div class="mark-scheme-header">Common Errors & Mark Deductions</div>
-        <div class="mark-scheme-content">
-          <div class="marks-column">
-            <div class="mark-item">-1</div>
-            <div class="mark-item">-1</div>
-            <div class="mark-item">-1</div>
-          </div>
-          <div class="mistakes-column">
-            <div class="mistake-row">
-              <span class="mistake-bold">Finding HCF instead of LCM</span> (e.g., writing 6 for LCM of 12 and 18). LCM must be larger than or equal to both numbers, not smaller.
-            </div>
-            <div class="mistake-row">
-              <span class="mistake-bold">Just multiplying the numbers</span> (e.g., 12 × 18 = 216). This only works when numbers have no common factors. Use prime factorization for accuracy.
-            </div>
-            <div class="mistake-row">
-              <span class="mistake-bold">Missing a prime factor power</span> (e.g., writing 2² × 3 instead of 2² × 3²). You must take the highest power of each prime that appears.
-            </div>
-          </div>
+      <div class="mistakes-column">
+        <div class="mistake-row">
+          <span class="mistake-bold">Finding HCF instead of LCM</span> (e.g., writing 2 for LCM of 4 and 6). The LCM must be larger than both numbers, not smaller.
         </div>
-      </div>
-      
-      <div class="question-variations">
-        <div class="variations-title">How Questions Ask This</div>
-        <div class="variation-item">Find the lowest common multiple (LCM) of 12 and 18</div>
-        <div class="variation-item">What is the LCM of 12 and 18?</div>
-        <div class="variation-item">Calculate the smallest number that is a multiple of both 12 and 18</div>
-        <div class="variation-item">Work out the least common multiple of 12 and 18</div>
-        <div class="variation-item">Find the LCM of 12 and 18 using prime factorization</div>
-      </div>
-      
-      <div class="main-content">
-        <div class="question">Find the lowest common multiple (LCM) of 12 and 18.</div>
-        
-        <div class="method-title">The Method</div>
-        
-        <div class="steps-container">
-          <div class="step">
-            <div class="step-left">
-              <div class="step-number">Step One</div>
-              <div class="step-intro">Write both numbers as products of primes</div>
-              <div class="step-detail">Break down each number into its prime factors using factor trees. Circle all the prime numbers at the bottom.</div>
-            </div>
-            <div class="step-right">
-              <canvas class="step-canvas" id="canvas-step1"></canvas>
-            </div>
-          </div>
-          
-          <div class="step">
-            <div class="step-left">
-              <div class="step-number">Step Two</div>
-              <div class="step-intro">Identify all unique prime factors</div>
-              <div class="step-detail">List every different prime that appears in either factorization (in this case: 2 and 3).</div>
-            </div>
-            <div class="step-right">
-              <canvas class="step-canvas" id="canvas-step2"></canvas>
-            </div>
-          </div>
-          
-          <div class="step">
-            <div class="step-left">
-              <div class="step-number">Step Three</div>
-              <div class="step-intro">Take the highest power of each prime</div>
-              <div class="step-detail">For each prime, use whichever number has it raised to the higher power. Then multiply them together to get the LCM.</div>
-            </div>
-            <div class="step-right">
-              <canvas class="step-canvas" id="canvas-step3"></canvas>
-            </div>
-          </div>
+        <div class="mistake-row">
+          <span class="mistake-bold">Just multiplying the numbers</span> (e.g., 4 × 6 = 24). This only works sometimes. The LCM is usually smaller than this.
         </div>
-
-        <div class="final-answer">
-          LCM of 12 and 18 = 36
+        <div class="mistake-row">
+          <span class="mistake-bold">Stopping too early</span> (e.g., listing only 4, 8 and 6, 12). You need to keep listing until you find a match in both lists.
         </div>
       </div>
     </div>
+  </div>
+  
+  <div class="question-variations">
+    <div class="variations-title">How Questions Ask This</div>
+    <div class="variation-item">Find the lowest common multiple (LCM) of 4 and 6</div>
+    <div class="variation-item">What is the LCM of 4 and 6?</div>
+    <div class="variation-item">Calculate the smallest number that is a multiple of both 4 and 6</div>
+    <div class="variation-item">Work out the least common multiple of 4 and 6</div>
+    <div class="variation-item">Find the LCM of 4 and 6</div>
+  </div>
+  
+  <div class="main-content">
+    <div class="question">Find the lowest common multiple (LCM) of 4 and 6.</div>
     
-    <script>
-      function setupCanvas(canvas) {
-        const dpr = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        const ctx = canvas.getContext('2d');
-        ctx.scale(dpr, dpr);
-        ctx.lineWidth = Math.max(1.5, rect.width * 0.005);
-        ctx.strokeStyle = '#daa98a';
-        ctx.fillStyle = '#1a1a1a';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        return ctx;
-      }
+    <div class="method-title">The Method</div>
+    
+    <div class="steps-container">
+      <div class="step">
+        <div class="step-left">
+          <div class="step-number">Step One</div>
+          <div class="step-intro">List multiples of the first number</div>
+          <div class="step-detail">Write out the times table for 4, going up in 4s. Keep going until you have at least 5 or 6 multiples.</div>
+        </div>
+        <div class="step-right">
+          <canvas class="step-canvas" id="canvas-step1"></canvas>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-left">
+          <div class="step-number">Step Two</div>
+          <div class="step-intro">List multiples of the second number</div>
+          <div class="step-detail">Write out the times table for 6, going up in 6s. Again, list at least 5 or 6 multiples.</div>
+        </div>
+        <div class="step-right">
+          <canvas class="step-canvas" id="canvas-step2"></canvas>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-left">
+          <div class="step-number">Step Three</div>
+          <div class="step-intro">Find the smallest number in both lists</div>
+          <div class="step-detail">Look at both lists and circle any numbers that appear in BOTH. The smallest one is your LCM.</div>
+        </div>
+        <div class="step-right">
+          <canvas class="step-canvas" id="canvas-step3"></canvas>
+        </div>
+      </div>
+    </div>
 
-      function text(ctx, p, value, size) {
-        const minSize = Math.max(10, size);
-        ctx.font = `${minSize}px Crimson Text`;
-        ctx.fillText(value, p.x, p.y);
-      }
+    <div class="final-answer">
+      LCM of 4 and 6 = 12
+    </div>
+  </div>
+</div>
 
-      function circle(ctx, p, r, value, size) {
-        const minR = Math.max(8, r);
-        const minSize = Math.max(9, size);
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, minR, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.font = `${minSize}px Crimson Text`;
-        ctx.fillText(value, p.x, p.y);
-      }
+<script>
+  function setupCanvas(canvas) {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.lineWidth = Math.max(1.5, rect.width * 0.005);
+    ctx.strokeStyle = '#daa98a';
+    ctx.fillStyle = '#1a1a1a';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    return ctx;
+  }
 
-      function drawStep1() {
-        const canvas = document.getElementById('canvas-step1');
-        if (!canvas) return;
-        const ctx = setupCanvas(canvas);
-        const w = canvas.getBoundingClientRect().width;
-        const h = canvas.getBoundingClientRect().height;
+  function text(ctx, p, value, size, bold) {
+    const minSize = Math.max(10, size);
+    ctx.font = `${bold ? 'bold ' : ''}${minSize}px Crimson Text`;
+    ctx.fillText(value, p.x, p.y);
+  }
 
-        const leftX = w * 0.25;
-        const rightX = w * 0.75;
-        const topY = h * 0.2;
-        const midY = h * 0.5;
-        const botY = h * 0.8;
+  function circle(ctx, x, y, r) {
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
 
-        ctx.beginPath();
-        ctx.moveTo(leftX, topY + 15);
-        ctx.lineTo(leftX - w*0.08, midY - 15);
-        ctx.moveTo(leftX, topY + 15);
-        ctx.lineTo(leftX + w*0.08, midY - 15);
-        ctx.stroke();
+  function drawStep1() {
+    const canvas = document.getElementById('canvas-step1');
+    if (!canvas) return;
+    const ctx = setupCanvas(canvas);
+    const w = canvas.getBoundingClientRect().width;
+    const h = canvas.getBoundingClientRect().height;
 
-        text(ctx, {x: leftX, y: topY}, '12', w * 0.055);
-        text(ctx, {x: leftX - w*0.08, y: midY}, '2', w * 0.05);
-        text(ctx, {x: leftX + w*0.08, y: midY}, '6', w * 0.05);
+    ctx.font = `${w * 0.045}px Crimson Text`;
+    ctx.fillText('Multiples of 4:', w * 0.5, h * 0.25);
+    
+    ctx.font = `bold ${w * 0.065}px Crimson Text`;
+    ctx.fillStyle = '#daa98a';
+    ctx.fillText('4,  8,  12,  16,  20,  24', w * 0.5, h * 0.55);
+  }
 
-        ctx.beginPath();
-        ctx.moveTo(leftX + w*0.08, midY + 15);
-        ctx.lineTo(leftX, botY - 15);
-        ctx.moveTo(leftX + w*0.08, midY + 15);
-        ctx.lineTo(leftX + w*0.16, botY - 15);
-        ctx.stroke();
+  function drawStep2() {
+    const canvas = document.getElementById('canvas-step2');
+    if (!canvas) return;
+    const ctx = setupCanvas(canvas);
+    const w = canvas.getBoundingClientRect().width;
+    const h = canvas.getBoundingClientRect().height;
 
-        circle(ctx, {x: leftX, y: botY}, w*0.03, '2', w*0.045);
-        circle(ctx, {x: leftX + w*0.16, y: botY}, w*0.03, '3', w*0.045);
+    ctx.font = `${w * 0.045}px Crimson Text`;
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillText('Multiples of 4:', w * 0.5, h * 0.2);
+    
+    ctx.font = `${w * 0.055}px Crimson Text`;
+    ctx.fillText('4,  8,  12,  16,  20,  24', w * 0.5, h * 0.35);
 
-        ctx.beginPath();
-        ctx.moveTo(rightX, topY + 15);
-        ctx.lineTo(rightX - w*0.08, midY - 15);
-        ctx.moveTo(rightX, topY + 15);
-        ctx.lineTo(rightX + w*0.08, midY - 15);
-        ctx.stroke();
+    ctx.font = `${w * 0.045}px Crimson Text`;
+    ctx.fillText('Multiples of 6:', w * 0.5, h * 0.55);
+    
+    ctx.font = `bold ${w * 0.065}px Crimson Text`;
+    ctx.fillStyle = '#daa98a';
+    ctx.fillText('6,  12,  18,  24,  30', w * 0.5, h * 0.75);
+  }
 
-        text(ctx, {x: rightX, y: topY}, '18', w * 0.055);
-        text(ctx, {x: rightX - w*0.08, y: midY}, '2', w * 0.05);
-        text(ctx, {x: rightX + w*0.08, y: midY}, '9', w * 0.05);
+  function drawStep3() {
+    const canvas = document.getElementById('canvas-step3');
+    if (!canvas) return;
+    const ctx = setupCanvas(canvas);
+    const w = canvas.getBoundingClientRect().width;
+    const h = canvas.getBoundingClientRect().height;
 
-        ctx.beginPath();
-        ctx.moveTo(rightX + w*0.08, midY + 15);
-        ctx.lineTo(rightX, botY - 15);
-        ctx.moveTo(rightX + w*0.08, midY + 15);
-        ctx.lineTo(rightX + w*0.16, botY - 15);
-        ctx.stroke();
+    ctx.font = `${w * 0.04}px Crimson Text`;
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillText('Multiples of 4:', w * 0.5, h * 0.15);
+    
+    ctx.font = `${w * 0.048}px Crimson Text`;
+    ctx.fillText('4,  8,  12,  16,  20,  24', w * 0.5, h * 0.28);
 
-        circle(ctx, {x: rightX, y: botY}, w*0.03, '3', w*0.045);
-        circle(ctx, {x: rightX + w*0.16, y: botY}, w*0.03, '3', w*0.045);
+    // Circle 12 and 24
+    circle(ctx, w * 0.445, h * 0.28, w * 0.035);
+    circle(ctx, w * 0.72, h * 0.28, w * 0.035);
 
-        ctx.font = `${w * 0.04}px Crimson Text`;
-        ctx.fillText('12 = 2² × 3', leftX, h * 0.95);
-        ctx.fillText('18 = 2 × 3²', rightX, h * 0.95);
-      }
+    ctx.font = `${w * 0.04}px Crimson Text`;
+    ctx.fillText('Multiples of 6:', w * 0.5, h * 0.45);
+    
+    ctx.font = `${w * 0.048}px Crimson Text`;
+    ctx.fillText('6,  12,  18,  24,  30', w * 0.5, h * 0.58);
 
-      function drawStep2() {
-        const canvas = document.getElementById('canvas-step2');
-        if (!canvas) return;
-        const ctx = setupCanvas(canvas);
-        const w = canvas.getBoundingClientRect().width;
-        const h = canvas.getBoundingClientRect().height;
+    // Circle 12 and 24
+    circle(ctx, w * 0.405, h * 0.58, w * 0.035);
+    circle(ctx, w * 0.59, h * 0.58, w * 0.035);
 
-        ctx.font = `${w * 0.055}px Crimson Text`;
-        ctx.fillText('Prime factors:', w * 0.5, h * 0.3);
-        
-        ctx.font = `bold ${w * 0.08}px Crimson Text`;
-        ctx.fillStyle = '#daa98a';
-        ctx.fillText('2  and  3', w * 0.5, h * 0.6);
-      }
+    ctx.font = `bold ${w * 0.055}px Crimson Text`;
+    ctx.fillStyle = '#daa98a';
+    ctx.fillText('Smallest match: 12', w * 0.5, h * 0.8);
+  }
 
-      function drawStep3() {
-        const canvas = document.getElementById('canvas-step3');
-        if (!canvas) return;
-        const ctx = setupCanvas(canvas);
-        const w = canvas.getBoundingClientRect().width;
-        const h = canvas.getBoundingClientRect().height;
-
-        ctx.font = `${w * 0.045}px Crimson Text`;
-        ctx.fillStyle = '#1a1a1a';
-        ctx.fillText('Highest power of 2: 2²', w * 0.5, h * 0.3);
-        ctx.fillText('Highest power of 3: 3²', w * 0.5, h * 0.45);
-
-        ctx.beginPath();
-        ctx.moveTo(w * 0.25, h * 0.55);
-        ctx.lineTo(w * 0.75, h * 0.55);
-        ctx.stroke();
-
-        ctx.font = `bold ${w * 0.07}px Crimson Text`;
-        ctx.fillStyle = '#daa98a';
-        ctx.fillText('2² × 3² = 36', w * 0.5, h * 0.75);
-      }
-
-      // Don't draw immediately - wait for modal to open
-window.drawLCMCanvases = function() {
-  drawStep1();
-  drawStep2();
-  drawStep3();
-};
-    </script>
+  window.drawLCMCanvases = function() {
+    drawStep1();
+    drawStep2();
+    drawStep3();
+  };
+</script>
   </div>
 </div>
 
