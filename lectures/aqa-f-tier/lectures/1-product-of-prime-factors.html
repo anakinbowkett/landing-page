@@ -288,8 +288,12 @@ html,body{
 
 .chat-subtitle {
   font-size: 13px;
-  color: var(--text-secondary);
+  color: white;
   margin: 0;
+  background: #1d7fe2;
+  padding: 6px 12px;
+  border-radius: 13px;
+  display: inline-block;
 }
 
 .chat-messages {
@@ -939,9 +943,9 @@ html,body{
 
   <div class="chat-side">
     <div class="chat-header">
-      <div class="chat-title">AI Assistant</div>
-      <div class="chat-subtitle" id="chatSubtitle">Click a question to get help</div>
-    </div>
+  <img src="https://i.postimg.cc/SNYsJx8y/Montura_logo_removebg_preview.png" alt="Montura" style="height: 40px; width: auto; margin-bottom: 8px;">
+  <div class="chat-subtitle" id="chatSubtitle">Click a question to get help</div>
+</div>
 
     <div class="chat-messages" id="chatMessages"></div>
 
@@ -2197,10 +2201,6 @@ document.addEventListener('DOMContentLoaded', function() {
       activeBox.style.borderColor = '#1d7fe2';
     }
     
-    if (questionData) {
-      addMessageToChat(`Now helping with Q${questionNumber}: "${questionData.question}". What would you like to know?`, false);
-    }
-  };
   
   setTimeout(() => {
     window.setCurrentQuestion(1);
