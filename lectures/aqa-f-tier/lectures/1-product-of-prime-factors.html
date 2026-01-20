@@ -1225,7 +1225,37 @@ html,body{
       
 </div>
   
+<script>
+// Reference button functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const referenceBtn = document.getElementById('referenceBtn');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const referenceModal = document.getElementById('referenceModal');
   
+  if (referenceBtn) {
+    referenceBtn.addEventListener('click', function() {
+      referenceModal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    });
+  }
+  
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', function() {
+      referenceModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+  }
+  
+  if (referenceModal) {
+    referenceModal.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+  }
+});
+</script>  
   
   
   
