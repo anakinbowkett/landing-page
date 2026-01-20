@@ -18,14 +18,46 @@ export default async function handler(req, res) {
   try {
     const { message, conversationHistory, questionData } = req.body;
 
-    // Build the system prompt with question context
-    const systemPrompt = `You are a helpful math tutor helping students understand prime factors and HCF (Highest Common Factor). 
+    // LCM REFERENCE GUIDE - fed to AI as context
+const lcmGuide = `
+REFERENCE GUIDE: Lowest Common Multiple (LCM)
+
+DEFINITION:
+The smallest number that appears in both times tables.
+
+METHOD:
+Step 1: List multiples of the first number (write out its times table)
+Step 2: List multiples of the second number (write out its times table)
+Step 3: Find the smallest number that appears in BOTH lists
+
+EXAMPLE: LCM of 4 and 6
+- Multiples of 4: 4, 8, 12, 16, 20, 24...
+- Multiples of 6: 6, 12, 18, 24, 30...
+- Both lists contain 12 and 24
+- The smallest match is 12
+- Therefore, LCM of 4 and 6 = 12
+
+COMMON MISTAKES TO AVOID:
+1. Finding HCF instead of LCM (LCM must be larger than both numbers)
+2. Just multiplying the numbers (this only works sometimes)
+3. Stopping too early when listing multiples
+`;
+
+const systemPrompt = `You are a helpful math tutor for GCSE Foundation students (age 13-16).
+
+Use this reference guide to help students:
+${lcmGuide}
 
 Current Question: ${questionData?.question || 'No question selected'}
 Correct Answer: ${questionData?.correctAnswer || 'Not available'}
 Topic: ${questionData?.topic || 'Mathematics'}
 
-Be concise, encouraging, and educational. Help the student understand the concept, don't just give the answer.`;
+INSTRUCTIONS:
+- Always reference the guide's method when explaining
+- Keep explanations simple and clear for 13-year-olds
+- Don't just give the answer - guide them through the steps
+- Be encouraging and patient
+- Use the listing multiples method from the guide (NOT prime factorization)`;
 
     // Call DeepSeek API
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
