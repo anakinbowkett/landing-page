@@ -1448,11 +1448,12 @@ html,body{
         ctx.fillText('2² × 3² = 36', w * 0.5, h * 0.75);
       }
 
-      setTimeout(function() {
-        drawStep1();
-        drawStep2();
-        drawStep3();
-      }, 500);
+      // Don't draw immediately - wait for modal to open
+window.drawLCMCanvases = function() {
+  drawStep1();
+  drawStep2();
+  drawStep3();
+};
     </script>
   </div>
 </div>
@@ -1472,12 +1473,19 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeModalBtn = document.getElementById('closeModalBtn');
   const referenceModal = document.getElementById('referenceModal');
   
-  if (referenceBtn) {
-    referenceBtn.addEventListener('click', function() {
-      referenceModal.style.display = 'block';
-      document.body.style.overflow = 'hidden';
-    });
-  }
+ if (referenceBtn) {
+  referenceBtn.addEventListener('click', function() {
+    referenceModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    // Draw canvases after modal opens
+    setTimeout(function() {
+      if (typeof window.drawLCMCanvases === 'function') {
+        window.drawLCMCanvases();
+      }
+    }, 100);
+  });
+}
   
   if (closeModalBtn) {
     closeModalBtn.addEventListener('click', function() {
