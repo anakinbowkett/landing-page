@@ -994,76 +994,231 @@ html,body{
     
     <div id="guideContent">
       <!-- Your guide content will go here -->
-     <div id="guideContent" style="font-family: 'Crimson Text', serif; line-height: 1.6;">
-  <h1 style="font-size: 36px; margin-bottom: 20px; color: #000;">Product of Prime Factors</h1>
-  
-  <p style="font-size: 18px; color: #2a2a2a; margin-bottom: 30px; padding-left: 20px; border-left: 4px solid #daa98a;">
-    Breaking a number into prime numbers that multiply together to make the original number.
-  </p>
-  
-  <div style="background: #f8f8f8; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-    <h3 style="font-size: 16px; color: #666; margin-bottom: 15px; text-transform: uppercase;">Common Errors</h3>
-    <ul style="margin-left: 20px;">
-      <li style="margin-bottom: 10px;"><strong>Stopping at composite factors</strong> (e.g., 4 × 18). Continue until all factors are prime.</li>
-      <li style="margin-bottom: 10px;"><strong>Not using index notation</strong> (e.g., 2 × 2 × 2 instead of 2³).</li>
-      <li style="margin-bottom: 10px;"><strong>Including 1 in the answer</strong>. 1 is not a prime number.</li>
-    </ul>
-  </div>
-  
-  <div style="margin-bottom: 30px;">
-    <h3 style="font-size: 18px; color: #daa98a; margin-bottom: 15px;">How Questions Ask This</h3>
-    <ul style="margin-left: 20px;">
-      <li>Express 72 as a product of its prime factors</li>
-      <li>Write 72 as a product of prime factors</li>
-      <li>Find the prime factorization of 72</li>
-      <li>Express 72 in the form 2ᵃ × 3ᵇ</li>
-    </ul>
-  </div>
-  
-  <div style="background: white; border: 2px solid #daa98a; padding: 25px; border-radius: 8px;">
-    <h3 style="font-size: 18px; color: #daa98a; margin-bottom: 20px;">THE METHOD</h3>
-    
-    <div style="margin-bottom: 20px;">
-      <strong style="color: #daa98a;">STEP ONE:</strong> Split into ANY two factors
-      <p style="margin-left: 20px; color: #444;">Write the number at the top and draw two branches below. Split it into any factors, then circle any prime numbers.</p>
-    </div>
-    
-    <div style="margin-bottom: 20px;">
-      <strong style="color: #daa98a;">STEP TWO:</strong> Keep splitting until ALL are prime
-      <p style="margin-left: 20px; color: #444;">Split each non-circled number into two factors and repeat. Stop when every end number is circled (prime).</p>
-    </div>
-    
-    <div style="margin-bottom: 20px;">
-      <strong style="color: #daa98a;">STEP THREE:</strong> Collect and write with powers
-      <p style="margin-left: 20px; color: #444;">List all circled primes from smallest to largest, then count repeats and write as powers (e.g., 2, 2, 2 becomes 2³).</p>
-    </div>
-    
-    <div style="background: #fafafa; padding: 20px; border-radius: 8px; text-align: center; margin-top: 20px;">
-      <p style="font-size: 14px; color: #666; margin-bottom: 10px;">EXAMPLE:</p>
-      <p style="font-size: 20px; font-weight: bold; color: #000;">72 = 2³ × 3²</p>
-    </div>
-  </div>
-</div>
+     <div class="container">
+        <h1>Lowest Common Multiple (LCM)</h1>
+        
+        <div class="definition">
+            The smallest number that is a multiple of two or more numbers.
+        </div>
+        
+        <div class="mark-scheme-container">
+            <div class="mark-scheme-header">Common Errors & Mark Deductions</div>
+            <div class="mark-scheme-content">
+                <div class="marks-column">
+                    <div class="mark-item">-1</div>
+                    <div class="mark-item">-1</div>
+                    <div class="mark-item">-1</div>
+                </div>
+                <div class="mistakes-column">
+                    <div class="mistake-row">
+                        <span class="mistake-bold">Finding HCF instead of LCM</span> (e.g., writing 6 for LCM of 12 and 18). LCM must be larger than or equal to both numbers, not smaller.
+                    </div>
+                    <div class="mistake-row">
+                        <span class="mistake-bold">Just multiplying the numbers</span> (e.g., 12 × 18 = 216). This only works when numbers have no common factors. Use prime factorization for accuracy.
+                    </div>
+                    <div class="mistake-row">
+                        <span class="mistake-bold">Missing a prime factor power</span> (e.g., writing 2² × 3 instead of 2² × 3²). You must take the highest power of each prime that appears.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-variations">
+            <div class="variations-title">How Questions Ask This</div>
+            <div class="variation-item">Find the lowest common multiple (LCM) of 12 and 18</div>
+            <div class="variation-item">What is the LCM of 12 and 18?</div>
+            <div class="variation-item">Calculate the smallest number that is a multiple of both 12 and 18</div>
+            <div class="variation-item">Work out the least common multiple of 12 and 18</div>
+            <div class="variation-item">Find the LCM of 12 and 18 using prime factorization</div>
+        </div>
+        
+        <div class="main-content">
+            <div class="question">Find the lowest common multiple (LCM) of 12 and 18.</div>
+            
+            <div class="method-title">The Method</div>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-left">
+                        <div class="step-number">Step One</div>
+                        <div class="step-intro">Write both numbers as products of primes</div>
+                        <div class="step-detail">Break down each number into its prime factors using factor trees. Circle all the prime numbers at the bottom.</div>
+                    </div>
+                    <div class="step-right">
+                        <canvas class="step-canvas" id="canvas-step1"></canvas>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-left">
+                        <div class="step-number">Step Two</div>
+                        <div class="step-intro">Identify all unique prime factors</div>
+                        <div class="step-detail">List every different prime that appears in either factorization (in this case: 2 and 3).</div>
+                    </div>
+                    <div class="step-right">
+                        <canvas class="step-canvas" id="canvas-step2"></canvas>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-left">
+                        <div class="step-number">Step Three</div>
+                        <div class="step-intro">Take the highest power of each prime</div>
+                        <div class="step-detail">For each prime, use whichever number has it raised to the higher power. Then multiply them together to get the LCM.</div>
+                    </div>
+                    <div class="step-right">
+                        <canvas class="step-canvas" id="canvas-step3"></canvas>
+                    </div>
+                </div>
+            </div>
 
-<script>
-// Reference button functionality
-document.getElementById('referenceBtn').addEventListener('click', function() {
-  document.getElementById('referenceModal').style.display = 'block';
-  document.body.style.overflow = 'hidden';
-});
+            <div class="final-answer">
+                LCM of 12 and 18 = 36
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function setupCanvas(canvas) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            ctx.lineWidth = Math.max(1.5, rect.width * 0.005);
+            ctx.strokeStyle = '#daa98a';
+            ctx.fillStyle = '#1a1a1a';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            return ctx;
+        }
 
-document.getElementById('closeModalBtn').addEventListener('click', function() {
-  document.getElementById('referenceModal').style.display = 'none';
-  document.body.style.overflow = 'auto';
-});
+        function text(ctx, p, value, size) {
+            const minSize = Math.max(10, size);
+            ctx.font = `${minSize}px Crimson Text`;
+            ctx.fillText(value, p.x, p.y);
+        }
 
-document.getElementById('referenceModal').addEventListener('click', function(e) {
-  if (e.target === this) {
-    this.style.display = 'none';
-    document.body.style.overflow = 'auto';
-  }
-});
-</script> 
+        function circle(ctx, p, r, value, size) {
+            const minR = Math.max(8, r);
+            const minSize = Math.max(9, size);
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, minR, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.font = `${minSize}px Crimson Text`;
+            ctx.fillText(value, p.x, p.y);
+        }
+
+        function drawStep1() {
+            const canvas = document.getElementById('canvas-step1');
+            if (!canvas) return;
+            const ctx = setupCanvas(canvas);
+            const w = canvas.getBoundingClientRect().width;
+            const h = canvas.getBoundingClientRect().height;
+
+            const leftX = w * 0.25;
+            const rightX = w * 0.75;
+            const topY = h * 0.2;
+            const midY = h * 0.5;
+            const botY = h * 0.8;
+
+            // 12 tree
+            ctx.beginPath();
+            ctx.moveTo(leftX, topY + 15);
+            ctx.lineTo(leftX - w*0.08, midY - 15);
+            ctx.moveTo(leftX, topY + 15);
+            ctx.lineTo(leftX + w*0.08, midY - 15);
+            ctx.stroke();
+
+            text(ctx, {x: leftX, y: topY}, '12', w * 0.055);
+            text(ctx, {x: leftX - w*0.08, y: midY}, '2', w * 0.05);
+            text(ctx, {x: leftX + w*0.08, y: midY}, '6', w * 0.05);
+
+            ctx.beginPath();
+            ctx.moveTo(leftX + w*0.08, midY + 15);
+            ctx.lineTo(leftX, botY - 15);
+            ctx.moveTo(leftX + w*0.08, midY + 15);
+            ctx.lineTo(leftX + w*0.16, botY - 15);
+            ctx.stroke();
+
+            circle(ctx, {x: leftX, y: botY}, w*0.03, '2', w*0.045);
+            circle(ctx, {x: leftX + w*0.16, y: botY}, w*0.03, '3', w*0.045);
+
+            // 18 tree
+            ctx.beginPath();
+            ctx.moveTo(rightX, topY + 15);
+            ctx.lineTo(rightX - w*0.08, midY - 15);
+            ctx.moveTo(rightX, topY + 15);
+            ctx.lineTo(rightX + w*0.08, midY - 15);
+            ctx.stroke();
+
+            text(ctx, {x: rightX, y: topY}, '18', w * 0.055);
+            text(ctx, {x: rightX - w*0.08, y: midY}, '2', w * 0.05);
+            text(ctx, {x: rightX + w*0.08, y: midY}, '9', w * 0.05);
+
+            ctx.beginPath();
+            ctx.moveTo(rightX + w*0.08, midY + 15);
+            ctx.lineTo(rightX, botY - 15);
+            ctx.moveTo(rightX + w*0.08, midY + 15);
+            ctx.lineTo(rightX + w*0.16, botY - 15);
+            ctx.stroke();
+
+            circle(ctx, {x: rightX, y: botY}, w*0.03, '3', w*0.045);
+            circle(ctx, {x: rightX + w*0.16, y: botY}, w*0.03, '3', w*0.045);
+
+            // Labels
+            ctx.font = `${w * 0.04}px Crimson Text`;
+            ctx.fillText('12 = 2² × 3', leftX, h * 0.95);
+            ctx.fillText('18 = 2 × 3²', rightX, h * 0.95);
+        }
+
+        function drawStep2() {
+            const canvas = document.getElementById('canvas-step2');
+            if (!canvas) return;
+            const ctx = setupCanvas(canvas);
+            const w = canvas.getBoundingClientRect().width;
+            const h = canvas.getBoundingClientRect().height;
+
+            ctx.font = `${w * 0.055}px Crimson Text`;
+            ctx.fillText('Prime factors:', w * 0.5, h * 0.3);
+            
+            ctx.font = `bold ${w * 0.08}px Crimson Text`;
+            ctx.fillStyle = '#daa98a';
+            ctx.fillText('2  and  3', w * 0.5, h * 0.6);
+        }
+
+        function drawStep3() {
+            const canvas = document.getElementById('canvas-step3');
+            if (!canvas) return;
+            const ctx = setupCanvas(canvas);
+            const w = canvas.getBoundingClientRect().width;
+            const h = canvas.getBoundingClientRect().height;
+
+            ctx.font = `${w * 0.045}px Crimson Text`;
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillText('Highest power of 2: 2²', w * 0.5, h * 0.3);
+            ctx.fillText('Highest power of 3: 3²', w * 0.5, h * 0.45);
+
+            ctx.beginPath();
+            ctx.moveTo(w * 0.25, h * 0.55);
+            ctx.lineTo(w * 0.75, h * 0.55);
+            ctx.stroke();
+
+            ctx.font = `bold ${w * 0.07}px Crimson Text`;
+            ctx.fillStyle = '#daa98a';
+            ctx.fillText('2² × 3² = 36', w * 0.5, h * 0.75);
+        }
+
+        function initializeCanvases() {
+            drawStep1();
+            drawStep2();
+            drawStep3();
+        }
+
+        window.addEventListener('DOMContentLoaded', initializeCanvases);
+        window.addEventListener('resize', initializeCanvases);
+    </script>
   
   
   
