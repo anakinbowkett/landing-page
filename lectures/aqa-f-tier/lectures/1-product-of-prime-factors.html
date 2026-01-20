@@ -90,6 +90,24 @@ html,body{
   opacity: 0.8;
 }
 
+.reference-btn {
+  position: absolute;
+  right: 220px;  /* Changed from 200px to add more space */
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background: #daa98a;  /* Changed from #1d7fe2 to your new color */
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reference-btn:hover {
+  background: #c4916f;  /* Darker shade for hover effect */
+}
+
 .formula-sheet-btn {
   position: absolute;
   right: 80px;
@@ -803,9 +821,13 @@ html,body{
     </div>
   </div>
   
-  <button class="formula-sheet-btn" id="formulaSheetBtn">
-    Formula Sheet
-  </button>
+  <button class="reference-btn" id="referenceBtn">
+  Reference
+</button>
+
+<button class="formula-sheet-btn" id="formulaSheetBtn">
+  Formula Sheet
+</button>
 </div>
 
 <div class="header-bar-2">
@@ -934,6 +956,80 @@ html,body{
   </div>
 </div>
 
+  
+  
+  
+ !-- Reference Guide Modal -->
+<div id="referenceModal" style="
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  overflow-y: auto;
+">
+  <div style="
+    position: relative;
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+  ">
+    <button id="closeModalBtn" style="
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #daa98a;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    ">Close</button>
+    
+    <div id="guideContent">
+      <!-- Your guide content will go here -->
+      <h1>Product of Prime Factors</h1>
+      <p style="font-size: 18px; margin: 20px 0;">Loading guide content...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// Reference button functionality
+document.getElementById('referenceBtn').addEventListener('click', function() {
+  document.getElementById('referenceModal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+});
+
+document.getElementById('closeModalBtn').addEventListener('click', function() {
+  document.getElementById('referenceModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+});
+
+document.getElementById('referenceModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    this.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+});
+</script> 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 <script>
 // Question answer functions
 function toggleSingleAnswer1(answer, button) {
