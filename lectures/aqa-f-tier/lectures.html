@@ -1075,7 +1075,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Topic item click handlers
+// Topic item click handlers
 expandedDiv.querySelectorAll('.topic-item').forEach(item => {
     item.addEventListener('click', function(e) {
         e.stopPropagation();
@@ -1085,6 +1085,8 @@ expandedDiv.querySelectorAll('.topic-item').forEach(item => {
         // Navigate to lecture page based on topic ID
         if (topicId === "1") {
             window.location.href = 'lectures/1-product-of-prime-factors.html';
+        } else if (topicId === "3") {
+            window.location.href = 'lectures/3-lowest-common-multiple.html';
         }
         // Add more conditions for other lectures as you create them
     });
