@@ -1080,7 +1080,6 @@ expandedDiv.querySelectorAll('.topic-item').forEach(item => {
     item.addEventListener('click', function(e) {
         e.stopPropagation();
         const topicId = this.dataset.topicId;
-        const topicTitle = this.querySelector('.topic-item-title').textContent;
         
         // Navigate to lecture page based on topic ID
         if (topicId === "1") {
@@ -1088,7 +1087,6 @@ expandedDiv.querySelectorAll('.topic-item').forEach(item => {
         } else if (topicId === "3") {
             window.location.href = 'lectures/3-lowest-common-multiple.html';
         }
-        // Add more conditions for other lectures as you create them
     });
 });
     }
