@@ -940,7 +940,7 @@ html,body{
 
   <div class="chat-side">
     <div class="chat-header">
-      <div class="chat-title">AI Assistant</div>
+      <div class="chat-title"></div>
       <div class="chat-subtitle" id="chatSubtitle">Click a question to get help</div>
     </div>
 
@@ -2078,8 +2078,9 @@ document.addEventListener('DOMContentLoaded', function() {
     messageDiv.className = isUser ? 'message message-user' : 'message message-assistant';
     
     const label = document.createElement('div');
-    label.className = 'message-label';
-    label.textContent = isUser ? 'You' : 'AI Assistant';
+label.className = 'message-label';
+label.textContent = isUser ? 'You' : '';
+label.style.display = isUser ? 'block' : 'none';
     
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
