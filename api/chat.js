@@ -40,19 +40,19 @@ COMMON MISTAKES TO AVOID:
 
 'Highest Common Factor (HCF)': `
 REFERENCE GUIDE: Highest Common Factor (HCF)
-DEFINITION: The highest number that divides exactly into two or more numbers.
+DEFINITION: The biggest number that divides exactly into two or more numbers.
 METHOD:
-Step 1: Prime factorise both numbers using factor trees.
-Step 2: Fill the Venn diagram with common prime factors in the middle and the rest outside.
-Step 3: Multiply only the numbers in the overlap to get the HCF.
-EXAMPLE: HCF of 18 and 24 = 6
+Step 1: List prime factors of each number.
+Step 2: Fill a Venn diagram with common factors in the overlapping section, others in separate sections.
+Step 3: Multiply the common factors to get the HCF.
+EXAMPLE: HCF of 12 and 18 = 6
 COMMON MISTAKES TO AVOID:
 
-Finding the LCM instead of the HCF.
+Choosing the wrong common factor without checking all factors.
 
-Missing common factors when multiplying.
+Mixing up HCF and LCM.
 
-Not using a structured method like a Venn diagram.
+Not listing all factors before determining the HCF.
 `,
 
 
