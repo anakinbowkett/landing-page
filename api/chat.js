@@ -81,11 +81,51 @@ COMMON MISTAKES TO AVOID:
 
 
 
+'Ordering Numbers & Rounding': `
+REFERENCE GUIDE: Ordering Numbers & Rounding
+DEFINITION: Putting numbers in order or changing them to a simpler form by rounding.
+METHOD:
+Step 1: Mark numbers on a number line covering their range.
+Step 2: Round each number according to the place value, rounding up if the next digit is 5 or more.
+Step 3: Order the rounded numbers from smallest to largest.
+EXAMPLE: Rounded numbers: 46 → 50, 83 → 80, 29 → 30; Ordered: 30, 50, 80
+COMMON MISTAKES TO AVOID:
+
+Not paying attention to decimal places when ordering.
+
+Rounding incorrectly without checking the place value.
+
+Mixing ascending and descending order; read the question carefully.
+`,
+
+
+
+
+
+
+
+'Number Conversions': `
+REFERENCE GUIDE: Number Conversions
+DEFINITION: Changing a number between fractions, decimals, and percentages.
+METHOD:
+Step 1: Use a hundred grid to understand the decimal as parts of 100.
+Step 2: Write the fraction and simplify if possible.
+Step 3: Convert to a percentage by expressing as out of 100.
+EXAMPLE: 0.25 = 1/4 = 25%
+COMMON MISTAKES TO AVOID:
+
+Forgetting to multiply or divide by 100 when converting.
+
+Converting in the wrong direction (e.g., dividing instead of multiplying).
+
+Not simplifying the fraction after conversion.
+`,
+
+
+
 
 
       
-
-
 
 
 
