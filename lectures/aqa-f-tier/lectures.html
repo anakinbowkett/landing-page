@@ -1081,15 +1081,45 @@ expandedDiv.querySelectorAll('.topic-item').forEach(item => {
         e.stopPropagation();
         const topicId = this.dataset.topicId;
         
-        // Navigate to lecture page based on topic ID
-        if (topicId === "1") {
-            window.location.href = 'lectures/1-product-of-prime-factors.html';
-        } else if (topicId === "3") {
-    window.location.href = 'lectures/3-lowest-common-multiple.html';
-}
+        // Map topic IDs to lecture files
+        const lectureMap = {
+            '1': 'lectures/1-product-of-prime-factors.html',
+            '2': 'lectures/2-highest-common-factor.html',
+            '3': 'lectures/3-lowest-common-multiple.html',
+            '4': 'lectures/4-ordering-numbers-rounding.html',
+            '5': 'lectures/5-number-conversions.html',
+            '6': 'lectures/6-order-of-operations-bidmas.html',
+            '7': 'lectures/7-inequalities.html',
+            '8': 'lectures/8-error-intervals.html',
+            '9': 'lectures/9-bounds-and-truncation.html',
+            '10': 'lectures/10-rounding-decimals-and-significant-figures.html',
+            '11': 'lectures/11-multiplying-fractions.html',
+            '12': 'lectures/12-dividing-fractions.html',
+            '13': 'lectures/13-adding-fractions.html',
+            '14': 'lectures/14-subtracting-fractions.html',
+            '15': 'lectures/15-simplifying-fractions.html',
+            '16': 'lectures/16-mixed-and-improper-fractions.html',
+            '17': 'lectures/17-fractions-of-an-amount.html',
+            '18': 'lectures/18-percentage-of-an-amount.html',
+            '19': 'lectures/19-reverse-percentages.html',
+            '20': 'lectures/20-simple-interest.html',
+            '21': 'lectures/21-compound-interest.html',
+            '22': 'lectures/22-depreciation.html',
+            '23': 'lectures/23-percentage-profit.html',
+            '24': 'lectures/24-value-for-money.html',
+            '25': 'lectures/25-standard-form-ordinary-numbers.html',
+            '26': 'lectures/26-number-powers-calculations.html',
+            '27': 'lectures/27-estimation.html',
+            '28': 'lectures/28-negative-numbers-ordering-operations.html',
+            '29': 'lectures/29-converting-between-fractions-decimals-percentages.html',
+            '30': 'lectures/30-unit-conversions-metric.html',
+            '31': 'lectures/31-calculator-fluency-ans-key-multi-step-calculations.html'
+        };
+        
+        if (lectureMap[topicId]) {
+            window.location.href = lectureMap[topicId];
+        }
     });
-});
-    }
 });
 </script>
 </body>
