@@ -1265,7 +1265,7 @@ html,body{
   <h1>Product of Prime Factors</h1>
   
   <div class="definition">
-    A product of prime factors is a number written as the multiplication of only prime numbers.
+    Writing a number as a multiplication of only prime numbers.
   </div>
   
   <div class="mark-scheme-container">
@@ -1278,13 +1278,13 @@ html,body{
       </div>
       <div class="mistakes-column">
         <div class="mistake-row">
-          <span class="mistake-bold">Including non-primes:</span> Using numbers like 4, 6, or 9 instead of breaking them into prime numbers.
+          <span class="mistake-bold">Stopping too early</span> (e.g., writing 18 = 2 × 9). 9 is not prime. You must keep splitting until all numbers are prime.
         </div>
         <div class="mistake-row">
-          <span class="mistake-bold">Missing factors:</span> Forgetting to include all prime factors when multiplying back to the original number.
+          <span class="mistake-bold">Missing a factor</span> (e.g., 24 = 2 × 2 × 3). This only makes 12. You’ve lost a factor of 2.
         </div>
         <div class="mistake-row">
-          <span class="mistake-bold">Incorrect order:</span> Writing factors in the wrong order or skipping the smallest primes first.
+          <span class="mistake-bold">Not using index form</span> (e.g., writing 2 × 2 × 2 × 3 instead of 2³ × 3). Foundation questions often ask for index form.
         </div>
       </div>
     </div>
@@ -1292,15 +1292,15 @@ html,body{
   
   <div class="question-variations">
     <div class="variations-title">How Questions Ask This</div>
-    <div class="variation-item">Write 36 as a product of prime factors.</div>
-    <div class="variation-item">Express 90 using only prime numbers multiplied together.</div>
-    <div class="variation-item">Find the prime factorisation of 48.</div>
-    <div class="variation-item">List all prime factors of 72.</div>
-    <div class="variation-item">Draw a factor tree for 60 and write it as a product of primes.</div>
+    <div class="variation-item">Write 24 as a product of its prime factors.</div>
+    <div class="variation-item">Express 36 as a product of prime factors in index form.</div>
+    <div class="variation-item">Find the prime factorisation of 18.</div>
+    <div class="variation-item">Show that 40 = 2³ × 5.</div>
+    <div class="variation-item">Complete the prime factor tree for 60.</div>
   </div>
   
   <div class="main-content">
-    <div class="question">Write 60 as a product of prime factors.</div>
+    <div class="question">Write 24 as a product of its prime factors.</div>
     
     <div class="method-title">The Method</div>
     
@@ -1308,8 +1308,10 @@ html,body{
       <div class="step">
         <div class="step-left">
           <div class="step-number">Step One</div>
-          <div class="step-intro">Start with a factor tree</div>
-          <div class="step-detail">Pick two numbers that multiply to 60, e.g., 6 × 10, and draw branches from 60 to these numbers.</div>
+          <div class="step-intro">Start a factor tree</div>
+          <div class="step-detail">
+            Write the number at the top. Split it into two factors. Pick easy ones like 2 if the number is even.
+          </div>
         </div>
         <div class="step-right">
           <canvas class="step-canvas" id="canvas-step1"></canvas>
@@ -1319,8 +1321,10 @@ html,body{
       <div class="step">
         <div class="step-left">
           <div class="step-number">Step Two</div>
-          <div class="step-intro">Break down non-prime numbers</div>
-          <div class="step-detail">Split 6 into 2 × 3 and 10 into 2 × 5, drawing branches for each.</div>
+          <div class="step-intro">Keep splitting</div>
+          <div class="step-detail">
+            If any number is not prime, split it again. Keep going until all the numbers at the bottom are prime.
+          </div>
         </div>
         <div class="step-right">
           <canvas class="step-canvas" id="canvas-step2"></canvas>
@@ -1330,8 +1334,10 @@ html,body{
       <div class="step">
         <div class="step-left">
           <div class="step-number">Step Three</div>
-          <div class="step-intro">Write as product of primes</div>
-          <div class="step-detail">Collect all the prime numbers from the tree: 2, 2, 3, 5. Multiply them to check they give 60.</div>
+          <div class="step-intro">Write the answer</div>
+          <div class="step-detail">
+            Multiply all the prime numbers at the bottom. Use index form if the same prime appears more than once.
+          </div>
         </div>
         <div class="step-right">
           <canvas class="step-canvas" id="canvas-step3"></canvas>
@@ -1340,7 +1346,7 @@ html,body{
     </div>
 
     <div class="final-answer">
-      60 = 2 × 2 × 3 × 5
+      24 = 2 × 2 × 2 × 3 = <strong>2³ × 3</strong>
     </div>
   </div>
 </div>
@@ -1361,15 +1367,16 @@ html,body{
     return ctx;
   }
 
-  function text(ctx, p, value, size, bold) {
-    const minSize = Math.max(10, size);
-    ctx.font = `${bold ? 'bold ' : ''}${minSize}px Crimson Text`;
-    ctx.fillText(value, p.x, p.y);
-  }
-
   function circle(ctx, x, y, r) {
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  function line(ctx, x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
     ctx.stroke();
   }
 
@@ -1380,17 +1387,15 @@ html,body{
     const w = canvas.getBoundingClientRect().width;
     const h = canvas.getBoundingClientRect().height;
 
+    ctx.font = `bold ${w * 0.06}px Crimson Text`;
+    ctx.fillText('24', w * 0.5, h * 0.15);
+
+    line(ctx, w * 0.5, h * 0.2, w * 0.3, h * 0.4);
+    line(ctx, w * 0.5, h * 0.2, w * 0.7, h * 0.4);
+
     ctx.font = `${w * 0.05}px Crimson Text`;
-    ctx.fillText('60', w/2, 30);
-
-    ctx.beginPath();
-    ctx.moveTo(w/2, 40);
-    ctx.lineTo(w*0.25, h/2);
-    ctx.lineTo(w*0.75, h/2);
-    ctx.stroke();
-
-    ctx.fillText('6', w*0.25, h/2 + 20);
-    ctx.fillText('10', w*0.75, h/2 + 20);
+    ctx.fillText('2', w * 0.3, h * 0.45);
+    ctx.fillText('12', w * 0.7, h * 0.45);
   }
 
   function drawStep2() {
@@ -1400,29 +1405,20 @@ html,body{
     const w = canvas.getBoundingClientRect().width;
     const h = canvas.getBoundingClientRect().height;
 
-    ctx.font = `${w * 0.045}px Crimson Text`;
-    ctx.fillText('60', w/2, 30);
+    ctx.font = `bold ${w * 0.06}px Crimson Text`;
+    ctx.fillText('24', w * 0.5, h * 0.1);
 
-    ctx.beginPath();
-    ctx.moveTo(w/2, 40);
-    ctx.lineTo(w*0.25, h/2);
-    ctx.lineTo(w*0.15, h-30);
-    ctx.moveTo(w*0.25, h/2);
-    ctx.lineTo(w*0.35, h-30);
+    line(ctx, w * 0.5, h * 0.15, w * 0.3, h * 0.3);
+    line(ctx, w * 0.5, h * 0.15, w * 0.7, h * 0.3);
 
-    ctx.moveTo(w*0.75, h/2);
-    ctx.lineTo(w*0.65, h-30);
-    ctx.moveTo(w*0.75, h/2);
-    ctx.lineTo(w*0.85, h-30);
-    ctx.stroke();
+    ctx.fillText('2', w * 0.3, h * 0.35);
+    ctx.fillText('12', w * 0.7, h * 0.35);
 
-    ctx.fillText('6', w*0.25, h/2 + 10);
-    ctx.fillText('10', w*0.75, h/2 + 10);
+    line(ctx, w * 0.7, h * 0.38, w * 0.55, h * 0.55);
+    line(ctx, w * 0.7, h * 0.38, w * 0.85, h * 0.55);
 
-    ctx.fillText('2', w*0.15, h-15);
-    ctx.fillText('3', w*0.35, h-15);
-    ctx.fillText('2', w*0.65, h-15);
-    ctx.fillText('5', w*0.85, h-15);
+    ctx.fillText('2', w * 0.55, h * 0.6);
+    ctx.fillText('6', w * 0.85, h * 0.6);
   }
 
   function drawStep3() {
@@ -1432,13 +1428,32 @@ html,body{
     const w = canvas.getBoundingClientRect().width;
     const h = canvas.getBoundingClientRect().height;
 
-    ctx.font = `${w * 0.06}px Crimson Text`;
-    ctx.fillStyle = '#1a1a1a';
-    ctx.fillText('Prime factors:', w/2, h/3);
+    ctx.font = `bold ${w * 0.06}px Crimson Text`;
+    ctx.fillText('24', w * 0.5, h * 0.08);
 
-    ctx.font = `bold ${w * 0.07}px Crimson Text`;
+    line(ctx, w * 0.5, h * 0.13, w * 0.3, h * 0.25);
+    line(ctx, w * 0.5, h * 0.13, w * 0.7, h * 0.25);
+
+    ctx.fillText('2', w * 0.3, h * 0.3);
+    ctx.fillText('12', w * 0.7, h * 0.3);
+
+    line(ctx, w * 0.7, h * 0.33, w * 0.55, h * 0.48);
+    line(ctx, w * 0.7, h * 0.33, w * 0.85, h * 0.48);
+
+    ctx.fillText('2', w * 0.55, h * 0.53);
+    ctx.fillText('6', w * 0.85, h * 0.53);
+
+    line(ctx, w * 0.85, h * 0.56, w * 0.75, h * 0.7);
+    line(ctx, w * 0.85, h * 0.56, w * 0.95, h * 0.7);
+
     ctx.fillStyle = '#daa98a';
-    ctx.fillText('2 × 2 × 3 × 5', w/2, h/2);
+    ctx.fillText('2', w * 0.75, h * 0.75);
+    ctx.fillText('3', w * 0.95, h * 0.75);
+
+    circle(ctx, w * 0.3, h * 0.3, w * 0.04);
+    circle(ctx, w * 0.55, h * 0.53, w * 0.04);
+    circle(ctx, w * 0.75, h * 0.75, w * 0.04);
+    circle(ctx, w * 0.95, h * 0.75, w * 0.04);
   }
 
   window.drawLCMCanvases = function() {
@@ -1447,6 +1462,7 @@ html,body{
     drawStep3();
   };
 </script>
+
 
   </div>
 </div>
