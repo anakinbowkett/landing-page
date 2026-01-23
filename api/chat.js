@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   try {
     const { message, conversationHistory, questionData } = req.body;
 
-    // GUIDE LIBRARY - Add all 800 lecture guides here
+    // GUIDE LIBRARY
     const GUIDES = {
       'LCM - Lowest Common Multiple': `
 REFERENCE GUIDE: Lowest Common Multiple (LCM)
@@ -38,55 +38,69 @@ COMMON MISTAKES TO AVOID:
 
       'Product of Prime Factors': `
 REFERENCE GUIDE: Product of Prime Factors
-DEFINITION: A product of prime factors is a number written as the multiplication of only prime numbers.
+DEFINITION: Writing a number as a multiplication of only prime numbers.
 METHOD:
-Step 1: Start with a factor tree - pick two numbers that multiply to your target
-Step 2: Break down non-prime numbers - keep splitting until all are prime
-Step 3: Write as product of primes - collect all primes and multiply to verify
-EXAMPLE: 60 = 2 × 2 × 3 × 5
-- Start: 60 splits to 6 × 10
-- 6 splits to 2 × 3 (both prime)
-- 10 splits to 2 × 5 (both prime)
-- Result: 2 × 2 × 3 × 5
+Step 1: Start a factor tree - Write the number at the top. Split it into two factors. Pick easy ones like 2 if the number is even.
+Step 2: Keep splitting - If any number is not prime, split it again. Keep going until all the numbers at the bottom are prime.
+Step 3: Write the answer - Multiply all the prime numbers at the bottom. Use index form if the same prime appears more than once.
+EXAMPLE: 24 = 2³ × 3
+- Start: 24 splits to 2 × 12
+- 12 splits to 2 × 6
+- 6 splits to 2 × 3 (both prime now)
+- Result: 2 × 2 × 2 × 3 = 2³ × 3
 COMMON MISTAKES TO AVOID:
-1. Including non-primes (using 4, 6, 9 instead of breaking into primes)
-2. Missing factors when multiplying back
-3. Wrong order or skipping smallest primes first
-Prime numbers: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31...
+1. Stopping too early (e.g., writing 18 = 2 × 9). 9 is not prime. You must keep splitting until all numbers are prime.
+2. Missing a factor (e.g., 24 = 2 × 2 × 3). This only makes 12. You've lost a factor of 2.
+3. Not using index form (e.g., writing 2 × 2 × 2 × 3 instead of 2³ × 3). Foundation questions often ask for index form.
 `
-      
-      // ADD MORE GUIDES HERE AS YOU CREATE THEM:
-      // 'Trigonometry': `...`,
-      // 'Pythagoras Theorem': `...`,
-      // etc for all 800 topics
     };
 
-    // Auto-detect which guide to use based on topic
     const topic = questionData?.topic || '';
-    const selectedGuide = GUIDES[topic] || `No specific guide available for ${topic}. Use general GCSE maths teaching principles.`;
+    const selectedGuide = GUIDES[topic];
 
+    // Build system prompt - guide FIRST, own knowledge as FALLBACK
     const systemPrompt = `You are a helpful math tutor for GCSE Foundation students (age 13-16).
 
-Use this reference guide to help students:
+STUDENT'S CURRENT QUESTION:
+"${questionData?.question || 'No question provided'}"
+
+The correct answer is: ${questionData?.correctAnswer || 'Not available'}
+
+${selectedGuide ? `
+REFERENCE GUIDE FOR THIS TOPIC:
 ${selectedGuide}
 
-Current Question: ${questionData?.question || 'No question selected'}
-Correct Answer: ${questionData?.correctAnswer || 'Not available'}
+CRITICAL: Use the guide above as your PRIMARY teaching resource. Reference its method, examples, and common mistakes.
+` : ''}
 
-CRITICAL INSTRUCTIONS - MUST FOLLOW:
-- Keep responses to 1-2 sentences MAXIMUM
-- Use the Socratic method: ask guiding questions instead of explaining everything
-- Never give the full solution - guide them step-by-step
-- Reference the guide's method briefly
-- NO formatting (no **, no #, no lists)
-- Be conversational and encouraging
+${!selectedGuide ? `
+NOTE: No specific guide available for "${topic}". Use your GCSE Foundation maths knowledge to help with this specific question: "${questionData?.question}". Focus specifically on what THIS question asks.
+` : ''}
 
-EXAMPLES OF GOOD RESPONSES:
-User: "How do I solve this?"
-You: "Let's use the method from the guide. Can you tell me the first step?"
+YOUR TEACHING APPROACH:
+- You KNOW the exact question the student is working on (shown above)
+${selectedGuide ? '- ALWAYS reference the guide method when explaining' : '- Apply your knowledge specifically to THIS question'}
+- Keep responses to 1-2 sentences MAXIMUM (saves costs)
+- Use Socratic method: ask guiding questions, don't explain everything
+- NO formatting (no **, no #, no lists) - plain conversational text only
+- Be warm, encouraging, and personal
+${!selectedGuide ? '- Since there\'s no guide, use your expertise but keep it directly relevant to the question asked' : ''}
 
-User: "I don't understand"
-You: "No worries! Looking at the guide, what do you think we need to do first?"`;
+EXAMPLES:
+Student: "I don't get it"
+${selectedGuide ? 
+`You: "No worries! For this question, let's start with step 1 from the guide. What do you think we need to do first?"` :
+`You: "No worries! For this specific question about ${questionData?.question?.split(' ').slice(-4).join(' ') || 'this problem'}, what part is confusing you?"`}
+
+Student: "Do you know what the question is?"
+You: "Yes! You're working on: ${questionData?.question}. What part are you stuck on?"
+
+Student: "How do I solve this?"
+${selectedGuide ?
+`You: "Looking at your question, let's use the guide's method. What's the first step we need to do?"` :
+`You: "For this question, let's break it down. Can you tell me what you've tried so far?"`}
+
+CRITICAL: ${selectedGuide ? 'Reference the guide method.' : 'Focus specifically on the question at hand.'} Be concise to save tokens.`;
 
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
@@ -102,7 +116,7 @@ You: "No worries! Looking at the guide, what do you think we need to do first?"`
           { role: 'user', content: message }
         ],
         temperature: 0.7,
-        max_tokens: 500
+        max_tokens: 400
       })
     });
 
