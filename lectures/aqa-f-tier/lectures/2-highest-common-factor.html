@@ -1266,7 +1266,7 @@ html,body{
   <h1>Highest Common Factor (HCF)</h1>
   
   <div class="definition">
-    The highest number that divides exactly into two or more numbers.
+    The biggest number that divides exactly into two or more numbers.
   </div>
   
   <div class="mark-scheme-container">
@@ -1279,13 +1279,13 @@ html,body{
       </div>
       <div class="mistakes-column">
         <div class="mistake-row">
-          <span class="mistake-bold">Finding the LCM instead</span> (e.g., answering 24 instead of 6). HCF is the biggest factor they share, not the first number they both hit.
+          <span class="mistake-bold">Choosing the wrong common factor</span> (e.g., for 12 and 18, picking 6 as common factor but not checking for higher). Always check all factors and pick the largest.
         </div>
         <div class="mistake-row">
-          <span class="mistake-bold">Missing common factors</span> (e.g., only using one 2 instead of two 2s). Use all shared prime factors.
+          <span class="mistake-bold">Mixing up HCF and LCM</span> (e.g., saying 36 is HCF of 12 and 18). LCM is about multiples, not factors.
         </div>
         <div class="mistake-row">
-          <span class="mistake-bold">Not using a method</span> Guessing numbers instead of using a Venn diagram often leads to mistakes.
+          <span class="mistake-bold">Not listing all factors</span> (e.g., only listing 1, 2, 3 for 12). You need the full list to find the biggest common one.
         </div>
       </div>
     </div>
@@ -1293,15 +1293,15 @@ html,body{
   
   <div class="question-variations">
     <div class="variations-title">How Questions Ask This</div>
-    <div class="variation-item">Find the highest common factor of 18 and 24.</div>
-    <div class="variation-item">Work out the HCF of 20 and 30.</div>
-    <div class="variation-item">What is the highest common factor of 12 and 16?</div>
-    <div class="variation-item">Find the HCF of 36 and 48.</div>
-    <div class="variation-item">Use prime factors to find the HCF of 28 and 42.</div>
+    <div class="variation-item">Find the HCF of 12 and 18.</div>
+    <div class="variation-item">Write down the highest number that divides both 24 and 36 exactly.</div>
+    <div class="variation-item">Use a Venn diagram to find the HCF of 15 and 25.</div>
+    <div class="variation-item">Find the largest common factor of 20 and 30.</div>
+    <div class="variation-item">Factorise the numbers and find their HCF.</div>
   </div>
   
   <div class="main-content">
-    <div class="question">Find the highest common factor of 18 and 24.</div>
+    <div class="question">Find the HCF of 12 and 18 using a Venn diagram.</div>
     
     <div class="method-title">The Method</div>
     
@@ -1309,9 +1309,9 @@ html,body{
       <div class="step">
         <div class="step-left">
           <div class="step-number">Step One</div>
-          <div class="step-intro">Prime factorise both numbers</div>
+          <div class="step-intro">List prime factors</div>
           <div class="step-detail">
-            Break each number down into prime factors using factor trees.
+            Write each number as a product of prime factors. For 12: 2 × 2 × 3, for 18: 2 × 3 × 3.
           </div>
         </div>
         <div class="step-right">
@@ -1324,7 +1324,7 @@ html,body{
           <div class="step-number">Step Two</div>
           <div class="step-intro">Fill the Venn diagram</div>
           <div class="step-detail">
-            Put common prime factors in the middle. Put the rest on the outside.
+            Put the common prime factors in the overlapping section, the rest in separate sections.
           </div>
         </div>
         <div class="step-right">
@@ -1335,9 +1335,9 @@ html,body{
       <div class="step">
         <div class="step-left">
           <div class="step-number">Step Three</div>
-          <div class="step-intro">Multiply the middle numbers</div>
+          <div class="step-intro">Multiply the common factors</div>
           <div class="step-detail">
-            Multiply only the numbers in the overlap. That gives the HCF.
+            Multiply the numbers in the overlapping section. That’s the HCF.
           </div>
         </div>
         <div class="step-right">
@@ -1347,7 +1347,7 @@ html,body{
     </div>
 
     <div class="final-answer">
-      HCF of 18 and 24 = <strong>6</strong>
+      HCF of 12 and 18 = <strong>6</strong>
     </div>
   </div>
 </div>
@@ -1381,9 +1381,9 @@ html,body{
     const w = canvas.getBoundingClientRect().width;
     const h = canvas.getBoundingClientRect().height;
 
-    ctx.font = `${w * 0.05}px Crimson Text`;
-    ctx.fillText('18 = 2 × 3 × 3', w * 0.5, h * 0.35);
-    ctx.fillText('24 = 2 × 2 × 2 × 3', w * 0.5, h * 0.6);
+    ctx.font = `bold ${w * 0.05}px Crimson Text`;
+    ctx.fillText('12 = 2 × 2 × 3', w * 0.3, h * 0.2);
+    ctx.fillText('18 = 2 × 3 × 3', w * 0.7, h * 0.2);
   }
 
   function drawStep2() {
@@ -1393,15 +1393,26 @@ html,body{
     const w = canvas.getBoundingClientRect().width;
     const h = canvas.getBoundingClientRect().height;
 
-    circle(ctx, w * 0.4, h * 0.5, w * 0.18);
-    circle(ctx, w * 0.6, h * 0.5, w * 0.18);
+    const cx = w * 0.5;
+    const cy = h * 0.5;
+    const r = w * 0.2;
 
-    ctx.font = `${w * 0.045}px Crimson Text`;
-    ctx.fillText('3', w * 0.33, h * 0.5);
-    ctx.fillText('2', w * 0.5, h * 0.5);
-    ctx.fillText('3', w * 0.5, h * 0.6);
-    ctx.fillText('2', w * 0.67, h * 0.45);
-    ctx.fillText('2', w * 0.67, h * 0.6);
+    ctx.strokeStyle = '#daa98a';
+    // Left circle for 12
+    ctx.beginPath();
+    ctx.arc(cx - r/2, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+    // Right circle for 18
+    ctx.beginPath();
+    ctx.arc(cx + r/2, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = '#1a1a1a';
+    // Common factors in middle
+    ctx.fillText('2 × 3', cx, cy);
+    // Unique factors
+    ctx.fillText('2', cx - r/2, cy - r/2);
+    ctx.fillText('3', cx + r/2, cy + r/2);
   }
 
   function drawStep3() {
@@ -1411,11 +1422,25 @@ html,body{
     const w = canvas.getBoundingClientRect().width;
     const h = canvas.getBoundingClientRect().height;
 
-    circle(ctx, w * 0.5, h * 0.5, w * 0.18);
+    const cx = w * 0.5;
+    const cy = h * 0.5;
+    const r = w * 0.2;
 
-    ctx.font = `bold ${w * 0.06}px Crimson Text`;
+    ctx.strokeStyle = '#daa98a';
+    ctx.fillStyle = '#1a1a1a';
+    // Draw left circle
+    ctx.beginPath();
+    ctx.arc(cx - r/2, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+    // Draw right circle
+    ctx.beginPath();
+    ctx.arc(cx + r/2, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Common factors
     ctx.fillStyle = '#daa98a';
-    ctx.fillText('2 × 3 = 6', w * 0.5, h * 0.5);
+    ctx.font = `bold ${w * 0.05}px Crimson Text`;
+    ctx.fillText('2 × 3', cx, cy);
   }
 
   window.drawLCMCanvases = function() {
@@ -1424,6 +1449,7 @@ html,body{
     drawStep3();
   };
 </script>
+
 
   </div>
 </div>
