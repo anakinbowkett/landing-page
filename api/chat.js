@@ -17,6 +17,47 @@ export default async function handler(req, res) {
 
     // GUIDE LIBRARY
     const GUIDES = {
+
+
+      'Product of Prime Factors': `
+REFERENCE GUIDE: Product of Prime Factors
+DEFINITION: Writing a number as a multiplication of only prime numbers.
+METHOD:
+Step 1: Start a factor tree - Write the number at the top. Split it into two factors. Pick easy ones like 2 if the number is even.
+Step 2: Keep splitting - If any number is not prime, split it again. Keep going until all the numbers at the bottom are prime.
+Step 3: Write the answer - Multiply all the prime numbers at the bottom. Use index form if the same prime appears more than once.
+EXAMPLE: 24 = 2³ × 3
+- Start: 24 splits to 2 × 12
+- 12 splits to 2 × 6
+- 6 splits to 2 × 3 (both prime now)
+- Result: 2 × 2 × 2 × 3 = 2³ × 3
+COMMON MISTAKES TO AVOID:
+1. Stopping too early (e.g., writing 18 = 2 × 9). 9 is not prime. You must keep splitting until all numbers are prime.
+2. Missing a factor (e.g., 24 = 2 × 2 × 3). This only makes 12. You've lost a factor of 2.
+3. Not using index form (e.g., writing 2 × 2 × 2 × 3 instead of 2³ × 3). Foundation questions often ask for index form.
+`,
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
       'LCM - Lowest Common Multiple': `
 REFERENCE GUIDE: Lowest Common Multiple (LCM)
 DEFINITION: The smallest number that appears in both times tables.
@@ -36,23 +77,22 @@ COMMON MISTAKES TO AVOID:
 3. Stopping too early when listing multiples
 `,
 
-      'Product of Prime Factors': `
-REFERENCE GUIDE: Product of Prime Factors
-DEFINITION: Writing a number as a multiplication of only prime numbers.
-METHOD:
-Step 1: Start a factor tree - Write the number at the top. Split it into two factors. Pick easy ones like 2 if the number is even.
-Step 2: Keep splitting - If any number is not prime, split it again. Keep going until all the numbers at the bottom are prime.
-Step 3: Write the answer - Multiply all the prime numbers at the bottom. Use index form if the same prime appears more than once.
-EXAMPLE: 24 = 2³ × 3
-- Start: 24 splits to 2 × 12
-- 12 splits to 2 × 6
-- 6 splits to 2 × 3 (both prime now)
-- Result: 2 × 2 × 2 × 3 = 2³ × 3
-COMMON MISTAKES TO AVOID:
-1. Stopping too early (e.g., writing 18 = 2 × 9). 9 is not prime. You must keep splitting until all numbers are prime.
-2. Missing a factor (e.g., 24 = 2 × 2 × 3). This only makes 12. You've lost a factor of 2.
-3. Not using index form (e.g., writing 2 × 2 × 2 × 3 instead of 2³ × 3). Foundation questions often ask for index form.
-`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
     };
 
     const topic = questionData?.topic || '';
