@@ -1263,10 +1263,10 @@ html,body{
   
   <div id="guideContent">
     <div class="container">
-  <h1>Lowest Common Multiple (LCM)</h1>
+  <h1>Highest Common Factor (HCF)</h1>
   
   <div class="definition">
-    The smallest number that appears in both times tables.
+    The highest number that divides exactly into two or more numbers.
   </div>
   
   <div class="mark-scheme-container">
@@ -1279,13 +1279,13 @@ html,body{
       </div>
       <div class="mistakes-column">
         <div class="mistake-row">
-          <span class="mistake-bold">Finding HCF instead of LCM</span> (e.g., writing 2 for LCM of 4 and 6). The LCM must be larger than both numbers, not smaller.
+          <span class="mistake-bold">Finding the LCM instead</span> (e.g., answering 24 instead of 6). HCF is the biggest factor they share, not the first number they both hit.
         </div>
         <div class="mistake-row">
-          <span class="mistake-bold">Just multiplying the numbers</span> (e.g., 4 × 6 = 24). This only works sometimes. The LCM is usually smaller than this.
+          <span class="mistake-bold">Missing common factors</span> (e.g., only using one 2 instead of two 2s). Use all shared prime factors.
         </div>
         <div class="mistake-row">
-          <span class="mistake-bold">Stopping too early</span> (e.g., listing only 4, 8 and 6, 12). You need to keep listing until you find a match in both lists.
+          <span class="mistake-bold">Not using a method</span> Guessing numbers instead of using a Venn diagram often leads to mistakes.
         </div>
       </div>
     </div>
@@ -1293,15 +1293,15 @@ html,body{
   
   <div class="question-variations">
     <div class="variations-title">How Questions Ask This</div>
-    <div class="variation-item">Find the lowest common multiple (LCM) of 4 and 6</div>
-    <div class="variation-item">What is the LCM of 4 and 6?</div>
-    <div class="variation-item">Calculate the smallest number that is a multiple of both 4 and 6</div>
-    <div class="variation-item">Work out the least common multiple of 4 and 6</div>
-    <div class="variation-item">Find the LCM of 4 and 6</div>
+    <div class="variation-item">Find the highest common factor of 18 and 24.</div>
+    <div class="variation-item">Work out the HCF of 20 and 30.</div>
+    <div class="variation-item">What is the highest common factor of 12 and 16?</div>
+    <div class="variation-item">Find the HCF of 36 and 48.</div>
+    <div class="variation-item">Use prime factors to find the HCF of 28 and 42.</div>
   </div>
   
   <div class="main-content">
-    <div class="question">Find the lowest common multiple (LCM) of 4 and 6.</div>
+    <div class="question">Find the highest common factor of 18 and 24.</div>
     
     <div class="method-title">The Method</div>
     
@@ -1309,8 +1309,10 @@ html,body{
       <div class="step">
         <div class="step-left">
           <div class="step-number">Step One</div>
-          <div class="step-intro">List multiples of the first number</div>
-          <div class="step-detail">Write out the times table for 4, going up in 4s. Keep going until you have at least 5 or 6 multiples.</div>
+          <div class="step-intro">Prime factorise both numbers</div>
+          <div class="step-detail">
+            Break each number down into prime factors using factor trees.
+          </div>
         </div>
         <div class="step-right">
           <canvas class="step-canvas" id="canvas-step1"></canvas>
@@ -1320,8 +1322,10 @@ html,body{
       <div class="step">
         <div class="step-left">
           <div class="step-number">Step Two</div>
-          <div class="step-intro">List multiples of the second number</div>
-          <div class="step-detail">Write out the times table for 6, going up in 6s. Again, list at least 5 or 6 multiples.</div>
+          <div class="step-intro">Fill the Venn diagram</div>
+          <div class="step-detail">
+            Put common prime factors in the middle. Put the rest on the outside.
+          </div>
         </div>
         <div class="step-right">
           <canvas class="step-canvas" id="canvas-step2"></canvas>
@@ -1331,8 +1335,10 @@ html,body{
       <div class="step">
         <div class="step-left">
           <div class="step-number">Step Three</div>
-          <div class="step-intro">Find the smallest number in both lists</div>
-          <div class="step-detail">Look at both lists and circle any numbers that appear in BOTH. The smallest one is your LCM.</div>
+          <div class="step-intro">Multiply the middle numbers</div>
+          <div class="step-detail">
+            Multiply only the numbers in the overlap. That gives the HCF.
+          </div>
         </div>
         <div class="step-right">
           <canvas class="step-canvas" id="canvas-step3"></canvas>
@@ -1341,7 +1347,7 @@ html,body{
     </div>
 
     <div class="final-answer">
-      LCM of 4 and 6 = 12
+      HCF of 18 and 24 = <strong>6</strong>
     </div>
   </div>
 </div>
@@ -1362,12 +1368,6 @@ html,body{
     return ctx;
   }
 
-  function text(ctx, p, value, size, bold) {
-    const minSize = Math.max(10, size);
-    ctx.font = `${bold ? 'bold ' : ''}${minSize}px Crimson Text`;
-    ctx.fillText(value, p.x, p.y);
-  }
-
   function circle(ctx, x, y, r) {
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -1381,12 +1381,9 @@ html,body{
     const w = canvas.getBoundingClientRect().width;
     const h = canvas.getBoundingClientRect().height;
 
-    ctx.font = `${w * 0.045}px Crimson Text`;
-    ctx.fillText('Multiples of 4:', w * 0.5, h * 0.25);
-    
-    ctx.font = `bold ${w * 0.065}px Crimson Text`;
-    ctx.fillStyle = '#daa98a';
-    ctx.fillText('4,  8,  12,  16,  20,  24', w * 0.5, h * 0.55);
+    ctx.font = `${w * 0.05}px Crimson Text`;
+    ctx.fillText('18 = 2 × 3 × 3', w * 0.5, h * 0.35);
+    ctx.fillText('24 = 2 × 2 × 2 × 3', w * 0.5, h * 0.6);
   }
 
   function drawStep2() {
@@ -1396,19 +1393,15 @@ html,body{
     const w = canvas.getBoundingClientRect().width;
     const h = canvas.getBoundingClientRect().height;
 
-    ctx.font = `${w * 0.045}px Crimson Text`;
-    ctx.fillStyle = '#1a1a1a';
-    ctx.fillText('Multiples of 4:', w * 0.5, h * 0.2);
-    
-    ctx.font = `${w * 0.055}px Crimson Text`;
-    ctx.fillText('4,  8,  12,  16,  20,  24', w * 0.5, h * 0.35);
+    circle(ctx, w * 0.4, h * 0.5, w * 0.18);
+    circle(ctx, w * 0.6, h * 0.5, w * 0.18);
 
     ctx.font = `${w * 0.045}px Crimson Text`;
-    ctx.fillText('Multiples of 6:', w * 0.5, h * 0.55);
-    
-    ctx.font = `bold ${w * 0.065}px Crimson Text`;
-    ctx.fillStyle = '#daa98a';
-    ctx.fillText('6,  12,  18,  24,  30', w * 0.5, h * 0.75);
+    ctx.fillText('3', w * 0.33, h * 0.5);
+    ctx.fillText('2', w * 0.5, h * 0.5);
+    ctx.fillText('3', w * 0.5, h * 0.6);
+    ctx.fillText('2', w * 0.67, h * 0.45);
+    ctx.fillText('2', w * 0.67, h * 0.6);
   }
 
   function drawStep3() {
@@ -1418,30 +1411,11 @@ html,body{
     const w = canvas.getBoundingClientRect().width;
     const h = canvas.getBoundingClientRect().height;
 
-    ctx.font = `${w * 0.04}px Crimson Text`;
-    ctx.fillStyle = '#1a1a1a';
-    ctx.fillText('Multiples of 4:', w * 0.5, h * 0.15);
-    
-    ctx.font = `${w * 0.048}px Crimson Text`;
-    ctx.fillText('4,  8,  12,  16,  20,  24', w * 0.5, h * 0.28);
+    circle(ctx, w * 0.5, h * 0.5, w * 0.18);
 
-    // Circle 12 and 24
-    circle(ctx, w * 0.445, h * 0.28, w * 0.035);
-    circle(ctx, w * 0.72, h * 0.28, w * 0.035);
-
-    ctx.font = `${w * 0.04}px Crimson Text`;
-    ctx.fillText('Multiples of 6:', w * 0.5, h * 0.45);
-    
-    ctx.font = `${w * 0.048}px Crimson Text`;
-    ctx.fillText('6,  12,  18,  24,  30', w * 0.5, h * 0.58);
-
-    // Circle 12 and 24
-    circle(ctx, w * 0.405, h * 0.58, w * 0.035);
-    circle(ctx, w * 0.59, h * 0.58, w * 0.035);
-
-    ctx.font = `bold ${w * 0.055}px Crimson Text`;
+    ctx.font = `bold ${w * 0.06}px Crimson Text`;
     ctx.fillStyle = '#daa98a';
-    ctx.fillText('Smallest match: 12', w * 0.5, h * 0.8);
+    ctx.fillText('2 × 3 = 6', w * 0.5, h * 0.5);
   }
 
   window.drawLCMCanvases = function() {
@@ -1450,6 +1424,7 @@ html,body{
     drawStep3();
   };
 </script>
+
   </div>
 </div>
 
