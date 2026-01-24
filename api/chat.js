@@ -163,21 +163,23 @@ Not showing an arrow for the solution region.
       
 'Error Intervals': `
 REFERENCE GUIDE: Error Intervals
-DEFINITION: An error interval shows the range of values a rounded number could actually be.
+DEFINITION: An error interval shows the range of values a number could have been before it was rounded.
 METHOD:
-Step 1: Mark the rounded number on a number line covering the nearby values.
-Step 2: Calculate the lower and upper bounds by subtracting and adding the rounding amount.
-Step 3: Draw the interval on the number line to show all possible values.
-EXAMPLE: 46 rounded to nearest 10 → 45 ≤ x < 55.
+Step 1: Identify the rounding unit – Nearest whole number means unit = 1, nearest tenth means unit = 0.1, etc.
+Step 2: Halve the rounding unit – Divide the unit by 2 to find the maximum possible error.
+Step 3: Calculate the bounds – Subtract the half-unit to find the lower bound and add it to find the upper bound.
+Step 4: Write the interval correctly – Use inequality symbols: include the lower bound (≤) and exclude the upper bound (<).
+EXAMPLE: Rounded to 10 (nearest whole number) → 9.5 ≤ x < 10.5
 COMMON MISTAKES TO AVOID:
 
-Not subtracting or adding the correct amount for bounds.
+Forgetting to halve the rounding unit (using ±1 instead of ±0.5).
 
-Mixing ≤ and < symbols incorrectly.
+Including both bounds (upper bound should use <, not ≤).
 
-Confusing rounding to different place values.
+Giving only one bound instead of a full interval.
 `,
 
+      
       
 'Bounds and Truncation': `
 REFERENCE GUIDE: Bounds and Truncation
