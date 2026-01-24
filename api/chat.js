@@ -161,7 +161,22 @@ Shading the wrong side of the number line.
 
 
       
+'Error Intervals': `
+REFERENCE GUIDE: Error Intervals
+DEFINITION: An error interval shows the range of values a rounded number could actually be.
+METHOD:
+Step 1: Mark the rounded number on a number line covering the nearby values.
+Step 2: Calculate the lower and upper bounds by subtracting and adding the rounding amount.
+Step 3: Draw the interval on the number line to show all possible values.
+EXAMPLE: 46 rounded to nearest 10 → 45 ≤ x < 55.
+COMMON MISTAKES TO AVOID:
 
+Not subtracting or adding the correct amount for bounds.
+
+Mixing ≤ and < symbols incorrectly.
+
+Confusing rounding to different place values.
+`,
 
       
 
