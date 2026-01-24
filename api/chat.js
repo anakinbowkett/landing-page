@@ -122,7 +122,30 @@ Not simplifying the fraction after conversion.
 `,
 
 
+'Order of Operations (BIDMAS)': `
+REFERENCE GUIDE: Order of Operations (BIDMAS)
+DEFINITION: BIDMAS tells you the correct order to do calculations so everyone gets the same answer.
+METHOD:
+Step 1: Do the brackets first.
+Step 2: Carry out any multiplication or division, working left to right.
+Step 3: Finish with addition or subtraction.
+EXAMPLE: 10 − (2 + 3) × 2 = 0
+COMMON MISTAKES TO AVOID:
 
+Working left to right without following BIDMAS.
+
+Ignoring brackets.
+
+Doing division before multiplication instead of left to right.
+`,
+
+
+
+
+
+
+
+      
 
 
       
