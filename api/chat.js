@@ -141,7 +141,22 @@ Doing division before multiplication instead of left to right.
 
 
 
+'Inequalities': `
+REFERENCE GUIDE: Inequalities
+DEFINITION: An inequality shows that one number is bigger or smaller than another.
+METHOD:
+Step 1: Draw a number line and mark key numbers around the value.
+Step 2: Add a circle at the value—open if not included, closed if included.
+Step 3: Shade the side that satisfies the inequality.
+EXAMPLE: x > 2 → open circle at 2, shaded to the right.
+COMMON MISTAKES TO AVOID:
 
+Using the wrong inequality symbol.
+
+Confusing open and closed circles.
+
+Shading the wrong side of the number line.
+`,
 
 
 
