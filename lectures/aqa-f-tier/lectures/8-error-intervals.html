@@ -1218,6 +1218,159 @@ html,body{
         height: 200px;
       }
     }
+
+    
+
+#referenceModal .understanding-section {
+    background: #f8f9fa;
+    border-left: 4px solid #daa98a;
+    padding: 32px;
+    margin-bottom: 40px;
+    border-radius: 13px;
+}
+
+#referenceModal .section-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+}
+
+#referenceModal .understanding-section p {
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+    color: #2a2a2a;
+}
+
+#referenceModal .variable-explanation {
+    background: white;
+    padding: 20px;
+    border-radius: 13px;
+    margin-bottom: 16px;
+    border: 1px solid #e5e7eb;
+}
+
+#referenceModal .variable-name {
+    font-weight: 700;
+    color: #daa98a;
+    font-size: 18px;
+}
+
+#referenceModal .full-marks-section {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 2px solid #bae6fd;
+    padding: 32px;
+    margin-bottom: 40px;
+    border-radius: 13px;
+}
+
+#referenceModal .roadmap-step {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+    align-items: flex-start;
+}
+
+#referenceModal .roadmap-number {
+    min-width: 40px;
+    height: 40px;
+    background: #0ea5e9;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+#referenceModal .roadmap-content {
+    flex: 1;
+    padding-top: 8px;
+}
+
+#referenceModal .roadmap-content strong {
+    font-size: 19px;
+    color: #0c4a6e;
+    display: block;
+    margin-bottom: 6px;
+}
+
+#referenceModal .roadmap-content p {
+    font-size: 17px;
+    color: #334155;
+    line-height: 1.6;
+}
+
+#referenceModal .method-section {
+    margin-bottom: 40px;
+}
+
+#referenceModal .method-step {
+    background: white;
+    border: 2px solid #daa98a;
+    border-radius: 13px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+}
+
+#referenceModal .step-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+#referenceModal .step-detail {
+    font-size: 17px;
+    color: #444;
+    line-height: 1.7;
+}
+
+#referenceModal .worked-example {
+    background: #f8f9fa;
+    border-radius: 13px;
+    padding: 32px;
+    margin-bottom: 40px;
+}
+
+#referenceModal .example-question {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #000;
+}
+
+#referenceModal .key-terms {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 13px;
+    padding: 28px 32px;
+    margin-bottom: 40px;
+}
+
+#referenceModal .term {
+    margin-bottom: 16px;
+}
+
+#referenceModal .term-name {
+    font-weight: 700;
+    color: #065f46;
+    font-size: 17px;
+}
+
+#referenceModal .subtitle {
+    font-size: 18px;
+    color: #6b7280;
+    margin-bottom: 50px;
+    font-weight: 400;
+}
+
+    
   </style>
   
   <button id="closeModalBtn" style="
@@ -1263,269 +1416,148 @@ html,body{
   
   <div id="guideContent">
     <div class="container">
-    <h1>Error Intervals</h1>
-    <p class="subtitle">Finding the range of values a number could be after rounding</p>
-    
-    <!-- Understanding the Question -->
-    <div class="understanding-section">
-        <h2 class="section-title">Understanding the Question</h2>
-        <p>
-            Error interval questions are really asking one simple thing:
-            <strong>What values could the number have been before it was rounded?</strong>
-        </p>
-        
-        <div class="variable-explanation">
-            <span class="variable-name">Rounded value</span>
-            This is the number you are given in the question. Think of it as the final answer after rounding.
-        </div>
-        
-        <div class="variable-explanation">
-            <span class="variable-name">Rounding unit</span>
-            This tells you how accurate the rounding is. For example, nearest whole number means the unit is 1.
-        </div>
-        
-        <p>
-            The skill being tested here is whether you understand how rounding works
-            and can turn that into a correct range of values.
-        </p>
+  <h1>Error Intervals</h1>
+  <p class="subtitle">Showing all the values a rounded number could actually be</p>
+
+  <!-- Understanding -->
+  <div class="understanding-section">
+    <h2 class="section-title">Understanding the Question</h2>
+    <p>When a question asks for an <strong>error interval</strong>, it’s asking you to think backwards.</p>
+
+    <div class="variable-explanation">
+      <span class="variable-name">Rounded value</span> – This is the number you are given. Think of it like a blurry photo: you can see roughly where the number is, but not the exact value.
     </div>
-    
-    <!-- Path to Full Marks -->
-    <div class="full-marks-section">
-        <h2 class="section-title">Path to Full Marks: Your Roadmap</h2>
-        <p style="font-size: 17px; color: #334155; margin-bottom: 28px;">
-            This four-step sequence is designed to reduce confusion and help your brain
-            process the information in the right order.
-        </p>
-        
-        <div class="roadmap-step">
-            <div class="roadmap-number">1</div>
-            <div class="roadmap-content">
-                <strong>Identify the rounding</strong>
-                <p>
-                    This focuses your attention on the key detail first.
-                    It reduces cognitive load and stops careless mistakes early.
-                </p>
-            </div>
-        </div>
-        
-        <div class="roadmap-step">
-            <div class="roadmap-number">2</div>
-            <div class="roadmap-content">
-                <strong>Halve the rounding unit</strong>
-                <p>
-                    Research shows breaking steps into smaller chunks improves recall.
-                    This step is where most marks are lost if rushed.
-                </p>
-            </div>
-        </div>
-        
-        <div class="roadmap-step">
-            <div class="roadmap-number">3</div>
-            <div class="roadmap-content">
-                <strong>Calculate both bounds</strong>
-                <p>
-                    Writing both bounds clearly strengthens procedural memory
-                    and prevents one-sided answers.
-                </p>
-            </div>
-        </div>
-        
-        <div class="roadmap-step">
-            <div class="roadmap-number">4</div>
-            <div class="roadmap-content">
-                <strong>Write the interval correctly</strong>
-                <p>
-                    Finishing with correct inequality symbols locks in the accuracy mark
-                    and avoids communication errors.
-                </p>
-            </div>
-        </div>
+
+    <div class="variable-explanation">
+      <span class="variable-name">Error interval</span> – This shows the full range of values the real number could be. It’s like saying “the number lives somewhere between here and here.”
     </div>
-    
-    <!-- Common Errors & Mark Deductions -->
-    <div class="mark-scheme-container">
-        <div class="mark-scheme-header">Common Errors & Mark Deductions</div>
-        <div class="mark-scheme-content">
-            <div class="marks-column">
-                <div class="mark-item">-1</div>
-                <div class="mark-item">-1</div>
-                <div class="mark-item">-1</div>
-            </div>
-            <div class="mistakes-column">
-                <div class="mistake-row">
-                    <span class="mistake-bold">Not halving the rounding unit</span>
-                    (e.g. using ±1 instead of ±0.5).
-                    This loses the method mark.
-                </div>
-                <div class="mistake-row">
-                    <span class="mistake-bold">Including the end values</span>
-                    (e.g. writing 9.5 ≤ x ≤ 10.5).
-                    The bounds should not be included.
-                </div>
-                <div class="mistake-row">
-                    <span class="mistake-bold">Only giving one bound</span>
-                    (e.g. writing x &gt; 9.5).
-                    This loses the accuracy mark.
-                </div>
-            </div>
-        </div>
+
+    <p>The fundamental skill being tested is whether you understand how rounding works and how to describe that uncertainty properly.</p>
+  </div>
+
+  <!-- Path -->
+  <div class="full-marks-section">
+    <h2 class="section-title">Path to Full Marks: Your Roadmap</h2>
+
+    <div class="roadmap-step">
+      <div class="roadmap-number">1</div>
+      <div class="roadmap-content">
+        <strong>Identify the rounding unit</strong>
+        <p>This tells your brain the “step size” being used. Recognising this first reduces confusion later.</p>
+      </div>
     </div>
-    
-    <!-- How Questions Ask This -->
-    <div class="question-variations">
-        <div class="variations-title">How Questions Ask This</div>
-        <div class="variation-item">A value is rounded to 10 to the nearest whole number. Write the error interval.</div>
-        <div class="variation-item">A length is measured as 25 cm, correct to the nearest cm. Find the bounds.</div>
-        <div class="variation-item">Give the lower and upper bounds for a mass of 3.4 kg rounded to 1 decimal place.</div>
-        <div class="variation-item">Write down the error interval for a number rounded to 80.</div>
-        <div class="variation-item">Represent the error interval on a number line.</div>
+
+    <div class="roadmap-step">
+      <div class="roadmap-number">2</div>
+      <div class="roadmap-content">
+        <strong>Halve the rounding unit</strong>
+        <p>The brain prefers symmetry. Going half up and half down keeps everything balanced and accurate.</p>
+      </div>
     </div>
-    
-    <!-- The Method -->
-    <div class="method-section">
-        <h2 class="method-title">The Method</h2>
-        
-        <div class="method-step">
-            <div class="step-number">Step One</div>
-            <div class="step-title">Identify the rounding unit</div>
-            <div class="step-detail">
-                Read the question carefully.
-                Nearest whole number means the unit is 1.
-                Nearest tenth means the unit is 0.1.
-            </div>
-        </div>
-        
-        <div class="method-step">
-            <div class="step-number">Step Two</div>
-            <div class="step-title">Find half of the unit</div>
-            <div class="step-detail">
-                Divide the rounding unit by 2.
-                This tells you how far the original value could be from the rounded number.
-            </div>
-        </div>
-        
-        <div class="method-step">
-            <div class="step-number">Step Three</div>
-            <div class="step-title">Calculate the bounds</div>
-            <div class="step-detail">
-                Subtract the half from the rounded value to get the lower bound.
-                Add the half to get the upper bound.
-            </div>
-        </div>
-        
-        <div class="method-step">
-            <div class="step-number">Step Four</div>
-            <div class="step-title">Write the error interval</div>
-            <div class="step-detail">
-                Use inequality symbols.
-                The lower bound uses ≤ and the upper bound uses &lt;.
-            </div>
-        </div>
+
+    <div class="roadmap-step">
+      <div class="roadmap-number">3</div>
+      <div class="roadmap-content">
+        <strong>Calculate lower and upper bounds</strong>
+        <p>This anchors abstract rounding into concrete numbers you can trust.</p>
+      </div>
     </div>
-    
-    <!-- Worked Example -->
-    <div class="worked-example">
-        <h2 class="section-title">Worked Example</h2>
-        <div class="example-question">
-            Question: A number is rounded to 10 to the nearest whole number. Write the error interval.
-        </div>
-        
-        <div class="example-step">
-            <div class="example-step-label">Step 1: Identify the rounding unit</div>
-            <p>
-                Nearest whole number means the rounding unit is 1.
-            </p>
-        </div>
-        
-        <div class="example-step">
-            <div class="example-step-label">Step 2: Find half the unit</div>
-            <p>
-                Half of 1 is 0.5.
-            </p>
-        </div>
-        
-        <div class="example-step">
-            <div class="example-step-label">Step 3: Calculate the bounds</div>
-            <p>
-                Lower bound = 10 − 0.5 = 9.5<br>
-                Upper bound = 10 + 0.5 = 10.5
-            </p>
-        </div>
-        
-        <div class="memory-tip">
-            <strong>Verification check:</strong>
-            <p>
-                Any number between 9.5 and 10.5 would round to 10.
-                That confirms the interval is correct.
-            </p>
-        </div>
-        
-        <div class="final-answer">
-            9.5 ≤ x &lt; 10.5
-        </div>
+
+    <div class="roadmap-step">
+      <div class="roadmap-number">4</div>
+      <div class="roadmap-content">
+        <strong>Write the interval correctly</strong>
+        <p>This final step shows examiners you understand that boundary values are not included.</p>
+      </div>
     </div>
-    
-    <!-- Self-Check Checklist -->
-    <div style="background: white; border: 2px solid #daa98a; border-radius: 12px; padding: 32px; margin-bottom: 40px;">
-        <h2 class="section-title" style="color: #000; margin-bottom: 24px;">Before You Submit: Self-Check Checklist</h2>
-        
-        <div style="padding: 20px;">
-            <ul style="list-style: none; padding-left: 0;">
-                <li style="margin-bottom: 12px; padding-left: 28px; position: relative;">
-                    <span style="position: absolute; left: 0; color: #daa98a; font-size: 20px;">•</span>
-                    <span style="font-size: 17px; color: #1a1a1a;">I identified the correct rounding unit</span>
-                </li>
-                <li style="margin-bottom: 12px; padding-left: 28px; position: relative;">
-                    <span style="position: absolute; left: 0; color: #daa98a; font-size: 20px;">•</span>
-                    <span style="font-size: 17px; color: #1a1a1a;">I halved the rounding unit</span>
-                </li>
-                <li style="margin-bottom: 12px; padding-left: 28px; position: relative;">
-                    <span style="position: absolute; left: 0; color: #daa98a; font-size: 20px;">•</span>
-                    <span style="font-size: 17px; color: #1a1a1a;">I wrote both bounds clearly</span>
-                </li>
-                <li style="padding-left: 28px; position: relative;">
-                    <span style="position: absolute; left: 0; color: #daa98a; font-size: 20px;">•</span>
-                    <span style="font-size: 17px; color: #1a1a1a;">I used the correct inequality symbols</span>
-                </li>
-            </ul>
+  </div>
+
+  <!-- Errors -->
+  <div class="mark-scheme-container">
+    <div class="mark-scheme-header">Common Errors & Mark Deductions</div>
+    <div class="mark-scheme-content">
+      <div class="marks-column">
+        <div class="mark-item">-1</div>
+        <div class="mark-item">-1</div>
+        <div class="mark-item">-1</div>
+      </div>
+      <div class="mistakes-column">
+        <div class="mistake-row">
+          <span class="mistake-bold">Not halving the rounding unit</span> (e.g. using ±1 instead of ±0.5). This shows a misunderstanding of rounding.
         </div>
-        
-        <div class="memory-tip" style="margin-top: 20px;">
-            <strong>Final reminder</strong>
-            <p>
-                If you ever feel stuck, ask yourself:
-                “What would round to this number?”
-            </p>
+        <div class="mistake-row">
+          <span class="mistake-bold">Including the boundary values</span> (e.g. writing 9.5 ≤ x ≤ 10.5). Boundary values are not included.
         </div>
+        <div class="mistake-row">
+          <span class="mistake-bold">Only giving one bound</span> (e.g. writing x ≥ 9.5). An interval must have two ends.
+        </div>
+      </div>
     </div>
-    
-    <!-- Key Terms -->
-    <div class="key-terms">
-        <h2 class="section-title">Key Terms Reference</h2>
-        
-        <div class="term">
-            <span class="term-name">Error interval</span> - The range of values a number could be before rounding.
-        </div>
-        
-        <div class="term">
-            <span class="term-name">Rounding unit</span> - The amount used for rounding, such as 1 or 0.1.
-        </div>
-        
-        <div class="term">
-            <span class="term-name">Lower bound</span> - The smallest possible value in the interval.
-        </div>
-        
-        <div class="term">
-            <span class="term-name">Upper bound</span> - The largest possible value in the interval.
-        </div>
-        
-        <div class="term">
-            <span class="term-name">Inequality</span> - A symbol that shows a range, such as ≤ or &lt;.
-        </div>
+  </div>
+
+  <!-- Variations -->
+  <div class="question-variations">
+    <div class="variations-title">How Questions Ask This</div>
+    <div class="variation-item">A length is rounded to 10 cm. Write down the error interval.</div>
+    <div class="variation-item">Give the lower and upper bounds of a mass rounded to 50 g.</div>
+    <div class="variation-item">A value is given as 7 to the nearest whole number. Find the error interval.</div>
+    <div class="variation-item">Show the error interval for a number rounded to 20.</div>
+    <div class="variation-item">State the bounds of x.</div>
+  </div>
+
+  <!-- Method -->
+  <div class="method-section">
+    <h2 class="method-title">The Method</h2>
+
+    <div class="method-step">
+      <div class="step-number">Step One</div>
+      <div class="step-title">Identify the rounding unit</div>
+      <div class="step-detail">
+        Look at what the number was rounded to. Nearest whole number means the unit is 1.
+      </div>
     </div>
-    
-</div>
+
+    <div class="method-step">
+      <div class="step-number">Step Two</div>
+      <div class="step-title">Halve the unit</div>
+      <div class="step-detail">
+        Half of 1 is 0.5. This tells you how far the true value could be from the rounded value.
+      </div>
+    </div>
+
+    <div class="method-step">
+      <div class="step-number">Step Three</div>
+      <div class="step-title">Calculate the bounds</div>
+      <div class="step-detail">
+        Subtract to get the lower bound. Add to get the upper bound. This is your quality check.
+      </div>
+    </div>
+  </div>
+
+  <!-- Worked Example -->
+  <div class="worked-example">
+    <h2 class="section-title">Worked Example</h2>
+    <div class="example-question">A number is rounded to 10 to the nearest whole number. Write the error interval.</div>
+
+    <p><strong>Step 1:</strong> Nearest whole number → rounding unit is 1.</p>
+    <p><strong>Step 2:</strong> Half of 1 is 0.5.</p>
+    <p><strong>Step 3:</strong> Lower bound = 10 − 0.5 = 9.5, Upper bound = 10 + 0.5 = 10.5.</p>
+
+    <div class="final-answer">
+      9.5 ≤ x &lt; 10.5
+    </div>
+  </div>
+
+  <!-- Key Terms -->
+  <div class="key-terms">
+    <h2 class="section-title">Key Terms Reference</h2>
+
+    <div class="term"><span class="term-name">Error interval</span> – The range of values a rounded number could be.</div>
+    <div class="term"><span class="term-name">Lower bound</span> – The smallest possible value.</div>
+    <div class="term"><span class="term-name">Upper bound</span> – The largest possible value.</div>
+    <div class="term"><span class="term-name">Rounding unit</span> – The step size used for rounding.</div>
+    <div class="term"><span class="term-name">Nearest</span> – Choosing the closest value on a scale.</div>
+  </div>
 
 </script>
 
