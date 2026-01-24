@@ -156,7 +156,7 @@ Using the wrong inequality direction.
 Confusing open and closed circles.
 
 Forgetting to draw an arrow to indicate the solution region.
-`,
+`
 
 
 
