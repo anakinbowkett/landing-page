@@ -179,7 +179,85 @@ Confusing rounding to different place values.
 `,
 
       
+'Bounds and Truncation': `
+REFERENCE GUIDE: Bounds and Truncation
+DEFINITION: Bounds show the smallest and largest values a number can be, and truncation cuts a number down to a certain decimal without rounding.
+METHOD:
+Step 1: Identify the precision – Check the number of decimal places or significant figures given. For 1 decimal place, consider ±0.05.
+Step 2: Calculate bounds – Lower bound = number − 0.05, Upper bound = number + 0.05. Example: 3.5 → 3.45 and 3.55.
+Step 3: Show on number line – Draw a number line covering the bounds, mark lower and upper bounds with closed circles, and shade the interval between them.
+EXAMPLE: Lower bound = 3.45, Upper bound = 3.55, shown on a number line.
+COMMON MISTAKES TO AVOID:
 
+Mixing upper and lower bounds (writing 1.5 instead of 1.499… for lower bound).
+
+Rounding instead of truncating (truncation always cuts digits).
+
+Using wrong interval notation (ensure correct brackets and ≤, < symbols).
+`,
+
+
+
+
+'Rounding, Decimals, and Significant Figures': `
+REFERENCE GUIDE: Rounding, Decimals, and Significant Figures
+DEFINITION: Rounding changes a number to make it simpler, decimals show fractions as parts of 1, and significant figures show the most important digits.
+METHOD:
+Step 1: Identify what to round – Check if the question asks for decimal places or significant figures. For 2 decimal places, focus on digits after the point. For 2 sig figs, count the first two non-zero digits from the left.
+Step 2: Round to decimal places – Look at the digit after the place you're rounding to. If 5 or more, round up; if less, keep the digit. Example: 3.746 → 3.75 (2 dp).
+Step 3: Round to significant figures – Count the first 2 non-zero digits. Round the second digit based on the next digit. Example: 3.746 → 3.7 (2 sig figs).
+EXAMPLE: 2 decimal places: 3.75, 2 significant figures: 3.7
+COMMON MISTAKES TO AVOID:
+
+Rounding the wrong digit (check the place value carefully).
+
+Confusing significant figures with decimal places (count first non-zero digits for sig figs).
+
+Dropping digits instead of rounding (adjust last digit based on next digit).
+`,
+
+
+
+
+'Multiplying Fractions': `
+REFERENCE GUIDE: Multiplying Fractions
+DEFINITION: Multiplying fractions means multiplying the numerators together and multiplying the denominators together.
+METHOD:
+Step 1: Multiply the numerators – Multiply the top numbers of each fraction.
+Step 2: Multiply the denominators – Multiply the bottom numbers of each fraction.
+Step 3: Simplify the fraction – Divide the numerator and denominator by their highest common factor if possible.
+EXAMPLE: 2/3 × 1/4 → (2 × 1)/(3 × 4) = 2/12 = 1/6
+COMMON MISTAKES TO AVOID:
+
+Adding instead of multiplying the fractions.
+
+Only multiplying the numerators and forgetting the denominators.
+
+Not simplifying the final fraction when possible.
+`,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
 
 
 
