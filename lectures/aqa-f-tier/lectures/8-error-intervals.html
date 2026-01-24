@@ -1266,7 +1266,7 @@ html,body{
   <h1>Error Intervals</h1>
   
   <div class="definition">
-    An error interval shows the range of values a rounded number could actually be.
+    An error interval shows all the possible values a number could be when it has been rounded.
   </div>
   
   <div class="mark-scheme-container">
@@ -1279,13 +1279,13 @@ html,body{
       </div>
       <div class="mistakes-column">
         <div class="mistake-row">
-          <span class="mistake-bold">Not subtracting or adding the correct amount</span> (e.g., rounding 46 to nearest 10 but writing interval 40–60). The interval should be 45–55.
+          <span class="mistake-bold">Using the full rounding amount</span> (e.g. using ±1 instead of ±0.5 when rounding to the nearest whole number). You must halve the rounding unit.
         </div>
         <div class="mistake-row">
-          <span class="mistake-bold">Mixing ≤ and < symbols</span> (e.g., writing 40 < x < 50 instead of 45 ≤ x < 55). Use ≤ for lower bound, < for upper bound.
+          <span class="mistake-bold">Using closed circles</span> (e.g. filling the circles). Error interval bounds are not included, so circles must be open.
         </div>
         <div class="mistake-row">
-          <span class="mistake-bold">Confusing rounding to nearest 10 vs nearest 1</span> (e.g., rounding 46 to 46–47 instead of 45–55). Check the rounding place value carefully.
+          <span class="mistake-bold">Only writing one bound</span> (e.g. just writing 9.5). You must show both the lower and upper bound.
         </div>
       </div>
     </div>
@@ -1293,61 +1293,111 @@ html,body{
   
   <div class="question-variations">
     <div class="variations-title">How Questions Ask This</div>
-    <div class="variation-item">Give the upper and lower bounds of 46 rounded to the nearest 10.</div>
-    <div class="variation-item">State the interval for 3.2 rounded to 1 decimal place.</div>
-    <div class="variation-item">Write the error interval for 250 rounded to the nearest 100.</div>
-    <div class="variation-item">Find bounds for 0.374 to 2 decimal places.</div>
-    <div class="variation-item">Draw the number line showing possible values for 12 rounded to the nearest 5.</div>
+    <div class="variation-item">A length is measured as 10 cm to the nearest cm. Write the error interval.</div>
+    <div class="variation-item">A mass is rounded to 50 g. Give the lower and upper bounds.</div>
+    <div class="variation-item">A value is rounded to the nearest whole number as 7. Show this on a number line.</div>
+    <div class="variation-item">Write the error interval for a number rounded to 20.</div>
+    <div class="variation-item">Represent the error interval on a number line.</div>
   </div>
   
   <div class="main-content">
-    <div class="question">Find the error interval for 46 rounded to the nearest 10.</div>
+    <div class="question">
+      A number is rounded to 10 to the nearest whole number. Show the error interval on a number line.
+    </div>
     
     <div class="method-title">The Method</div>
     
     <div class="steps-container">
+      
+      <!-- STEP 1 -->
       <div class="step">
         <div class="step-left">
           <div class="step-number">Step One</div>
-          <div class="step-intro">Mark the rounded number on a number line</div>
+          <div class="step-intro">Understand the rounding</div>
           <div class="step-detail">
-            Draw a number line covering numbers around 46. Place 46 at the rounded position (50).
+            The number has been rounded to the nearest whole number. That means the rounding unit is 1.
           </div>
         </div>
         <div class="step-right">
           <canvas class="step-canvas" id="canvas-step1"></canvas>
         </div>
       </div>
-      
+
+      <!-- STEP 2 -->
       <div class="step">
         <div class="step-left">
           <div class="step-number">Step Two</div>
-          <div class="step-intro">Find the lower and upper bounds</div>
+          <div class="step-intro">Find half the rounding unit</div>
           <div class="step-detail">
-            For nearest 10, subtract 5 for the lower bound and add 5 for the upper bound.
+            Half of 1 is 0.5. This tells us how far the true value could be either side of 10.
           </div>
         </div>
         <div class="step-right">
           <canvas class="step-canvas" id="canvas-step2"></canvas>
         </div>
       </div>
-      
+
+      <!-- STEP 3 -->
       <div class="step">
         <div class="step-left">
           <div class="step-number">Step Three</div>
-          <div class="step-intro">Draw the interval on the number line</div>
+          <div class="step-intro">Calculate the bounds</div>
           <div class="step-detail">
-            Show the range with a bracket/line between the lower and upper bounds.
+            Lower bound = 10 − 0.5 = 9.5<br>
+            Upper bound = 10 + 0.5 = 10.5
           </div>
         </div>
         <div class="step-right">
           <canvas class="step-canvas" id="canvas-step3"></canvas>
         </div>
       </div>
+
+      <!-- STEP 4 -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-number">Step Four</div>
+          <div class="step-intro">Draw the number line</div>
+          <div class="step-detail">
+            Draw a number line that includes both 9.5 and 10.5 with space either side.
+          </div>
+        </div>
+        <div class="step-right">
+          <canvas class="step-canvas" id="canvas-step4"></canvas>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-number">Step Five</div>
+          <div class="step-intro">Mark the bounds</div>
+          <div class="step-detail">
+            Use open circles at 9.5 and 10.5 because these values are not included.
+          </div>
+        </div>
+        <div class="step-right">
+          <canvas class="step-canvas" id="canvas-step5"></canvas>
+        </div>
+      </div>
+
+      <!-- STEP 6 -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-number">Step Six</div>
+          <div class="step-intro">Show the interval</div>
+          <div class="step-detail">
+            Draw a solid line between the two circles to show all possible values.
+          </div>
+        </div>
+        <div class="step-right">
+          <canvas class="step-canvas" id="canvas-step6"></canvas>
+        </div>
+      </div>
+
     </div>
 
     <div class="final-answer">
-      Error interval: <strong>45 ≤ x < 55</strong>
+      The error interval is <strong>9.5 ≤ x &lt; 10.5</strong>
     </div>
   </div>
 </div>
@@ -1360,7 +1410,7 @@ html,body{
     canvas.height = rect.height * dpr;
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
-    ctx.lineWidth = Math.max(1.5, rect.width * 0.005);
+    ctx.lineWidth = Math.max(2, rect.width * 0.006);
     ctx.strokeStyle = '#daa98a';
     ctx.fillStyle = '#1a1a1a';
     ctx.textAlign = 'center';
@@ -1375,62 +1425,91 @@ html,body{
     ctx.stroke();
   }
 
-  function circle(ctx, x, y, r, filled) {
+  function circle(ctx, x, y, r, filled = false) {
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
-    if (filled) ctx.fill();
-    else ctx.stroke();
+    filled ? ctx.fill() : ctx.stroke();
+  }
+
+  function drawBaseNumberLine(ctx, w, h) {
+    line(ctx, w * 0.15, h * 0.5, w * 0.85, h * 0.5);
+
+    const values = [9, 9.5, 10, 10.5, 11];
+    ctx.font = `${w * 0.035}px Crimson Text`;
+    ctx.textBaseline = 'top';
+
+    values.forEach((v, i) => {
+      const x = w * (0.15 + i * 0.175);
+      line(ctx, x, h * 0.48, x, h * 0.52);
+      ctx.fillText(v.toString(), x, h * 0.56);
+    });
   }
 
   function drawStep1() {
-    const canvas = document.getElementById('canvas-step1');
-    if (!canvas) return;
-    const ctx = setupCanvas(canvas);
-    const w = canvas.getBoundingClientRect().width;
-    const h = canvas.getBoundingClientRect().height;
-
-    line(ctx, w * 0.1, h * 0.5, w * 0.9, h * 0.5);
-    for (let i = 40; i <= 60; i += 5) {
-      const x = w * (0.1 + (i - 40)/20 * 0.8);
-      line(ctx, x, h * 0.48, x, h * 0.52);
-      ctx.fillText(i.toString(), x, h * 0.55);
-    }
-    ctx.strokeStyle = '#daa98a';
-    circle(ctx, w * (0.1 + (50 - 40)/20 * 0.8), h * 0.5, w * 0.02);
+    const c = document.getElementById('canvas-step1');
+    if (!c) return;
+    const ctx = setupCanvas(c);
+    ctx.font = `bold ${c.width * 0.04}px Crimson Text`;
+    ctx.fillText('Rounded to 10', c.width / 2, c.height / 2);
   }
 
   function drawStep2() {
-    const canvas = document.getElementById('canvas-step2');
-    if (!canvas) return;
-    drawStep1();
-    const ctx = setupCanvas(canvas);
-    const w = canvas.getBoundingClientRect().width;
-    const h = canvas.getBoundingClientRect().height;
-
-    ctx.strokeStyle = '#daa98a';
-    // lower bound 45
-    circle(ctx, w * (0.1 + (45 - 40)/20 * 0.8), h * 0.5, w * 0.015, true);
-    // upper bound 55
-    circle(ctx, w * (0.1 + (55 - 40)/20 * 0.8), h * 0.5, w * 0.015, false);
+    const c = document.getElementById('canvas-step2');
+    if (!c) return;
+    const ctx = setupCanvas(c);
+    ctx.font = `bold ${c.width * 0.04}px Crimson Text`;
+    ctx.fillText('Half of 1 = 0.5', c.width / 2, c.height / 2);
   }
 
   function drawStep3() {
-    const canvas = document.getElementById('canvas-step3');
-    if (!canvas) return;
-    drawStep2();
-    const ctx = setupCanvas(canvas);
-    const w = canvas.getBoundingClientRect().width;
-    const h = canvas.getBoundingClientRect().height;
+    const c = document.getElementById('canvas-step3');
+    if (!c) return;
+    const ctx = setupCanvas(c);
+    ctx.font = `bold ${c.width * 0.04}px Crimson Text`;
+    ctx.fillText('9.5      10      10.5', c.width / 2, c.height / 2);
+  }
 
-    line(ctx, w * (0.1 + (45 - 40)/20 * 0.8), h * 0.5, w * (0.1 + (55 - 40)/20 * 0.8), h * 0.5);
+  function drawStep4() {
+    const c = document.getElementById('canvas-step4');
+    if (!c) return;
+    const ctx = setupCanvas(c);
+    drawBaseNumberLine(ctx, c.width, c.height);
+  }
+
+  function drawStep5() {
+    const c = document.getElementById('canvas-step5');
+    if (!c) return;
+    const ctx = setupCanvas(c);
+    const w = c.width, h = c.height;
+    drawBaseNumberLine(ctx, w, h);
+    circle(ctx, w * 0.325, h * 0.5, w * 0.02);
+    circle(ctx, w * 0.675, h * 0.5, w * 0.02);
+  }
+
+  function drawStep6() {
+    const c = document.getElementById('canvas-step6');
+    if (!c) return;
+    const ctx = setupCanvas(c);
+    const w = c.width, h = c.height;
+    drawBaseNumberLine(ctx, w, h);
+    const left = w * 0.325;
+    const right = w * 0.675;
+    circle(ctx, left, h * 0.5, w * 0.02);
+    circle(ctx, right, h * 0.5, w * 0.02);
+    ctx.lineWidth = Math.max(4, w * 0.01);
+    line(ctx, left, h * 0.5, right, h * 0.5);
   }
 
   window.drawLCMCanvases = function() {
     drawStep1();
     drawStep2();
     drawStep3();
+    drawStep4();
+    drawStep5();
+    drawStep6();
   };
 </script>
+
 
   </div>
 </div>
