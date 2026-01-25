@@ -1416,67 +1416,69 @@ html,body{
 
   
   <div id="guideContent">
-    <div class="container">
+   <div class="container">
 
-<h1>Error Intervals</h1>
-<p class="subtitle">Showing the hidden range behind a rounded number</p>
+<h1>Order of Operations (BIDMAS)</h1>
+<p class="subtitle">The correct order to calculate so you get the right answer every time</p>
 
 <div class="understanding-section">
 <h2 class="section-title">Understanding the Question</h2>
-<p>When a question asks for an <strong>error interval</strong>, it’s testing whether you understand that rounded numbers are not exact.</p>
+<p>When a question involves several operations, the order matters. BIDMAS tells you which operations to do first so you don’t make mistakes.</p>
 
 <div class="variable-explanation">
-<span class="variable-name">Rounded value</span> – This is the number you see in the question (like 50, 10, or 170). It looks exact, but it’s hiding the truth.
+<span class="variable-name">B – Brackets</span> – Anything inside brackets is done first. Think of brackets as a “priority zone” where work must be done immediately.
 </div>
 
 <div class="variable-explanation">
-<span class="variable-name">Rounding instruction</span> – This tells you how the number was rounded, for example “nearest whole number” or “nearest 10”. This part is the key.
+<span class="variable-name">I – Indices / Powers</span> – Powers or roots are next. Example: 3² = 9
 </div>
 
-<p>The real skill being tested is whether you can work out the <strong>range of values the number could actually be</strong>, not just repeat the rounded value.</p>
+<div class="variable-explanation">
+<span class="variable-name">D & M – Division and Multiplication</span> – Done from left to right. Example: 8 ÷ 2 × 4 → first 8 ÷ 2 = 4, then 4 × 4 = 16
+</div>
+
+<div class="variable-explanation">
+<span class="variable-name">A & S – Addition and Subtraction</span> – Done last, also from left to right. Example: 5 + 3 – 2 → first 5 + 3 = 8, then 8 – 2 = 6
+</div>
+
+<p>The fundamental skill being tested is the ability to follow this order so that you always get the correct result when multiple operations appear in a question.</p>
 </div>
 
 <div class="full-marks-section">
-<h2 class="section-title">Breaking Down the Question</h2>
+<h2 class="section-title">Breaking It Down Step by Step</h2>
 
 <div class="roadmap-step">
 <div class="roadmap-number">1</div>
 <div class="roadmap-content">
-<strong>Spot what it was rounded to</strong>
-<p>Look for words like “nearest whole number” or “nearest 10”.  
-⚠️ Students often think “nearest 10” means ±10 — it doesn’t. Numbers switch rounding at the halfway point.</p>
+<strong>Spot the brackets</strong>
+<p>Do anything inside brackets first. This is your “priority zone.” It makes the problem simpler and avoids mistakes.</p>
 </div>
 </div>
 
 <div class="roadmap-step">
 <div class="roadmap-number">2</div>
 <div class="roadmap-content">
-<strong>Work out the halfway distance</strong>
-<p>Whole numbers jump by 1 → halfway is 0.5  
-Nearest 10 jumps by 10 → halfway is 5  
-This tells you how far the real value could be from the rounded number.</p>
+<strong>Handle indices / powers</strong>
+<p>Next, calculate squares, cubes, roots etc. Doing them now ensures everything else is ready for addition or subtraction.</p>
 </div>
 </div>
 
 <div class="roadmap-step">
 <div class="roadmap-number">3</div>
 <div class="roadmap-content">
-<strong>Find the lower and upper bound</strong>
-<p>Subtract the halfway amount for the lower bound.  
-Add it for the upper bound.  
-This creates the “safety zone” where the true value lives.</p>
+<strong>Multiply or divide from left to right</strong>
+<p>Work across the expression. Left to right is key – don’t just do multiplication before division blindly.</p>
 </div>
 </div>
 
 <div class="roadmap-step">
 <div class="roadmap-number">4</div>
 <div class="roadmap-content">
-<strong>Write the interval properly</strong>
-<p>Lower bound uses ≤ (included).  
-Upper bound uses &lt; (not included).  
-This last detail is where many marks are lost.</p>
+<strong>Add or subtract from left to right</strong>
+<p>Finish with addition and subtraction. Left to right ensures the total is accurate.</p>
 </div>
 </div>
+
 </div>
 
 <div class="mark-scheme-container">
@@ -1489,13 +1491,13 @@ This last detail is where many marks are lost.</p>
 </div>
 <div class="mistakes-column">
 <div class="mistake-row">
-<span class="mistake-bold">Using the full rounding unit</span> (e.g. 50 ± 10). The student forgot to halve it.
+<span class="mistake-bold">Ignoring Brackets</span> – Example: 2 × (3 + 5) → writing 2 × 3 + 5 = 11. Incorrect, should be 16.
 </div>
 <div class="mistake-row">
-<span class="mistake-bold">Wrong inequality symbols</span> (using ≤ on the upper bound). This shows misunderstanding of rounding.
+<span class="mistake-bold">Doing Addition Before Multiplication</span> – Example: 4 + 3 × 2 → 7 × 2 = 14 (wrong). Correct: 4 + (3 × 2) = 10.
 </div>
 <div class="mistake-row">
-<span class="mistake-bold">Bounds the wrong way round</span> (e.g. 10.5 ≤ x ≤ 9.5). Lower must come first.
+<span class="mistake-bold">Left-to-Right Error in Division/Multiplication</span> – Example: 12 ÷ 4 × 3 → first 12 ÷ 4 = 3, then 3 × 3 = 9 (correct). Students sometimes do multiplication first incorrectly.
 </div>
 </div>
 </div>
@@ -1503,11 +1505,11 @@ This last detail is where many marks are lost.</p>
 
 <div class="question-variations">
 <div class="variations-title">How Questions Ask This</div>
-<div class="variation-item">A length is rounded to 10 cm. Write the error interval.</div>
-<div class="variation-item">50 g is given correct to the nearest 10 g.</div>
-<div class="variation-item">A value rounded to the nearest whole number is 7.</div>
-<div class="variation-item">Give the lower and upper bounds for 120.</div>
-<div class="variation-item">Show the error interval for a measurement of 3.4 m.</div>
+<div class="variation-item">Calculate 5 + 3 × 2</div>
+<div class="variation-item">Solve 2 × (4 + 3)²</div>
+<div class="variation-item">Evaluate 10 ÷ 2 + 6</div>
+<div class="variation-item">Work out 3² + 5 × 2</div>
+<div class="variation-item">Find the value of (8 - 3) × 4 + 2</div>
 </div>
 
 <div class="method-section">
@@ -1515,85 +1517,98 @@ This last detail is where many marks are lost.</p>
 
 <div class="method-step">
 <div class="step-number">Step One</div>
-<div class="step-title">Identify the rounding unit</div>
-<p>Ask yourself: what do the numbers jump by?  
-Whole numbers jump by 1. Tens jump by 10.</p>
+<div class="step-title">Do the brackets first</div>
+<div class="step-detail">Look for any brackets and calculate inside them completely before touching anything else. This makes the rest of the calculation straightforward.</div>
 </div>
 
 <div class="method-step">
 <div class="step-number">Step Two</div>
-<div class="step-title">Halve it</div>
-<p>This is the most important step.  
-Rounding switches in the middle, not at the next number.</p>
+<div class="step-title">Calculate powers / indices</div>
+<div class="step-detail">Squares, cubes, and roots come next. Example: 3² = 9. This step simplifies bigger expressions.</div>
 </div>
 
 <div class="method-step">
 <div class="step-number">Step Three</div>
-<div class="step-title">Build the interval</div>
-<p>Subtract for the lower bound.  
-Add for the upper bound.  
-Write it clearly with correct symbols.</p>
+<div class="step-title">Multiply or divide left to right</div>
+<div class="step-detail">Move across the expression from left to right. Example: 8 ÷ 2 × 3 → first 8 ÷ 2 = 4, then 4 × 3 = 12</div>
+</div>
+
+<div class="method-step">
+<div class="step-number">Step Four</div>
+<div class="step-title">Add or subtract left to right</div>
+<div class="step-detail">Finally, do addition and subtraction in order from left to right to get the final answer.</div>
 </div>
 </div>
 
 <div class="worked-example">
 <h2 class="section-title">Worked Example</h2>
-<div class="example-question">A number is rounded to 10 to the nearest whole number. Write the error interval.</div>
+<div class="example-question">Calculate 2 + 3 × (4 + 2)² ÷ 3</div>
 
 <div class="example-step">
-<div class="example-step-label">Step 1: Understand the rounding</div>
-<p>Nearest whole number → numbers go 9, 10, 11  
-💭 They jump by 1, so the rounding unit is 1.</p>
+<div class="example-step-label">Step 1: Brackets</div>
+<p>4 + 2 = 6 → expression becomes 2 + 3 × 6² ÷ 3</p>
 </div>
 
 <div class="example-step">
-<div class="example-step-label">Step 2: Find the halfway point</div>
-<p>Half of 1 is 0.5  
-💭 This is the maximum distance the real value could be from 10.</p>
+<div class="example-step-label">Step 2: Indices</div>
+<p>6² = 36 → 2 + 3 × 36 ÷ 3</p>
 </div>
 
 <div class="example-step">
-<div class="example-step-label">Step 3: Calculate the bounds</div>
-<p>Lower bound: 10 − 0.5 = 9.5  
-Upper bound: 10 + 0.5 = 10.5</p>
+<div class="example-step-label">Step 3: Multiply / Divide left to right</div>
+<p>3 × 36 = 108 → 108 ÷ 3 = 36 → expression now 2 + 36</p>
 </div>
 
-<div class="memory-tip">
-<strong>Verification check:</strong>
-<p>Does 9.5 round to 10? Yes.  
-Does 10.49 round to 10? Yes.  
-Does 10.5 round to 10? No — it rounds up. That’s why 10.5 is not included.</p>
+<div class="example-step">
+<div class="example-step-label">Step 4: Add / Subtract</div>
+<p>2 + 36 = 38</p>
 </div>
 
 <div class="final-answer">
-9.5 ≤ x &lt; 10.5
+38
 </div>
+</div>
+
+<div class="before-submit">
+<h2 class="section-title">✓ Before You Submit: Self-Check Checklist</h2>
+<ul>
+<li>Did I handle brackets first?</li>
+<li>Did I calculate powers before multiplication/division?</li>
+<li>Did I move left to right for multiplication/division and addition/subtraction?</li>
+<li>Did I check the final answer makes sense?</li>
+</ul>
 </div>
 
 <div class="key-terms">
 <h2 class="section-title">Key Terms Reference</h2>
 
 <div class="term">
-<span class="term-name">Error interval</span> – The range where the true value hides after rounding.
+<span class="term-name">BIDMAS</span> – Acronym for Brackets, Indices, Division/Multiplication, Addition/Subtraction. Helps remember the order of operations.
 </div>
 
 <div class="term">
-<span class="term-name">Lower bound</span> – The floor. The smallest possible value (usually included).
+<span class="term-name">Brackets</span> – Priority zone: calculate inside them first. Example: (2 + 3) × 4 = 5 × 4
 </div>
 
 <div class="term">
-<span class="term-name">Upper bound</span> – The ceiling. The value you must stay below.
+<span class="term-name">Indices / Powers</span> – Squared, cubed, roots. Example: 3² = 9
 </div>
 
 <div class="term">
-<span class="term-name">Rounding unit</span> – How far numbers jump (1, 10, 100…).
+<span class="term-name">Multiplication & Division</span> – Done left to right. Example: 8 ÷ 4 × 2 = 4
 </div>
 
 <div class="term">
-<span class="term-name">Halfway point</span> – Where rounding switches direction.
+<span class="term-name">Addition & Subtraction</span> – Done last, left to right. Example: 5 + 3 – 2 = 6
+</div>
+
+<div class="term">
+<span class="term-name">Left-to-Right Rule</span> – For operations at the same level (× and ÷ or + and -), move across the expression from left to right.
+</div>
 </div>
 
 </div>
+
 
 </script>
 
