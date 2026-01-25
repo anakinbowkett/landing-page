@@ -533,7 +533,37 @@ Not checking answer – Original × (1 ± decimal) ≠ New Amount
 
 
 
+'Simple Interest': `
+REFERENCE GUIDE: Simple Interest
+DEFINITION: Simple interest is extra money earned or paid on a loan or investment, calculated on the original amount each year without compounding. Formula: Interest = Principal × Rate × Time.
 
+METHOD:
+Step 1: Identify Principal, Rate, Time – Spot the starting amount, annual interest rate, and duration in years.
+Step 2: Convert Rate – Divide the percentage by 100 to get a decimal. Example: 5% → 0.05
+Step 3: Calculate Interest – Multiply Principal × Rate × Time to find interest.
+Step 4: Find Total Amount – If needed, Total = Principal + Interest
+Step 5: Check – Ensure units are consistent and answer makes sense.
+
+EXAMPLE:
+Find simple interest on £500 at 5% per year for 3 years
+Step 1: Convert rate → 5% → 0.05
+Step 2: Calculate interest → 500 × 0.05 × 3 = 75
+Step 3: Total (if asked) → 500 + 75 = 575
+Step 4: Result → £75 (interest) or £575 (total)
+
+A £1,200 loan at 8% simple interest for 2 years. Find total repayment
+Step 1: Convert rate → 8% → 0.08
+Step 2: Calculate interest → 1,200 × 0.08 × 2 = 192
+Step 3: Total repayment → 1,200 + 192 = 1,392
+Step 4: Result → £1,392
+
+COMMON MISTAKES TO AVOID:
+Forgetting to convert the rate – e.g., using 5 instead of 0.05
+
+Using compound interest formula – e.g., calculating interest on previous years
+
+Mixing up principal and interest – e.g., adding interest to wrong amount or calculating interest on interest
+`,
 
 
 
