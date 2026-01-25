@@ -1263,223 +1263,157 @@ html,body{
   
   <div id="guideContent">
     <div class="container">
-  <h1>Bounds and Truncation</h1>
-  
-  <div class="definition">
-    Bounds show the smallest and largest values a number can be, and truncation cuts a number down to a certain decimal without rounding.
-  </div>
-  
-  <div class="mark-scheme-container">
-    <div class="mark-scheme-header">Common Errors & Mark Deductions</div>
-    <div class="mark-scheme-content">
-      <div class="marks-column">
-        <div class="mark-item">-1</div>
-        <div class="mark-item">-1</div>
-        <div class="mark-item">-1</div>
-      </div>
-      <div class="mistakes-column">
-        <div class="mistake-row">
-          <span class="mistake-bold">Mixing upper and lower bounds</span> (e.g., writing 1.5 instead of 1.499… for lower bound). Always check if it should be ≤ or &lt;.
-        </div>
-        <div class="mistake-row">
-          <span class="mistake-bold">Rounding instead of truncating</span> (e.g., truncating 2.78 to 2.8). Truncation always cuts digits, no rounding.
-        </div>
-        <div class="mistake-row">
-          <span class="mistake-bold">Wrong interval notation</span> (e.g., writing [3,4) incorrectly). Make sure lower bound ≤ number ≤ upper bound and use correct brackets.
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="question-variations">
-    <div class="variations-title">How Questions Ask This</div>
-    <div class="variation-item">Write the upper and lower bounds of 3.5 to 1 decimal place.</div>
-    <div class="variation-item">Give the bounds of a measurement recorded as 12 cm truncated to nearest cm.</div>
-    <div class="variation-item">Calculate the bounds for 0.76 to 2 decimal places.</div>
-    <div class="variation-item">Use bounds to find the maximum possible area of a rectangle with sides 4.2 cm and 3.8 cm.</div>
-    <div class="variation-item">Represent the range of a truncated number on a number line.</div>
-  </div>
-  
-  <div class="main-content">
-    <div class="question">Write the upper and lower bounds of 3.5 to 1 decimal place and show them on a number line.</div>
-    
-    <div class="method-title">The Method</div>
-    
-    <div class="steps-container">
-      <div class="step">
-        <div class="step-left">
-          <div class="step-number">Step One</div>
-          <div class="step-intro">Identify the precision</div>
-          <div class="step-detail">Check the number of decimal places or significant figures given. Here, it is 1 decimal place, so 3.5 ± 0.05.</div>
-        </div>
-        <div class="step-right">
-          <canvas class="step-canvas" id="canvas-step1"></canvas>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-left">
-          <div class="step-number">Step Two</div>
-          <div class="step-intro">Calculate bounds</div>
-          <div class="step-detail">Lower bound = 3.5 − 0.05 = 3.45, Upper bound = 3.5 + 0.05 = 3.55.</div>
-        </div>
-        <div class="step-right">
-          <canvas class="step-canvas" id="canvas-step2"></canvas>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-left">
-          <div class="step-number">Step Three</div>
-          <div class="step-intro">Show on number line</div>
-          <div class="step-detail">Draw a number line with 3.4 to 3.6 and mark lower bound with a closed circle at 3.45 and upper bound with closed circle at 3.55. Shade between them.</div>
-        </div>
-        <div class="step-right">
-          <canvas class="step-canvas" id="canvas-step3"></canvas>
-        </div>
-      </div>
-    </div>
 
-    <div class="final-answer">
-      Lower bound = 3.45, Upper bound = 3.55, shown on a number line.
-    </div>
-  </div>
+<h1>Bounds and Truncation</h1>
+<p class="subtitle">Understanding the limits of numbers when we round or cut off digits</p>
+
+<div class="understanding">
+<h2 class="section-title">Understanding the Question</h2>
+<p>When a question asks for bounds or truncation, it wants you to find the <strong>range of possible values</strong> a number could actually be. Let’s break this down:</p>
+
+<div class="variable-explanation">
+<span class="variable-name">Truncation</span> - Cutting off digits without rounding. Like snapping off extra LEGO pieces: you just remove them, no rounding up.  
+Example: 12.78 truncated to 1 decimal place → 12.7
 </div>
 
-<script>
-  function setupCanvas(canvas) {
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    const ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
-    ctx.lineWidth = Math.max(1.5, rect.width * 0.005);
-    ctx.strokeStyle = '#daa98a';
-    ctx.fillStyle = '#1a1a1a';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    return ctx;
-  }
+<div class="variable-explanation">
+<span class="variable-name">Upper Bound</span> - The largest possible value the number could be. Think of it as the ceiling: the number can’t go higher than this.  
+Example: 12.7 truncated → upper bound = 12.8
+</div>
 
-  function line(ctx, x1, y1, x2, y2) {
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-  }
+<div class="variable-explanation">
+<span class="variable-name">Lower Bound</span> - The smallest possible value the number could be. The floor: the number can’t go lower than this.  
+Example: 12.7 truncated → lower bound = 12.7
+</div>
 
-  function circle(ctx, x, y, r, filled = false) {
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    if (filled) {
-      ctx.fill();
-    } else {
-      ctx.stroke();
-    }
-  }
+<p>Core skill: Show the safety zone for the number. Truncation always keeps the lower bound at the truncated number and upper bound just before the next step.</p>
+</div>
 
-  function drawArrow(ctx, fromX, fromY, toX, toY) {
-    const headlen = 10;
-    const angle = Math.atan2(toY - fromY, toX - fromX);
-    ctx.beginPath();
-    ctx.moveTo(fromX, fromY);
-    ctx.lineTo(toX, toY);
-    ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), 
-                toY - headlen * Math.sin(angle - Math.PI / 6));
-    ctx.moveTo(toX, toY);
-    ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), 
-                toY - headlen * Math.sin(angle + Math.PI / 6));
-    ctx.stroke();
-  }
+<div class="roadmap">
+<h2 class="section-title">Breaking It Down Step by Step</h2>
 
-  function drawStep1() {
-    const canvas = document.getElementById('canvas-step1');
-    if (!canvas) return;
-    const ctx = setupCanvas(canvas);
-    const w = canvas.getBoundingClientRect().width;
-    const h = canvas.getBoundingClientRect().height;
+<div class="roadmap-step">
+<div class="step-number">1</div>
+<div class="step-content">
+<strong>Spot how the number is truncated</strong>
+<p>Check whether it’s truncated to 1 decimal, 2 decimals, nearest whole number, etc. This sets the bounds.</p>
+</div>
+</div>
 
-    // Draw number line from 3.4 to 3.6
-    ctx.strokeStyle = '#daa98a';
-    line(ctx, w * 0.15, h * 0.5, w * 0.85, h * 0.5);
+<div class="roadmap-step">
+<div class="step-number">2</div>
+<div class="step-content">
+<strong>Find the lower bound</strong>
+<p>It’s usually the number itself after truncation. This anchors the “floor” of possible values.</p>
+</div>
+</div>
 
-    ctx.fillStyle = '#1a1a1a';
-    ctx.font = `${w * 0.035}px Crimson Text`;
-    ctx.textBaseline = 'top';
+<div class="roadmap-step">
+<div class="step-number">3</div>
+<div class="step-content">
+<strong>Find the upper bound</strong>
+<p>Add the smallest unit that could have been removed. This is the “ceiling”. Example: truncating 12.7 to 1 decimal → upper bound = 12.8</p>
+</div>
+</div>
 
-    const labels = [3.4, 3.45, 3.5, 3.55, 3.6];
-    labels.forEach((num, i) => {
-      const x = w * (0.15 + i * 0.175);
-      line(ctx, x, h * 0.48, x, h * 0.52);
-      ctx.fillText(num.toFixed(2), x, h * 0.56);
-    });
-  }
+<div class="roadmap-step">
+<div class="step-number">4</div>
+<div class="step-content">
+<strong>Write the bounds clearly</strong>
+<p>Use inequalities: lower ≤ x &lt; upper. Always lower bound first, upper bound second.</p>
+</div>
+</div>
 
-  function drawStep2() {
-    const canvas = document.getElementById('canvas-step2');
-    if (!canvas) return;
-    const ctx = setupCanvas(canvas);
-    const w = canvas.getBoundingClientRect().width;
-    const h = canvas.getBoundingClientRect().height;
+</div>
 
-    // REDRAW number line and labels
-    ctx.strokeStyle = '#daa98a';
-    line(ctx, w * 0.15, h * 0.5, w * 0.85, h * 0.5);
+<div class="method">
+<h2 class="section-title">The Method</h2>
 
-    ctx.fillStyle = '#1a1a1a';
-    ctx.font = `${w * 0.035}px Crimson Text`;
-    ctx.textBaseline = 'top';
-    const labels = [3.4, 3.45, 3.5, 3.55, 3.6];
-    labels.forEach((num, i) => {
-      const x = w * (0.15 + i * 0.175);
-      line(ctx, x, h * 0.48, x, h * 0.52);
-      ctx.fillText(num.toFixed(2), x, h * 0.56);
-    });
+<div class="method-step">
+<h3>Step 1: Identify truncation level</h3>
+<p>Check how many decimal places or digits are kept. This tells you what part is removed.</p>
+</div>
 
-    // Draw lower and upper bound circles
-    circle(ctx, w * (0.15 + 1 * 0.175), h * 0.5, w * 0.02, true); // 3.45
-    circle(ctx, w * (0.15 + 3 * 0.175), h * 0.5, w * 0.02, true); // 3.55
-  }
+<div class="method-step">
+<h3>Step 2: Set the lower bound</h3>
+<p>Lower bound = truncated number itself.</p>
+</div>
 
-  function drawStep3() {
-    const canvas = document.getElementById('canvas-step3');
-    if (!canvas) return;
-    const ctx = setupCanvas(canvas);
-    const w = canvas.getBoundingClientRect().width;
-    const h = canvas.getBoundingClientRect().height;
+<div class="method-step">
+<h3>Step 3: Set the upper bound</h3>
+<p>Upper bound = truncated number + next smallest unit at that decimal. Example: truncated to 1 decimal → add 0.1</p>
+</div>
 
-    // REDRAW line and labels
-    ctx.strokeStyle = '#daa98a';
-    line(ctx, w * 0.15, h * 0.5, w * 0.85, h * 0.5);
+<div class="method-step">
+<h3>Step 4: Express the error interval</h3>
+<p>Write it as an inequality: lower ≤ x &lt; upper.</p>
+</div>
 
-    ctx.fillStyle = '#1a1a1a';
-    ctx.font = `${w * 0.035}px Crimson Text`;
-    ctx.textBaseline = 'top';
-    const labels = [3.4, 3.45, 3.5, 3.55, 3.6];
-    labels.forEach((num, i) => {
-      const x = w * (0.15 + i * 0.175);
-      line(ctx, x, h * 0.48, x, h * 0.52);
-      ctx.fillText(num.toFixed(2), x, h * 0.56);
-    });
+</div>
 
-    // Draw lower and upper bound circles
-    const lowerX = w * (0.15 + 1 * 0.175);
-    const upperX = w * (0.15 + 3 * 0.175);
-    circle(ctx, lowerX, h * 0.5, w * 0.02, true);
-    circle(ctx, upperX, h * 0.5, w * 0.02, true);
+<div class="example">
+<h2 class="section-title">Worked Example</h2>
 
-    // Shade interval line
-    ctx.strokeStyle = '#daa98a';
-    ctx.lineWidth = Math.max(3, w * 0.008);
-    line(ctx, lowerX, h * 0.5, upperX, h * 0.5);
-  }
+<div class="example-question">
+Truncate 24.76 to 1 decimal place. Find the bounds.
+</div>
 
-  window.drawLCMCanvases = function() {
-    drawStep1();
-    drawStep2();
-    drawStep3();
-  };
+<div class="example-step">
+<span class="label">Step 1: Identify truncation</span>
+<p>Truncated to 1 decimal → 24.76 → 24.7</p>
+</div>
+
+<div class="example-step">
+<span class="label">Step 2: Lower bound</span>
+<p>Lower = truncated number = 24.7</p>
+</div>
+
+<div class="example-step">
+<span class="label">Step 3: Upper bound</span>
+<p>Upper = truncated number + next smallest unit (0.1) = 24.8</p>
+</div>
+
+<div class="example-step">
+<span class="label">Step 4: Write inequality</span>
+<p>24.7 ≤ x &lt; 24.8</p>
+</div>
+
+<div class="memory">
+<strong>Check:</strong> Any number in this range truncated to 1 decimal gives 24.7 ✓
+</div>
+
+<div class="final">
+24.7 ≤ x &lt; 24.8
+</div>
+</div>
+
+<div class="key-terms">
+<h2 class="section-title">Key Terms Reference</h2>
+
+<div class="term">
+<span class="term-name">Truncation</span> – Cutting off digits without rounding. Example: 12.78 → 12.7
+</div>
+
+<div class="term">
+<span class="term-name">Lower Bound</span> – Smallest possible value. Example: truncated 12.7 → lower = 12.7
+</div>
+
+<div class="term">
+<span class="term-name">Upper Bound</span> – Largest possible value before next step. Example: truncated 12.7 → upper = 12.8
+</div>
+
+<div class="term">
+<span class="term-name">Error Interval</span> – The range where the real value could lie. Example: 12.7 ≤ x &lt; 12.8
+</div>
+
+<div class="term">
+<span class="term-name">Unit of Truncation</span> – The decimal place you cut off. Determines how much to add for upper bound.
+</div>
+
+</div>
+
+</div>
+
 </script>
 
   </div>
