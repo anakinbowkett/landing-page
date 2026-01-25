@@ -83,19 +83,25 @@ COMMON MISTAKES TO AVOID:
 
 'Ordering Numbers & Rounding': `
 REFERENCE GUIDE: Ordering Numbers & Rounding
-DEFINITION: Putting numbers in order or changing them to a simpler form by rounding.
+DEFINITION: Ordering numbers arranges them from smallest to largest (ascending) or largest to smallest (descending). Rounding approximates a number to a specific place value.
+
 METHOD:
-Step 1: Mark numbers on a number line covering their range.
-Step 2: Round each number according to the place value, rounding up if the next digit is 5 or more.
-Step 3: Order the rounded numbers from smallest to largest.
-EXAMPLE: Rounded numbers: 46 → 50, 83 → 80, 29 → 30; Ordered: 30, 50, 80
+Step 1: Check the rounding place – Identify which digit to round (nearest 10, 100, whole number, etc.).
+Step 2: Look at the next digit – If it’s 5 or more, round up; if less than 5, round down.
+Step 3: Adjust remaining digits – Digits to the right of the rounded place become 0 (whole numbers) or are dropped (decimals).
+Step 4: Compare and order – Use rounded or original numbers to arrange from smallest to largest or vice versa.
+
+EXAMPLE:
+Round 276, 243, 289 to the nearest 10 and order smallest to largest.
+Step 1: Round numbers → 276 → 280, 243 → 240, 289 → 290
+Step 2: Order → 240, 280, 290
+
 COMMON MISTAKES TO AVOID:
+Rounding the wrong place – e.g., 276 → 270 instead of 280.
 
-Not paying attention to decimal places when ordering.
+Halfway confusion – e.g., 45 rounded to nearest 10 → 40 instead of 50.
 
-Rounding incorrectly without checking the place value.
-
-Mixing ascending and descending order; read the question carefully.
+Ordering decimals incorrectly – e.g., 0.5, 0.45, 0.55 ordered as 0.45, 0.55, 0.5 instead of 0.45, 0.5, 0.55.
 `,
 
 
@@ -106,58 +112,81 @@ Mixing ascending and descending order; read the question carefully.
 
 'Number Conversions': `
 REFERENCE GUIDE: Number Conversions
-DEFINITION: Changing a number between fractions, decimals, and percentages.
+DEFINITION: Converting numbers lets you switch between fractions, decimals, and percentages. All three forms can represent the same value in different ways.
+
 METHOD:
-Step 1: Use a hundred grid to understand the decimal as parts of 100.
-Step 2: Write the fraction and simplify if possible.
-Step 3: Convert to a percentage by expressing as out of 100.
-EXAMPLE: 0.25 = 1/4 = 25%
+Step 1: Fraction → Decimal – Divide the numerator (top) by the denominator (bottom). Example: 3 ÷ 4 = 0.75
+Step 2: Decimal → Percentage – Multiply the decimal by 100 and add %. Example: 0.75 × 100 = 75%
+Step 3: Percentage → Decimal – Divide by 100 and remove %. Example: 40% ÷ 100 = 0.4
+Step 4: Fraction → Percentage – Convert to decimal first, then multiply by 100. Example: 3/5 → 0.6 → 60%
+
+EXAMPLE:
+Convert 7/8 into a decimal and percentage.
+Step 1: Fraction → Decimal → 7 ÷ 8 = 0.875
+Step 2: Decimal → Percentage → 0.875 × 100 = 87.5%
+Final Answer: Decimal: 0.875, Percentage: 87.5%
+
 COMMON MISTAKES TO AVOID:
+Incorrect division for fractions → decimals (e.g., 3/4 → 0.34 instead of 0.75).
 
-Forgetting to multiply or divide by 100 when converting.
+Forgetting to multiply by 100 when converting decimals → percentages (e.g., 0.6 → 0.6% instead of 60%).
 
-Converting in the wrong direction (e.g., dividing instead of multiplying).
-
-Not simplifying the fraction after conversion.
+Not simplifying fractions fully (e.g., 50/100 → 25/50 instead of 1/2).
 `,
-
 
 'Order of Operations (BIDMAS)': `
 REFERENCE GUIDE: Order of Operations (BIDMAS)
-DEFINITION: BIDMAS tells you the correct order to do calculations so everyone gets the same answer.
+DEFINITION: BIDMAS shows the order to calculate expressions to get the correct answer: Brackets, Indices, Division/Multiplication (left to right), Addition/Subtraction (left to right).
+
 METHOD:
-Step 1: Do the brackets first.
-Step 2: Carry out any multiplication or division, working left to right.
-Step 3: Finish with addition or subtraction.
-EXAMPLE: 10 − (2 + 3) × 2 = 0
+Step 1: Brackets – Solve anything inside brackets first to simplify the expression.
+Step 2: Indices / Powers – Calculate squares, cubes, roots, etc. after brackets.
+Step 3: Multiply or Divide – Move left to right across the expression, performing multiplication and division in order.
+Step 4: Add or Subtract – Finally, handle addition and subtraction left to right.
+
+EXAMPLE:
+Calculate 2 + 3 × (4 + 2)² ÷ 3
+Step 1: Brackets → 4 + 2 = 6 → 2 + 3 × 6² ÷ 3
+Step 2: Indices → 6² = 36 → 2 + 3 × 36 ÷ 3
+Step 3: Multiply / Divide left to right → 3 × 36 = 108 → 108 ÷ 3 = 36 → 2 + 36
+Step 4: Add / Subtract → 2 + 36 = 38
+Final Answer: 38
+
 COMMON MISTAKES TO AVOID:
 
-Working left to right without following BIDMAS.
+Ignoring brackets – calculating outside first leads to wrong results.
 
-Ignoring brackets.
+Doing addition or subtraction before multiplication/division – violates BIDMAS order.
 
-Doing division before multiplication instead of left to right.
+Left-to-right errors – performing multiplication/division or addition/subtraction out of sequence.
 `,
 
 
 
 'Inequalities': `
 REFERENCE GUIDE: Inequalities
-DEFINITION: An inequality shows that one number is bigger or smaller than another using symbols like >, <, ≥, ≤.
+DEFINITION: Inequalities show the relationship between numbers or expressions using <, >, ≤, and ≥. They indicate which values are bigger, smaller, or equal.
+
 METHOD:
-Step 1: Draw the number line – Mark a horizontal line and evenly space the key numbers that will appear in your inequality.
-Step 2: Add the circle – Mark the number in your inequality with a circle. Use a filled circle for ≥ or ≤, open for > or <.
-Step 3: Draw the arrow – Show the solution region by drawing an arrow from the circle in the correct direction that satisfies the inequality.
-EXAMPLE: Number line showing x ≥ 2 with filled circle at 2 and arrow to the right.
+Step 1: Identify the inequality – Spot the symbol and determine which side is the variable to know the direction.
+Step 2: Isolate the variable – Perform operations to get the variable alone. Remember: multiplying or dividing by a negative flips the inequality.
+Step 3: Check your solution – Substitute your answer into the original inequality or represent it on a number line to verify correctness.
+
+EXAMPLE:
+Solve 3x - 5 < 7
+Step 1: Add 5 → 3x < 12
+Step 2: Divide by 3 → x < 4
+Step 3: Check: x = 3 → 3×3 - 5 = 4 < 7 ✓
+Final Answer: x < 4
+
 COMMON MISTAKES TO AVOID:
 
-Wrong inequality direction (writing < instead of > or vice versa).
+Writing the inequality the wrong way – e.g., x > 5 instead of x < 5.
 
-Confusing closed vs open circles (filled vs open for ≥, ≤ vs >, <).
+Forgetting to flip the inequality when multiplying/dividing by a negative – changes the solution.
 
-Not showing an arrow for the solution region.
+Misrepresenting on a number line – shading the wrong side or using wrong endpoints.
 `,
-
 
 
       
@@ -192,19 +221,28 @@ Mixing up the bounds or writing them in the wrong order.
       
 'Bounds and Truncation': `
 REFERENCE GUIDE: Bounds and Truncation
-DEFINITION: Bounds show the smallest and largest values a number can be, and truncation cuts a number down to a certain decimal without rounding.
+DEFINITION: Bounds show the smallest and largest possible values a number could be. Truncation cuts digits without rounding, keeping the lower bound at the truncated number and setting the upper bound just before the next step.
+
 METHOD:
-Step 1: Identify the precision – Check the number of decimal places or significant figures given. For 1 decimal place, consider ±0.05.
-Step 2: Calculate bounds – Lower bound = number − 0.05, Upper bound = number + 0.05. Example: 3.5 → 3.45 and 3.55.
-Step 3: Show on number line – Draw a number line covering the bounds, mark lower and upper bounds with closed circles, and shade the interval between them.
-EXAMPLE: Lower bound = 3.45, Upper bound = 3.55, shown on a number line.
+Step 1: Identify truncation level – Check how many decimal places or digits are kept. This tells you the “unit” being removed.
+Step 2: Set the lower bound – The truncated number itself is the lower bound.
+Step 3: Set the upper bound – Add the next smallest unit at that decimal to get the upper bound. Example: truncated to 1 decimal → add 0.1.
+Step 4: Express as an inequality – Write lower ≤ x < upper.
+
+EXAMPLE:
+Truncate 24.76 to 1 decimal:
+Truncated number = 24.7
+Lower bound = 24.7
+Upper bound = 24.8
+Inequality: 24.7 ≤ x < 24.8
+
 COMMON MISTAKES TO AVOID:
 
-Mixing upper and lower bounds (writing 1.5 instead of 1.499… for lower bound).
+Confusing truncation with rounding – truncation never increases digits.
 
-Rounding instead of truncating (truncation always cuts digits).
+Swapping lower and upper bounds – lower bound must always come first.
 
-Using wrong interval notation (ensure correct brackets and ≤, < symbols).
+Forgetting the upper bound adjustment – it must reach just before the next unit.
 `,
 
 
