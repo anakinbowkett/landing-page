@@ -1417,156 +1417,196 @@ html,body{
   
   <div id="guideContent">
     <div class="container">
-
-<h1>Bounds and Truncation</h1>
-<p class="subtitle">Understanding the limits of numbers when we round or cut off digits</p>
-
-<div class="understanding">
-<h2 class="section-title">Understanding the Question</h2>
-<p>When a question asks for bounds or truncation, it wants you to find the <strong>range of possible values</strong> a number could actually be. Let’s break this down:</p>
-
-<div class="variable-explanation">
-<span class="variable-name">Truncation</span> - Cutting off digits without rounding. Like snapping off extra LEGO pieces: you just remove them, no rounding up.  
-Example: 12.78 truncated to 1 decimal place → 12.7
-</div>
-
-<div class="variable-explanation">
-<span class="variable-name">Upper Bound</span> - The largest possible value the number could be. Think of it as the ceiling: the number can’t go higher than this.  
-Example: 12.7 truncated → upper bound = 12.8
-</div>
-
-<div class="variable-explanation">
-<span class="variable-name">Lower Bound</span> - The smallest possible value the number could be. The floor: the number can’t go lower than this.  
-Example: 12.7 truncated → lower bound = 12.7
-</div>
-
-<p>Core skill: Show the safety zone for the number. Truncation always keeps the lower bound at the truncated number and upper bound just before the next step.</p>
-</div>
-
-<div class="roadmap">
-<h2 class="section-title">Breaking It Down Step by Step</h2>
-
-<div class="roadmap-step">
-<div class="step-number">1</div>
-<div class="step-content">
-<strong>Spot how the number is truncated</strong>
-<p>Check whether it’s truncated to 1 decimal, 2 decimals, nearest whole number, etc. This sets the bounds.</p>
-</div>
-</div>
-
-<div class="roadmap-step">
-<div class="step-number">2</div>
-<div class="step-content">
-<strong>Find the lower bound</strong>
-<p>It’s usually the number itself after truncation. This anchors the “floor” of possible values.</p>
-</div>
-</div>
-
-<div class="roadmap-step">
-<div class="step-number">3</div>
-<div class="step-content">
-<strong>Find the upper bound</strong>
-<p>Add the smallest unit that could have been removed. This is the “ceiling”. Example: truncating 12.7 to 1 decimal → upper bound = 12.8</p>
-</div>
-</div>
-
-<div class="roadmap-step">
-<div class="step-number">4</div>
-<div class="step-content">
-<strong>Write the bounds clearly</strong>
-<p>Use inequalities: lower ≤ x &lt; upper. Always lower bound first, upper bound second.</p>
-</div>
-</div>
-
-</div>
-
-<div class="method">
-<h2 class="section-title">The Method</h2>
-
-<div class="method-step">
-<h3>Step 1: Identify truncation level</h3>
-<p>Check how many decimal places or digits are kept. This tells you what part is removed.</p>
-</div>
-
-<div class="method-step">
-<h3>Step 2: Set the lower bound</h3>
-<p>Lower bound = truncated number itself.</p>
-</div>
-
-<div class="method-step">
-<h3>Step 3: Set the upper bound</h3>
-<p>Upper bound = truncated number + next smallest unit at that decimal. Example: truncated to 1 decimal → add 0.1</p>
-</div>
-
-<div class="method-step">
-<h3>Step 4: Express the error interval</h3>
-<p>Write it as an inequality: lower ≤ x &lt; upper.</p>
-</div>
-
-</div>
-
-<div class="example">
-<h2 class="section-title">Worked Example</h2>
-
-<div class="example-question">
-Truncate 24.76 to 1 decimal place. Find the bounds.
-</div>
-
-<div class="example-step">
-<span class="label">Step 1: Identify truncation</span>
-<p>Truncated to 1 decimal → 24.76 → 24.7</p>
-</div>
-
-<div class="example-step">
-<span class="label">Step 2: Lower bound</span>
-<p>Lower = truncated number = 24.7</p>
-</div>
-
-<div class="example-step">
-<span class="label">Step 3: Upper bound</span>
-<p>Upper = truncated number + next smallest unit (0.1) = 24.8</p>
-</div>
-
-<div class="example-step">
-<span class="label">Step 4: Write inequality</span>
-<p>24.7 ≤ x &lt; 24.8</p>
-</div>
-
-<div class="memory">
-<strong>Check:</strong> Any number in this range truncated to 1 decimal gives 24.7 ✓
-</div>
-
-<div class="final">
-24.7 ≤ x &lt; 24.8
-</div>
-</div>
-
-<div class="key-terms">
-<h2 class="section-title">Key Terms Reference</h2>
-
-<div class="term">
-<span class="term-name">Truncation</span> – Cutting off digits without rounding. Example: 12.78 → 12.7
-</div>
-
-<div class="term">
-<span class="term-name">Lower Bound</span> – Smallest possible value. Example: truncated 12.7 → lower = 12.7
-</div>
-
-<div class="term">
-<span class="term-name">Upper Bound</span> – Largest possible value before next step. Example: truncated 12.7 → upper = 12.8
-</div>
-
-<div class="term">
-<span class="term-name">Error Interval</span> – The range where the real value could lie. Example: 12.7 ≤ x &lt; 12.8
-</div>
-
-<div class="term">
-<span class="term-name">Unit of Truncation</span> – The decimal place you cut off. Determines how much to add for upper bound.
-</div>
-
-</div>
-
-</div>
+        <h1>Bounds and Truncation</h1>
+        <p class="subtitle">Understanding the true range of a value when it has been rounded or cut short</p>
+        
+        <div class="understanding-section">
+            <h2 class="section-title">Understanding the Question</h2>
+            <p>When a question asks about bounds or truncation, it’s testing whether you understand that a rounded number isn’t exact. It actually represents a range of possible values.</p>
+            
+            <div class="variable-explanation">
+                <span class="variable-name">Upper bound</span> is the largest possible value the number could be. Think of it like the highest shelf the value could sit on without tipping over.
+            </div>
+            
+            <div class="variable-explanation">
+                <span class="variable-name">Lower bound</span> is the smallest possible value the number could be. This is the floor the value can’t drop below.
+            </div>
+            
+            <p>The fundamental skill being tested is whether you can interpret rounding or truncation and turn it into a correct inequality or range.</p>
+        </div>
+        
+        <div class="full-marks-section">
+            <h2 class="section-title">Path to Full Marks: Your Roadmap</h2>
+            <p style="font-size: 17px; color: #334155; margin-bottom: 28px;">Follow this step-by-step pathway to avoid common mistakes. Each stage reduces uncertainty and helps your brain stay organised under pressure.</p>
+            
+            <div class="roadmap-step">
+                <div class="roadmap-number">1</div>
+                <div class="roadmap-content">
+                    <strong>Identify how the value was rounded or truncated</strong>
+                    <p>This activates pattern recognition — your brain instantly links decimal places to rounding rules.</p>
+                </div>
+            </div>
+            
+            <div class="roadmap-step">
+                <div class="roadmap-number">2</div>
+                <div class="roadmap-content">
+                    <strong>Work out the size of the rounding step</strong>
+                    <p>Understanding the step size reduces cognitive load and stops you guessing the bounds.</p>
+                </div>
+            </div>
+            
+            <div class="roadmap-step">
+                <div class="roadmap-number">3</div>
+                <div class="roadmap-content">
+                    <strong>Subtract and add half the step</strong>
+                    <p>This physical calculation builds motor memory and locks the method in place.</p>
+                </div>
+            </div>
+            
+            <div class="roadmap-step">
+                <div class="roadmap-number">4</div>
+                <div class="roadmap-content">
+                    <strong>Write the bounds clearly using inequality symbols</strong>
+                    <p>This shows examiners clear mathematical communication and secures the final mark.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mark-scheme-container">
+            <div class="mark-scheme-header">Common Errors & Mark Deductions</div>
+            <div class="mark-scheme-content">
+                <div class="marks-column">
+                    <div class="mark-item">-1</div>
+                    <div class="mark-item">-1</div>
+                    <div class="mark-item">-1</div>
+                </div>
+                <div class="mistakes-column">
+                    <div class="mistake-row">
+                        <span class="mistake-bold">Forgetting half the rounding step</span> (e.g., using 3.4 to 3.6 instead of 3.45 to 3.55). This shows the student doesn’t understand how rounding works.
+                    </div>
+                    <div class="mistake-row">
+                        <span class="mistake-bold">Including the upper bound</span> (e.g., writing ≤ instead of &lt;). Rounded values never include the upper limit.
+                    </div>
+                    <div class="mistake-row">
+                        <span class="mistake-bold">Confusing truncation with rounding</span> (e.g., treating 4.2 truncated to 1 dp like rounding). Truncation always cuts off — it never rounds up.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-variations">
+            <div class="variations-title">How Questions Ask This</div>
+            <div class="variation-item">A length is rounded to the nearest cm. State the bounds.</div>
+            <div class="variation-item">A value is given correct to 2 decimal places. Write the inequality.</div>
+            <div class="variation-item">A mass is truncated to 1 decimal place. Find the lower bound.</div>
+            <div class="variation-item">Calculate the upper bound of the measurement.</div>
+            <div class="variation-item">Explain why a value cannot be equal to the upper bound.</div>
+        </div>
+        
+        <div class="method-section">
+            <h2 class="method-title">The Method</h2>
+            
+            <div class="method-step">
+                <div class="step-number">Step One</div>
+                <div class="step-title">Identify the rounding or truncation level</div>
+                <div class="step-detail">
+                    Look at how many decimal places or what unit the number has been given to.
+                </div>
+            </div>
+            
+            <div class="method-step">
+                <div class="step-number">Step Two</div>
+                <div class="step-title">Find the rounding step size</div>
+                <div class="step-detail">
+                    For example, rounding to 1 decimal place means steps of 0.1.
+                </div>
+            </div>
+            
+            <div class="method-step">
+                <div class="step-number">Step Three</div>
+                <div class="step-title">Add and subtract half the step</div>
+                <div class="step-detail">
+                    This gives you the lower and upper bounds accurately.
+                </div>
+            </div>
+        </div>
+        
+        <div class="worked-example">
+            <h2 class="section-title">Worked Example</h2>
+            <div class="example-question">Question: A length is given as 5.6 cm correct to 1 decimal place. Find the bounds.</div>
+            
+            <div class="example-step">
+                <div class="example-step-label">Step 1: Identify the step</div>
+                <p>1 decimal place means the step size is 0.1.</p>
+            </div>
+            
+            <div class="example-step">
+                <div class="example-step-label">Step 2: Half the step</div>
+                <p>Half of 0.1 is 0.05.</p>
+            </div>
+            
+            <div class="example-step">
+                <div class="example-step-label">Step 3: Apply bounds</div>
+                <p>Lower bound = 5.6 − 0.05 = 5.55<br>Upper bound = 5.6 + 0.05 = 5.65</p>
+            </div>
+            
+            <div class="memory-tip">
+                <strong>Verification check:</strong>
+                <p>Any number from 5.55 up to (but not including) 5.65 rounds to 5.6.</p>
+            </div>
+            
+            <div class="final-answer">
+                5.55 ≤ x &lt; 5.65
+            </div>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 3px solid #fbbf24; border-radius: 13px; padding: 32px; margin-bottom: 40px;">
+            <h2 class="section-title" style="color: #92400e; margin-bottom: 24px;">✓ Before You Submit: Self-Check Checklist</h2>
+            
+            <div style="background: white; border-radius: 13px; padding: 20px 20px 20px 40px; margin-bottom: 16px;">
+                <ul style="list-style-type: disc; margin: 0; padding: 0;">
+                    <li style="font-size: 17px; color: #1a1a1a; margin-bottom: 12px;">Have I identified how the value was rounded or truncated?</li>
+                    <li style="font-size: 17px; color: #1a1a1a; margin-bottom: 12px;">Did I find the correct step size?</li>
+                    <li style="font-size: 17px; color: #1a1a1a; margin-bottom: 12px;">Did I use half the step?</li>
+                    <li style="font-size: 17px; color: #1a1a1a; margin-bottom: 0;">Have I used the correct inequality symbols?</li>
+                </ul>
+            </div>
+            
+            <div class="memory-tip" style="margin-top: 20px;">
+                <strong>Quick reassurance:</strong>
+                <p>If your bounds straddle the rounded value evenly, you’re on the right track.</p>
+            </div>
+        </div>
+        
+        <div class="key-terms">
+            <h2 class="section-title">Key Terms Reference</h2>
+            
+            <div class="term">
+                <span class="term-name">Upper bound</span> - The largest possible value.
+            </div>
+            
+            <div class="term">
+                <span class="term-name">Lower bound</span> - The smallest possible value.
+            </div>
+            
+            <div class="term">
+                <span class="term-name">Rounding</span> - Adjusting a number to a given accuracy.
+            </div>
+            
+            <div class="term">
+                <span class="term-name">Truncation</span> - Cutting digits off without rounding.
+            </div>
+            
+            <div class="term">
+                <span class="term-name">Inequality</span> - A mathematical statement using &lt;, ≤, &gt; or ≥.
+            </div>
+            
+            <div class="term">
+                <span class="term-name">Step size</span> - The gap between rounded values.
+            </div>
+        </div>
+        
+    </div>
 
 
 </script>
