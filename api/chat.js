@@ -220,7 +220,52 @@ Mixing up the bounds or writing them in the wrong order.
       
       
 
+'Bounds and Truncation': `
+REFERENCE GUIDE: Bounds and Truncation
+DEFINITION: When a value is rounded or truncated, it is not exact. It represents a range of possible values. Bounds describe this range using a lower bound (smallest possible value) and an upper bound (largest possible value).
 
+KEY IDEA:
+• Rounding → values are within half a step either side of the rounded number
+• Truncation → values start at the truncated number and go up to (but not including) the next step
+
+METHOD (ROUNDED VALUES):
+Step 1: Identify the rounding level – e.g. nearest whole number, 1 decimal place, etc.
+Step 2: Find the step size – e.g. 1 dp → step = 0.1
+Step 3: Halve the step – this gives the distance to each bound
+Step 4: Subtract and add half the step to find the bounds
+Step 5: Write the bounds using correct inequalities (≤ for lower, < for upper)
+
+METHOD (TRUNCATED VALUES):
+Step 1: Identify the truncation level
+Step 2: The lower bound is the truncated value
+Step 3: The upper bound is the next possible value (not included)
+Step 4: Write the bounds using ≤ and <
+
+EXAMPLE (ROUNDING):
+A length is 5.6 cm correct to 1 decimal place
+Step 1: Step size = 0.1
+Step 2: Half step = 0.05
+Step 3: Lower bound = 5.6 − 0.05 = 5.55
+Step 4: Upper bound = 5.6 + 0.05 = 5.65
+
+Result:
+5.55 ≤ x < 5.65
+
+EXAMPLE (TRUNCATION):
+A value is truncated to 1 decimal place as 4.2
+Lower bound = 4.2
+Upper bound = 4.3
+
+Result:
+4.2 ≤ x < 4.3
+
+COMMON MISTAKES TO AVOID:
+Forgetting half the step – e.g. using 5.5 to 5.7 instead of 5.55 to 5.65
+
+Including the upper bound – rounded values never include the upper limit
+
+Confusing truncation with rounding – truncation never rounds up, it only cuts off digits
+`,
 
 
 
