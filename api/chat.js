@@ -358,7 +358,124 @@ Not simplifying correctly – e.g., leaving 6/12 unsimplified or simplifying to 
 
 
 
+'Dividing Fractions': `
+REFERENCE GUIDE: Dividing Fractions
+DEFINITION: Dividing fractions means finding how many times one fraction fits into another. This is done by multiplying by the reciprocal of the second fraction.
 
+METHOD:
+Step 1: Keep the first fraction the same.
+Step 2: Change the division sign (÷) to multiplication (×).
+Step 3: Flip the second fraction to get its reciprocal.
+Step 4: Multiply across and simplify the result.
+
+EXAMPLE:
+Work out 3/4 ÷ 2/5
+Step 1: Keep–Change–Flip → 3/4 × 5/2
+Step 2: Multiply → (3×5)/(4×2) = 15/8
+Step 3: Simplify or convert if needed → 15/8 = 1 7/8
+
+COMMON MISTAKES TO AVOID:
+Flipping the wrong fraction – only the second fraction is flipped.
+
+Forgetting to change ÷ to × before multiplying.
+
+Not simplifying the final answer or missing a mixed number when asked.
+`,
+
+'Adding Fractions': `
+REFERENCE GUIDE: Adding Fractions
+DEFINITION: Adding fractions combines parts, but only works directly when the fractions have the same denominator (same-sized parts).
+
+METHOD:
+Step 1: Check if denominators are the same – if yes, add straight away.
+Step 2: Find a common denominator (usually the LCM).
+Step 3: Convert both fractions to equivalent fractions with the same denominator.
+Step 4: Add the numerators, keep the denominator, then simplify.
+
+EXAMPLE:
+Work out 1/3 + 1/4
+Step 1: Common denominator = 12
+Step 2: Convert → 1/3 = 4/12, 1/4 = 3/12
+Step 3: Add → 4/12 + 3/12 = 7/12
+
+COMMON MISTAKES TO AVOID:
+Adding denominators instead of keeping them the same.
+
+Changing only the denominator and not the numerator.
+
+Forgetting to simplify the final fraction.
+`,
+
+'Subtracting Fractions': `
+REFERENCE GUIDE: Subtracting Fractions
+DEFINITION: Subtracting fractions finds the difference between two amounts and requires both fractions to have the same denominator.
+
+METHOD:
+Step 1: Check if denominators match.
+Step 2: If not, find a common denominator (LCM).
+Step 3: Convert both fractions to equivalent fractions.
+Step 4: Subtract the numerators, keep the denominator, then simplify.
+
+EXAMPLE:
+Work out 3/4 − 1/6
+Step 1: Common denominator = 12
+Step 2: Convert → 3/4 = 9/12, 1/6 = 2/12
+Step 3: Subtract → 9/12 − 2/12 = 7/12
+
+COMMON MISTAKES TO AVOID:
+Subtracting denominators instead of keeping them the same.
+
+Only changing one fraction to match the denominator.
+
+Forgetting subtraction direction (answer should be smaller than the first fraction).
+`,
+
+'Simplifying Fractions': `
+REFERENCE GUIDE: Simplifying Fractions
+DEFINITION: Simplifying a fraction means reducing it to its smallest form without changing its value by dividing the numerator and denominator by the same factor.
+
+METHOD:
+Step 1: Find a common factor of the numerator and denominator.
+Step 2: Divide both the numerator and denominator by that factor.
+Step 3: Repeat until no common factors greater than 1 remain.
+Step 4: Check the fraction is in simplest form.
+
+EXAMPLE:
+Simplify 24/36
+Step 1: Common factor = 12
+Step 2: Divide → 24 ÷ 12 = 2, 36 ÷ 12 = 3
+Step 3: Result → 2/3
+
+COMMON MISTAKES TO AVOID:
+Dividing only the top or bottom.
+
+Stopping before the fraction is fully simplified.
+
+Using a number that is not a common factor.
+`,
+
+'Mixed and Improper Fractions': `
+REFERENCE GUIDE: Mixed and Improper Fractions
+DEFINITION: A mixed number is a whole number with a fraction, while an improper fraction has a numerator larger than the denominator. You must be able to convert between the two.
+
+METHOD:
+Step 1: Mixed → improper: multiply the whole number by the denominator, then add the numerator.
+Step 2: Write the result over the original denominator.
+Step 3: Improper → mixed: divide the numerator by the denominator.
+Step 4: Write the quotient as the whole number and the remainder over the denominator.
+
+EXAMPLE:
+Convert 17/4 to a mixed number
+Step 1: Divide → 17 ÷ 4 = 4 remainder 1
+Step 2: Write → 4 1/4
+
+COMMON MISTAKES TO AVOID:
+Forgetting to multiply the whole number when converting to improper.
+
+Changing the denominator during conversion.
+
+Writing the remainder incorrectly.
+`,
 
 
 
