@@ -275,6 +275,49 @@ Confusing truncation with rounding – truncation never rounds up, it only cuts 
 
 
 
+      
+'Rounding Decimals and Significant Figures': `
+REFERENCE GUIDE: Rounding Decimals and Significant Figures
+DEFINITION: Rounding makes numbers simpler while keeping them as accurate as possible. You may be asked to round to a number of decimal places or a number of significant figures.
+
+KEY IDEAS:
+Decimal places count digits after the decimal point.
+Significant figures count meaningful digits starting from the first non-zero digit.
+The decision digit is the digit to the right of the rounding digit.
+
+ROUNDING RULE:
+If the decision digit is 5 or more, round up.
+If the decision digit is less than 5, keep the rounding digit the same.
+
+METHOD:
+Step 1: Identify whether the question asks for decimal places or significant figures.
+Step 2: Find the rounding digit.
+Step 3: Look at the decision digit to decide whether to round up or not.
+Step 4: Remove or replace digits after the rounding digit.
+Step 5: Check the final answer matches the required accuracy.
+
+EXAMPLES:
+Round 6.42 to 1 decimal place
+Rounding digit = 4, decision digit = 2 → answer = 6.4
+
+Round 0.005678 to 2 significant figures
+First two significant figures = 5 and 6, decision digit = 7 → answer = 0.0057
+
+Round 18,649 to 3 significant figures
+First three significant figures = 1, 8, 6, decision digit = 4 → answer = 18,600
+
+COMMON MISTAKES TO AVOID:
+Counting decimal places from the wrong position.
+
+Starting significant figures from zero instead of the first non-zero digit.
+
+Leaving extra digits instead of removing or replacing them.
+`,
+
+
+
+
+
 
 
 
