@@ -479,6 +479,185 @@ Writing the remainder incorrectly.
 
 
 
+'Mixed and Improper Fractions': `
+REFERENCE GUIDE: Mixed and Improper Fractions
+DEFINITION: Fractions can be written as mixed numbers (a whole number and a fraction) or improper fractions (where the numerator is larger than the denominator). You must be able to convert between them accurately.
+
+KEY IDEAS:
+A mixed number shows whole parts and a fraction (e.g. 2 1/3).
+An improper fraction represents more than one whole (e.g. 7/3).
+The denominator never changes during conversion.
+
+METHOD:
+Step 1: Decide the direction of conversion (mixed → improper or improper → mixed).
+Step 2: Mixed → improper: (whole × denominator) + numerator, over the same denominator.
+Step 3: Improper → mixed: divide numerator by denominator.
+Step 4: Write the remainder over the original denominator.
+Step 5: Check by converting back.
+
+EXAMPLE:
+Convert 17/4 to a mixed number
+17 ÷ 4 = 4 remainder 1 → 4 1/4
+
+COMMON MISTAKES TO AVOID:
+Adding instead of multiplying the whole number.
+
+Changing the denominator.
+
+Writing the remainder incorrectly.
+`,
+
+'Fractions of an Amount': `
+REFERENCE GUIDE: Fractions of an Amount
+DEFINITION: Finding a fraction of an amount means finding a part of a whole by sharing it into equal parts.
+
+KEY IDEAS:
+The denominator tells you how many equal parts the whole is split into.
+The numerator tells you how many of those parts you want.
+A unit fraction (1/n) is the key stepping stone.
+
+METHOD:
+Step 1: Divide the total amount by the denominator.
+Step 2: Multiply the result by the numerator.
+Step 3: Include units if needed.
+Step 4: Check the answer makes sense.
+
+EXAMPLE:
+Find 3/5 of 40
+40 ÷ 5 = 8
+8 × 3 = 24
+
+COMMON MISTAKES TO AVOID:
+Dividing by the numerator instead of the denominator.
+
+Multiplying first and making arithmetic errors.
+
+Getting an answer bigger than the whole for a fraction less than 1.
+`,
+
+'Percentage of an Amount': `
+REFERENCE GUIDE: Percentage of an Amount
+DEFINITION: A percentage means “out of 100”. Finding a percentage of an amount is finding a fraction of the whole.
+
+KEY IDEAS:
+Percent means ÷100.
+A multiplier converts a percentage into a decimal.
+10% and 1% methods are useful without calculators.
+
+METHOD:
+Step 1: Convert the percentage to a decimal (÷100) or use 10%/1%.
+Step 2: Multiply the amount by the decimal.
+Step 3: Round sensibly and include units.
+Step 4: Sense check using 10% or 50%.
+
+EXAMPLE:
+Find 12% of 250
+12% = 0.12
+250 × 0.12 = 30
+
+COMMON MISTAKES TO AVOID:
+Forgetting to divide by 100.
+
+Adding the percentage instead of finding the part.
+
+Rounding money incorrectly.
+`,
+
+'Reverse Percentages': `
+REFERENCE GUIDE: Reverse Percentages
+DEFINITION: Reverse percentages find the original amount when you are given the final amount after a percentage increase or decrease.
+
+KEY IDEAS:
+Increase → multiplier greater than 1.
+Decrease → multiplier less than 1.
+Reverse means divide, not multiply.
+
+METHOD:
+Step 1: Decide if the change is an increase or decrease.
+Step 2: Write the correct multiplier.
+Step 3: Divide the final amount by the multiplier.
+Step 4: Check by multiplying forward.
+
+EXAMPLE:
+After a 20% discount, a coat costs £48
+Multiplier = 0.8
+Original = 48 ÷ 0.8 = 60
+
+COMMON MISTAKES TO AVOID:
+Using the percentage instead of the multiplier.
+
+Multiplying instead of dividing.
+
+Using the wrong direction.
+`,
+
+'Simple Interest': `
+REFERENCE GUIDE: Simple Interest
+DEFINITION: Simple interest is calculated on the original amount only. The interest does not compound.
+
+KEY IDEAS:
+Principal is the starting amount.
+Rate must be converted to a decimal.
+Time is measured in years.
+
+METHOD:
+Step 1: Identify principal, rate and time.
+Step 2: Convert the rate to a decimal.
+Step 3: Use Interest = Principal × Rate × Time.
+Step 4: Add interest to principal if total is required.
+
+EXAMPLE:
+Find the simple interest on £500 at 6% for 4 years
+Interest = 500 × 0.06 × 4 = 120
+
+COMMON MISTAKES TO AVOID:
+Not converting the percentage.
+
+Using compound interest instead.
+
+Forgetting to add interest when asked for the total.
+`,
+
+'Compound Interest': `
+REFERENCE GUIDE: Compound Interest
+DEFINITION: Compound interest is calculated on the total, including interest from previous periods.
+
+KEY IDEAS:
+Use a multiplier (e.g. 5% increase → 1.05).
+The number of years is the power.
+Money answers round to 2 decimal places.
+
+METHOD:
+Step 1: Write the multiplier.
+Step 2: Raise it to the power of the number of years.
+Step 3: Multiply by the original amount.
+Step 4: Round appropriately.
+
+EXAMPLE:
+£500 at 10% compound interest for 2 years
+Multiplier = 1.10
+Final = 500 × 1.10² = 605
+
+COMMON MISTAKES TO AVOID:
+Using simple interest.
+
+Forgetting the power.
+
+Using 0.10 instead of 1.10.
+`,
+
+
+
+
+
+
+
+
+
+
+
+      
+
 
       
 
