@@ -282,6 +282,44 @@ Confusing truncation with rounding – truncation never rounds up, it only cuts 
       
 
 
+
+'Multiplying Fractions': `
+REFERENCE GUIDE: Multiplying Fractions
+DEFINITION: Multiplying fractions means finding a fraction of a fraction. You multiply the numerators together and multiply the denominators together, then simplify the result.
+
+KEY IDEA:
+Multiply across (top × top, bottom × bottom). No common denominators are needed. Always simplify at the end.
+
+METHOD:
+Step 1: Check for mixed numbers – If any fractions are mixed numbers, convert them to improper fractions first.
+Step 2: Multiply the numerators – Multiply the top numbers together.
+Step 3: Multiply the denominators – Multiply the bottom numbers together.
+Step 4: Simplify – Divide the numerator and denominator by the same number to get the simplest form.
+Step 5: Sense check – If both fractions are less than 1, the answer should be smaller than both.
+
+EXAMPLE:
+Work out 2/3 × 3/4
+Step 1: Multiply numerators → 2 × 3 = 6
+Step 2: Multiply denominators → 3 × 4 = 12
+Step 3: Simplify → 6/12 = 1/2
+Result → 1/2
+
+COMMON MISTAKES TO AVOID:
+Adding instead of multiplying – e.g., 2/3 + 3/4 (wrong method).
+
+Only multiplying the numerators – e.g., (2×3)/4 = 6/4 (denominator must be multiplied too).
+
+Not simplifying correctly – e.g., leaving 6/12 unsimplified or simplifying to 3/12 instead of 1/2.
+`,
+
+
+
+
+
+
+
+
+
       
 
 
