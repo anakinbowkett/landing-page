@@ -979,33 +979,8 @@ Adding or subtracting the bases instead of the indices.
 Using index laws when the bases are different.
 
 Adding indices when dividing instead of subtracting them.
-`,
+`
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-
-      
-
-
-      
-
-
-
-
-
-      
 
 
       
