@@ -656,6 +656,210 @@ Using 0.10 instead of 1.10.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'Index Laws': `
+REFERENCE GUIDE: Index Laws
+DEFINITION: Index laws are rules used to simplify expressions involving powers. They allow you to multiply, divide, or raise powers efficiently without expanding everything.
+
+KEY IDEAS:
+The base is the number being powered.
+The index (power) shows how many times the base is multiplied by itself.
+Index laws only apply when the bases are the same.
+Answers should be written using a single power where possible.
+
+INDEX LAWS:
+Multiply powers → add the indices.
+Divide powers → subtract the indices.
+Power of a power → multiply the indices.
+
+METHOD:
+Step 1: Check that the bases are the same.
+Step 2: Identify the operation (multiply, divide, or power of a power).
+Step 3: Apply the correct index law to the indices only.
+Step 4: Keep the base the same.
+Step 5: Write the final answer in simplest form.
+
+EXAMPLES:
+Simplify 2³ × 2⁵
+Add indices: 3 + 5 = 8 → answer = 2⁸
+
+Simplify 7⁶ ÷ 7²
+Subtract indices: 6 − 2 = 4 → answer = 7⁴
+
+Simplify (3²)³
+Multiply indices: 2 × 3 = 6 → answer = 3⁶
+
+COMMON MISTAKES TO AVOID:
+Adding or subtracting the bases instead of the indices.
+
+Using index laws when the bases are different.
+
+Adding indices when dividing instead of subtracting them.
+`,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
       
 
 
