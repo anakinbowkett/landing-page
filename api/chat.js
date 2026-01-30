@@ -618,6 +618,8 @@ Using compound interest instead.
 Forgetting to add interest when asked for the total.
 `,
 
+
+      
 'Compound Interest': `
 REFERENCE GUIDE: Compound Interest
 DEFINITION: Compound interest is calculated on the total, including interest from previous periods.
@@ -648,159 +650,293 @@ Using 0.10 instead of 1.10.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+'Depreciation': `
+REFERENCE GUIDE: Depreciation
+DEFINITION: Depreciation is a decrease in value over time, usually calculated using compound percentage decrease.
+
+KEY IDEA:
+Final value = Original value × (multiplier)^(number of years)
+
+IMPORTANT TERMS:
+Original value – The starting price.
+Depreciation rate – The percentage lost each year.
+Multiplier – 1 minus the rate as a decimal (e.g. 15% → 0.85).
+
+METHOD:
+Step 1: Convert the percentage to a decimal.
+Step 2: Subtract from 1 to find the multiplier.
+Step 3: Raise the multiplier to the number of years.
+Step 4: Multiply by the original value.
+
+EXAMPLE:
+£12,000 depreciates by 15% for 2 years.
+Multiplier = 0.85
+Final value = 12000 × 0.85²
+
+COMMON MISTAKES TO AVOID:
+Using 1 + rate instead of 1 − rate.
+Forgetting to use powers for multiple years.
+Applying the percentage decrease only once.
+`,
+
+'Percentage Profit': `
+REFERENCE GUIDE: Percentage Profit
+DEFINITION: Percentage profit shows how much money is gained compared to the original cost price.
+
+KEY FORMULA:
+Percentage profit = (Profit ÷ Cost Price) × 100%
+
+IMPORTANT TERMS:
+Cost Price (CP) – Original price.
+Selling Price (SP) – Price sold for.
+Profit – SP − CP.
+
+METHOD:
+Step 1: Subtract cost price from selling price.
+Step 2: Divide the profit by the cost price.
+Step 3: Multiply by 100 to get a percentage.
+Step 4: Sense check – profit should be positive if SP > CP.
+
+EXAMPLE:
+Cost = £20, Selling price = £26
+Profit = 6
+Percentage profit = (6 ÷ 20) × 100 = 30%
+
+COMMON MISTAKES TO AVOID:
+Dividing by the selling price.
+Forgetting to multiply by 100.
+Using the wrong numbers for profit.
+`,
+
+'Value for Money': `
+REFERENCE GUIDE: Value for Money
+DEFINITION: Value for money compares options by finding the cost per unit and choosing the cheapest.
+
+KEY IDEA:
+Best value = smallest cost per unit.
+
+IMPORTANT TERMS:
+Unit – One item, kilogram, litre, etc.
+Cost per unit – Total cost ÷ number of units.
+
+METHOD:
+Step 1: Decide what one unit is.
+Step 2: Divide the price by the number of units for each option.
+Step 3: Compare the costs per unit.
+Step 4: State clearly which option is best value.
+
+EXAMPLE:
+6 items for £3 → £0.50 per item
+10 items for £4 → £0.40 per item
+Best value = second option
+
+COMMON MISTAKES TO AVOID:
+Comparing total prices instead of unit cost.
+Using different units for each option.
+Forgetting to explain your choice.
+`,
+
+'Standard Form and Ordinary Numbers': `
+REFERENCE GUIDE: Standard Form and Ordinary Numbers
+DEFINITION: Standard form writes very large or very small numbers using powers of 10.
+
+STANDARD FORM:
+a × 10ⁿ where 1 ≤ a < 10
+
+IMPORTANT TERMS:
+a – Number between 1 and 10.
+n – Number of decimal moves.
+Positive power – Large numbers.
+Negative power – Small numbers.
+
+METHOD:
+Step 1: Move the decimal to make a number between 1 and 10.
+Step 2: Count how many places the decimal moved.
+Step 3: Use a positive power for big numbers, negative for small.
+Step 4: Write the final answer neatly.
+
+EXAMPLE:
+6200 → 6.2 × 10³
+
+COMMON MISTAKES TO AVOID:
+Forgetting the decimal must be between 1 and 10.
+Using the wrong sign on the power.
+Miscounting decimal moves.
+`,
+
+'Number Powers Calculations': `
+REFERENCE GUIDE: Number Powers Calculations
+DEFINITION: Powers are a short way to write repeated multiplication.
+
+IMPORTANT TERMS:
+Base – The number being multiplied.
+Power / Index – Number of times the base is used.
+Zero power – Any number to the power of 0 equals 1.
+
+METHOD:
+Step 1: Expand the power into multiplication.
+Step 2: Multiply step by step.
+Step 3: Use known squares and cubes to speed up.
+Step 4: Check the size of the answer.
+
+EXAMPLE:
+2⁴ = 2 × 2 × 2 × 2 = 16
+
+COMMON MISTAKES TO AVOID:
+Adding instead of multiplying.
+Using the wrong number of factors.
+Thinking any number to the power of 0 equals 0.
+`,
+
+
+'Estimation': `
+REFERENCE GUIDE: Estimation
+DEFINITION: Estimation means finding an approximate answer by rounding numbers to make calculations quick and sensible.
+
+KEY IDEA:
+You round first, then calculate. The answer should be close, not exact.
+
+IMPORTANT TERMS:
+Round – Change a number to a nearby easy value.
+Significant figures – How many digits you keep when rounding.
+Overestimate – Rounded values make the answer larger.
+Underestimate – Rounded values make the answer smaller.
+
+METHOD:
+Step 1: Identify awkward numbers in the calculation.
+Step 2: Round each to an easy number (often 1 significant figure).
+Step 3: Do the calculation using the rounded numbers.
+Step 4: Decide whether your estimate is an overestimate or underestimate.
+
+EXAMPLE:
+Estimate 48 × 19
+48 → 50, 19 → 20
+50 × 20 = 1000
+
+COMMON MISTAKES TO AVOID:
+Not rounding at all.
+Rounding inconsistently.
+Treating the estimate as an exact answer.
+`,
+
+'Negative Numbers and Ordering Operations': `
+REFERENCE GUIDE: Negative Numbers and Ordering Operations
+DEFINITION: These questions involve working with negative numbers while following the correct order of operations (BIDMAS).
+
+KEY IDEA:
+The order matters more than the signs. Handle one step at a time.
+
+IMPORTANT TERMS:
+Negative number – A number less than zero.
+BIDMAS – Brackets, Indices, Division, Multiplication, Addition, Subtraction.
+Opposite signs – Positive × negative = negative.
+Same signs – Negative × negative = positive.
+
+METHOD:
+Step 1: Work out brackets first.
+Step 2: Calculate indices (powers).
+Step 3: Multiply and divide from left to right.
+Step 4: Add and subtract last, watching the signs.
+
+EXAMPLE:
+Work out −3 × 4 + 5
+−3 × 4 = −12
+−12 + 5 = −7
+
+COMMON MISTAKES TO AVOID:
+Ignoring BIDMAS.
+Losing track of negative signs.
+Adding before multiplying.
+`,
+
+'Converting Between Fractions, Decimals and Percentages': `
+REFERENCE GUIDE: Converting Between Fractions, Decimals and Percentages
+DEFINITION: Fractions, decimals and percentages are equivalent ways of showing the same value.
+
+KEY IDEA:
+Fraction → Decimal → Percentage is the smoothest route.
+
+IMPORTANT TERMS:
+Fraction – Part of a whole.
+Decimal – Uses place value.
+Percentage – Out of 100.
+Equivalent – Different forms with the same value.
+
+METHOD:
+Step 1: Fraction to decimal – divide top by bottom.
+Step 2: Decimal to percentage – multiply by 100.
+Step 3: Percentage to decimal – divide by 100.
+Step 4: Simplify fractions where possible.
+
+EXAMPLE:
+Convert 3/4
+3 ÷ 4 = 0.75
+0.75 × 100 = 75%
+
+COMMON MISTAKES TO AVOID:
+Forgetting to multiply or divide by 100.
+Not simplifying fractions.
+Mixing up numerator and denominator.
+`,
+
+'Metric Unit Conversions': `
+REFERENCE GUIDE: Metric Unit Conversions
+DEFINITION: Metric units convert using powers of 10 by moving the decimal point.
+
+KEY IDEA:
+Small units → bigger numbers.
+Large units → smaller numbers.
+
+IMPORTANT TERMS:
+mm – Millimetres
+cm – Centimetres
+m – Metres
+km – Kilometres
+
+METHOD:
+Step 1: Write the unit order (mm → cm → m → km).
+Step 2: Decide whether you are going bigger or smaller.
+Step 3: Move the decimal the correct number of places.
+Step 4: Check the size makes sense.
+
+EXAMPLE:
+Convert 3.2 m to cm
+3.2 × 100 = 320 cm
+
+COMMON MISTAKES TO AVOID:
+Moving the decimal the wrong way.
+Forgetting how many zeros are involved.
+Not checking if the answer is sensible.
+`,
+
+'Calculator Fluency: ANS Key & Multi-Step Calculations': `
+REFERENCE GUIDE: Calculator Fluency – ANS Key
+DEFINITION: The ANS key recalls your previous calculator result, helping with long calculations.
+
+KEY IDEA:
+Each result feeds into the next step.
+
+IMPORTANT TERMS:
+ANS – Stores the last answer.
+Multi-step calculation – Needs more than one operation.
+Accuracy – Avoid rounding too early.
+
+METHOD:
+Step 1: Complete the first calculation.
+Step 2: Press ANS instead of retyping the result.
+Step 3: Continue the calculation.
+Step 4: Round only at the final step if required.
+
+EXAMPLE:
+(8.4 × 3.5) ÷ 2.1
+8.4 × 3.5 = 29.4
+ANS ÷ 2.1 = 14
+
+COMMON MISTAKES TO AVOID:
+Rounding mid-calculation.
+Retyping numbers incorrectly.
+Ignoring the order of operations.
+`,
 
 
 
