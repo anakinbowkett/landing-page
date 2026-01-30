@@ -2148,32 +2148,32 @@ document.addEventListener('DOMContentLoaded', function() {
   window.currentQuestionId = null;
  
  window.QUESTION_BANK = {
-  'Mathematics_Foundation_Geometry_L76_Q1': {
+  'Mathematics_Foundation_Trigonometry_L76_Q1': {
     question: 'In a right-angled triangle, sin(θ) equals what?',
     correctAnswer: 'Opposite/Hypotenuse',
     topic: 'SOH CAH TOA - Finding Sides and Angles'
   },
-  'Mathematics_Foundation_Geometry_L76_Q2': {
+  'Mathematics_Foundation_Trigonometry_L76_Q2': {
     question: 'A right-angled triangle has hypotenuse 10 cm and angle 30°. The opposite side equals 10 × sin(30°). Work out this length.',
     correctAnswer: '5 cm',
     topic: 'SOH CAH TOA - Finding Sides and Angles'
   },
-  'Mathematics_Foundation_Geometry_L76_Q3': {
+  'Mathematics_Foundation_Trigonometry_L76_Q3': {
     question: 'In trigonometry, what does tan(θ) equal?',
     correctAnswer: 'Opposite/Adjacent',
     topic: 'SOH CAH TOA - Finding Sides and Angles'
   },
-  'Mathematics_Foundation_Geometry_L76_Q4': {
+  'Mathematics_Foundation_Trigonometry_L76_Q4': {
     question: 'A right-angled triangle has an adjacent side of 8 cm and hypotenuse of 10 cm. Work out the angle using cos(θ) = 8/10.',
     correctAnswer: '36.87°',
     topic: 'SOH CAH TOA - Finding Sides and Angles'
   },
-  'Mathematics_Foundation_Geometry_L76_Q5': {
+  'Mathematics_Foundation_Trigonometry_L76_Q5': {
     question: 'A right-angled triangle has an opposite side of 6 cm and an angle of 40°. Work out the hypotenuse using sin(40°) = 6/hypotenuse. Use sin(40°) = 0.643.',
     correctAnswer: '9.33 cm',
     topic: 'SOH CAH TOA - Finding Sides and Angles'
   },
-  'Mathematics_Foundation_Geometry_L76_Q6': {
+  'Mathematics_Foundation_Trigonometry_L76_Q6': {
     question: 'A ladder reaches 12 m up a wall and makes an angle of 70° with the ground. Work out the length of the ladder using sin(70°) = 12/length. Use sin(70°) = 0.940.',
     correctAnswer: '12.77 m',
     topic: 'SOH CAH TOA - Finding Sides and Angles'
@@ -2181,7 +2181,7 @@ document.addEventListener('DOMContentLoaded', function() {
 };
 
 window.setCurrentQuestion = function(questionNumber) {
-  window.currentQuestionId = `Mathematics_Foundation_Geometry_L76_Q${questionNumber}`;
+  window.currentQuestionId = `Mathematics_Foundation_Trigonometry_L76_Q${questionNumber}`;
 };
 
 
@@ -2296,7 +2296,7 @@ label.style.display = isUser ? 'block' : 'none';
   
  window.setCurrentQuestion = function(questionNumber) {
   console.log('Setting current question to:', questionNumber);
-  window.currentQuestionId = `Mathematics_Foundation_Number_L76_Q${questionNumber}`;
+  window.currentQuestionId = `Mathematics_Foundation_Trigonometry_L76_Q${questionNumber}`;
   window.conversationHistory = []; // Clear chat history for new question
   
   const questionData = window.QUESTION_BANK[window.currentQuestionId];

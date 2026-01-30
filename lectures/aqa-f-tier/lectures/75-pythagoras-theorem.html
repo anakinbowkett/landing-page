@@ -2149,32 +2149,32 @@ document.addEventListener('DOMContentLoaded', function() {
   window.currentQuestionId = null;
  
  window.QUESTION_BANK = {
-  'Mathematics_Foundation_Geometry_L75_Q1': {
+  'Mathematics_Foundation_Trigonometry_L75_Q1': {
     question: 'A right-angled triangle has sides 3 cm and 4 cm. Calculate the hypotenuse.',
     correctAnswer: '5 cm',
     topic: 'Pythagoras Theorem'
   },
-  'Mathematics_Foundation_Geometry_L75_Q2': {
+  'Mathematics_Foundation_Trigonometry_L75_Q2': {
     question: 'A right-angled triangle has sides 5 cm and 12 cm. Work out the hypotenuse.',
     correctAnswer: '13 cm',
     topic: 'Pythagoras Theorem'
   },
-  'Mathematics_Foundation_Geometry_L75_Q3': {
+  'Mathematics_Foundation_Trigonometry_L75_Q3': {
     question: 'A right-angled triangle has a hypotenuse of 10 cm and one side of 6 cm. Work out the other side.',
     correctAnswer: '8 cm',
     topic: 'Pythagoras Theorem'
   },
-  'Mathematics_Foundation_Geometry_L75_Q4': {
+  'Mathematics_Foundation_Trigonometry_L75_Q4': {
     question: 'A ladder is 13 m long and leans against a wall. The base is 5 m from the wall. How high up the wall does it reach?',
     correctAnswer: '12 m',
     topic: 'Pythagoras Theorem'
   },
-  'Mathematics_Foundation_Geometry_L75_Q5': {
+  'Mathematics_Foundation_Trigonometry_L75_Q5': {
     question: 'A rectangle has length 9 cm and width 12 cm. Work out the length of the diagonal.',
     correctAnswer: '15 cm',
     topic: 'Pythagoras Theorem'
   },
-  'Mathematics_Foundation_Geometry_L75_Q6': {
+  'Mathematics_Foundation_Trigonometry_L75_Q6': {
     question: 'A right-angled triangle has sides 7 cm and 24 cm. Work out the hypotenuse.',
     correctAnswer: '25 cm',
     topic: 'Pythagoras Theorem'
@@ -2182,7 +2182,7 @@ document.addEventListener('DOMContentLoaded', function() {
 };
 
 window.setCurrentQuestion = function(questionNumber) {
-  window.currentQuestionId = `Mathematics_Foundation_Geometry_L75_Q${questionNumber}`;
+  window.currentQuestionId = `Mathematics_Foundation_Trigonometry_L75_Q${questionNumber}`;
 };
 
 
@@ -2297,7 +2297,7 @@ label.style.display = isUser ? 'block' : 'none';
   
  window.setCurrentQuestion = function(questionNumber) {
   console.log('Setting current question to:', questionNumber);
-  window.currentQuestionId = `Mathematics_Foundation_Number_L75_Q${questionNumber}`;
+  window.currentQuestionId = `Mathematics_Foundation_Trigonometry_L75_Q${questionNumber}`;
   window.conversationHistory = []; // Clear chat history for new question
   
   const questionData = window.QUESTION_BANK[window.currentQuestionId];
