@@ -587,6 +587,250 @@
     }
 }
 
+      
+      /* =============================================
+           WAITLIST BOX
+           ============================================= */
+        .waitlist-section {
+            padding: 4rem 1rem;
+            background: #f9fafb;
+        }
+
+        .waitlist-section-inner {
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .waitlist-box {
+            background: #fff;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            border: 1px solid #e5e7eb;
+        }
+
+        .waitlist-box .urgency-bar {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            border-radius: 8px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 18px;
+        }
+        .waitlist-box .urgency-bar svg {
+            width: 14px;
+            height: 14px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .waitlist-box .urgency-bar span {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .waitlist-box h4 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.3;
+            margin-bottom: 5px;
+        }
+        .waitlist-box > p {
+            font-size: 0.76rem;
+            color: #6b7280;
+            line-height: 1.55;
+            margin-bottom: 16px;
+        }
+
+        .waitlist-box .wl-field {
+            width: 100%;
+            background: #f3f4f6;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px 13px;
+            color: #111827;
+            font-size: 0.78rem;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 9px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .waitlist-box .wl-field::placeholder { color: #9ca3af; }
+        .waitlist-box .wl-field:focus { border-color: #1d7fe2; background: #fff; }
+        .waitlist-box .wl-field.error { border-color: #ef4444; }
+
+        .waitlist-box .btn-join {
+            width: 100%;
+            background: linear-gradient(135deg, #1d7fe2, #1e88f5);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 11px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 3px 12px rgba(29,127,226,0.25);
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+        }
+        .waitlist-box .btn-join:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 16px rgba(29,127,226,0.35);
+        }
+        .waitlist-box .btn-join:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .waitlist-box .social-proof {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-top: 13px;
+        }
+        .waitlist-box .social-proof svg {
+            color: #9ca3af;
+            flex-shrink: 0;
+        }
+        .waitlist-box .social-proof span {
+            font-size: 0.7rem;
+            color: #6b7280;
+            text-align: center;
+            line-height: 1.4;
+        }
+        .waitlist-box .social-proof strong {
+            color: #0a1e3d;
+            font-weight: 700;
+        }
+
+        .waitlist-box .countdown-timer {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #f3f4f6;
+        }
+        .waitlist-box .countdown-timer .unit {
+            text-align: center;
+            min-width: 38px;
+        }
+        .waitlist-box .countdown-timer .num {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+        .waitlist-box .countdown-timer .lbl {
+            font-size: 0.56rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-top: 4px;
+        }
+        .waitlist-box .countdown-timer .sep {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1d7fe2;
+            line-height: 1;
+            padding-top: 1px;
+            align-self: flex-start;
+        }
+
+        .confirmed-box {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 22px;
+            border: 1px solid #e5e7eb;
+            display: none;
+        }
+        .confirmed-box.visible { display: block; }
+
+        .confirmed-box .tick-row {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin-bottom: 14px;
+        }
+        .confirmed-box .tick-circle {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #1d7fe2, #1e88f5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(29,127,226,0.3);
+        }
+        .confirmed-box .tick-circle svg {
+            width: 16px;
+            height: 16px;
+            color: #fff;
+        }
+        .confirmed-box .tick-text {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #111827;
+            line-height: 1.35;
+        }
+        .confirmed-box .tick-text small {
+            display: block;
+            font-weight: 400;
+            color: #6b7280;
+            font-size: 0.68rem;
+            margin-top: 2px;
+        }
+        .confirmed-box .copy-block {
+            font-size: 0.73rem;
+            color: #4b5563;
+            line-height: 1.75;
+            padding-top: 14px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .confirmed-box .copy-block strong { color: #111827; font-weight: 700; }
+        .confirmed-box .copy-block em {
+            color: #1d7fe2;
+            font-style: normal;
+            font-weight: 600;
+        }
+        .confirmed-box .btn-gotit {
+            width: 100%;
+            background: linear-gradient(135deg, #1d7fe2, #1e88f5);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            margin-top: 16px;
+            box-shadow: 0 3px 10px rgba(29,127,226,0.25);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .confirmed-box .btn-gotit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(29,127,226,0.35);
+        }
+
+        @media (max-width: 540px) {
+            .waitlist-box .countdown-timer .num { font-size: 1.05rem; }
+            .waitlist-box .countdown-timer .unit { min-width: 32px; }
+        }
+      
+      
+      
+      
+      
     
         /* Mobile Responsive */
         @media (min-width: 1024px) {
@@ -806,6 +1050,100 @@
         </div>
     </div>
 </section>
+  
+  
+  
+  </div>
+</section>
+
+<!-- Waitlist Section -->
+<section class="waitlist-section">
+    <div class="waitlist-section-inner">
+
+        <!-- STATE 1: Signup form -->
+        <div class="waitlist-box" id="waitlistForm">
+            <div class="urgency-bar">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span>Launches 28 Feb — spots filling fast</span>
+            </div>
+
+            <h4>Be first to master GCSE Maths.</h4>
+            <p>Join the waitlist — get early access, exclusive tips, and be notified the moment we go live.</p>
+
+            <input class="wl-field" id="wlEmail" type="email" placeholder="your@email.com" autocomplete="email">
+            <input class="wl-field" id="wlPhone" type="tel" placeholder="+44 Phone number" autocomplete="tel">
+
+            <button class="btn-join" id="btnJoin" onclick="handleWaitlistSubmit()">Join the Waitlist →</button>
+
+            <!-- social proof -->
+            <div class="social-proof">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                <span><strong id="waitlistCount">847</strong> students are already ahead of you.</span>
+            </div>
+
+            <!-- countdown timer -->
+            <div class="countdown-timer">
+                <div class="unit">
+                    <div class="num" id="wlDays">27</div>
+                    <div class="lbl">Days</div>
+                </div>
+                <div class="sep">:</div>
+                <div class="unit">
+                    <div class="num" id="wlHours">18</div>
+                    <div class="lbl">Hrs</div>
+                </div>
+                <div class="sep">:</div>
+                <div class="unit">
+                    <div class="num" id="wlMins">42</div>
+                    <div class="lbl">Min</div>
+                </div>
+                <div class="sep">:</div>
+                <div class="unit">
+                    <div class="num" id="wlSecs">07</div>
+                    <div class="lbl">Sec</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATE 2: Confirmation -->
+        <div class="confirmed-box" id="waitlistConfirmed">
+            <div class="tick-row">
+                <div class="tick-circle">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <div class="tick-text">
+                    You're in the waitlist.
+                    <small>Check your inbox — first email is on its way.</small>
+                </div>
+            </div>
+            <div class="copy-block">
+                I built this for students who are done wasting time on methods that don't work.<br><br>
+                Same goes for those who work twice as hard and yet doesn't move the needle.<br>
+                Or for the ones who don't even know where to start because of all the 'revision' and 'homework'.<br><br>
+                What's landing in your inbox isn't theory,<br><br>
+                it's the <em>exact</em> system I used to go from struggling to dominating, and it works better, more efficient and faster than anything your teachers will ever show you.<br><br>
+                No fluff. No endless hours. Just results.<br><br>
+                <strong>You'll understand soon why you joined.</strong>
+            </div>
+            <button class="btn-gotit" onclick="dismissConfirmation()">Got it →</button>
+        </div>
+
+    </div>
+</section>
+
+<!-- Features Section -->
+  
+  
+  
 
 <!-- Features Section -->
 <section class="features">
@@ -1354,12 +1692,139 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
       
       
-      
-      
-      
+<script>
+// =============================================
+// WAITLIST — Countdown, submission, state swap
+// =============================================
+(function() {
+
+    // ── Countdown: target 28 Feb 2025 1:00 PM GMT ──
+    var LAUNCH_TARGET = new Date('2025-02-28T13:00:00Z').getTime();
+
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+    function tickCountdown() {
+        var diff = Math.max(LAUNCH_TARGET - Date.now(), 0);
+        var d = Math.floor(diff / 86400000);
+        var h = Math.floor((diff % 86400000) / 3600000);
+        var m = Math.floor((diff % 3600000)  / 60000);
+        var s = Math.floor((diff % 60000)    / 1000);
+
+        var elD = document.getElementById('wlDays');
+        var elH = document.getElementById('wlHours');
+        var elM = document.getElementById('wlMins');
+        var elS = document.getElementById('wlSecs');
+
+        if (elD) elD.textContent = d;
+        if (elH) elH.textContent = pad(h);
+        if (elM) elM.textContent = pad(m);
+        if (elS) elS.textContent = pad(s);
+
+        // If countdown hits zero, hide the waitlist box entirely
+        if (diff === 0 && document.getElementById('waitlistForm')) {
+            document.getElementById('waitlistForm').style.display = 'none';
+            document.getElementById('waitlistConfirmed').style.display = 'none';
+        }
+    }
+
+    tickCountdown();
+    setInterval(tickCountdown, 1000);
+
+    // ── Fetch live waitlist count from Supabase ──
+    async function fetchWaitlistCount() {
+        try {
+            var res = await fetch('/api/waitlist?count=true');
+            if (res.ok) {
+                var data = await res.json();
+                var el = document.getElementById('waitlistCount');
+                if (el && typeof data.count === 'number') {
+                    el.textContent = data.count;
+                }
+            }
+        } catch (e) {
+            // silently fail — the static 847 stays as fallback
+        }
+    }
+
+    fetchWaitlistCount();
+
+    // ── If user already signed up this session, show confirmation ──
+    if (sessionStorage.getItem('gmm_waitlist_joined') === 'true') {
+        document.getElementById('waitlistForm').style.display = 'none';
+        document.getElementById('waitlistConfirmed').classList.add('visible');
+    }
+
+    // ── Submit handler ──
+    window.handleWaitlistSubmit = async function() {
+        var emailEl = document.getElementById('wlEmail');
+        var phoneEl = document.getElementById('wlPhone');
+        var btn     = document.getElementById('btnJoin');
+
+        var email = emailEl.value.trim();
+        var phone = phoneEl.value.trim();
+
+        // Clear any previous errors
+        emailEl.classList.remove('error');
+        phoneEl.classList.remove('error');
+
+        // Validate email
+        if (!email) {
+            emailEl.classList.add('error');
+            emailEl.focus();
+            return;
+        }
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            emailEl.classList.add('error');
+            emailEl.focus();
+            return;
+        }
+
+        // Validate phone (optional, but if filled must be valid UK)
+        if (phone && !/^(\+44|0)\d{9,10}$/.test(phone.replace(/[\s\-]/g, ''))) {
+            phoneEl.classList.add('error');
+            phoneEl.focus();
+            return;
+        }
+
+        // Disable button
+        btn.disabled = true;
+        btn.textContent = 'Joining...';
+
+        try {
+            var res = await fetch('/api/waitlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, phone: phone || null })
+            });
+
+            if (res.ok || res.status === 409) {
+                // 200 = new signup, 409 = already exists — both show confirmation
+                document.getElementById('waitlistForm').style.display = 'none';
+                document.getElementById('waitlistConfirmed').classList.add('visible');
+                sessionStorage.setItem('gmm_waitlist_joined', 'true');
+            } else {
+                btn.disabled = false;
+                btn.textContent = 'Join the Waitlist →';
+                alert('Something went wrong. Please try again.');
+            }
+        } catch (e) {
+            btn.disabled = false;
+            btn.textContent = 'Join the Waitlist →';
+            alert('Network error. Please check your connection and try again.');
+        }
+    };
+
+    // ── "Got it" dismisses the confirmation ──
+    window.dismissConfirmation = function() {
+        document.getElementById('waitlistConfirmed').style.display = 'none';
+    };
+
+})();
+</script>
+
 </body>
 </html>
-
 
 
 
