@@ -2,8 +2,10 @@
   "name": "gcse-mastery-backend",
   "version": "1.0.0",
   "description": "Stripe integration for GCSE Mastery",
+  "type": "commonjs",
   "dependencies": {
     "stripe": "^14.10.0",
-    "@supabase/supabase-js": "^2.39.0"
+    "@supabase/supabase-js": "^2.39.0",
+    "node-fetch": "^2.6.7"
   }
 }
