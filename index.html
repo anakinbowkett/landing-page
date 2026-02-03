@@ -1372,7 +1372,7 @@
         <p>Join the waitlist — get early access, exclusive tips, and be notified the moment we go live.</p>
 
         <input class="wl-field" id="wlEmail" type="email" placeholder="your@email.com" autocomplete="email">
-        <input class="wl-field" id="wlPhone" type="tel" placeholder="+44 Phone number" autocomplete="tel">
+        <input class="wl-field" id="wlTikTok" type="text" placeholder="@tiktokusername (optional)" autocomplete="username">
 
         <button class="btn-join" id="btnJoin">Join the Waitlist →</button>
 
@@ -1434,7 +1434,41 @@
     </div>
 </div>
 </section>
-
+    
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var joinBtn = document.getElementById('btnJoin');
+    if (joinBtn) {
+        joinBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleWaitlistSubmit();
+        });
+    }
+    
+    // Also allow Enter key submission
+    var emailField = document.getElementById('wlEmail');
+    var tiktokField = document.getElementById('wlTikTok');
+    
+    if (emailField) {
+        emailField.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleWaitlistSubmit();
+            }
+        });
+    }
+    
+    if (tiktokField) {
+        tiktokField.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleWaitlistSubmit();
+            }
+        });
+    }
+});
+</script>
+    
 <!-- Features Section -->
   
   
@@ -2071,64 +2105,69 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ── Submit handler ──
     window.handleWaitlistSubmit = async function() {
-        var emailEl = document.getElementById('wlEmail');
-        var phoneEl = document.getElementById('wlPhone');
-        var btn     = document.getElementById('btnJoin');
+    var emailEl = document.getElementById('wlEmail');
+    var tiktokEl = document.getElementById('wlTikTok');
+    var btn = document.getElementById('btnJoin');
 
-        var email = emailEl.value.trim();
-        var phone = phoneEl.value.trim();
+    var email = emailEl.value.trim();
+    var tiktok = tiktokEl.value.trim();
 
-        // Clear any previous errors
-        emailEl.classList.remove('error');
-        phoneEl.classList.remove('error');
+    // Clear any previous errors
+    emailEl.classList.remove('error');
+    tiktokEl.classList.remove('error');
 
-        // Validate email
-        if (!email) {
-            emailEl.classList.add('error');
-            emailEl.focus();
-            return;
-        }
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            emailEl.classList.add('error');
-            emailEl.focus();
-            return;
-        }
+    // Validate email
+    if (!email) {
+        emailEl.classList.add('error');
+        emailEl.focus();
+        return;
+    }
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        emailEl.classList.add('error');
+        emailEl.focus();
+        return;
+    }
 
-        // Validate phone (optional, but if filled must be valid UK)
-        if (phone && !/^(\+44|0)\d{9,10}$/.test(phone.replace(/[\s\-]/g, ''))) {
-            phoneEl.classList.add('error');
-            phoneEl.focus();
-            return;
-        }
+    // Validate TikTok username (optional but if provided, must start with @)
+    if (tiktok && !tiktok.startsWith('@')) {
+        tiktok = '@' + tiktok;
+        tiktokEl.value = tiktok;
+    }
 
-        // Disable button
-        btn.disabled = true;
-        btn.textContent = 'Joining...';
+    // Disable button
+    btn.disabled = true;
+    btn.textContent = 'Joining...';
 
-        try {
-            var res = await fetch('/api/waitlist', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email, phone: phone || null })
-            });
+    try {
+        var res = await fetch('/api/waitlist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                email: email, 
+                tiktok_username: tiktok || null 
+            })
+        });
 
-            if (res.ok || res.status === 409) {
-                // 200 = new signup, 409 = already exists — both show confirmation
-                document.getElementById('waitlistForm').style.display = 'none';
-                document.getElementById('waitlistConfirmed').classList.add('visible');
-                sessionStorage.setItem('gmm_waitlist_joined', 'true');
-            } else {
-                btn.disabled = false;
-                btn.textContent = 'Join the Waitlist →';
-                alert('Something went wrong. Please try again.');
-            }
-        } catch (e) {
+        var data = await res.json();
+
+        if (res.ok || res.status === 409) {
+            // Success or already exists - show confirmation
+            document.getElementById('waitlistForm').style.display = 'none';
+            document.getElementById('waitlistConfirmed').classList.add('visible');
+            sessionStorage.setItem('gmm_waitlist_joined', 'true');
+        } else {
             btn.disabled = false;
             btn.textContent = 'Join the Waitlist →';
-            alert('Network error. Please check your connection and try again.');
+            alert(data.error || 'Something went wrong. Please try again.');
         }
-    };
+    } catch (e) {
+        console.error('Submission error:', e);
+        btn.disabled = false;
+        btn.textContent = 'Join the Waitlist →';
+        alert('Network error. Please check your connection and try again.');
+    }
+};
 
     // ── "Got it" dismisses the confirmation ──
     window.dismissConfirmation = function() {
@@ -2140,6 +2179,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
+
 
 
 
