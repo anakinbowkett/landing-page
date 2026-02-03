@@ -11,25 +11,56 @@ const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
 
 async function addToKlaviyo(email, tiktokUsername) {
     try {
-        // Simple API v2 format that works
-        const response = await fetch('https://a.klaviyo.com/api/v2/list/' + KLAVIYO_LIST_ID + '/subscribe', {
+        console.log('Adding to Klaviyo - List ID:', KLAVIYO_LIST_ID);
+        console.log('Email:', email);
+        
+        // Create profile and add to list
+        const response = await fetch('https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                'revision': '2024-02-15',
+                'content-type': 'application/json'
             },
             body: JSON.stringify({
-                api_key: KLAVIYO_API_KEY,
-                profiles: [
-                    {
-                        email: email,
-                        $tiktok_username: tiktokUsername || ''
+                data: {
+                    type: 'profile-subscription-bulk-create-job',
+                    attributes: {
+                        profiles: {
+                            data: [
+                                {
+                                    type: 'profile',
+                                    attributes: {
+                                        email: email,
+                                        properties: {
+                                            tiktok_username: tiktokUsername || ''
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    relationships: {
+                        list: {
+                            data: {
+                                type: 'list',
+                                id: KLAVIYO_LIST_ID
+                            }
+                        }
                     }
-                ]
+                }
             })
         });
 
         const result = await response.json();
-        console.log('Klaviyo response:', result);
+        console.log('Klaviyo full response:', JSON.stringify(result, null, 2));
+        
+        if (!response.ok) {
+            console.error('Klaviyo error response:', result);
+            throw new Error('Klaviyo API error: ' + JSON.stringify(result));
+        }
+
+        console.log('Successfully added to Klaviyo');
         return result;
 
     } catch (err) {
