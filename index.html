@@ -176,6 +176,345 @@
         .hero {
             padding: 9rem 1rem 5rem;
         }
+      
+      
+      /* Hero Waitlist Wrapper */
+.hero-waitlist-wrapper {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+/* Waitlist Box in Hero */
+.hero-waitlist-wrapper .waitlist-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    border: 2px solid #e5e7eb;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.hero-waitlist-wrapper .waitlist-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(29, 127, 226, 0.2);
+}
+
+/* Urgency Pill */
+.hero-waitlist-wrapper .urgency-pill {
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    border-radius: 20px;
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.hero-waitlist-wrapper .urgency-pill svg {
+    width: 16px;
+    height: 16px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.hero-waitlist-wrapper .urgency-pill span {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.02em;
+}
+
+/* Heading */
+.hero-waitlist-wrapper .waitlist-box h4 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111827;
+    line-height: 1.3;
+    margin-bottom: 8px;
+}
+
+/* Description */
+.hero-waitlist-wrapper .waitlist-box > p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Input Fields */
+.hero-waitlist-wrapper .wl-field {
+    width: 100%;
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: #111827;
+    font-size: 0.875rem;
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 12px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.hero-waitlist-wrapper .wl-field::placeholder {
+    color: #9ca3af;
+}
+
+.hero-waitlist-wrapper .wl-field:focus {
+    border-color: #1d7fe2;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(29, 127, 226, 0.1);
+}
+
+.hero-waitlist-wrapper .wl-field.error {
+    border-color: #ef4444;
+    background: #fef2f2;
+}
+
+/* Join Button */
+.hero-waitlist-wrapper .btn-join {
+    width: 100%;
+    background: linear-gradient(135deg, #1d7fe2, #1e88f5);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 4px 14px rgba(29,127,226,0.3);
+    transition: all 0.2s ease;
+}
+
+.hero-waitlist-wrapper .btn-join:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(29,127,226,0.4);
+}
+
+.hero-waitlist-wrapper .btn-join:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Social Proof */
+.hero-waitlist-wrapper .social-proof {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.hero-waitlist-wrapper .social-proof svg {
+    width: 16px;
+    height: 16px;
+    color: #9ca3af;
+}
+
+.hero-waitlist-wrapper .social-proof span {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.hero-waitlist-wrapper .social-proof strong {
+    color: #111827;
+    font-weight: 700;
+}
+
+/* Countdown Timer */
+.hero-waitlist-wrapper .countdown-timer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.hero-waitlist-wrapper .countdown-timer .unit {
+    text-align: center;
+    min-width: 50px;
+}
+
+.hero-waitlist-wrapper .countdown-timer .num {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #111827;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.hero-waitlist-wrapper .countdown-timer .lbl {
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 6px;
+}
+
+.hero-waitlist-wrapper .countdown-timer .sep {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1d7fe2;
+    line-height: 1;
+}
+
+/* Confirmation Box */
+.hero-waitlist-wrapper .confirmed-box {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 28px;
+    border: 2px solid #e5e7eb;
+    display: none;
+}
+
+.hero-waitlist-wrapper .confirmed-box.visible {
+    display: block;
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.hero-waitlist-wrapper .tick-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.hero-waitlist-wrapper .tick-circle {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #1d7fe2, #1e88f5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(29,127,226,0.3);
+}
+
+.hero-waitlist-wrapper .tick-circle svg {
+    width: 24px;
+    height: 24px;
+    color: #fff;
+}
+
+.hero-waitlist-wrapper .tick-text {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.3;
+}
+
+.hero-waitlist-wrapper .tick-text small {
+    display: block;
+    font-weight: 400;
+    color: #6b7280;
+    font-size: 0.8rem;
+    margin-top: 4px;
+}
+
+.hero-waitlist-wrapper .copy-block {
+    font-size: 0.85rem;
+    color: #4b5563;
+    line-height: 1.7;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.hero-waitlist-wrapper .copy-block strong {
+    color: #111827;
+    font-weight: 700;
+}
+
+.hero-waitlist-wrapper .copy-block em {
+    color: #1d7fe2;
+    font-style: normal;
+    font-weight: 600;
+}
+
+.hero-waitlist-wrapper .btn-gotit {
+    width: 100%;
+    background: linear-gradient(135deg, #1d7fe2, #1e88f5);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    margin-top: 20px;
+    box-shadow: 0 4px 14px rgba(29,127,226,0.3);
+    transition: all 0.2s ease;
+}
+
+.hero-waitlist-wrapper .btn-gotit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(29,127,226,0.4);
+}
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .hero-waitlist-wrapper .waitlist-box {
+        padding: 24px;
+    }
+
+    .hero-waitlist-wrapper .waitlist-box h4 {
+        font-size: 1.25rem;
+    }
+
+    .hero-waitlist-wrapper .countdown-timer .num {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 430px) {
+    .hero-waitlist-wrapper .waitlist-box {
+        padding: 20px;
+    }
+
+    .hero-waitlist-wrapper .waitlist-box h4 {
+        font-size: 1.125rem;
+    }
+
+    .hero-waitlist-wrapper .countdown-timer {
+        gap: 8px;
+    }
+
+    .hero-waitlist-wrapper .countdown-timer .num {
+        font-size: 1.125rem;
+    }
+
+    .hero-waitlist-wrapper .countdown-timer .unit {
+        min-width: 40px;
+    }
+}
+      
+      
+      
 
         .hero-container {
             max-width: 1280px;
@@ -272,31 +611,7 @@
         }
 
         /* Dashboard */
-        .dashboard-wrapper {
-            width: 100%;
-            max-width: 36rem;
-            margin: 0 auto;
-        }
-
-        .dashboard {
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            border: 1px solid #e5e7eb;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-
-        .dashboard:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 30px 60px -15px rgba(29, 127, 226, 0.35);
-        }
-
-        .dashboard img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
+        
 
         /* Features Section */
         .features {
@@ -1043,94 +1358,84 @@
       
       
 
-       <div class="dashboard-wrapper">
-            <div class="dashboard">
-                <img src="https://i.postimg.cc/rsDNPpp0/Screenshot-2025-12-02-at-19-29-48.png" alt="Dashboard">
+       <!-- WAITLIST BOX (replaces dashboard image) -->
+<div class="hero-waitlist-wrapper">
+    <div class="waitlist-box" id="waitlistForm">
+        <div class="urgency-pill">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            <span>Launches 28 Feb — spots filling fast</span>
+        </div>
+
+        <h4>Be first to master GCSE Maths.</h4>
+        <p>Join the waitlist — get early access, exclusive tips, and be notified the moment we go live.</p>
+
+        <input class="wl-field" id="wlEmail" type="email" placeholder="your@email.com" autocomplete="email">
+        <input class="wl-field" id="wlPhone" type="tel" placeholder="+44 Phone number" autocomplete="tel">
+
+        <button class="btn-join" id="btnJoin">Join the Waitlist →</button>
+
+        <!-- social proof -->
+        <div class="social-proof">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span><strong id="waitlistCount">847</strong> students are already ahead of you.</span>
+        </div>
+
+        <!-- countdown timer -->
+        <div class="countdown-timer">
+            <div class="unit">
+                <div class="num" id="wlDays">27</div>
+                <div class="lbl">Days</div>
+            </div>
+            <div class="sep">:</div>
+            <div class="unit">
+                <div class="num" id="wlHours">18</div>
+                <div class="lbl">Hrs</div>
+            </div>
+            <div class="sep">:</div>
+            <div class="unit">
+                <div class="num" id="wlMins">42</div>
+                <div class="lbl">Min</div>
+            </div>
+            <div class="sep">:</div>
+            <div class="unit">
+                <div class="num" id="wlSecs">07</div>
+                <div class="lbl">Sec</div>
             </div>
         </div>
     </div>
-</section>
 
-<!-- Waitlist Section -->
-<section class="waitlist-section">
-    <div class="waitlist-section-inner">
-
-        <!-- STATE 1: Signup form -->
-        <div class="waitlist-box" id="waitlistForm">
-            <div class="urgency-bar">
+    <!-- Confirmation Box (shows after signup) -->
+    <div class="confirmed-box" id="waitlistConfirmed" style="display: none;">
+        <div class="tick-row">
+            <div class="tick-circle">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                 </svg>
-                <span>Launches 28 Feb — spots filling fast</span>
             </div>
-
-            <h4>Be first to master GCSE Maths.</h4>
-            <p>Join the waitlist — get early access, exclusive tips, and be notified the moment we go live.</p>
-
-            <input class="wl-field" id="wlEmail" type="email" placeholder="your@email.com" autocomplete="email">
-            <input class="wl-field" id="wlPhone" type="tel" placeholder="+44 Phone number" autocomplete="tel">
-
-            <button class="btn-join" id="btnJoin" onclick="handleWaitlistSubmit()">Join the Waitlist →</button>
-
-            <!-- social proof -->
-            <div class="social-proof">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
-                <span><strong id="waitlistCount">847</strong> students are already ahead of you.</span>
-            </div>
-
-            <!-- countdown timer -->
-            <div class="countdown-timer">
-                <div class="unit">
-                    <div class="num" id="wlDays">27</div>
-                    <div class="lbl">Days</div>
-                </div>
-                <div class="sep">:</div>
-                <div class="unit">
-                    <div class="num" id="wlHours">18</div>
-                    <div class="lbl">Hrs</div>
-                </div>
-                <div class="sep">:</div>
-                <div class="unit">
-                    <div class="num" id="wlMins">42</div>
-                    <div class="lbl">Min</div>
-                </div>
-                <div class="sep">:</div>
-                <div class="unit">
-                    <div class="num" id="wlSecs">07</div>
-                    <div class="lbl">Sec</div>
-                </div>
+            <div class="tick-text">
+                You're on the waitlist.
+                <small>Check your inbox — first email is on its way.</small>
             </div>
         </div>
-
-        <!-- STATE 2: Confirmation -->
-        <div class="confirmed-box" id="waitlistConfirmed">
-            <div class="tick-row">
-                <div class="tick-circle">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                    </svg>
-                </div>
-                <div class="tick-text">
-                    You're in the waitlist.
-                    <small>Check your inbox — first email is on its way.</small>
-                </div>
-            </div>
-            <div class="copy-block">
-                I built this for students who are done wasting time on methods that don't work.<br><br>
-                Same goes for those who work twice as hard and yet doesn't move the needle.<br>
-                Or for the ones who don't even know where to start because of all the 'revision' and 'homework'.<br><br>
-                What's landing in your inbox isn't theory,<br><br>
-                it's the <em>exact</em> system I used to go from struggling to dominating, and it works better, more efficient and faster than anything your teachers will ever show you.<br><br>
-                No fluff. No endless hours. Just results.<br><br>
-                <strong>You'll understand soon why you joined.</strong>
-            </div>
-            <button class="btn-gotit" onclick="dismissConfirmation()">Got it →</button>
+        <div class="copy-block">
+            I built this for students who are done wasting time on methods that don't work.<br><br>
+            Same goes for those who work twice as hard and yet doesn't move the needle.<br>
+            Or for the ones who don't even know where to start because of all the 'revision' and 'homework'.<br><br>
+            What's landing in your inbox isn't theory,<br><br>
+            it's the <em>exact</em> system I used to go from struggling to dominating, and it works better, more efficient and faster than anything your teachers will ever show you.<br><br>
+            No fluff. No endless hours. Just results.<br><br>
+            <strong>You'll understand soon why you joined.</strong>
         </div>
+        <button class="btn-gotit" onclick="dismissConfirmation()">Got it →</button>
+    </div>
+</div>
 
     </div>
 </section>
