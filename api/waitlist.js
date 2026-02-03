@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const fetch = require('node-fetch');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -8,48 +9,36 @@ const supabase = createClient(
 const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY;
 const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
 
-async function klaviyoSignup(email, tiktokUsername) {
-    const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-        'revision': '2024-07-15'
-    };
-
+async function addToKlaviyo(email, tiktokUsername) {
     try {
-        const response = await fetch(`https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/`, {
+        // Simple API v2 format that works
+        const response = await fetch('https://a.klaviyo.com/api/v2/list/' + KLAVIYO_LIST_ID + '/subscribe', {
             method: 'POST',
-            headers,
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify({
-                data: {
-                    type: 'profile-subscription-bulk-create-job',
-                    attributes: {
-                        list_id: KLAVIYO_LIST_ID,
-                        subscriptions: [
-                            {
-                                email: email,
-                                phone_number: null
-                            }
-                        ],
-                        historical_import: false
+                api_key: KLAVIYO_API_KEY,
+                profiles: [
+                    {
+                        email: email,
+                        $tiktok_username: tiktokUsername || ''
                     }
-                }
+                ]
             })
         });
 
         const result = await response.json();
         console.log('Klaviyo response:', result);
-
-        if (!response.ok) {
-            console.error('Klaviyo error:', result);
-        }
+        return result;
 
     } catch (err) {
-        console.error('Klaviyo API error:', err);
+        console.error('Klaviyo error:', err);
+        throw err;
     }
 }
 
 module.exports = async function handler(req, res) {
-    // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -58,26 +47,22 @@ module.exports = async function handler(req, res) {
         return res.status(200).end();
     }
 
-    // GET /api/waitlist?count=true → live signup count
-    if (req.method === 'GET') {
-        if (req.query.count === 'true') {
-            try {
-                const { count, error } = await supabase
-                    .from('waitlist')
-                    .select('*', { count: 'exact', head: true });
-                
-                if (error) throw error;
-                
-                return res.status(200).json({ count: count || 0 });
-            } catch (err) {
-                console.error('Count error:', err);
-                return res.status(500).json({ error: 'Failed to fetch count' });
-            }
+    // GET count
+    if (req.method === 'GET' && req.query.count === 'true') {
+        try {
+            const { count, error } = await supabase
+                .from('waitlist')
+                .select('*', { count: 'exact', head: true });
+            
+            if (error) throw error;
+            return res.status(200).json({ count: count || 0 });
+        } catch (err) {
+            console.error('Count error:', err);
+            return res.status(500).json({ error: 'Failed to fetch count' });
         }
-        return res.status(400).json({ error: 'Invalid request' });
     }
 
-    // POST /api/waitlist → submit email + tiktok username
+    // POST signup
     if (req.method === 'POST') {
         const { email, tiktok_username } = req.body || {};
 
@@ -86,7 +71,7 @@ module.exports = async function handler(req, res) {
         }
 
         try {
-            // Check if email already exists
+            // Check existing
             const { data: existing } = await supabase
                 .from('waitlist')
                 .select('email')
@@ -97,7 +82,7 @@ module.exports = async function handler(req, res) {
                 return res.status(409).json({ message: 'Already on waitlist' });
             }
 
-            // Insert new record
+            // Insert to Supabase
             const { error: insertError } = await supabase
                 .from('waitlist')
                 .insert({ 
@@ -106,18 +91,17 @@ module.exports = async function handler(req, res) {
                 });
 
             if (insertError) {
-                console.error('Insert error:', insertError);
+                console.error('Supabase error:', insertError);
                 return res.status(500).json({ error: 'Database error' });
             }
 
-            // Fire Klaviyo with timeout
+            // Add to Klaviyo (wait for it this time to see errors)
             try {
-                await Promise.race([
-                    klaviyoSignup(email, tiktok_username),
-                    new Promise((_, reject) => setTimeout(() => reject('timeout'), 5000))
-                ]);
-            } catch (err) {
-                console.error('Klaviyo signup failed:', err);
+                await addToKlaviyo(email, tiktok_username);
+                console.log('Successfully added to Klaviyo');
+            } catch (klaviyoErr) {
+                console.error('Klaviyo failed but continuing:', klaviyoErr);
+                // Don't fail the request, but log it
             }
 
             return res.status(200).json({ message: 'Success' });
