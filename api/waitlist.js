@@ -1,5 +1,4 @@
-// api/waitlist.js
-import { createClient } from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -9,7 +8,6 @@ const supabase = createClient(
 const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY;
 const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
 
-// ── Klaviyo: add profile to list (corrected API v2024-10-15) ──
 async function klaviyoSignup(email, tiktokUsername) {
     const headers = {
         'Content-Type': 'application/json',
@@ -18,7 +16,6 @@ async function klaviyoSignup(email, tiktokUsername) {
     };
 
     try {
-        // Add profile to list
         const response = await fetch(`https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/`, {
             method: 'POST',
             headers,
@@ -51,55 +48,7 @@ async function klaviyoSignup(email, tiktokUsername) {
     }
 }
 
-        // 2. Track custom event to trigger your flow
-        const eventResponse = await fetch('https://a.klaviyo.com/api/events/', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({
-                data: {
-                    type: 'event',
-                    attributes: {
-                        profile: {
-                            data: {
-                                type: 'profile',
-                                attributes: {
-                                    email: email
-                                }
-                            }
-                        },
-                        metric: {
-                            data: {
-                                type: 'metric',
-                                attributes: {
-                                    name: 'Waitlist Signup'
-                                }
-                            }
-                        },
-                        properties: {
-                            tiktok_username: tiktokUsername || ''
-                        },
-                        time: new Date().toISOString()
-                    }
-                }
-            })
-        });
-
-        if (!eventResponse.ok) {
-            console.error('Klaviyo event error:', await eventResponse.text());
-        }
-
-    } catch (err) {
-        console.error('Klaviyo API error:', err);
-    }
-}
-
-export const config = {
-    api: {
-        bodyParser: true
-    }
-};
-
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -109,7 +58,7 @@ export default async function handler(req, res) {
         return res.status(200).end();
     }
 
-    // ── GET /api/waitlist?count=true → live signup count ──
+    // GET /api/waitlist?count=true → live signup count
     if (req.method === 'GET') {
         if (req.query.count === 'true') {
             try {
@@ -128,7 +77,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Invalid request' });
     }
 
-    // ── POST /api/waitlist → submit email + tiktok username ──
+    // POST /api/waitlist → submit email + tiktok username
     if (req.method === 'POST') {
         const { email, tiktok_username } = req.body || {};
 
@@ -161,7 +110,7 @@ export default async function handler(req, res) {
                 return res.status(500).json({ error: 'Database error' });
             }
 
-            // Fire Klaviyo and wait for it (with timeout)
+            // Fire Klaviyo with timeout
             try {
                 await Promise.race([
                     klaviyoSignup(email, tiktok_username),
@@ -169,10 +118,10 @@ export default async function handler(req, res) {
                 ]);
             } catch (err) {
                 console.error('Klaviyo signup failed:', err);
-                // Continue anyway - don't fail the whole request
             }
 
             return res.status(200).json({ message: 'Success' });
+
         } catch (err) {
             console.error('Server error:', err);
             return res.status(500).json({ error: 'Something went wrong' });
@@ -180,4 +129,4 @@ export default async function handler(req, res) {
     }
 
     return res.status(405).json({ error: 'Method not allowed' });
-}
+};
