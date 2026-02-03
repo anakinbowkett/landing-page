@@ -1358,7 +1358,7 @@
       
       
 
-       <!-- WAITLIST BOX (replaces dashboard image) -->
+      <!-- WAITLIST BOX (replaces dashboard image) -->
 <div class="hero-waitlist-wrapper">
     <div class="waitlist-box" id="waitlistForm">
         <div class="urgency-pill">
@@ -1376,7 +1376,6 @@
 
         <button class="btn-join" id="btnJoin">Join the Waitlist →</button>
 
-        <!-- social proof -->
         <div class="social-proof">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -1387,7 +1386,6 @@
             <span><strong id="waitlistCount">847</strong> students are already ahead of you.</span>
         </div>
 
-        <!-- countdown timer -->
         <div class="countdown-timer">
             <div class="unit">
                 <div class="num" id="wlDays">27</div>
@@ -1411,7 +1409,6 @@
         </div>
     </div>
 
-    <!-- Confirmation Box (shows after signup) -->
     <div class="confirmed-box" id="waitlistConfirmed" style="display: none;">
         <div class="tick-row">
             <div class="tick-circle">
@@ -1436,8 +1433,6 @@
         <button class="btn-gotit" onclick="dismissConfirmation()">Got it →</button>
     </div>
 </div>
-
-    </div>
 </section>
 
 <!-- Features Section -->
@@ -1706,6 +1701,26 @@
         padding: 0 1.25rem 1.25rem;
     }
 }
+  
+  /* FORCE WAITLIST BOX TO SHOW */
+.hero-waitlist-wrapper {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.hero-waitlist-wrapper .waitlist-box {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+  
+  .hero-waitlist-wrapper {
+    position: relative;
+    z-index: 10;
+}
+  
+  
 </style>
 
 <!-- FAQ Section HTML -->
