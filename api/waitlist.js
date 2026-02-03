@@ -14,47 +14,42 @@ async function klaviyoSignup(email, tiktokUsername) {
     const headers = {
         'Content-Type': 'application/json',
         'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-        'revision': '2024-10-15'
+        'revision': '2024-07-15'
     };
 
     try {
-        // 1. Create/update profile and subscribe to list in one call
-        const profileResponse = await fetch(`https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/`, {
+        // Add profile to list
+        const response = await fetch(`https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/`, {
             method: 'POST',
             headers,
             body: JSON.stringify({
                 data: {
                     type: 'profile-subscription-bulk-create-job',
                     attributes: {
-                        profiles: {
-                            data: [
-                                {
-                                    type: 'profile',
-                                    attributes: {
-                                        email: email,
-                                        properties: {
-                                            tiktok_username: tiktokUsername || ''
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    relationships: {
-                        list: {
-                            data: {
-                                type: 'list',
-                                id: KLAVIYO_LIST_ID
+                        list_id: KLAVIYO_LIST_ID,
+                        subscriptions: [
+                            {
+                                email: email,
+                                phone_number: null
                             }
-                        }
+                        ],
+                        historical_import: false
                     }
                 }
             })
         });
 
-        if (!profileResponse.ok) {
-            console.error('Klaviyo profile error:', await profileResponse.text());
+        const result = await response.json();
+        console.log('Klaviyo response:', result);
+
+        if (!response.ok) {
+            console.error('Klaviyo error:', result);
         }
+
+    } catch (err) {
+        console.error('Klaviyo API error:', err);
+    }
+}
 
         // 2. Track custom event to trigger your flow
         const eventResponse = await fetch('https://a.klaviyo.com/api/events/', {
@@ -166,13 +161,18 @@ export default async function handler(req, res) {
                 return res.status(500).json({ error: 'Database error' });
             }
 
-            // Fire Klaviyo in the background
-            klaviyoSignup(email, tiktok_username).catch((err) => {
+            // Fire Klaviyo and wait for it (with timeout)
+            try {
+                await Promise.race([
+                    klaviyoSignup(email, tiktok_username),
+                    new Promise((_, reject) => setTimeout(() => reject('timeout'), 5000))
+                ]);
+            } catch (err) {
                 console.error('Klaviyo signup failed:', err);
-            });
+                // Continue anyway - don't fail the whole request
+            }
 
             return res.status(200).json({ message: 'Success' });
-
         } catch (err) {
             console.error('Server error:', err);
             return res.status(500).json({ error: 'Something went wrong' });
