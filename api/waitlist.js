@@ -11,60 +11,51 @@ const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
 
 async function addToKlaviyo(email, tiktokUsername) {
     try {
-        console.log('Adding to Klaviyo - List ID:', KLAVIYO_LIST_ID);
+        console.log('=== Klaviyo Debug Info ===');
+        console.log('List ID:', KLAVIYO_LIST_ID);
+        console.log('API Key exists:', !!KLAVIYO_API_KEY);
+        console.log('API Key starts with pk_:', KLAVIYO_API_KEY?.startsWith('pk_'));
         console.log('Email:', email);
         
-        // Create profile and add to list
-        const response = await fetch('https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/', {
+        // Use the simpler Members API endpoint
+        const response = await fetch(`https://a.klaviyo.com/api/v2/list/${KLAVIYO_LIST_ID}/members`, {
             method: 'POST',
             headers: {
-                'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-                'revision': '2024-02-15',
-                'content-type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                data: {
-                    type: 'profile-subscription-bulk-create-job',
-                    attributes: {
-                        profiles: {
-                            data: [
-                                {
-                                    type: 'profile',
-                                    attributes: {
-                                        email: email,
-                                        properties: {
-                                            tiktok_username: tiktokUsername || ''
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    relationships: {
-                        list: {
-                            data: {
-                                type: 'list',
-                                id: KLAVIYO_LIST_ID
-                            }
-                        }
+                api_key: KLAVIYO_API_KEY,
+                profiles: [
+                    {
+                        email: email,
+                        tiktok_username: tiktokUsername || ''
                     }
-                }
+                ]
             })
         });
 
-        const result = await response.json();
-        console.log('Klaviyo full response:', JSON.stringify(result, null, 2));
+        const responseText = await response.text();
+        console.log('Klaviyo status:', response.status);
+        console.log('Klaviyo response:', responseText);
         
+        let result;
+        try {
+            result = JSON.parse(responseText);
+        } catch {
+            result = responseText;
+        }
+
         if (!response.ok) {
-            console.error('Klaviyo error response:', result);
-            throw new Error('Klaviyo API error: ' + JSON.stringify(result));
+            console.error('Klaviyo error - Status:', response.status);
+            console.error('Klaviyo error - Body:', result);
+            throw new Error('Klaviyo API error');
         }
 
         console.log('Successfully added to Klaviyo');
         return result;
 
     } catch (err) {
-        console.error('Klaviyo error:', err);
+        console.error('Klaviyo error caught:', err.message);
         throw err;
     }
 }
@@ -126,13 +117,13 @@ module.exports = async function handler(req, res) {
                 return res.status(500).json({ error: 'Database error' });
             }
 
-            // Add to Klaviyo (wait for it this time to see errors)
+            // Add to Klaviyo
             try {
                 await addToKlaviyo(email, tiktok_username);
-                console.log('Successfully added to Klaviyo');
+                console.log('Klaviyo completed successfully');
             } catch (klaviyoErr) {
-                console.error('Klaviyo failed but continuing:', klaviyoErr);
-                // Don't fail the request, but log it
+                console.error('Klaviyo failed but continuing:', klaviyoErr.message);
+                // Don't fail the whole request
             }
 
             return res.status(200).json({ message: 'Success' });
