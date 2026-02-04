@@ -11,51 +11,106 @@ const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
 
 async function addToKlaviyo(email, tiktokUsername) {
     try {
-        console.log('=== Klaviyo Debug Info ===');
+        console.log('Adding to Klaviyo...');
         console.log('List ID:', KLAVIYO_LIST_ID);
-        console.log('API Key exists:', !!KLAVIYO_API_KEY);
-        console.log('API Key starts with pk_:', KLAVIYO_API_KEY?.startsWith('pk_'));
         console.log('Email:', email);
         
-        // Use the simpler Members API endpoint
-        const response = await fetch(`https://a.klaviyo.com/api/v2/list/${KLAVIYO_LIST_ID}/members`, {
+        // Step 1: Create or update the profile
+        const profileResponse = await fetch('https://a.klaviyo.com/api/profiles/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                'revision': '2024-02-15',
+                'content-type': 'application/json'
             },
             body: JSON.stringify({
-                api_key: KLAVIYO_API_KEY,
-                profiles: [
-                    {
+                data: {
+                    type: 'profile',
+                    attributes: {
                         email: email,
-                        tiktok_username: tiktokUsername || ''
+                        properties: {
+                            tiktok_username: tiktokUsername || ''
+                        }
                     }
-                ]
+                }
             })
         });
 
-        const responseText = await response.text();
-        console.log('Klaviyo status:', response.status);
-        console.log('Klaviyo response:', responseText);
+        const profileResult = await profileResponse.json();
+        console.log('Profile response status:', profileResponse.status);
         
-        let result;
-        try {
-            result = JSON.parse(responseText);
-        } catch {
-            result = responseText;
+        if (!profileResponse.ok && profileResponse.status !== 409) {
+            console.error('Profile creation error:', profileResult);
+            throw new Error('Failed to create profile');
         }
 
-        if (!response.ok) {
-            console.error('Klaviyo error - Status:', response.status);
-            console.error('Klaviyo error - Body:', result);
-            throw new Error('Klaviyo API error');
+        // Get profile ID (either from creation or from existing)
+        const profileId = profileResult.data?.id;
+        
+        if (!profileId) {
+            console.error('No profile ID returned');
+            throw new Error('No profile ID');
         }
 
-        console.log('Successfully added to Klaviyo');
-        return result;
+        console.log('Profile ID:', profileId);
+
+        // Step 2: Subscribe profile to list
+        const subscribeResponse = await fetch('https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                'revision': '2024-02-15',
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                data: {
+                    type: 'profile-subscription-bulk-create-job',
+                    attributes: {
+                        profiles: {
+                            data: [
+                                {
+                                    type: 'profile',
+                                    id: profileId,
+                                    attributes: {
+                                        email: email,
+                                        subscriptions: {
+                                            email: {
+                                                marketing: {
+                                                    consent: 'SUBSCRIBED'
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    relationships: {
+                        list: {
+                            data: {
+                                type: 'list',
+                                id: KLAVIYO_LIST_ID
+                            }
+                        }
+                    }
+                }
+            })
+        });
+
+        const subscribeResult = await subscribeResponse.json();
+        console.log('Subscribe response status:', subscribeResponse.status);
+        console.log('Subscribe result:', JSON.stringify(subscribeResult, null, 2));
+
+        if (!subscribeResponse.ok) {
+            console.error('Subscribe error:', subscribeResult);
+            throw new Error('Failed to subscribe to list');
+        }
+
+        console.log('Successfully added to Klaviyo!');
+        return subscribeResult;
 
     } catch (err) {
-        console.error('Klaviyo error caught:', err.message);
+        console.error('Klaviyo error:', err.message);
         throw err;
     }
 }
@@ -93,7 +148,7 @@ module.exports = async function handler(req, res) {
         }
 
         try {
-            // Check existing
+            // Check existing in Supabase
             const { data: existing } = await supabase
                 .from('waitlist')
                 .select('email')
