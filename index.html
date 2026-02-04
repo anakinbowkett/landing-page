@@ -14,6 +14,20 @@
     box-sizing: border-box;
 }
 
+/* LAUNCH CONTROL - Change "waitlist-mode" to "launch-mode" to show signup buttons */
+body.waitlist-mode .hero-cta,
+body.waitlist-mode .nav-cta,
+body.waitlist-mode .cta-button {
+    display: none !important;
+}
+
+body.launch-mode .hero-cta,
+body.launch-mode .nav-cta,
+body.launch-mode .cta-button {
+    display: inline-flex !important;
+}
+
+        
 .announcement-banner {
     top: 3.5rem;
     font-size: 0.75rem;
@@ -1294,7 +1308,7 @@
         }
     </style>
 </head>
-<body>
+<body class="waitlist-mode">
 
 <!-- Navigation -->
 <nav>
@@ -1310,10 +1324,9 @@
             </div>
 
             <div class="nav-links">
-                <a href="/syllabus.html" class="early-access-btn">Early Access</a>
-                <a href="#faq" class="nav-link">FAQ</a>
-                <a href="signin.html" class="nav-cta" style="text-decoration: none;">Sign in</a>
-            </div>
+    <a href="#faq" class="nav-link">FAQ</a>
+    <a href="signin.html" class="nav-cta" style="text-decoration: none;">Sign in</a>
+</div>
         </div>
     </div>
 </nav>
@@ -1321,7 +1334,7 @@
 <!-- Announcement Banner -->
 <div class="announcement-banner">
     <div class="banner-content">
-        GCSE Maths Mastery's first day in the marketplace! - the first low cost Maths educational learning platform!
+        JOIN THE WAITLIST NOW - For early bird pricing
     </div>
 </div>
 
@@ -2179,6 +2192,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
+
 
 
 
