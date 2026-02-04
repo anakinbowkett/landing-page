@@ -35,7 +35,7 @@ async function addToKlaviyo(email, tiktokUsername) {
                 }
             })
         });
- 
+
         const profileResult = await profileResponse.json();
         console.log('Profile response status:', profileResponse.status);
         
@@ -54,8 +54,8 @@ async function addToKlaviyo(email, tiktokUsername) {
 
         console.log('Profile ID:', profileId);
 
-        // Step 2: Subscribe profile to list
-        const subscribeResponse = await fetch('https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/', {
+        // Step 2: Add profile to list using the relationships endpoint
+        const addToListResponse = await fetch(`https://a.klaviyo.com/api/lists/${KLAVIYO_LIST_ID}/relationships/profiles/`, {
             method: 'POST',
             headers: {
                 'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
@@ -63,51 +63,33 @@ async function addToKlaviyo(email, tiktokUsername) {
                 'content-type': 'application/json'
             },
             body: JSON.stringify({
-                data: {
-                    type: 'profile-subscription-bulk-create-job',
-                    attributes: {
-                        profiles: {
-                            data: [
-                                {
-                                    type: 'profile',
-                                    id: profileId,
-                                    attributes: {
-                                        email: email,
-                                        subscriptions: {
-                                            email: {
-                                                marketing: {
-                                                    consent: 'SUBSCRIBED'
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    relationships: {
-                        list: {
-                            data: {
-                                type: 'list',
-                                id: KLAVIYO_LIST_ID
-                            }
-                        }
+                data: [
+                    {
+                        type: 'profile',
+                        id: profileId
                     }
-                }
+                ]
             })
         });
 
-        const subscribeResult = await subscribeResponse.json();
-        console.log('Subscribe response status:', subscribeResponse.status);
-        console.log('Subscribe result:', JSON.stringify(subscribeResult, null, 2));
+        console.log('Add to list status:', addToListResponse.status);
 
-        if (!subscribeResponse.ok) {
-            console.error('Subscribe error:', subscribeResult);
-            throw new Error('Failed to subscribe to list');
+        // A 204 response means success (no content returned)
+        if (addToListResponse.status === 204) {
+            console.log('Successfully added to Klaviyo list!');
+            return { success: true };
+        }
+
+        // For other responses, try to parse JSON
+        const addToListText = await addToListResponse.text();
+        console.log('Add to list response:', addToListText);
+
+        if (!addToListResponse.ok) {
+            throw new Error('Failed to add to list');
         }
 
         console.log('Successfully added to Klaviyo!');
-        return subscribeResult;
+        return { success: true };
 
     } catch (err) {
         console.error('Klaviyo error:', err.message);
