@@ -35,7 +35,7 @@ async function addToKlaviyo(email, tiktokUsername) {
                 }
             })
         });
-
+ 
         const profileResult = await profileResponse.json();
         console.log('Profile response status:', profileResponse.status);
         
