@@ -1767,7 +1767,300 @@ document.addEventListener('DOMContentLoaded', function() {
     z-index: 10;
 }
   
-  
+/* =============================================
+   AMBASSADOR PROGRAMME SECTION
+   ============================================= */
+.ambassador-section {
+    padding: clamp(2.5rem, 5vw, 5rem) clamp(1rem, 3vw, 2rem);
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.ambassador-container {
+    max-width: 68rem;
+    margin: 0 auto;
+}
+
+.ambassador-header {
+    text-align: center;
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+    padding-bottom: clamp(1rem, 2vw, 2rem);
+    border-bottom: 2px solid #e2e8f0;
+    position: relative;
+}
+
+.ambassador-header::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(100px, 20vw, 160px);
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #1d7fe2, transparent);
+}
+
+.ambassador-title {
+    font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #0a1e3d 0%, #1d7fe2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+}
+
+.ambassador-intro {
+    font-size: clamp(0.9375rem, 2vw, 1.125rem);
+    color: #374151;
+    line-height: 1.65;
+    max-width: 48rem;
+    margin: 0 auto clamp(0.5rem, 1vw, 0.875rem);
+}
+
+.ambassador-subtext {
+    font-size: clamp(0.875rem, 1.8vw, 1rem);
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.ambassador-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    margin-bottom: clamp(2rem, 3vw, 3.5rem);
+}
+
+.ambassador-card {
+    background: white;
+    border-radius: clamp(12px, 2vw, 16px);
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border-left: clamp(4px, 0.7vw, 5px) solid #1d7fe2;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.ambassador-card-title {
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    font-weight: 700;
+    color: #0a1e3d;
+    margin-bottom: clamp(0.375rem, 1vw, 0.625rem);
+}
+
+.ambassador-card-subtitle {
+    font-size: clamp(0.6875rem, 1.3vw, 0.8125rem);
+    color: #6b7280;
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.ambassador-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.625rem, 1.5vw, 1rem);
+}
+
+.ambassador-card li {
+    display: flex;
+    align-items: flex-start;
+    color: #374151;
+    line-height: 1.6;
+    font-size: clamp(0.8125rem, 1.6vw, 0.9375rem);
+}
+
+.ambassador-card li::before {
+    content: "→";
+    color: #1d7fe2;
+    font-weight: 700;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    margin-right: clamp(0.625rem, 1.5vw, 1rem);
+    line-height: 1.4;
+    flex-shrink: 0;
+}
+
+.steps-wrapper {
+    background: white;
+    border-radius: clamp(10px, 1.5vw, 12px);
+    padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1.25rem, 3vw, 2rem);
+    margin-bottom: clamp(1.5rem, 2.5vw, 2rem);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e7eb;
+}
+
+.steps-header {
+    text-align: center;
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
+}
+
+.steps-title {
+    font-size: clamp(1rem, 2.2vw, 1.25rem);
+    font-weight: 700;
+    color: #0a1e3d;
+    margin-bottom: clamp(0.125rem, 0.5vw, 0.25rem);
+}
+
+.steps-subtitle {
+    font-size: clamp(0.6875rem, 1.4vw, 0.8125rem);
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.steps-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 90px), 1fr));
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.step-item {
+    text-align: center;
+    position: relative;
+}
+
+@media (min-width: 480px) {
+    .steps-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .step-item:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        top: clamp(14px, 3vw, 20px);
+        left: calc(100% + clamp(0.5rem, 1vw, 0.75rem));
+        width: calc(100% - clamp(1rem, 2vw, 1.5rem));
+        height: 2px;
+        background: linear-gradient(90deg, #1d7fe2 0%, #e5e7eb 100%);
+    }
+}
+
+.step-number-box {
+    width: clamp(32px, 6vw, 40px);
+    height: clamp(32px, 6vw, 40px);
+    background: linear-gradient(135deg, #0a1e3d 0%, #1d7fe2 100%);
+    border-radius: clamp(8px, 1.5vw, 10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto clamp(0.5rem, 1.2vw, 0.75rem);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 800;
+    color: white;
+    box-shadow: 0 2px 8px rgba(29, 127, 226, 0.2);
+}
+
+.step-label {
+    font-size: clamp(0.5625rem, 1vw, 0.625rem);
+    font-weight: 700;
+    color: #1d7fe2;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: clamp(0.125rem, 0.4vw, 0.25rem);
+}
+
+.step-title {
+    font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: clamp(0.0625rem, 0.2vw, 0.125rem);
+}
+
+.step-description {
+    font-size: clamp(0.6875rem, 1.3vw, 0.75rem);
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+.cta-box {
+    background: #0a1e3d;
+    border-radius: clamp(10px, 1.5vw, 12px);
+    padding: clamp(1.25rem, 2.5vw, 1.5rem) clamp(1.5rem, 3vw, 2rem);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    text-decoration: none;
+    box-shadow: 0 4px 16px rgba(10, 30, 61, 0.2);
+    transition: box-shadow 0.3s;
+}
+
+.cta-box:hover {
+    box-shadow: 0 6px 24px rgba(10, 30, 61, 0.3);
+}
+
+.cta-content {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.875rem, 2vw, 1.25rem);
+}
+
+.logo-circle {
+    width: clamp(44px, 8vw, 56px);
+    height: clamp(44px, 8vw, 56px);
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.logo-circle img {
+    width: clamp(34px, 6.5vw, 44px);
+    height: clamp(34px, 6.5vw, 44px);
+    object-fit: contain;
+}
+
+.cta-text {
+    color: white;
+    font-size: clamp(0.9375rem, 2vw, 1.125rem);
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.apply-btn {
+    background: #1d7fe2;
+    color: white;
+    padding: clamp(0.625rem, 1.5vw, 0.875rem) clamp(1.25rem, 3vw, 2rem);
+    border-radius: clamp(8px, 1.3vw, 10px);
+    font-weight: 700;
+    font-size: clamp(0.8125rem, 1.6vw, 0.9375rem);
+    white-space: nowrap;
+    transition: background 0.3s;
+}
+
+.cta-box:hover .apply-btn {
+    background: #1565c0;
+}
+
+@media (max-width: 479px) {
+    .steps-container {
+        gap: 1.25rem;
+    }
+    
+    .cta-box {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .cta-content {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .apply-btn {
+        width: 100%;
+    }
+}
+
+
+
+
+
+
+    
 </style>
 
 <!-- FAQ Section HTML -->
@@ -1945,6 +2238,94 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </section>
 
+
+<section class="ambassador-section">
+    <div class="ambassador-container">
+        <div class="ambassador-header">
+            <h2 class="ambassador-title">Become an Early Ambassador 🚀</h2>
+            <p class="ambassador-intro">We're launching a new GCSE learning platform soon — and we're inviting a group of students to be early insiders before it goes live.</p>
+            <p class="ambassador-subtext">If you're Y9–Y11 and on TikTok or Instagram, this is your chance to be part of it early.</p>
+        </div>
+
+        <div class="ambassador-grid">
+            <div class="ambassador-card">
+                <h3 class="ambassador-card-title">What you'll do (for now)</h3>
+                <p class="ambassador-card-subtitle">NOTHING COMPLICATED</p>
+                <p style="color: #6b7280; margin-bottom: 1.25rem; font-size: 1rem;">Pre-launch, ambassadors help by:</p>
+                <ul>
+                    <li>sharing the landing page (this page you're on now!)</li>
+                    <li>posting a short 10 second clip or screenshot saying "I'm on the waitlist for this GCSE platform — launch soon"</li>
+                    <li>giving honest feedback as we build</li>
+                </ul>
+                <p style="color: #6b7280; margin-top: 1.5rem; font-style: italic;">No teaching. No selling. Just awareness.</p>
+            </div>
+
+            <div class="ambassador-card">
+                <h3 class="ambassador-card-title">What's in it for you:</h3>
+                <ul>
+                    <li>The chance to unlock access to the platform as it launches (the more involved you are, the more you unlock over time)</li>
+                    <li>Access to Unlimited Ebooks and revision strategies (No fluff. Just stuff that actually helps with GCSEs)</li>
+                    <li>A real Project Ambassador role for your CV / Resume (Something you can actually talk about in interviews)</li>
+                    <li>Direct contact with the founder</li>
+                    <li>Priority for short and long term uncapped paid roles once revenue starts (If you're good at what you do)</li>
+                    <li>You grow with the platform — not after it's finished</li>
+                    <li>And so much more</li>
+                </ul>
+                <p style="color: #6b7280; margin-top: 1.5rem; font-style: italic;">No pressure, no contracts — Find a role that works for you.</p>
+            </div>
+        </div>
+
+        <!-- NEW: Refined "How to Apply" Section -->
+        <div class="steps-wrapper">
+            <div class="steps-header">
+                <h3 class="steps-title">How to Apply</h3>
+                <p class="steps-subtitle">Three simple steps to join the programme</p>
+            </div>
+
+            <div class="steps-container">
+                <div class="step-item">
+                    <div class="step-number-box">1</div>
+                    <p class="step-label">STEP ONE</p>
+                    <h4 class="step-title">Click 'Apply now'</h4>
+                    <p class="step-description">Hit the button below to get started</p>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number-box">2</div>
+                    <p class="step-label">STEP TWO</p>
+                    <h4 class="step-title">Follow instructions</h4>
+                    <p class="step-description">Complete the steps displayed on screen</p>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number-box">3</div>
+                    <p class="step-label">STEP THREE</p>
+                    <h4 class="step-title">Start your role!</h4>
+                    <p class="step-description">Begin making an impact immediately</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="https://discord.gg/gxmTRC3u" target="_blank" class="cta-box">
+            <div class="cta-content">
+                <div class="logo-circle">
+                    <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="GMM Logo">
+                </div>
+                <span class="cta-text">Join the Ambassador Programme</span>
+            </div>
+            <div class="apply-btn">Apply now →</div>
+        </a>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+    
 <script>
 function toggleFaq(button) {
     const faqItem = button.parentElement;
@@ -2192,6 +2573,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
+
 
 
 
