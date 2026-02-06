@@ -1,20 +1,41 @@
+// Allowed origins - REPLACE WITH YOUR ACTUAL VERCEL DOMAINS
+const ALLOWED_ORIGINS = [
+  'https://www.monturalearn.co.uk',
+  'https://monturalearn.co.uk',
+  /^https:\/\/.*-anakins-projects-5f9470f9\.vercel\.app$/,
+  process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : null
+].filter(Boolean);
+
 export default async function handler(req, res) {
+  // 1. CHECK ORIGIN
+  const origin = req.headers.origin;
+  const isAllowed = ALLOWED_ORIGINS.some(allowed => 
+    typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
+  );
+  
+  if (!origin || !isAllowed) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  // 2. STRICT CORS
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');  // ← REMOVED X-API-Key
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  // 3. ONLY ALLOW POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
+  // 4. INPUT VALIDATION - Prevent malicious data  // ← DELETED API KEY CHECK
   try {
     const { message, conversationHistory, questionData } = req.body;
-
+    
     // GUIDE LIBRARY
     const GUIDES = {
 
@@ -1034,23 +1055,22 @@ ${selectedGuide ?
 CRITICAL: ${selectedGuide ? 'Reference the guide method.' : 'Focus specifically on the question at hand.'} Be concise to save tokens.`;
 
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...conversationHistory,
-          { role: 'user', content: message }
-        ],
-        temperature: 0.7,
-        max_tokens: 400
-      })
-    });
-
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+  },
+  body: JSON.stringify({
+    model: 'deepseek-chat',
+    messages: [
+      { role: 'system', content: systemPrompt },
+      ...conversationHistory,
+      { role: 'user', content: message }
+    ],
+    temperature: 0.7,
+    max_tokens: 400
+  })
+});
     const data = await response.json();
 
     if (!response.ok) {
