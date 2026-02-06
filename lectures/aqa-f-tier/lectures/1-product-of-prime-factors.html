@@ -2132,16 +2132,17 @@ label.style.display = isUser ? 'block' : 'none';
     
     try {
       const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: message,
-          conversationHistory: window.conversationHistory,
-          questionData: questionData
-        })
-      });
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    // NO X-API-Key here!
+  },
+  body: JSON.stringify({
+    message: message,
+    conversationHistory: window.conversationHistory,
+    questionData: questionData
+  })
+});
       
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
