@@ -2441,54 +2441,37 @@ document.addEventListener('DOMContentLoaded', function() {
 // =============================================
 (function() {
 
-    // =============================================
-// WAITLIST — Countdown, submission, state swap
-// =============================================
-(function() {
-
-    // ── Countdown: target 28 Feb 2025 1:00 PM GMT (13:00 UTC) ──
+    // ── Countdown: target 28 Feb 2025 1:00 PM GMT ──
     var LAUNCH_TARGET = new Date('2025-02-28T13:00:00Z').getTime();
 
     function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
     function tickCountdown() {
-        var now = new Date().getTime();
-        var diff = Math.max(LAUNCH_TARGET - now, 0);
-        
-        var d = Math.floor(diff / (1000 * 60 * 60 * 24));
-        var h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        var s = Math.floor((diff % (1000 * 60)) / 1000);
+        var diff = Math.max(LAUNCH_TARGET - Date.now(), 0);
+        var d = Math.floor(diff / 86400000);
+        var h = Math.floor((diff % 86400000) / 3600000);
+        var m = Math.floor((diff % 3600000)  / 60000);
+        var s = Math.floor((diff % 60000)    / 1000);
 
         var elD = document.getElementById('wlDays');
         var elH = document.getElementById('wlHours');
         var elM = document.getElementById('wlMins');
         var elS = document.getElementById('wlSecs');
 
-        if (elD) elD.textContent = pad(d);
+        if (elD) elD.textContent = d;
         if (elH) elH.textContent = pad(h);
         if (elM) elM.textContent = pad(m);
         if (elS) elS.textContent = pad(s);
 
         // If countdown hits zero, hide the waitlist box entirely
-        if (diff === 0) {
-            var formEl = document.getElementById('waitlistForm');
-            var confirmEl = document.getElementById('waitlistConfirmed');
-            if (formEl) formEl.style.display = 'none';
-            if (confirmEl) confirmEl.style.display = 'none';
+        if (diff === 0 && document.getElementById('waitlistForm')) {
+            document.getElementById('waitlistForm').style.display = 'none';
+            document.getElementById('waitlistConfirmed').style.display = 'none';
         }
     }
 
-    // Wait for DOM to be ready before starting countdown
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-            tickCountdown();
-            setInterval(tickCountdown, 1000);
-        });
-    } else {
-        tickCountdown();
-        setInterval(tickCountdown, 1000);
-    }
+    tickCountdown();
+    setInterval(tickCountdown, 1000);
 
     // ── Fetch live waitlist count from Supabase ──
     async function fetchWaitlistCount() {
