@@ -2442,31 +2442,39 @@ document.addEventListener('DOMContentLoaded', function() {
 (function() {
 
     // ── Countdown: target 28 Feb 2025 1:00 PM GMT ──
-    var LAUNCH_TARGET = new Date('2025-02-28T13:00:00Z').getTime();
+    var LAUNCH_TARGET = new Date('2025-02-28T13:00:00+00:00').getTime();
 
     function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
     function tickCountdown() {
-        var diff = Math.max(LAUNCH_TARGET - Date.now(), 0);
-        var d = Math.floor(diff / 86400000);
-        var h = Math.floor((diff % 86400000) / 3600000);
-        var m = Math.floor((diff % 3600000)  / 60000);
-        var s = Math.floor((diff % 60000)    / 1000);
+        var now = new Date().getTime();
+        var diff = LAUNCH_TARGET - now;
+        
+        if (diff <= 0) {
+            diff = 0;
+        }
+        
+        var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
         var elD = document.getElementById('wlDays');
         var elH = document.getElementById('wlHours');
         var elM = document.getElementById('wlMins');
         var elS = document.getElementById('wlSecs');
 
-        if (elD) elD.textContent = d;
-        if (elH) elH.textContent = pad(h);
-        if (elM) elM.textContent = pad(m);
-        if (elS) elS.textContent = pad(s);
+        if (elD) elD.textContent = days;
+        if (elH) elH.textContent = pad(hours);
+        if (elM) elM.textContent = pad(minutes);
+        if (elS) elS.textContent = pad(seconds);
 
         // If countdown hits zero, hide the waitlist box entirely
-        if (diff === 0 && document.getElementById('waitlistForm')) {
-            document.getElementById('waitlistForm').style.display = 'none';
-            document.getElementById('waitlistConfirmed').style.display = 'none';
+        if (diff === 0) {
+            var formEl = document.getElementById('waitlistForm');
+            var confirmEl = document.getElementById('waitlistConfirmed');
+            if (formEl) formEl.style.display = 'none';
+            if (confirmEl) confirmEl.style.display = 'none';
         }
     }
 
@@ -2573,7 +2581,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
-
 
 
 
