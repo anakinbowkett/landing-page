@@ -135,22 +135,23 @@ body.launch-mode .cta-button {
         }
 
         /* Banner */
-        .announcement-banner {
-            position: fixed;
-            top: 5rem;
-            left: 0;
-            right: 0;
-            background: #c41e3a;
-            color: white;
-            text-align: center;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            z-index: 40;
-            border-bottom: 1px solid #a01729;
-            overflow: hidden;
-            white-space: nowrap;
-        }
+       .announcement-banner {
+    position: fixed;
+    top: 5rem;
+    left: 0;
+    right: 0;
+    background: #c41e3a;
+    color: white;
+    text-align: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    z-index: 40;
+    border-bottom: 1px solid #a01729;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-top: -1px;
+}
 
         .banner-content {
             display: inline-block;
@@ -1306,6 +1307,196 @@ body.launch-mode .cta-button {
                 animation: slotSpinUpMobile 0.15s ease-out forwards, slotSpinDownMobile 0.15s ease-in 0.15s forwards;
             }
         }
+      
+      
+      /* =============================================
+   DEMO WINDOW SECTION
+   ============================================= */
+.demo-window-section {
+    max-width: 1280px;
+    margin: 4rem auto 0;
+    padding: 0 1rem;
+}
+
+.demo-window-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+
+/* Demo Window (Placeholder) */
+.demo-window {
+    width: 100%;
+    max-width: 1200px;
+    background: #f9fafb;
+    border-radius: 16px;
+    border: 2px solid #e5e7eb;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.demo-placeholder {
+    height: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+}
+
+.demo-placeholder p {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
+/* Navigation Tabs */
+.demo-nav-tabs {
+    display: flex;
+    gap: 1rem;
+    background: white;
+    padding: 0.5rem;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.demo-tab {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #6b7280;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+}
+
+.demo-tab:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.demo-tab.active {
+    background: linear-gradient(135deg, #1d7fe2, #1e88f5);
+    color: white;
+    box-shadow: 0 2px 8px rgba(29, 127, 226, 0.3);
+}
+
+/* Description Area */
+.demo-description-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    margin-top: 1rem;
+}
+
+.demo-description-line {
+    width: 1px;
+    min-height: 80px;
+    background: linear-gradient(180deg, #1d7fe2 0%, transparent 100%);
+    flex-shrink: 0;
+}
+
+.demo-description-content {
+    flex: 1;
+    min-height: 80px;
+}
+
+.typing-text {
+    font-size: 1rem;
+    color: #4b5563;
+    line-height: 1.75;
+    font-weight: 500;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid #1d7fe2;
+    animation: blink-caret 0.75s step-end infinite;
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: #1d7fe2; }
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .demo-window {
+        max-width: 100%;
+    }
+
+    .demo-placeholder {
+        height: 350px;
+    }
+
+    .demo-placeholder p {
+        font-size: 1.125rem;
+    }
+
+    .demo-nav-tabs {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .demo-tab {
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .typing-text {
+        font-size: 0.9375rem;
+    }
+}
+
+@media (max-width: 430px) {
+    .demo-placeholder {
+        height: 250px;
+    }
+
+    .demo-placeholder p {
+        font-size: 1rem;
+    }
+
+    .demo-nav-tabs {
+        gap: 0.5rem;
+        padding: 0.375rem;
+    }
+
+    .demo-tab {
+        padding: 0.5rem 0.875rem;
+        font-size: 0.8125rem;
+    }
+
+    .typing-text {
+        font-size: 0.875rem;
+        white-space: normal;
+        border-right: none;
+        animation: none;
+    }
+
+    .demo-description-wrapper {
+        gap: 1rem;
+    }
+}
+      
+      
+      
+      
+      
+      
+      
+      
+      
     </style>
 </head>
 <body class="waitlist-mode">
@@ -1334,7 +1525,7 @@ body.launch-mode .cta-button {
 <!-- Announcement Banner -->
 <div class="announcement-banner">
     <div class="banner-content">
-        JOIN THE WAITLIST NOW - For early bird pricing
+        ⚡ Waitlist Closing in 21 Days — Secure Your Early-Bird price Spot Before Launch!     
     </div>
 </div>
 
@@ -1345,12 +1536,12 @@ body.launch-mode .cta-button {
             <h1 class="hero-title">One mission: Get you GCSE success or your money back.</h1>
             <p class="hero-subtitle">The all-inclusive GCSE learning platform.</p>
 
-<a href="signup.html" class="hero-cta">
-    <span>Try now for free</span>
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-    </svg>
-</a>
+            <a href="signup.html" class="hero-cta">
+                <span>Try now for free</span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                </svg>
+            </a>
 
             <div class="slot-container">
                 <div id="carousel">
@@ -1359,93 +1550,125 @@ body.launch-mode .cta-button {
                 </div>
             </div>
         </div>
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
 
-      <!-- WAITLIST BOX (replaces dashboard image) -->
-<div class="hero-waitlist-wrapper">
-    <div class="waitlist-box" id="waitlistForm">
-        <div class="urgency-pill">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            <span>Launches 28 Feb — spots filling fast</span>
-        </div>
+        <!-- WAITLIST BOX (right column on desktop) -->
+        <div class="hero-waitlist-wrapper">
+            <div class="waitlist-box" id="waitlistForm">
+                <div class="urgency-pill">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    <span>Launches 28 Feb — spots filling fast</span>
+                </div>
 
-        <h4>Be first to master your GCSEs.</h4>
-        <p>Join the waitlist — get early access, exclusive tips, and be notified the moment we go live.</p>
+                <h4>Be first to master your GCSEs.</h4>
+                <p>Join the waitlist — get early access, exclusive tips, and be notified the moment we go live.</p>
 
-        <input class="wl-field" id="wlEmail" type="email" placeholder="your@email.com" autocomplete="email">
-        <input class="wl-field" id="wlTikTok" type="text" placeholder="@tiktokusername (optional)" autocomplete="username">
+                <input class="wl-field" id="wlEmail" type="email" placeholder="your@email.com" autocomplete="email">
+                <input class="wl-field" id="wlTikTok" type="text" placeholder="@tiktokusername (optional)" autocomplete="username">
 
-        <button class="btn-join" id="btnJoin">Join the Waitlist →</button>
+                <button class="btn-join" id="btnJoin">Join the Waitlist →</button>
 
-        <div class="social-proof">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            <span><strong id="waitlistCount">847</strong> students are already ahead of you.</span>
-        </div>
+                <div class="social-proof">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <span><strong id="waitlistCount">847</strong> students are already ahead of you.</span>
+                </div>
 
-        <div class="countdown-timer">
-            <div class="unit">
-                <div class="num" id="wlDays">27</div>
-                <div class="lbl">Days</div>
+                <div class="countdown-timer">
+                    <div class="unit">
+                        <div class="num" id="wlDays">27</div>
+                        <div class="lbl">Days</div>
+                    </div>
+                    <div class="sep">:</div>
+                    <div class="unit">
+                        <div class="num" id="wlHours">18</div>
+                        <div class="lbl">Hrs</div>
+                    </div>
+                    <div class="sep">:</div>
+                    <div class="unit">
+                        <div class="num" id="wlMins">42</div>
+                        <div class="lbl">Min</div>
+                    </div>
+                    <div class="sep">:</div>
+                    <div class="unit">
+                        <div class="num" id="wlSecs">07</div>
+                        <div class="lbl">Sec</div>
+                    </div>
+                </div>
             </div>
-            <div class="sep">:</div>
-            <div class="unit">
-                <div class="num" id="wlHours">18</div>
-                <div class="lbl">Hrs</div>
-            </div>
-            <div class="sep">:</div>
-            <div class="unit">
-                <div class="num" id="wlMins">42</div>
-                <div class="lbl">Min</div>
-            </div>
-            <div class="sep">:</div>
-            <div class="unit">
-                <div class="num" id="wlSecs">07</div>
-                <div class="lbl">Sec</div>
+
+            <div class="confirmed-box" id="waitlistConfirmed" style="display: none;">
+                <div class="tick-row">
+                    <div class="tick-circle">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <div class="tick-text">
+                        You're on the waitlist.
+                        <small>Check your inbox — first email is on its way.</small>
+                    </div>
+                </div>
+                <div class="copy-block">
+                    I built this for students who are done wasting time on methods that don't work.<br><br>
+                    Same goes for those who work twice as hard and yet doesn't move the needle.<br>
+                    Or for the ones who don't even know where to start because of all the 'revision' and 'homework'.<br><br>
+                    What's landing in your inbox isn't theory,<br><br>
+                    it's the <em>exact</em> system I used to go from struggling to dominating, and it works better, more efficient and faster than anything your teachers will ever show you.<br><br>
+                    No fluff. No endless hours. Just results.<br><br>
+                    <strong>You'll understand soon why you joined.</strong>
+                </div>
+                <button class="btn-gotit" onclick="dismissConfirmation()">Got it →</button>
             </div>
         </div>
     </div>
 
-    <div class="confirmed-box" id="waitlistConfirmed" style="display: none;">
-        <div class="tick-row">
-            <div class="tick-circle">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                </svg>
+    <!-- Demo Window Section (BELOW the 2-column grid) -->
+    <div class="demo-window-section">
+        <div class="demo-window-container">
+            <!-- Demo Window (Placeholder) -->
+            <div class="demo-window">
+                <div class="demo-placeholder">
+                    <p>Demo Preview Window</p>
+                </div>
             </div>
-            <div class="tick-text">
-                You're on the waitlist.
-                <small>Check your inbox — first email is on its way.</small>
+
+            <!-- Navigation Tabs -->
+            <div class="demo-nav-tabs">
+                <button class="demo-tab active" data-feature="flashtiles">Flashtiles</button>
+                <button class="demo-tab" data-feature="quiz">Quiz / Quick test</button>
+                <button class="demo-tab" data-feature="pastpapers">Past Papers</button>
+            </div>
+
+            <!-- Feature Descriptions with Animation -->
+            <div class="demo-description-wrapper">
+                <div class="demo-description-line"></div>
+                <div class="demo-description-content">
+                    <p id="demoDescriptionText" class="typing-text"></p>
+                </div>
             </div>
         </div>
-        <div class="copy-block">
-            I built this for students who are done wasting time on methods that don't work.<br><br>
-            Same goes for those who work twice as hard and yet doesn't move the needle.<br>
-            Or for the ones who don't even know where to start because of all the 'revision' and 'homework'.<br><br>
-            What's landing in your inbox isn't theory,<br><br>
-            it's the <em>exact</em> system I used to go from struggling to dominating, and it works better, more efficient and faster than anything your teachers will ever show you.<br><br>
-            No fluff. No endless hours. Just results.<br><br>
-            <strong>You'll understand soon why you joined.</strong>
-        </div>
-        <button class="btn-gotit" onclick="dismissConfirmation()">Got it →</button>
     </div>
-</div>
+</section>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
 </section>
     
 <script>
@@ -1486,143 +1709,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
   
   
-
-<!-- Features Section -->
-<section class="features">
-    <div class="features-container">
-
-        <!-- Feature 1 -->
-<div class="feature">
-    <div class="gif-window">
-        <img src="https://i.postimg.cc/kGNxtQ0j/lectur_image.jpg" alt="Interactive Lectures" class="gif-content">
-    </div>
-
-            
-            <div class="feature-content">
-                <h2 class="feature-title">Interactive Lectures</h2>
-                <p class="feature-description">
-                    Familiarise with exam format and learn with quick videos and instant multiple choice quizzes that track your progress and break every problem down into simple steps
-                </p>
-                <ul class="feature-list">
-                    <li>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Real-time progress tracking</span>
-                    </li>
-                    <li>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Adaptive difficulty levels</span>
-                    </li>
-                    <li>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Instant answer check</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Feature 2 -->
-        <div class="feature feature-reverse">
-            <div class="feature-content">
-                <h2 class="feature-title">Flashtiles</h2>
-                <p class="feature-description">
-                    Build exam confidence through flashtiles practice that covers all syllabus difficulties, with every question backed by a clear, worked answer just a tap away.
-                </p>
-                <ul class="feature-list">
-                    <li>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Exam-style questions</span>
-                    </li>
-                    <li>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Custom revision Decks</span>
-                    </li>
-                    <li>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Self-confidence rating</span>
-                    </li>
-                </ul>
-            </div>
-            <div class="gif-window">
-    <img src="https://i.postimg.cc/tJdhV3KS/fs_img.jpg" alt="Flashtiles" class="gif-content">
-</div>
-        </div>
-
-        <!-- Feature 3 -->
-    
-<!-- Feature 3 -->
-        <div class="feature">
-            <div class="gif-window">
-                <div class="coming-soon-banner">Coming Soon</div>
-            </div>
-            <div class="feature-content">
-                <h2 class="feature-title">Quizzes</h2>
-                <p class="feature-description">
-                    Compete live against other students in quiz battles—get 1000 Mastery Miles for each mark, then attack: steal miles, freeze opponents, knock them down the leaderboard, or keep playing.
-                </p>
-                <ul class="feature-list">
-                    <li>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Quickfire questions</span>
-                    </li>
-                    <li>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Instant answer check</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Feature 4 -->
-        <div class="feature feature-reverse">
-            <div class="feature-content">
-                <h2 class="feature-title">Past Papers</h2>
-                <p class="feature-description">
-                    Practice with real GCSE exam questions and get instant analytics showing your strengths and weaknesses after every paper, plus complete topic coverage for all papers, ensuring you've practiced every possible topic.
-                </p>
-                <ul class="feature-list">
-                    <li>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Performance dashboards</span>
-                    </li>
-                    <li>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Strength & weakness analysis</span>
-                    </li>
-                    <li>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Predicted grade calculator</span>
-                    </li>
-                </ul>
-            </div>
-            <div class="gif-window">
-    <img src="https://i.postimg.cc/6q8kWQFJ/past-paper-img.jpg" alt="Past Papers" class="gif-content">
-</div>
-        </div>
-
-    </div>
-</section>
+  
+  
 
 
 
@@ -2584,6 +2672,81 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 </script>
 
+ <script>
+// =============================================
+// DEMO WINDOW — Tab switching with typing animation
+// =============================================
+(function() {
+    const descriptions = {
+        flashtiles: "Practice exam-style questions with instant feedback. Every flashtile reveals the full worked solution with one tap—build confidence across all difficulty levels.",
+        quiz: "Compete live with other students in fast-paced quiz battles. Earn Mastery Miles for every correct answer and use power-ups to dominate the leaderboard.",
+        pastpapers: "Complete real GCSE past papers and get instant analytics on your performance. Track strengths, weaknesses, and predicted grades across all exam topics."
+    };
+
+    let currentText = "";
+    let currentIndex = 0;
+    let typingInterval = null;
+
+    function typeText(text) {
+        const textElement = document.getElementById('demoDescriptionText');
+        if (!textElement) return;
+
+        // Clear any existing typing
+        if (typingInterval) clearInterval(typingInterval);
+        
+        currentText = "";
+        currentIndex = 0;
+        textElement.textContent = "";
+        textElement.style.whiteSpace = "nowrap";
+        textElement.style.animation = "none";
+
+        // Start typing animation
+        typingInterval = setInterval(() => {
+            if (currentIndex < text.length) {
+                currentText += text[currentIndex];
+                textElement.textContent = currentText;
+                currentIndex++;
+            } else {
+                clearInterval(typingInterval);
+                // Remove caret blinking after typing is done
+                textElement.style.borderRight = "none";
+            }
+        }, 30); // Typing speed (30ms per character)
+    }
+
+    // Initialize with Flashtiles description
+    document.addEventListener('DOMContentLoaded', function() {
+        typeText(descriptions.flashtiles);
+
+        // Tab click handlers
+        const tabs = document.querySelectorAll('.demo-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Get feature and trigger typing animation
+                const feature = this.getAttribute('data-feature');
+                const textElement = document.getElementById('demoDescriptionText');
+                textElement.style.borderRight = "2px solid #1d7fe2";
+                typeText(descriptions[feature]);
+            });
+        });
+    });
+})();
+</script> 
+  
+  
+  
+  
+  
+  
+  
+  
+  
 </body>
 </html>
 
