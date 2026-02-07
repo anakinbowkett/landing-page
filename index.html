@@ -2441,9 +2441,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // =============================================
 (function() {
 
-    // ── Countdown: target 28 Feb 2025 1:00 PM GMT ──
-    // Using UTC timestamp: Feb 28, 2025, 1:00 PM GMT
-    var LAUNCH_TARGET = Date.UTC(2025, 1, 28, 13, 0, 0); // Month is 0-indexed (1 = February)
+    // ── Countdown: target 28 Feb 2026 1:00 PM GMT ──
+    var targetDate = new Date('February 28, 2026 13:00:00 GMT+0000');
+    var LAUNCH_TARGET = targetDate.getTime();
 
     function pad(n) { 
         return n < 10 ? '0' + n : '' + n; 
