@@ -2442,15 +2442,18 @@ document.addEventListener('DOMContentLoaded', function() {
 (function() {
 
     // ── Countdown: target 28 Feb 2025 1:00 PM GMT ──
-    var LAUNCH_TARGET = new Date('2025-02-28T13:00:00+00:00').getTime();
+    // Using UTC timestamp: Feb 28, 2025, 1:00 PM GMT
+    var LAUNCH_TARGET = Date.UTC(2025, 1, 28, 13, 0, 0); // Month is 0-indexed (1 = February)
 
-    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+    function pad(n) { 
+        return n < 10 ? '0' + n : '' + n; 
+    }
 
     function tickCountdown() {
         var now = new Date().getTime();
         var diff = LAUNCH_TARGET - now;
         
-        if (diff <= 0) {
+        if (diff < 0) {
             diff = 0;
         }
         
@@ -2478,7 +2481,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Run immediately on load
     tickCountdown();
+    // Update every second
     setInterval(tickCountdown, 1000);
 
     // ── Fetch live waitlist count from Supabase ──
