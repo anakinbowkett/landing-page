@@ -2827,7 +2827,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ── Submit handler ──
-    window.handleWaitlistSubmit = async function() {
+window.handleWaitlistSubmit = async function() {
     var emailEl = document.getElementById('wlEmail');
     var tiktokEl = document.getElementById('wlTikTok');
     var btn = document.getElementById('btnJoin');
@@ -2872,12 +2872,29 @@ document.addEventListener('DOMContentLoaded', function() {
             })
         });
 
-        var data = await res.json();
+        // Try to parse response
+        var data;
+        try {
+            data = await res.json();
+        } catch (parseError) {
+            console.error('Failed to parse response:', parseError);
+            data = {};
+        }
+
+        console.log('Response status:', res.status);
+        console.log('Response data:', data);
 
         if (res.ok || res.status === 409) {
             // Success or already exists - show confirmation
-            document.getElementById('waitlistForm').style.display = 'none';
-            document.getElementById('waitlistConfirmed').classList.add('visible');
+            var formEl = document.getElementById('waitlistForm');
+            var confirmEl = document.getElementById('waitlistConfirmed');
+            
+            if (formEl) formEl.style.display = 'none';
+            if (confirmEl) {
+                confirmEl.style.display = 'block';
+                confirmEl.classList.add('visible');
+            }
+            
             sessionStorage.setItem('gmm_waitlist_joined', 'true');
         } else {
             btn.disabled = false;
