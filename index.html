@@ -2885,17 +2885,23 @@ window.handleWaitlistSubmit = async function() {
         console.log('Response data:', data);
 
         if (res.ok || res.status === 409) {
-            // Success or already exists - show confirmation
-            var formEl = document.getElementById('waitlistForm');
-            var confirmEl = document.getElementById('waitlistConfirmed');
+            // Show "Joined!" briefly before confirmation
+            btn.textContent = 'Joined! ✓';
+            btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
             
-            if (formEl) formEl.style.display = 'none';
-            if (confirmEl) {
-                confirmEl.style.display = 'block';
-                confirmEl.classList.add('visible');
-            }
-            
-            sessionStorage.setItem('gmm_waitlist_joined', 'true');
+            // Wait 1 second, then show confirmation box
+            setTimeout(function() {
+                var formEl = document.getElementById('waitlistForm');
+                var confirmEl = document.getElementById('waitlistConfirmed');
+                
+                if (formEl) formEl.style.display = 'none';
+                if (confirmEl) {
+                    confirmEl.style.display = 'block';
+                    confirmEl.classList.add('visible');
+                }
+                
+                sessionStorage.setItem('gmm_waitlist_joined', 'true');
+            }, 1000);
         } else {
             btn.disabled = false;
             btn.textContent = 'Join the Waitlist →';
