@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="trustpilot-one-time-domain-verification-id" content="9fa5b4c6-e959-4182-8a7b-ed4f529bbe22"/>
     <title>GMM - Get the Highest Grade or Money Back</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -1491,8 +1494,173 @@ body.launch-mode .cta-button {
       
       
       
+  /* =============================================
+   PERSONALISED LEARNING SECTION
+   ============================================= */
+.personalised-section {
+    max-width: 1280px;
+    margin: 16rem auto 0;
+    padding: 0 1rem;
+    text-align: center;
+}
+
+.personalised-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 3.0rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.1;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .personalised-title {
+        font-size: 2.25rem;
+    }
+}
+
+@media (max-width: 430px) {
+    .personalised-section {
+        margin: 4rem auto 0;
+    }
+    
+    .personalised-title {
+        font-size: 1.875rem;
+    }
+}
       
-      
+ 
+/* =============================================
+   FEATURE SHOWCASE SECTION
+   ============================================= */
+.feature-showcase-section {
+    max-width: 1280px;
+    margin: 8rem auto 0;
+    padding: 0 1rem;
+}
+
+.feature-showcase-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-bottom: 8rem;
+}
+
+.feature-showcase-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Placeholder Window */
+.feature-showcase-window {
+    width: 100%;
+    height: 400px;
+    background: #f3f4f6;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e5e7eb;
+}
+
+.feature-showcase-window p {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
+/* Text Content */
+.feature-showcase-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.feature-showcase-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.feature-showcase-description {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.125rem;
+    font-weight: 400;
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Reverse layout for alternating pattern */
+.feature-showcase-item.reverse {
+    grid-template-columns: 1fr 1fr;
+}
+
+.feature-showcase-item.reverse .feature-showcase-window {
+    order: 2;
+}
+
+.feature-showcase-item.reverse .feature-showcase-text {
+    order: 1;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+    .feature-showcase-item {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-bottom: 6rem;
+    }
+
+    .feature-showcase-item.reverse {
+        grid-template-columns: 1fr;
+    }
+
+    .feature-showcase-item.reverse .feature-showcase-window {
+        order: 1;
+    }
+
+    .feature-showcase-item.reverse .feature-showcase-text {
+        order: 2;
+    }
+
+    .feature-showcase-window {
+        height: 300px;
+    }
+
+    .feature-showcase-title {
+        font-size: 1.75rem;
+    }
+
+    .feature-showcase-description {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 430px) {
+    .feature-showcase-section {
+        margin: 6rem auto 0;
+    }
+
+    .feature-showcase-item {
+        margin-bottom: 4rem;
+    }
+
+    .feature-showcase-window {
+        height: 250px;
+    }
+
+    .feature-showcase-title {
+        font-size: 1.5rem;
+    }
+
+    .feature-showcase-description {
+        font-size: 0.9375rem;
+    }
+}      
       
       
       
@@ -1654,6 +1822,66 @@ body.launch-mode .cta-button {
             </div>
         </div>
     </div>
+  
+  <!-- Personalised Learning Section -->
+    <div class="personalised-section">
+        <h2 class="personalised-title">Learning,  personalised to your abilities</h2>
+    </div>
+  
+  <!-- Feature Showcase Section -->
+    <div class="feature-showcase-section">
+        
+        <!-- Feature 1: Window Left, Text Right -->
+        <div class="feature-showcase-item">
+            <div class="feature-showcase-window">
+                <p>Feature Window 1</p>
+            </div>
+            <div class="feature-showcase-text">
+                <h3 class="feature-showcase-title">Feature Title One</h3>
+                <p class="feature-showcase-description">This is the description text that explains the feature in more detail. It's smaller and grey with less bold styling.</p>
+            </div>
+        </div>
+
+        <!-- Feature 2: Text Left, Window Right -->
+        <div class="feature-showcase-item reverse">
+            <div class="feature-showcase-window">
+                <p>Feature Window 2</p>
+            </div>
+            <div class="feature-showcase-text">
+                <h3 class="feature-showcase-title">Feature Title Two</h3>
+                <p class="feature-showcase-description">This is the description text that explains the feature in more detail. It's smaller and grey with less bold styling.</p>
+            </div>
+        </div>
+
+        <!-- Feature 3: Window Left, Text Right -->
+        <div class="feature-showcase-item">
+            <div class="feature-showcase-window">
+                <p>Feature Window 3</p>
+            </div>
+            <div class="feature-showcase-text">
+                <h3 class="feature-showcase-title">Feature Title Three</h3>
+                <p class="feature-showcase-description">This is the description text that explains the feature in more detail. It's smaller and grey with less bold styling.</p>
+            </div>
+        </div>
+
+        <!-- Feature 4: Text Left, Window Right -->
+        <div class="feature-showcase-item reverse">
+            <div class="feature-showcase-window">
+                <p>Feature Window 4</p>
+            </div>
+            <div class="feature-showcase-text">
+                <h3 class="feature-showcase-title">Feature Title Four</h3>
+                <p class="feature-showcase-description">This is the description text that explains the feature in more detail. It's smaller and grey with less bold styling.</p>
+            </div>
+        </div>
+
+    </div>
+  
+  
+  
+  
+  
+  
 </section>
       
       
@@ -2749,7 +2977,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
 </body>
 </html>
-
 
 
 
