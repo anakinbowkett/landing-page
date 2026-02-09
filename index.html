@@ -1662,6 +1662,205 @@ body.launch-mode .cta-button {
     }
 }      
       
+   
+      
+      
+ /* =============================================
+   TESTIMONIALS SECTION - Premium Parallax Design
+   ============================================= */
+.testimonials-section {
+    position: relative;
+    margin: 20rem auto 0;
+    padding: 8rem 2rem 10rem;
+    overflow: hidden;
+    background: linear-gradient(180deg, 
+        #ffffff 0%, 
+        #f0f9ff 15%, 
+        #e0f2fe 50%, 
+        #f0f9ff 85%, 
+        #ffffff 100%
+    );
+}
+
+/* Gradient overlay for fade effect */
+.testimonials-section::before,
+.testimonials-section::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 200px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.testimonials-section::before {
+    top: 0;
+    background: linear-gradient(180deg, #ffffff 0%, transparent 100%);
+}
+
+.testimonials-section::after {
+    bottom: 0;
+    background: linear-gradient(0deg, #ffffff 0%, transparent 100%);
+}
+
+.testimonials-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.testimonials-header {
+    position: absolute;
+    top: -8rem;
+    left: 2rem;
+    z-index: 3;
+}
+
+.testimonials-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    position: relative;
+}
+
+.testimonial-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    will-change: transform;
+    transition: transform 0.1s ease-out;
+}
+
+/* Individual Testimonial Card */
+.testimonial-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 0;
+    box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.05),
+        0 10px 25px rgba(59, 130, 246, 0.08),
+        0 0 0 1px rgba(59, 130, 246, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.07),
+        0 20px 40px rgba(59, 130, 246, 0.15),
+        0 0 0 1px rgba(59, 130, 246, 0.2);
+}
+
+.testimonial-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+/* Accent gradient orbs (subtle background decoration) */
+.testimonials-section .accent-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.testimonials-section .accent-orb-1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%);
+    top: 10%;
+    left: -10%;
+}
+
+.testimonials-section .accent-orb-2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%);
+    bottom: 20%;
+    right: -5%;
+}
+
+.testimonials-section .accent-orb-3 {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+    .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .testimonials-title {
+        font-size: 2.5rem;
+    }
+
+    .testimonials-header {
+        margin-bottom: 4rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .testimonials-section {
+        padding: 6rem 1rem 8rem;
+        margin: 8rem auto 0;
+    }
+
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .testimonials-title {
+        font-size: 2rem;
+    }
+
+    .testimonials-header {
+        padding-left: 0;
+        margin-bottom: 3rem;
+    }
+
+    .testimonial-card {
+        padding: 1.25rem;
+    }
+
+    /* Disable parallax on mobile for performance */
+    .testimonial-column {
+        transform: none !important;
+    }
+}     
+      
+      
+      
+      
+      
+      
       
       
       
@@ -1876,6 +2075,102 @@ body.launch-mode .cta-button {
         </div>
 
     </div>
+  
+  
+  
+  
+ <!-- Testimonials Section with Parallax -->
+    <div class="testimonials-section">
+        <!-- Decorative gradient orbs -->
+        <div class="accent-orb accent-orb-1"></div>
+        <div class="accent-orb accent-orb-2"></div>
+        <div class="accent-orb accent-orb-3"></div>
+
+        <div class="testimonials-container">
+            <div class="testimonials-header">
+                <h2 class="testimonials-title">What the students say</h2>
+            </div>
+
+            <div class="testimonials-grid" id="testimonialsGrid">
+                <!-- Column 1 (scrolls down) -->
+                <div class="testimonial-column" data-direction="down">
+                    <div class="testimonial-card">
+                        <img src="https://i.postimg.cc/1t0sSJrv/IMG-7998-(2).jpg" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="https://i.postimg.cc/tT8Srjxv/IMG-7991.jpg" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="https://i.postimg.cc/B6nMZvxg/IMG-7992.jpg" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="https://i.postimg.cc/9Ms8xh7v/IMG-7993.jpg" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="https://i.postimg.cc/bJw3YvQ3/IMG-7994.jpg" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                </div>
+
+                <!-- Column 2 (scrolls up) -->
+                <div class="testimonial-column" data-direction="up">
+                    <div class="testimonial-card">
+                        <img src="https://i.postimg.cc/C1xmMKjr/IMG-7995.jpg" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="https://i.postimg.cc/63pY6Qdz/IMG-7996.jpg" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="https://i.postimg.cc/KzCq92Mq/IMG-7999.jpg" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="https://i.postimg.cc/tT8SrjxB/IMG-8001.jpg" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="https://i.postimg.cc/hPQzWq79/unnamed.jpg" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                </div>
+
+                <!-- Column 3 (scrolls down) -->
+                <div class="testimonial-column" data-direction="down">
+                    <div class="testimonial-card">
+                        <img src="TESTIMONIAL_IMAGE_11_URL_HERE" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="TESTIMONIAL_IMAGE_12_URL_HERE" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="TESTIMONIAL_IMAGE_13_URL_HERE" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="TESTIMONIAL_IMAGE_14_URL_HERE" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="TESTIMONIAL_IMAGE_15_URL_HERE" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                </div>
+
+                <!-- Column 4 (scrolls up) -->
+                <div class="testimonial-column" data-direction="up">
+                    <div class="testimonial-card">
+                        <img src="TESTIMONIAL_IMAGE_16_URL_HERE" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="TESTIMONIAL_IMAGE_17_URL_HERE" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="TESTIMONIAL_IMAGE_18_URL_HERE" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="TESTIMONIAL_IMAGE_19_URL_HERE" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="TESTIMONIAL_IMAGE_20_URL_HERE" alt="Student testimonial" class="testimonial-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
   
   
   
@@ -2398,13 +2693,13 @@ document.addEventListener('DOMContentLoaded', function() {
             <!-- FAQ 1 -->
             <div class="faq-item">
                 <button class="faq-question" onclick="toggleFaq(this)">
-                    <span>What is GCSE Maths Mastery?</span>
+                    <span>What is Monturalearn?</span>
                     <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>GCSE Maths Mastery is an all-inclusive online learning platform designed to help students master GCSE Mathematics. We offer interactive lectures, flashtile practice, live quizzes, and past papers with instant analytics to ensure you achieve the highest grade possible.</p>
+                    <p>Monturalearn is an all-inclusive online learning platform designed to help students master their GCSEs through efficiency and features that allow students to learn with confidence that their hard work brings them academic success. Monturalearn offer interactive lectures with a AI guide system to prompt and support students, flashtile practice, live quizzes, and customisable past papers with instant analytics to ensure you achieve the highest grade possible.</p>
                 </div>
             </div>
 
@@ -2417,22 +2712,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>GCSE Maths Mastery is the first low-cost maths educational learning platform. We offer affordable pricing plans to make quality GCSE preparation accessible to everyone. Sign up for free to get started, and explore our premium features at a fraction of the cost of traditional tutoring.</p>
+                    <p>Monturalearn is the Uk's first low-cost educational learning platform. Monturalearn offers affordable pricing plans to make quality GCSE preparation accessible to everyone without the high cost barrier or up-front payment packages. Sign up for free to get started, and explore our premium features at a fraction of the cost and quadruple the features of traditional tutoring.</p>
                 </div>
             </div>
 
-            <!-- FAQ 3 -->
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span>What is your money-back guarantee?</span>
-                    <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                    </svg>
-                </button>
-                <div class="faq-answer">
-                    <p>We're so confident in our platform that we offer a money-back guarantee. If you don't achieve the highest grade you're capable of, we'll refund your investment. Our mission is your GCSE success, and we stand behind our commitment to help you reach your full potential.</p>
-                </div>
-            </div>
+          
 
             <!-- FAQ 4 -->
             <div class="faq-item">
@@ -2702,7 +2986,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <!-- Bottom: Review count, stars, and logo -->
             <div class="bottom-section">
                 <div class="left-content">
-                    <div class="review-count"><span class="review-number">1</span> reviews</div>
+                    <div class="review-count"><span class="review-number">4</span> reviews</div>
                     <div class="stars-row">
                         <div class="star-box">
                             <svg class="star" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -2991,8 +3275,77 @@ window.handleWaitlistSubmit = async function() {
 </script> 
   
   
-  
-  
+<script>
+// =============================================
+// TESTIMONIALS PARALLAX SCROLL EFFECT
+// =============================================
+(function() {
+    const grid = document.getElementById('testimonialsGrid');
+    if (!grid) return;
+
+    const columns = grid.querySelectorAll('.testimonial-column');
+    
+    // Check if mobile (disable parallax on small screens)
+    const isMobile = window.innerWidth < 640;
+    if (isMobile) return;
+
+    let ticking = false;
+    let lastScrollY = window.pageYOffset;
+
+    function updateParallax() {
+        const scrollY = window.pageYOffset;
+        const scrollDelta = scrollY - lastScrollY;
+        lastScrollY = scrollY;
+
+        const gridRect = grid.getBoundingClientRect();
+        const gridTop = gridRect.top + scrollY;
+        const gridBottom = gridTop + gridRect.height;
+        const viewportHeight = window.innerHeight;
+        
+        // Only apply parallax when section is visible in viewport
+        if (scrollY + viewportHeight > gridTop && scrollY < gridBottom) {
+            const scrollProgress = (scrollY - gridTop + viewportHeight) / (gridRect.height + viewportHeight);
+            const clampedProgress = Math.max(0, Math.min(1, scrollProgress));
+            
+            columns.forEach((column) => {
+                const direction = column.getAttribute('data-direction');
+                const speed = 80; // Max pixels to move
+                
+                if (direction === 'down') {
+                    // Columns 1 and 3: move down when scrolling down
+                    const offset = clampedProgress * speed - (speed / 2);
+                    column.style.transform = `translateY(${offset}px)`;
+                } else {
+                    // Columns 2 and 4: move up when scrolling down
+                    const offset = -(clampedProgress * speed - (speed / 2));
+                    column.style.transform = `translateY(${offset}px)`;
+                }
+            });
+        }
+        
+        ticking = false;
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            window.requestAnimationFrame(updateParallax);
+            ticking = true;
+        }
+    }
+
+    // Listen to scroll events
+    window.addEventListener('scroll', requestTick, { passive: true });
+    
+    // Listen to resize to recalculate on window resize
+    window.addEventListener('resize', () => {
+        lastScrollY = window.pageYOffset;
+        requestTick();
+    });
+    
+    // Initial position
+    updateParallax();
+})();
+</script>
   
   
   
@@ -3000,7 +3353,6 @@ window.handleWaitlistSubmit = async function() {
   
 </body>
 </html>
-
 
 
 
