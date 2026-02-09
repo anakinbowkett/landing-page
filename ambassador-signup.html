@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become an Ambassador - GMM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            height: 100vh;
+            display: flex;
+        }
+
+        .split-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Left Side - Blue */
+        .left-side {
+            flex: 1;
+            background: #1d7fe2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            color: white;
+        }
+
+        .left-content {
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 500;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+
+        /* Right Side - White */
+        .right-side {
+            flex: 1;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .form-box {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            border: 2px solid #e5e7eb;
+        }
+
+        .form-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            font-size: 0.9375rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-field {
+            width: 100%;
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: #111827;
+            font-size: 0.9375rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-field::placeholder {
+            color: #9ca3af;
+        }
+
+        .form-field:focus {
+            border-color: #1d7fe2;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(29, 127, 226, 0.1);
+        }
+
+        .form-field.error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .payout-info {
+            background: #1d7fe2;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #1d7fe2, #1e88f5);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 14px rgba(29,127,226,0.3);
+            transition: all 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(29,127,226,0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .split-container {
+                flex-direction: column;
+            }
+
+            .left-side {
+                padding: 2rem;
+                min-height: 40vh;
+            }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.25rem;
+            }
+
+            .right-side {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1.125rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="split-container">
+        <!-- Left Side - Blue -->
+        <div class="left-side">
+            <div class="left-content">
+                <h1 class="main-title">Earn while you learn</h1>
+                <p class="subtitle">with Montura's student ambassador programme</p>
+            </div>
+        </div>
+
+        <!-- Right Side - White -->
+        <div class="right-side">
+            <div class="form-container">
+                <div class="form-box">
+                    <h2 class="form-title">Start right away</h2>
+                    <p class="form-subtitle">Please fill out the form to complete your account</p>
+
+                    <form id="ambassadorForm">
+                        <div class="form-grid">
+                            <div class="form-row">
+                                <input type="text" id="firstName" class="form-field" placeholder="First name" required>
+                                <input type="text" id="lastName" class="form-field" placeholder="Last name" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <input type="text" id="tiktokUsername" class="form-field" placeholder="TikTok username" required>
+                                <input type="text" id="discordUsername" class="form-field" placeholder="Discord username" required>
+                            </div>
+
+                            <input type="text" id="country" class="form-field" placeholder="Country / Region" required>
+                        </div>
+
+                        <div class="payout-info">
+                            All payouts are done through PayPal
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="submitBtn">Continue</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('ambassadorForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const tiktok = document.getElementById('tiktokUsername').value.trim();
+            const discord = document.getElementById('discordUsername').value.trim();
+            const country = document.getElementById('country').value.trim();
+
+            // Clear previous errors
+            document.querySelectorAll('.form-field').forEach(field => {
+                field.classList.remove('error');
+            });
+
+            // Validate
+            if (!firstName || !lastName || !tiktok || !discord || !country) {
+                if (!firstName) document.getElementById('firstName').classList.add('error');
+                if (!lastName) document.getElementById('lastName').classList.add('error');
+                if (!tiktok) document.getElementById('tiktokUsername').classList.add('error');
+                if (!discord) document.getElementById('discordUsername').classList.add('error');
+                if (!country) document.getElementById('country').classList.add('error');
+                return;
+            }
+
+            // Disable button
+            btn.disabled = true;
+            btn.textContent = 'Creating account...';
+
+            try {
+                const response = await fetch('/api/ambassador-signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        firstName,
+                        lastName,
+                        tiktokUsername: tiktok.startsWith('@') ? tiktok : '@' + tiktok,
+                        discordUsername: discord,
+                        country
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    btn.textContent = 'Joined! ✓';
+                    btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    
+                    // Store ambassador data
+                    sessionStorage.setItem('ambassador_id', data.ambassadorId);
+                    sessionStorage.setItem('referral_code', data.referralCode);
+                    
+                    // Redirect to info page
+                    setTimeout(() => {
+                        window.location.href = 'ambassador-info.html';
+                    }, 1000);
+                } else {
+                    btn.disabled = false;
+                    btn.textContent = 'Continue';
+                    alert(data.error || 'Something went wrong. Please try again.');
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                btn.disabled = false;
+                btn.textContent = 'Continue';
+                alert('Network error. Please check your connection and try again.');
+            }
+        });
+    </script>
+</body>
+</html>
