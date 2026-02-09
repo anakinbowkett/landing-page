@@ -126,6 +126,27 @@ async function handleCheckoutCompleted(session) {
         throw error;
     }
 
+    // 🆕 AMBASSADOR LOGIC: Check if user was referred
+    const { data: userProfile } = await supabase
+        .from('user_profiles')
+        .select('referred_by_ambassador')
+        .eq('id', userId)
+        .single();
+
+    if (userProfile?.referred_by_ambassador) {
+        // Update referral status to active
+        await supabase
+            .from('referrals')
+            .update({ 
+                status: 'active',
+                stripe_customer_id: customerId,
+                first_payment_date: new Date().toISOString()
+            })
+            .eq('student_user_id', userId);
+
+        console.log(`Referral activated for ambassador: ${userProfile.referred_by_ambassador}`);
+    }
+
     console.log(`User ${userId} subscription activated with product type: ${productType}`);
 }
 
@@ -184,11 +205,67 @@ async function handleSubscriptionDeleted(subscription) {
         console.error('Error updating subscription:', error);
         throw error;
     }
+
+    // 🆕 AMBASSADOR LOGIC: Mark referral as cancelled
+    await supabase
+        .from('referrals')
+        .update({ status: 'cancelled' })
+        .eq('student_user_id', userId);
 }
 
 async function handlePaymentSucceeded(invoice) {
     console.log('Payment succeeded:', invoice.id);
-    // Additional logic if needed
+    
+    const customerId = invoice.customer;
+    const subscriptionId = invoice.subscription;
+
+    if (!subscriptionId) return;
+
+    // 🆕 AMBASSADOR COMMISSION LOGIC
+    // Find user by Stripe customer ID
+    const { data: userProfile } = await supabase
+        .from('user_profiles')
+        .select('id, referred_by_ambassador')
+        .eq('stripe_customer_id', customerId)
+        .single();
+
+    if (!userProfile || !userProfile.referred_by_ambassador) {
+        return;
+    }
+
+    // Get current billing month (format: YYYY-MM)
+    const billingMonth = new Date().toISOString().slice(0, 7);
+
+    // Check if commission already exists for this month
+    const { data: existingCommission } = await supabase
+        .from('monthly_commissions')
+        .select('id')
+        .eq('student_user_id', userProfile.id)
+        .eq('billing_month', billingMonth)
+        .single();
+
+    if (existingCommission) {
+        console.log('Commission already exists for this month');
+        return;
+    }
+
+    // Create new commission record (£2 per month)
+    const { error: commissionError } = await supabase
+        .from('monthly_commissions')
+        .insert({
+            student_user_id: userProfile.id,
+            ambassador_id: userProfile.referred_by_ambassador,
+            billing_month: billingMonth,
+            is_active: true,
+            commission_amount: 2.00,
+            stripe_subscription_id: subscriptionId
+        });
+
+    if (commissionError) {
+        console.error('Error creating commission:', commissionError);
+    } else {
+        console.log(`Commission created for user ${userProfile.id} - Month: ${billingMonth}`);
+    }
 }
 
 async function handlePaymentFailed(invoice) {
