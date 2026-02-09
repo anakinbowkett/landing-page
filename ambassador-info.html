@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Ambassador - GMM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+        }
+
+        .nav-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #9f7261;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 2rem;
+        }
+
+        .content-wrapper {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.125rem;
+            color: #6b7280;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .info-section {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .referral-code {
+            background: white;
+            border: 2px solid #1d7fe2;
+            border-radius: 12px;
+            padding: 1.25rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1d7fe2;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .copy-btn {
+            background: #1d7fe2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: #1565c0;
+        }
+
+        .discord-cta {
+            background: linear-gradient(135deg, #0a1e3d 0%, #1d7fe2 100%);
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(10, 30, 61, 0.2);
+            transition: all 0.3s;
+        }
+
+        .discord-cta:hover {
+            box-shadow: 0 6px 24px rgba(10, 30, 61, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .cta-content {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .logo-circle {
+            width: 56px;
+            height: 56px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .logo-circle img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+        }
+
+        .cta-text {
+            font-size: 1.125rem;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .arrow-btn {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9375rem;
+            white-space: nowrap;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .logo-img {
+                height: 40px;
+            }
+
+            .nav-title {
+                font-size: 1rem;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .welcome-subtitle {
+                font-size: 1rem;
+            }
+
+            .discord-cta {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .cta-content {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .cta-text {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="GMM Logo" class="logo-img">
+        <span class="nav-title">Ambassador Programme</span>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <h1 class="welcome-title">Welcome, Ambassador! 🎉</h1>
+            <p class="welcome-subtitle">You're now part of the Montura ambassador programme. Here's your unique referral code to start earning.</p>
+
+            <!-- Referral Code Section -->
+            <div class="info-section">
+                <h2 class="info-title">Your Referral Code</h2>
+                <div class="referral-code" id="referralCode">Loading...</div>
+                <button class="copy-btn" onclick="copyReferralCode()">Copy Code</button>
+            </div>
+
+            <!-- Discord CTA -->
+            <a href="https://discord.gg/gxmTRC3u" target="_blank" class="discord-cta" id="discordBtn">
+                <div class="cta-content">
+                    <div class="logo-circle">
+                        <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="GMM Logo">
+                    </div>
+                    <span class="cta-text">Join the Discord to begin</span>
+                </div>
+                <div class="arrow-btn">Join now →</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Load referral code from session storage
+        document.addEventListener('DOMContentLoaded', function() {
+            const referralCode = sessionStorage.getItem('referral_code');
+            const ambassadorId = sessionStorage.getItem('ambassador_id');
+
+            if (referralCode) {
+                document.getElementById('referralCode').textContent = referralCode;
+            } else {
+                // If no code in session, redirect back to signup
+                window.location.href = 'ambassador-signup.html';
+            }
+
+            // Track Discord button click
+            document.getElementById('discordBtn').addEventListener('click', function() {
+                // Store that they've joined Discord
+                sessionStorage.setItem('discord_joined', 'true');
+                
+                // After they join Discord, they can access dashboard
+                setTimeout(() => {
+                    // Redirect to dashboard after 2 seconds
+                    // window.location.href = 'ambassador-dashboard.html';
+                }, 2000);
+            });
+        });
+
+        function copyReferralCode() {
+            const code = document.getElementById('referralCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied! ✓';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#1d7fe2';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
