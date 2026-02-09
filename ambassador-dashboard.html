@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambassador Dashboard - GMM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: #f9fafb;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+        }
+
+        .nav-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #9f7261;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ambassador-name {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .logout-btn {
+            background: #f3f4f6;
+            color: #374151;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #e5e7eb;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            margin-bottom: 3rem;
+        }
+
+        .welcome-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 1rem;
+            color: #6b7280;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: #1d7fe2;
+            box-shadow: 0 4px 16px rgba(29, 127, 226, 0.1);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1;
+        }
+
+        .stat-currency {
+            color: #1d7fe2;
+        }
+
+        /* Referral Code Section */
+        .referral-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 2px solid #e5e7eb;
+            margin-bottom: 3rem;
+        }
+
+        .referral-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .referral-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .referral-content {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .referral-code-display {
+            flex: 1;
+            min-width: 200px;
+            background: #f9fafb;
+            border: 2px solid #1d7fe2;
+            border-radius: 12px;
+            padding: 1.25rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1d7fe2;
+            letter-spacing: 0.05em;
+            text-align: center;
+        }
+
+        .copy-btn {
+            background: #1d7fe2;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 1rem 2rem;
+            font-size: 0.9375rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            background: #1565c0;
+            transform: translateY(-2px);
+        }
+
+        /* Referrals Table */
+        .table-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 2px solid #e5e7eb;
+        }
+
+        .table-header {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f9fafb;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            color: #374151;
+            font-size: 0.9375rem;
+        }
+
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #9ca3af;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-left {
+                gap: 1rem;
+            }
+
+            .logo-img {
+                height: 40px;
+            }
+
+            .nav-title {
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .welcome-title {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .referral-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .referral-content {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .referral-code-display {
+                width: 100%;
+            }
+
+            .copy-btn {
+                width: 100%;
+            }
+
+            .ambassador-name {
+                display: none;
+            }
+
+            table {
+                font-size: 0.875rem;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="GMM Logo" class="logo-img">
+            <span class="nav-title">Ambassador Programme</span>
+        </div>
+        <div class="nav-right">
+            <span class="ambassador-name" id="ambassadorName">Loading...</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome back, <span id="welcomeName">Ambassador</span>! 👋</h1>
+            <p class="welcome-subtitle">Here's your performance overview</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Leads Acquired</div>
+                <div class="stat-value" id="totalLeads">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Your Payout Value</div>
+                <div class="stat-value"><span class="stat-currency">£</span><span id="totalPayout">0.00</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Subscriptions</div>
+                <div class="stat-value" id="activeSubscriptions">0</div>
+            </div>
+        </div>
+
+        <!-- Referral Code Section -->
+        <div class="referral-section">
+            <div class="referral-header">
+                <h2 class="referral-title">Your Referral Code</h2>
+            </div>
+            <div class="referral-content">
+                <div class="referral-code-display" id="referralCodeDisplay">Loading...</div>
+                <button class="copy-btn" onclick="copyReferralCode()">Copy Code</button>
+            </div>
+        </div>
+
+        <!-- Referrals Table -->
+        <div class="table-section">
+            <h2 class="table-header">Your Referrals</h2>
+            <div class="table-wrapper" id="tableContainer">
+                <div class="loading">Loading referrals...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAmbassadorId = null;
+        let currentReferralCode = null;
+
+        async function loadDashboardData() {
+            try {
+                // Get ambassador ID from session storage or URL
+                const ambassadorId = sessionStorage.getItem('ambassador_id');
+                
+                if (!ambassadorId) {
+                    // Redirect to signup if no ID
+                    window.location.href = 'ambassador-signup.html';
+                    return;
+                }
+
+                currentAmbassadorId = ambassadorId;
+
+                // Fetch ambassador data
+                const response = await fetch(`/api/ambassador-dashboard?id=${ambassadorId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Update UI with data
+                    document.getElementById('ambassadorName').textContent = data.firstName + ' ' + data.lastName;
+                    document.getElementById('welcomeName').textContent = data.firstName;
+                    document.getElementById('referralCodeDisplay').textContent = data.referralCode;
+                    document.getElementById('totalLeads').textContent = data.totalLeads;
+                    document.getElementById('totalPayout').textContent = data.totalPayout.toFixed(2);
+                    document.getElementById('activeSubscriptions').textContent = data.activeSubscriptions;
+
+                    currentReferralCode = data.referralCode;
+
+                    // Load referrals table
+                    loadReferralsTable(data.referrals);
+                } else {
+                    console.error('Failed to load dashboard data');
+                    alert('Failed to load dashboard. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                alert('Network error. Please check your connection.');
+            }
+        }
+
+        function loadReferralsTable(referrals) {
+            const tableContainer = document.getElementById('tableContainer');
+
+            if (!referrals || referrals.length === 0) {
+                tableContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No referrals yet. Share your referral code to start earning!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student Email</th>
+                            <th>Signup Date</th>
+                            <th>Status</th>
+                            <th>First Payment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${referrals.map(ref => `
+                            <tr>
+                                <td>${ref.student_email}</td>
+                                <td>${new Date(ref.signup_date).toLocaleDateString()}</td>
+                                <td>
+                                    <span class="status-badge status-${ref.status}">
+                                        ${ref.status}
+                                    </span>
+                                </td>
+                                <td>${ref.first_payment_date ? new Date(ref.first_payment_date).toLocaleDateString() : 'Pending'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            tableContainer.innerHTML = tableHTML;
+        }
+
+        function copyReferralCode() {
+            if (!currentReferralCode) return;
+
+            navigator.clipboard.writeText(currentReferralCode).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied! ✓';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#1d7fe2';
+                }, 2000);
+            });
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadDashboardData);
+
+        // Refresh data every 30 seconds
+        setInterval(loadDashboardData, 30000);
+    </script>
+</body>
+</html>
