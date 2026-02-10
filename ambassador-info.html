@@ -260,15 +260,15 @@
             }
 
             // Track Discord button click
-            document.getElementById('discordBtn').addEventListener('click', function() {
+            document.getElementById('discordBtn').addEventListener('click', function(e) {
                 // Store that they've joined Discord
                 sessionStorage.setItem('discord_joined', 'true');
                 
-                // After they join Discord, they can access dashboard
+                // Don't prevent default - let Discord link open
+                // But after 3 seconds, redirect to dashboard
                 setTimeout(() => {
-                    // Redirect to dashboard after 2 seconds
-                    // window.location.href = 'ambassador-dashboard.html';
-                }, 2000);
+                    window.location.href = 'ambassador-dashboard.html';
+                }, 3000);
             });
         });
 
