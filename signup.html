@@ -464,6 +464,33 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
             }
         });
 
+// Check for referral code in URL or localStorage
+const urlParams = new URLSearchParams(window.location.search);
+const referralCode = urlParams.get('ref') || localStorage.getItem('referral_code');
+
+if (referralCode && data.user) {
+  // Track the referral
+  try {
+    await fetch('/api/track-referral', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: data.user.id,
+        email: email,
+        referralCode: referralCode
+      })
+    });
+    
+    // Clear the stored referral code
+    localStorage.removeItem('referral_code');
+  } catch (error) {
+    console.error('Error tracking referral:', error);
+  }
+}
+
+
+
+        
         if (error) throw error;
 
         // Check if email confirmation is required
