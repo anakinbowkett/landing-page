@@ -52,18 +52,23 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Could not generate unique referral code' });
     }
 
-    // Insert ambassador into database
+// Insert ambassador into database
     const { data: ambassador, error } = await supabase
       .from('ambassadors')
       .insert({
         first_name: firstName,
         last_name: lastName,
+        email: '', // Empty string for now - we'll add email collection later
         tiktok_username: tiktokUsername,
         discord_username: discordUsername,
-        country: country,
+        country_region: country,
         referral_code: referralCode,
-        total_leads: 0,
-        total_payout: 0.00
+        leads_acquired: 0,
+        total_payout: 0.00,
+        payout_method: 'PayPal',
+        paypal_email: '', // Empty for now
+        is_senior: false,
+        status: 'active'
       })
       .select()
       .single();
