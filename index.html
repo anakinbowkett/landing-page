@@ -3346,11 +3346,23 @@ window.handleWaitlistSubmit = async function() {
     updateParallax();
 })();
 </script>
+
+<!-- 🆕 ADD THIS NEW SCRIPT HERE -->
+<script>
+// Capture referral code from URL and store in localStorage
+(function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const referralCode = urlParams.get('ref');
   
-  
-  
-  
-  
+  if (referralCode) {
+    // Store referral code in localStorage for 30 days
+    localStorage.setItem('referral_code', referralCode);
+    console.log('Referral code captured:', referralCode);
+  }
+})();
+</script>
+<!-- 🆕 END OF NEW SCRIPT -->
+      
 </body>
 </html>
 
