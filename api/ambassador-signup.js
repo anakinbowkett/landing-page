@@ -19,10 +19,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { firstName, lastName, tiktokUsername, discordUsername, country } = req.body;
+const { firstName, lastName, email, tiktokUsername, discordUsername, country } = req.body;
 
   // Validate required fields
-  if (!firstName || !lastName || !tiktokUsername || !discordUsername || !country) {
+if (!firstName || !lastName || !email || !tiktokUsername || !discordUsername || !country) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
@@ -58,7 +58,7 @@ export default async function handler(req, res) {
       .insert({
         first_name: firstName,
         last_name: lastName,
-        email: '', // Empty string for now - we'll add email collection later
+        email: email,
         tiktok_username: tiktokUsername,
         discord_username: discordUsername,
         country_region: country,
