@@ -230,11 +230,13 @@
                     <p class="form-subtitle">Please fill out the form to complete your account</p>
 
                     <form id="ambassadorForm">
-                        <div class="form-grid">
+<div class="form-grid">
                             <div class="form-row">
                                 <input type="text" id="firstName" class="form-field" placeholder="First name" required>
                                 <input type="text" id="lastName" class="form-field" placeholder="Last name" required>
                             </div>
+                            
+                            <input type="email" id="email" class="form-field" placeholder="Email address" required>
                             
                             <div class="form-row">
                                 <input type="text" id="tiktokUsername" class="form-field" placeholder="TikTok username" required>
@@ -248,8 +250,12 @@
                             All payouts are done through PayPal
                         </div>
 
-                        <button type="submit" class="submit-btn" id="submitBtn">Continue</button>
+<button type="submit" class="submit-btn" id="submitBtn">Continue</button>
                     </form>
+
+                    <div style="text-align: center; margin-top: 1.5rem; font-size: 0.9375rem; color: #6b7280;">
+                        Already have an account? <a href="ambassador-login.html" style="color: #1d7fe2; text-decoration: none; font-weight: 600;">Login</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -260,8 +266,9 @@
             e.preventDefault();
             
             const btn = document.getElementById('submitBtn');
-            const firstName = document.getElementById('firstName').value.trim();
+const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
             const tiktok = document.getElementById('tiktokUsername').value.trim();
             const discord = document.getElementById('discordUsername').value.trim();
             const country = document.getElementById('country').value.trim();
@@ -272,9 +279,10 @@
             });
 
             // Validate
-            if (!firstName || !lastName || !tiktok || !discord || !country) {
+            if (!firstName || !lastName || !email || !tiktok || !discord || !country) {
                 if (!firstName) document.getElementById('firstName').classList.add('error');
                 if (!lastName) document.getElementById('lastName').classList.add('error');
+                if (!email) document.getElementById('email').classList.add('error');
                 if (!tiktok) document.getElementById('tiktokUsername').classList.add('error');
                 if (!discord) document.getElementById('discordUsername').classList.add('error');
                 if (!country) document.getElementById('country').classList.add('error');
@@ -286,12 +294,13 @@
             btn.textContent = 'Creating account...';
 
             try {
-                const response = await fetch('/api/ambassador-signup', {
+const response = await fetch('/api/ambassador-signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         firstName,
                         lastName,
+                        email,
                         tiktokUsername: tiktok.startsWith('@') ? tiktok : '@' + tiktok,
                         discordUsername: discord,
                         country
