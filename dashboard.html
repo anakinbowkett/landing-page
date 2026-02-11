@@ -1841,10 +1841,18 @@ function createSubjectCard(subject) {
         if (isLocked) {
             showPaywall();
         } else {
-            // Build dynamic URL based on exam board and tier
-const examBoard = subject.exam_board.toLowerCase(); // "aqa", "edexcel", "ocr", "wjec"
-const tierLetter = subject.tier ? subject.tier.toLowerCase().charAt(0) : 'f'; // "f" or "h"
-window.location.href = `lectures/${examBoard}-${tierLetter}-tier/lectures.html`;
+            // Build dynamic URL based on exam board and subject
+const examBoard = subject.exam_board.toLowerCase(); // "aqa", "edexcel", "ocr"
+const subjectSlug = subject.subject_name.toLowerCase().replace(/\s+/g, '-').replace(/[()]/g, '');
+
+// For subjects with tiers (Maths, Science)
+if (subject.tier) {
+    const tierLetter = subject.tier.toLowerCase().charAt(0); // "f" or "h"
+    window.location.href = `lectures/${examBoard}-${subjectSlug}-${tierLetter}-tier/lectures.html`;
+} else {
+    // For subjects without tiers (English Lit, English Lang, History, etc.)
+    window.location.href = `lectures/${examBoard}-${subjectSlug}/lectures.html`;
+}
         }
     });
 
