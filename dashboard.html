@@ -1838,23 +1838,26 @@ function createSubjectCard(subject) {
     `;
     
     subjectBox.addEventListener('click', () => {
-        if (isLocked) {
-            showPaywall();
+    if (isLocked) {
+        showPaywall();
+    } else {
+        // Map subjects to their correct folder names
+        const subjectRoutes = {
+            'Mathematics': 'aqa-f-tier',
+            'English Literature': 'aqa-english-literature',
+            'English Language': 'aqa-english-language',
+            // Add more subjects as you create them
+        };
+        
+        const route = subjectRoutes[subject.subject_name];
+        
+        if (route) {
+            window.location.href = `lectures/${route}/lectures.html`;
         } else {
-            // Build dynamic URL based on exam board and subject
-const examBoard = subject.exam_board.toLowerCase(); // "aqa", "edexcel", "ocr"
-const subjectSlug = subject.subject_name.toLowerCase().replace(/\s+/g, '-').replace(/[()]/g, '');
-
-// For subjects with tiers (Maths, Science)
-if (subject.tier) {
-    const tierLetter = subject.tier.toLowerCase().charAt(0); // "f" or "h"
-    window.location.href = `lectures/${examBoard}-${subjectSlug}-${tierLetter}-tier/lectures.html`;
-} else {
-    // For subjects without tiers (English Lit, English Lang, History, etc.)
-    window.location.href = `lectures/${examBoard}-${subjectSlug}/lectures.html`;
-}
+            alert(`Page for ${subject.subject_name} is not yet available`);
         }
-    });
+    }
+});
 
     if (isLocked) {
         subjectBox.style.opacity = '0.6';
