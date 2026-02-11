@@ -1,1 +1,767 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQA English Literature - Lectures</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;  
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: transparent;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+            margin: 20px;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 2.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.875rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: #374151;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-item.active {
+            background: #ffffff;
+            color: #111827;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.125rem;
+        }
+
+        .nav-spacer {
+            flex: 1;
+        }
+
+        .live-study-btn {
+            background: #000000;
+            color: white;
+            padding: 0.875rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .live-study-btn:hover {
+            background: #1a1a1a;
+            transform: translateY(-1px);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 320px;
+            margin-right: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e0e4e9;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+       .content-wrapper {
+            background: #97b6e5;
+            padding: 8rem 0 0 0;
+        }
+
+        .subject-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .subject-line-left {
+            height: 1px;
+            background: #d1d5db;
+            flex: 0 0 60px;
+        }
+
+        .subject-name {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #111827;
+            padding: 0 2rem;
+            letter-spacing: -0.03em;
+        }
+
+        .subject-line-right {
+            height: 1px;
+            background: #d1d5db;
+            flex: 1;
+        }
+
+        .topics-section {
+            background: transparent;
+            padding: 0 3rem 2.5rem 3rem;
+        }
+      
+        .topics-container {
+            padding: 2rem;
+            background: transparent;
+        }
+
+        .unit-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        /* Accordion Styles */
+        .accordion-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            overflow: visible;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .accordion-header {
+            padding: 28px 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            min-height: 70px;
+            background: transparent;
+            border: none;
+        }
+
+        .accordion-header:hover {
+            opacity: 0.85;
+        }
+
+        .accordion-header h3 {
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+        }
+ 
+        .accordion-icon {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+            color: #ffffff;
+        }
+
+        .accordion-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0;
+        }
+
+        .accordion-body.open {
+            max-height: 2000px;
+            padding-bottom: 32px;
+        }
+
+        .accordion-content {
+            padding: 0;
+            background: transparent;
+        }
+      
+        .topic-grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 0;
+            background: transparent;
+        }
+
+        .topic-item {
+            background: #34495e;
+            border: none;
+            border-radius: 10px;
+            padding: 22px 26px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .topic-item:hover {
+            background: #3d5a6f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .topic-item:active {
+            transform: translateY(0);
+        }
+
+        .topic-item-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .topic-item-number {
+            font-size: 14px;
+            font-weight: 600;
+            color: #8b9eb3;
+            flex-shrink: 0;
+            min-width: 24px;
+            letter-spacing: -0.01em;
+        }
+
+        .topic-item-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #ffffff;
+            line-height: 1.5;
+            flex: 1;
+            letter-spacing: -0.01em;
+        }
+
+        .topic-item-progress {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .topic-item-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+        }
+
+        /* Topic Cards */
+        .topics-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 40px;
+            width: 100%;
+            max-width: 900px;
+        }
+ 
+        .topic-card {
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 12px;
+            padding: 0;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+            display: flex;
+            align-items: stretch;
+            min-height: 80px;
+            overflow: hidden;
+        }
+
+        .topic-card:hover {
+            border-color: #a0a0a0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .topic-card-left {
+            flex: 1;
+            padding: 24px 28px;
+            display: flex;
+            align-items: center;
+        }
+
+        .topic-title {
+            font-size: 26px;
+            font-weight: 600;
+            color: #000000;
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .topic-number {
+            font-size: 26px;
+            font-weight: 600;
+            color: #999;
+            letter-spacing: -0.02em;
+        }
+
+        .topic-card-divider {
+            width: 1px;
+            background: #e5e5e5;
+            align-self: stretch;
+        }
+
+        .topic-card-right {
+            width: 280px;
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+            background: url('https://i.postimg.cc/4dTzWKKR/Maths-(2).png') center/cover no-repeat;
+            position: relative;
+        }
+
+        .topic-progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e5e5e7;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .topic-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+            transition: width 0.4s ease;
+            border-radius: 10px;
+        } 
+
+        .topic-progress-text {
+            font-size: 13px;
+            color: #000000;
+            font-weight: 600;
+            background: #ffffff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            align-self: flex-start;
+        }
+
+        .topic-expanded-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #97b6e5;
+            border-radius: 0 0 12px 12px;
+            margin-bottom: 20px;
+        }
+
+        .topic-expanded-content.open {
+            max-height: 3000px;
+            padding: 32px 40px 40px 40px;
+        }
+
+        .topic-card.expanded {
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            margin-bottom: 0;
+        }
+
+        .topic-card.expanded .topic-card-right {
+            border-radius: 0;
+        }
+
+        @media (max-width: 768px) {
+            .accordion-header h3 {
+                font-size: 16px;
+                white-space: normal;
+                line-height: 1.4;
+            }
+
+            .sidebar {
+                width: 240px;
+                margin: 15px;
+                height: calc(100vh - 30px);
+            }
+
+            .main-content {
+                flex: 1;
+                margin-left: 320px;
+                margin-right: 20px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+
+            .subject-name {
+                font-size: 2rem;
+                padding: 0 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="logo">GCSE Mastery</div>
+        
+        <a href="../../dashboard.html" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="lectures.html" class="nav-item active">
+            <span class="nav-icon">∞</span>
+            <span>Lectures</span>
+        </a>
+
+        <a href="flashtiles.html" class="nav-item">
+            <span class="nav-icon">⚡</span>
+            <span>Flashtiles</span>
+        </a>
+
+        <a href="quick-test.html" class="nav-item">
+            <span class="nav-icon">🕐</span>
+            <span>Quiz / Quick Test</span>
+        </a>
+
+        <a href="past-papers.html" class="nav-item">
+            <span class="nav-icon">📄</span>
+            <span>Past Papers</span>
+        </a>
+
+        <div class="nav-spacer"></div>
+
+        <button class="live-study-btn">Allow Live Study</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="subject-header">
+                <div class="subject-line-left"></div>
+                <h1 class="subject-name">English Literature</h1>
+                <div class="subject-line-right"></div>
+            </div>
+        </div>
+
+        <section class="topics-section">
+            <div class="topics-grid">
+                <div class="topic-card" data-topic="1" data-title="Poetry Anthology">
+                    <div class="topic-card-left">
+                        <div class="topic-title">
+                            <span class="topic-number">1</span>
+                            <span>Poetry Anthology</span>
+                        </div>
+                    </div>
+                    <div class="topic-card-divider"></div>
+                    <div class="topic-card-right">
+                        <div class="topic-progress-bar">
+                            <div class="topic-progress-fill" style="width: 0%" data-topic-progress="1"></div>
+                        </div>
+                        <div class="topic-progress-text">0/15 complete</div>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="2" data-title="Shakespeare">
+                    <div class="topic-card-left">
+                        <div class="topic-title">
+                            <span class="topic-number">2</span>
+                            <span>Shakespeare</span>
+                        </div>
+                    </div>
+                    <div class="topic-card-divider"></div>
+                    <div class="topic-card-right">
+                        <div class="topic-progress-bar">
+                            <div class="topic-progress-fill" style="width: 0%" data-topic-progress="2"></div>
+                        </div>
+                        <div class="topic-progress-text">0/1 complete</div>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="3" data-title="19th Century Novel">
+                    <div class="topic-card-left">
+                        <div class="topic-title">
+                            <span class="topic-number">3</span>
+                            <span>19th Century Novel</span>
+                        </div>
+                    </div>
+                    <div class="topic-card-divider"></div>
+                    <div class="topic-card-right">
+                        <div class="topic-progress-bar">
+                            <div class="topic-progress-fill" style="width: 0%" data-topic-progress="3"></div>
+                        </div>
+                        <div class="topic-progress-text">0/1 complete</div>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="4" data-title="Modern Text">
+                    <div class="topic-card-left">
+                        <div class="topic-title">
+                            <span class="topic-number">4</span>
+                            <span>Modern Text</span>
+                        </div>
+                    </div>
+                    <div class="topic-card-divider"></div>
+                    <div class="topic-card-right">
+                        <div class="topic-progress-bar">
+                            <div class="topic-progress-fill" style="width: 0%" data-topic-progress="4"></div>
+                        </div>
+                        <div class="topic-progress-text">0/1 complete</div>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="5" data-title="Unseen Poetry">
+                    <div class="topic-card-left">
+                        <div class="topic-title">
+                            <span class="topic-number">5</span>
+                            <span>Unseen Poetry</span>
+                        </div>
+                    </div>
+                    <div class="topic-card-divider"></div>
+                    <div class="topic-card-right">
+                        <div class="topic-progress-bar">
+                            <div class="topic-progress-fill" style="width: 0%" data-topic-progress="5"></div>
+                        </div>
+                        <div class="topic-progress-text">0/8 complete</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const topicData = {
+        1: {
+            title: "Poetry Anthology", 
+            sections: [
+                { number: "1", title: "Ozymandias - Percy Bysshe Shelley", content: "", progress: 0 },
+                { number: "2", title: "London - William Blake", content: "", progress: 0 },
+                { number: "3", title: "The Prelude - William Wordsworth", content: "", progress: 0 },
+                { number: "4", title: "My Last Duchess - Robert Browning", content: "", progress: 0 },
+                { number: "5", title: "The Charge of the Light Brigade - Alfred Lord Tennyson", content: "", progress: 0 },
+                { number: "6", title: "Exposure - Wilfred Owen", content: "", progress: 0 },
+                { number: "7", title: "Storm on the Island - Seamus Heaney", content: "", progress: 0 },
+                { number: "8", title: "Bayonet Charge - Ted Hughes", content: "", progress: 0 },
+                { number: "9", title: "Remains - Simon Armitage", content: "", progress: 0 },
+                { number: "10", title: "Poppies - Jane Weir", content: "", progress: 0 },
+                { number: "11", title: "War Photographer - Carol Ann Duffy", content: "", progress: 0 },
+                { number: "12", title: "Tissue - Imtiaz Dharker", content: "", progress: 0 },
+                { number: "13", title: "The Emigrée - Carol Rumens", content: "", progress: 0 },
+                { number: "14", title: "Checking Out Me History - John Agard", content: "", progress: 0 },
+                { number: "15", title: "Kamikaze - Beatrice Garland", content: "", progress: 0 }
+            ]
+        },
+        2: { 
+            title: "Shakespeare", 
+            sections: [
+                { number: "1", title: "Macbeth (or your set play)", content: "", progress: 0 }
+            ]
+        },
+        3: { 
+            title: "19th Century Novel", 
+            sections: [
+                { number: "1", title: "A Christmas Carol / Jekyll and Hyde / Pride and Prejudice / etc.", content: "", progress: 0 }
+            ]
+        },
+        4: { 
+            title: "Modern Text", 
+            sections: [
+                { number: "1", title: "An Inspector Calls / Animal Farm / Lord of the Flies / etc.", content: "", progress: 0 }
+            ]
+        },
+        5: { 
+            title: "Unseen Poetry", 
+            sections: [
+                { number: "1", title: "How to Approach Unseen Poetry", content: "", progress: 0 },
+                { number: "2", title: "Identifying Form and Structure", content: "", progress: 0 },
+                { number: "3", title: "Analysing Language and Imagery", content: "", progress: 0 },
+                { number: "4", title: "Understanding Tone and Mood", content: "", progress: 0 },
+                { number: "5", title: "Contextual Understanding", content: "", progress: 0 },
+                { number: "6", title: "Comparing Two Poems", content: "", progress: 0 },
+                { number: "7", title: "Writing Effective Responses", content: "", progress: 0 },
+                { number: "8", title: "Practice Unseen Poems", content: "", progress: 0 }
+            ]
+        }
+    };
+
+    // Topic card click handlers
+    document.querySelectorAll('.topic-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const topicNum = this.dataset.topic;
+            
+            let expandedContent = this.nextElementSibling;
+            
+            document.querySelectorAll('.topic-expanded-content').forEach(content => {
+                if (content !== expandedContent) {
+                    content.classList.remove('open');
+                    content.previousElementSibling.classList.remove('expanded');
+                    setTimeout(() => {
+                        if (!content.classList.contains('open')) {
+                            content.remove();
+                        }
+                    }, 400);
+                }
+            });
+
+            if (expandedContent && expandedContent.classList.contains('topic-expanded-content')) {
+                expandedContent.classList.toggle('open');
+                this.classList.toggle('expanded');
+                
+                if (!expandedContent.classList.contains('open')) {
+                    setTimeout(() => {
+                        if (!expandedContent.classList.contains('open')) {
+                            expandedContent.remove();
+                        }
+                    }, 400);
+                }
+            } else {
+                createExpandedContent(topicNum, this);
+            }
+        });
+    });
+
+    function createExpandedContent(topicNum, cardElement) {
+        const data = topicData[topicNum];
+        let accordionHTML = '';
+
+        const itemsPerAccordion = 8;
+        const numAccordions = Math.ceil(data.sections.length / itemsPerAccordion);
+
+        for (let i = 0; i < numAccordions; i++) {
+            const startIdx = i * itemsPerAccordion;
+            const endIdx = Math.min(startIdx + itemsPerAccordion, data.sections.length);
+            const sectionsInAccordion = data.sections.slice(startIdx, endIdx);
+            
+            const rangeStart = sectionsInAccordion[0].number;
+            const rangeEnd = sectionsInAccordion[sectionsInAccordion.length - 1].number;
+            const accordionTitle = data.sections.length === 1 ? data.title : `Topics ${rangeStart}–${rangeEnd}`;
+
+            let gridHTML = '<div class="topic-grid-container">';
+            
+            sectionsInAccordion.forEach(section => {
+                gridHTML += `
+                    <div class="topic-item" data-topic-id="${section.number}">
+                        <div class="topic-item-header">
+                            <span class="topic-item-number">${section.number}</span>
+                            <span class="topic-item-title">${section.title}</span>
+                        </div>
+                        <div class="topic-item-progress">
+                            <div class="topic-item-progress-fill" style="width: ${section.progress}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            gridHTML += '</div>';
+
+            accordionHTML += `
+                <div class="accordion-item">
+                    <div class="accordion-header" data-index="${i}">
+                        <h3>${accordionTitle}</h3>
+                        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="accordion-content">
+                            ${gridHTML}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        const expandedDiv = document.createElement('div');
+        expandedDiv.className = 'topic-expanded-content';
+        expandedDiv.innerHTML = accordionHTML;
+
+        cardElement.parentNode.insertBefore(expandedDiv, cardElement.nextSibling);
+        cardElement.classList.add('expanded');
+
+        setTimeout(() => {
+            expandedDiv.classList.add('open');
+            
+            setTimeout(() => {
+                const firstAccordion = expandedDiv.querySelector('.accordion-header');
+                const firstBody = expandedDiv.querySelector('.accordion-body');
+                const firstIcon = expandedDiv.querySelector('.accordion-icon');
+                if (firstAccordion && firstBody && firstIcon) {
+                    firstBody.classList.add('open');
+                    firstIcon.classList.add('rotated');
+                }
+            }, 200);
+        }, 50);
+
+        expandedDiv.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const body = this.nextElementSibling;
+                const icon = this.querySelector('.accordion-icon');
+                body.classList.toggle('open');
+                icon.classList.toggle('rotated');
+            });
+        });
+
+        expandedDiv.querySelectorAll('.topic-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const topicId = this.dataset.topicId;
+                alert(`Lecture ${topicId} will be available soon!`);
+            });
+        });
+    }
+});
+</script>
+</body>
+</html>
