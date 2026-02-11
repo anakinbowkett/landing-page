@@ -8,14 +8,31 @@ const supabase = createClient(
     process.env.SUPABASE_SERVICE_KEY
 );
 
+// SECURE: Only allow your domains
+const ALLOWED_ORIGINS = [
+  'https://www.monturalearn.co.uk',
+  'https://monturalearn.co.uk',
+  /^https:\/\/.*-anakins-projects-5f9470f9\.vercel\.app$/
+];
+
 export default async function handler(req, res) {
     // Only allow POST requests
-    if (req.method !== 'POST') {
+    if (req.method !== 'POST' && req.method !== 'OPTIONS') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
     
-    // Enable CORS
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    // SECURE ORIGIN CHECK
+    const origin = req.headers.origin;
+    const isAllowed = ALLOWED_ORIGINS.some(allowed => 
+      typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
+    );
+    
+    if (!isAllowed) {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+    
+    // Set CORS headers for allowed origin only
+    res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     
