@@ -2417,6 +2417,10 @@ async function submitWriting1() {
   linesContainer.appendChild(scanOverlay);
   
   try {
+    console.log('=== SUBMITTING FOR MARKING ===');
+    console.log('Student text:', studentText);
+    console.log('Line data:', allLineData);
+    
     // Call AI marking API
     const response = await fetch('/api/mark-writing', {
       method: 'POST',
@@ -2435,6 +2439,10 @@ async function submitWriting1() {
     });
     
     const result = await response.json();
+    console.log('=== MARKING RESULT ===');
+    console.log('Marks awarded:', result.marksAwarded);
+    console.log('Highlights:', result.highlights);
+    console.log('Annotations:', result.annotations);
     
     // Wait for scan animation to complete
     await new Promise(resolve => setTimeout(resolve, 3000));
@@ -2461,7 +2469,7 @@ async function submitWriting1() {
     submitBtn.onclick = resetWriting1;
     submitBtn.disabled = false;
     
-} catch (error) {
+  } catch (error) {
     console.error('Marking error:', error);
     alert('Error during marking. Please try again.');
     submitBtn.disabled = false;
@@ -2636,9 +2644,6 @@ function resetWriting1() {
   submitBtn.onclick = submitWriting1;
   if (addPageBtn) addPageBtn.disabled = false;
   
-  // Reset progress
-  resetProgressSegment(1);
-}  
 
 
 
