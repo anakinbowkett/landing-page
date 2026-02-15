@@ -2461,7 +2461,7 @@ async function submitWriting1() {
     submitBtn.onclick = resetWriting1;
     submitBtn.disabled = false;
     
-  } catch (error) {
+} catch (error) {
     console.error('Marking error:', error);
     alert('Error during marking. Please try again.');
     submitBtn.disabled = false;
@@ -2472,10 +2472,6 @@ async function submitWriting1() {
     });
     scanOverlay.remove();
   }
-}
-  
-  // Reset progress
-  resetProgressSegment(1);
 }
   
   
