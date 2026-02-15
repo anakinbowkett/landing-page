@@ -2353,6 +2353,68 @@ function resetQuestion6() {
 // ENGLISH LITERATURE MARKING SYSTEM
 // ============================================
 
+  
+ function resetWriting1() {
+  const container = document.getElementById('question-box-1');
+  const linesContainer = document.getElementById('writing-lines-1');
+  const lines = linesContainer.querySelectorAll('.writing-line');
+  const submitBtn = document.getElementById('submit-button-1');
+  const markCounter = document.getElementById('mark-counter-1');
+  const addPageBtn = document.getElementById('add-page-btn-1');
+  
+  // Remove all annotations from main page
+  const annotations = linesContainer.querySelectorAll('.ai-annotation');
+  annotations.forEach(ann => ann.remove());
+  
+  // Also check additional pages
+  const additionalPages = document.querySelectorAll('#additional-pages-1 .writing-page');
+  additionalPages.forEach(page => {
+    const pageAnnotations = page.querySelectorAll('.ai-annotation');
+    pageAnnotations.forEach(ann => ann.remove());
+  });
+  
+  // Reset main page lines
+  lines.forEach(line => {
+    line.innerHTML = '';
+    line.contentEditable = true;
+  });
+  
+  // Reset additional page lines
+  additionalPages.forEach(page => {
+    const pageLines = page.querySelectorAll('.writing-line');
+    pageLines.forEach(line => {
+      line.innerHTML = '';
+      line.contentEditable = true;
+    });
+  });
+  
+  // Remove all additional pages
+  const additionalPagesContainer = document.getElementById('additional-pages-1');
+  if (additionalPagesContainer) {
+    additionalPagesContainer.innerHTML = '';
+  }
+  
+  // Reset page counter
+  pageCounters[1] = 1;
+  
+  // Reset counter
+  markCounter.textContent = '0/8';
+  markCounter.classList.remove('correct', 'incorrect');
+  
+  // Reset container
+  container.classList.remove('correct', 'incorrect-selection', 'marked');
+  
+  // Reset buttons
+  submitBtn.textContent = 'Submit for Marking';
+  submitBtn.onclick = submitWriting1;
+  if (addPageBtn) addPageBtn.disabled = false; 
+  
+  // Reset progress
+  resetProgressSegment(1);
+}
+  
+  
+  
 async function submitWriting1() {
   const container = document.getElementById('question-box-1');
   const linesContainer = document.getElementById('writing-lines-1');
@@ -2589,60 +2651,6 @@ function escapeHtml(text) {
   return div.innerHTML;
 } 
   
-function resetWriting1() {
-  const container = document.getElementById('question-box-1');
-  const linesContainer = document.getElementById('writing-lines-1');
-  const lines = linesContainer.querySelectorAll('.writing-line');
-  const submitBtn = document.getElementById('submit-button-1');
-  const markCounter = document.getElementById('mark-counter-1');
-  const addPageBtn = document.getElementById('add-page-btn-1');
-  
-  // Remove all annotations from main page
-  const annotations = linesContainer.querySelectorAll('.ai-annotation');
-  annotations.forEach(ann => ann.remove());
-  
-  // Also check additional pages
-  const additionalPages = document.querySelectorAll('#additional-pages-1 .writing-page');
-  additionalPages.forEach(page => {
-    const pageAnnotations = page.querySelectorAll('.ai-annotation');
-    pageAnnotations.forEach(ann => ann.remove());
-  });
-  
-  // Reset main page lines
-  lines.forEach(line => {
-    line.innerHTML = '';
-    line.contentEditable = true;
-  });
-  
-  // Reset additional page lines
-  additionalPages.forEach(page => {
-    const pageLines = page.querySelectorAll('.writing-line');
-    pageLines.forEach(line => {
-      line.innerHTML = '';
-      line.contentEditable = true;
-    });
-  });
-  
-  // Remove all additional pages
-  const additionalPagesContainer = document.getElementById('additional-pages-1');
-  if (additionalPagesContainer) {
-    additionalPagesContainer.innerHTML = '';
-  }
-  
-  // Reset page counter
-  pageCounters[1] = 1;
-  
-  // Reset counter
-  markCounter.textContent = '0/8';
-  markCounter.classList.remove('correct', 'incorrect');
-  
-  // Reset container
-  container.classList.remove('correct', 'incorrect-selection', 'marked');
-  
-  // Reset buttons
-  submitBtn.textContent = 'Submit for Marking';
-  submitBtn.onclick = submitWriting1;
-  if (addPageBtn) addPageBtn.disabled = false;
   
 
 
