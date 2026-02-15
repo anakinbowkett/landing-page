@@ -1211,10 +1211,16 @@ function buildShakespearePanel(subj) {
                         <div class="lec-blocks">${blocks}</div>
                         <span class="lec-sub-arrow">→</span>
                     </div>`;
-                row.addEventListener('click', e => {
-                    e.stopPropagation();
-                    alert(`${subj.plays[activePlay]}\nPillar ${pillar.number}: ${pillar.title}\nLecture ${li+1}: ${name}\n\nComing soon!`);
-                });
+               row.addEventListener('click', e => {
+    e.stopPropagation();
+    
+    // Create unique lecture ID
+    const playSlug = subj.plays[activePlay].toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const lectureUrl = `lectures/${playSlug}-pillar${pillar.number}-lecture${li + 1}.html`;
+    
+    // Navigate to lecture
+    window.location.href = lectureUrl;
+});
                 bdy.appendChild(row);
             });
 
