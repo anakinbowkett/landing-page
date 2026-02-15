@@ -2633,33 +2633,104 @@ function updateNavigationButtons() {
   }
 }
 
-// Mock backend
+// Mock backend - Smart Marking
 const originalFetch = window.fetch;
 window.fetch = async function(url, options) {
   if (url === '/api/mark-writing') {
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     const body = JSON.parse(options.body);
+    const studentText = body.studentText.toLowerCase();
+    
+    // Realistic marking criteria
+    const hasQuotes = (studentText.match(/["']/g) || []).length >= 2;
+    const hasTechniques = /metaphor|simile|personification|imagery|adjective|verb|alliteration/i.test(studentText);
+    const hasExplanation = studentText.length > 80;
+    const hasLinkToQuestion = /writer|describe|appearance|language|hyena/i.test(studentText);
+    
+    let marks = 0;
+    if (hasQuotes) marks += 2;
+    if (hasTechniques) marks += 2;
+    if (hasExplanation) marks += 2;
+    if (hasLinkToQuestion) marks += 2;
     
     const mockHighlights = [];
     const mockAnnotations = [];
     
-    if (body.allLineData && body.allLineData.length > 0) {
-      const firstLine = body.allLineData[0];
-      if (firstLine.text && firstLine.text.length > 10) {
+    // Process each line
+    body.allLineData.forEach((lineData, index) => {
+      const lineText = lineData.text;
+      if (!lineText || lineText.length === 0) return;
+      
+      // Find quotes and highlight green
+      const quoteMatches = [...lineText.matchAll(/["']([^"']+)["']/g)];
+      quoteMatches.forEach(match => {
         mockHighlights.push({
-          page: 1,
-          lineIndex: 0,
-          startChar: 0,
-          endChar: Math.min(firstLine.text.length, 20),
+          page: lineData.page,
+          lineIndex: lineData.lineIndex,
+          startChar: match.index,
+          endChar: match.index + match[0].length,
           color: 'green'
         });
-        
+      });
+      
+      if (quoteMatches.length > 0 && mockAnnotations.filter(a => a.type === 'positive').length === 0) {
+        mockAnnotations.push({
+          page: lineData.page,
+          lineIndex: lineData.lineIndex,
+          text: '✓ Good quotations',
+          type: 'positive'
+        });
+      }
+      
+      // Find technique words and highlight yellow
+      const techniques = ['metaphor', 'simile', 'personification', 'imagery', 'adjective', 'alliteration'];
+      techniques.forEach(tech => {
+        const idx = lineText.toLowerCase().indexOf(tech);
+        if (idx !== -1) {
+          mockHighlights.push({
+            page: lineData.page,
+            lineIndex: lineData.lineIndex,
+            startChar: idx,
+            endChar: idx + tech.length,
+            color: 'yellow'
+          });
+        }
+      });
+      
+      // Add feedback for short answers
+      if (index === 0 && lineText.length < 20 && lineText.length > 0) {
+        mockAnnotations.push({
+          page: lineData.page,
+          lineIndex: lineData.lineIndex,
+          text: 'Needs more detail - explain the effect',
+          type: 'warning'
+        });
+      }
+      
+      // Flag vague language
+      if (/good|bad|nice|shows|makes/i.test(lineText) && !/because|suggests|implies/i.test(lineText)) {
+        const vaguePhraseMatch = lineText.match(/\b(good|bad|nice|shows|makes)\b/i);
+        if (vaguePhraseMatch && mockAnnotations.filter(a => a.type === 'warning').length < 2) {
+          mockAnnotations.push({
+            page: lineData.page,
+            lineIndex: lineData.lineIndex,
+            text: 'Be more specific - how does it show this?',
+            type: 'warning'
+          });
+        }
+      }
+    });
+    
+    // If almost no content, give 0-1 marks
+    if (studentText.length < 20) {
+      marks = Math.min(marks, 1);
+      if (mockAnnotations.length === 0) {
         mockAnnotations.push({
           page: 1,
           lineIndex: 0,
-          text: '✓ Good start!',
-          type: 'positive'
+          text: 'Your answer is too short. Add quotations and explain the language.',
+          type: 'warning'
         });
       }
     }
@@ -2667,7 +2738,7 @@ window.fetch = async function(url, options) {
     return {
       ok: true,
       json: async () => ({
-        marksAwarded: 6,
+        marksAwarded: marks,
         highlights: mockHighlights,
         annotations: mockAnnotations
       })
