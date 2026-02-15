@@ -1981,67 +1981,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
 <script>
 // Question answer functions
-function toggleSingleAnswer1(answer, button) {
-  const questionBox = document.getElementById('question-box-1');
-  const allButtons = questionBox.querySelectorAll('[class^="answer-option-1"]');
-  allButtons.forEach(btn => btn.classList.remove('selected'));
-  button.classList.add('selected');
-}
-
-function submitAnswer1() {
-  const correctAnswer = '2² × 3';
-  const questionBox = document.getElementById('question-box-1');
-  const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-1"].selected');
-  const allButtons = questionBox.querySelectorAll('[class^="answer-option-1"]');
-  const markCounter = document.getElementById('mark-counter-1');
-
-  const gotItRight = Array.from(selectedButtons).some(btn => btn.textContent.trim() === correctAnswer);
-  const yourScore = gotItRight ? 1 : 0;
-
-  markCounter.textContent = `${yourScore}/1`;
-  allButtons.forEach(button => {
-    if (button.textContent.trim() === correctAnswer) {
-      button.classList.add('correct-answer');
-    }
-    button.disabled = true;
-  });
-
-  if (yourScore === 1) {
-    markCounter.style.backgroundColor = '#54d3ab';
-    markCounter.style.color = 'white';
-    questionBox.classList.add('correct');
-  } else {
-    markCounter.style.backgroundColor = '#e16280';
-    markCounter.style.color = 'white';
-    questionBox.classList.add('incorrect-selection');
-  }
-
-  updateProgressSegment(1);
-  const submitBtn = document.getElementById('submit-button-1');
-  submitBtn.innerText = 'Reset';
-  submitBtn.onclick = resetQuestion1;
-}
-
-function resetQuestion1() {
-  const questionBox = document.getElementById('question-box-1');
-  const buttons = questionBox.querySelectorAll('[class^="answer-option-1"]');
-  const submitBtn = document.getElementById('submit-button-1');
-  const markCounter = document.getElementById('mark-counter-1');
-
-  buttons.forEach(button => {
-    button.classList.remove('selected', 'correct-answer');
-    button.disabled = false;
-  });
-
-  markCounter.textContent = '0/1';
-  markCounter.style.backgroundColor = 'transparent';
-  markCounter.style.color = '#555';
-  questionBox.classList.remove('correct', 'incorrect-selection');
-  resetProgressSegment(1);
-  submitBtn.innerText = 'Submit';
-  submitBtn.onclick = submitAnswer1;
-}
-
 function toggleSingleAnswer2(answer, button) {
   const questionBox = document.getElementById('question-box-2');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-2"]');
@@ -2294,7 +2233,7 @@ function toggleSingleAnswer6(answer, button) {
 }
 
 function submitAnswer6() {
-  const correctAnswer = '2³ × 3²';
+  const correctAnswer = '2⁴ × 3';
   const questionBox = document.getElementById('question-box-6');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-6"].selected');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-6"]');
@@ -2347,14 +2286,13 @@ function resetQuestion6() {
   submitBtn.onclick = submitAnswer6;
 }
 
-
-  
-  // ============================================
+// ============================================
 // ENGLISH LITERATURE MARKING SYSTEM
 // ============================================
 
-  
- function resetWriting1() {
+let pageCounters = { 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1 };
+
+function resetWriting1() {
   const container = document.getElementById('question-box-1');
   const linesContainer = document.getElementById('writing-lines-1');
   const lines = linesContainer.querySelectorAll('.writing-line');
@@ -2362,24 +2300,20 @@ function resetQuestion6() {
   const markCounter = document.getElementById('mark-counter-1');
   const addPageBtn = document.getElementById('add-page-btn-1');
   
-  // Remove all annotations from main page
   const annotations = linesContainer.querySelectorAll('.ai-annotation');
   annotations.forEach(ann => ann.remove());
   
-  // Also check additional pages
   const additionalPages = document.querySelectorAll('#additional-pages-1 .writing-page');
   additionalPages.forEach(page => {
     const pageAnnotations = page.querySelectorAll('.ai-annotation');
     pageAnnotations.forEach(ann => ann.remove());
   });
   
-  // Reset main page lines
   lines.forEach(line => {
     line.innerHTML = '';
     line.contentEditable = true;
   });
   
-  // Reset additional page lines
   additionalPages.forEach(page => {
     const pageLines = page.querySelectorAll('.writing-line');
     pageLines.forEach(line => {
@@ -2388,33 +2322,21 @@ function resetQuestion6() {
     });
   });
   
-  // Remove all additional pages
   const additionalPagesContainer = document.getElementById('additional-pages-1');
   if (additionalPagesContainer) {
     additionalPagesContainer.innerHTML = '';
   }
   
-  // Reset page counter
   pageCounters[1] = 1;
-  
-  // Reset counter
   markCounter.textContent = '0/8';
   markCounter.classList.remove('correct', 'incorrect');
-  
-  // Reset container
   container.classList.remove('correct', 'incorrect-selection', 'marked');
-  
-  // Reset buttons
   submitBtn.textContent = 'Submit for Marking';
   submitBtn.onclick = submitWriting1;
-  if (addPageBtn) addPageBtn.disabled = false; 
-  
-  // Reset progress
+  if (addPageBtn) addPageBtn.disabled = false;
   resetProgressSegment(1);
 }
-  
-  
-  
+
 async function submitWriting1() {
   const container = document.getElementById('question-box-1');
   const linesContainer = document.getElementById('writing-lines-1');
@@ -2422,38 +2344,22 @@ async function submitWriting1() {
   const submitBtn = document.getElementById('submit-button-1');
   const markCounter = document.getElementById('mark-counter-1');
   
-  // Collect student's writing from main page
   let studentText = '';
   let allLineData = [];
   
   lines.forEach((line, index) => {
     const text = line.textContent.trim();
-    allLineData.push({
-      text: text,
-      page: 1,
-      lineIndex: index,
-      element: line
-    });
-    if (text) {
-      studentText += text + ' ';
-    }
+    allLineData.push({ text: text, page: 1, lineIndex: index, element: line });
+    if (text) studentText += text + ' ';
   });
   
-  // Collect text from additional pages
   const additionalPages = document.querySelectorAll('#additional-pages-1 .writing-page');
   additionalPages.forEach((page, pageIndex) => {
     const pageLines = page.querySelectorAll('.writing-line');
     pageLines.forEach((line, lineIndex) => {
       const text = line.textContent.trim();
-      allLineData.push({
-        text: text,
-        page: pageIndex + 2,
-        lineIndex: lineIndex,
-        element: line
-      });
-      if (text) {
-        studentText += text + ' ';
-      }
+      allLineData.push({ text: text, page: pageIndex + 2, lineIndex: lineIndex, element: line });
+      if (text) studentText += text + ' ';
     });
   });
   
@@ -2462,28 +2368,20 @@ async function submitWriting1() {
     return;
   }
   
-  // Disable submit button and add page button
   submitBtn.disabled = true;
   submitBtn.textContent = 'AI is marking...';
   const addPageBtn = document.getElementById('add-page-btn-1');
   if (addPageBtn) addPageBtn.disabled = true;
   
-  // Disable all writing lines
   allLineData.forEach(lineData => {
     lineData.element.contentEditable = false;
   });
   
-  // Add scanning animation
   const scanOverlay = document.createElement('div');
   scanOverlay.className = 'scanning-overlay';
   linesContainer.appendChild(scanOverlay);
   
   try {
-    console.log('=== SUBMITTING FOR MARKING ===');
-    console.log('Student text:', studentText);
-    console.log('Line data:', allLineData);
-    
-    // Call AI marking API
     const response = await fetch('/api/mark-writing', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -2494,26 +2392,18 @@ async function submitWriting1() {
         questionData: {
           topic: 'Language Analysis',
           question: 'How does the writer use language here to describe the hyena\'s appearance?',
-          marks: 8,
-          extract: document.querySelector('.extract-box p').textContent
+          marks: 8
         }
       })
     });
     
     const result = await response.json();
-    console.log('=== MARKING RESULT ===');
-    console.log('Marks awarded:', result.marksAwarded);
-    console.log('Highlights:', result.highlights);
-    console.log('Annotations:', result.annotations);
     
-    // Wait for scan animation to complete
     await new Promise(resolve => setTimeout(resolve, 3000));
     scanOverlay.remove();
     
-    // Apply highlights and annotations with animation
     await applyMarkingResults(allLineData, result);
     
-    // Update mark counter
     markCounter.textContent = `${result.marksAwarded}/8`;
     if (result.marksAwarded >= 6) {
       markCounter.classList.add('correct');
@@ -2524,9 +2414,8 @@ async function submitWriting1() {
     }
     
     container.classList.add('marked');
-    updateProgressSegment(1, result.marksAwarded >= 6);
+    updateProgressSegment(1);
     
-    // Change button to reset
     submitBtn.textContent = 'Reset Answer';
     submitBtn.onclick = resetWriting1;
     submitBtn.disabled = false;
@@ -2537,26 +2426,17 @@ async function submitWriting1() {
     submitBtn.disabled = false;
     submitBtn.textContent = 'Submit for Marking';
     if (addPageBtn) addPageBtn.disabled = false;
-    allLineData.forEach(lineData => {
-      lineData.element.contentEditable = true;
-    });
+    allLineData.forEach(lineData => { lineData.element.contentEditable = true; });
     scanOverlay.remove();
   }
 }
-  
-  
- async function applyMarkingResults(allLineData, result) {
-  // result.annotations = [{ lineIndex: 0, page: 1, text: "Good quote!", type: "positive", position: "above" }]
-  // result.highlights = [{ lineIndex: 0, page: 1, startChar: 5, endChar: 20, color: "green" }]
-  
-  // Group annotations and highlights by page and line
+
+async function applyMarkingResults(allLineData, result) {
   const markingByPage = {};
   
-  allLineData.forEach((lineData, index) => {
+  allLineData.forEach((lineData) => {
     const pageKey = `page_${lineData.page}`;
-    if (!markingByPage[pageKey]) {
-      markingByPage[pageKey] = {};
-    }
+    if (!markingByPage[pageKey]) markingByPage[pageKey] = {};
     markingByPage[pageKey][lineData.lineIndex] = {
       element: lineData.element,
       text: lineData.text,
@@ -2565,7 +2445,6 @@ async function submitWriting1() {
     };
   });
   
-  // Assign annotations
   if (result.annotations) {
     result.annotations.forEach(annotation => {
       const pageKey = `page_${annotation.page}`;
@@ -2575,7 +2454,6 @@ async function submitWriting1() {
     });
   }
   
-  // Assign highlights
   if (result.highlights) {
     result.highlights.forEach(highlight => {
       const pageKey = `page_${highlight.page}`;
@@ -2585,62 +2463,46 @@ async function submitWriting1() {
     });
   }
   
-  // Apply marking with animation
   for (const pageKey in markingByPage) {
     for (const lineIndex in markingByPage[pageKey]) {
       const lineMarking = markingByPage[pageKey][lineIndex];
       
-      // Apply highlights to the line
       if (lineMarking.highlights.length > 0) {
         applyHighlightsToLine(lineMarking.element, lineMarking.text, lineMarking.highlights);
       }
       
-      // Add annotations above the line
       if (lineMarking.annotations.length > 0) {
         await addAnnotationsAboveLine(lineMarking.element, lineMarking.annotations);
       }
       
-      // Small delay between lines for smooth animation
       await new Promise(resolve => setTimeout(resolve, 300));
     }
   }
 }
 
 function applyHighlightsToLine(lineElement, originalText, highlights) {
-  // Sort highlights by start position
   highlights.sort((a, b) => a.startChar - b.startChar);
   
   let html = '';
   let lastIndex = 0;
   
   highlights.forEach(highlight => {
-    // Add text before highlight
     html += escapeHtml(originalText.substring(lastIndex, highlight.startChar));
-    
-    // Add highlighted text
     const highlightedText = originalText.substring(highlight.startChar, highlight.endChar);
     html += `<span class="highlight-${highlight.color}">${escapeHtml(highlightedText)}</span>`;
-    
     lastIndex = highlight.endChar;
   });
   
-  // Add remaining text
   html += escapeHtml(originalText.substring(lastIndex));
-  
   lineElement.innerHTML = html;
 }
 
 async function addAnnotationsAboveLine(lineElement, annotations) {
   for (const annotation of annotations) {
-    // Create annotation element
     const annotationDiv = document.createElement('div');
     annotationDiv.className = `ai-annotation ${annotation.type}`;
     annotationDiv.textContent = annotation.text;
-    
-    // Insert above the line
     lineElement.parentNode.insertBefore(annotationDiv, lineElement);
-    
-    // Small delay for staggered appearance
     await new Promise(resolve => setTimeout(resolve, 200));
   }
 }
@@ -2649,15 +2511,10 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
-} 
-  
-  
-
-
+}
 
 // Progress bar
 const totalQuestions = 6;
-let questionStatuses = {};
 
 function initializeProgressBar() {
   const container = document.getElementById('progress-segments');
@@ -2677,7 +2534,6 @@ function initializeProgressBar() {
     
     segment.appendChild(icon);
     container.appendChild(segment);
-    questionStatuses[i] = 'unanswered';
   }
 }
 
@@ -2713,26 +2569,6 @@ function resetProgressSegment(questionNumber) {
   icon.innerHTML = '';
 }
 
-// Format switching
-let currentFormat = 'multiple-choice';
-
-function switchFormat(format) {
-  currentFormat = format;
-  const questionBoxes = document.querySelectorAll('[class^="question-box-"]');
-  const mcBtn = document.getElementById('multipleChoiceBtn');
-  const examBtn = document.getElementById('examFormatBtn');
-  
-  if (format === 'multiple-choice') {
-    questionBoxes.forEach(box => box.classList.remove('exam-format'));
-    mcBtn.classList.add('active');
-    examBtn.classList.remove('active');
-  } else {
-    questionBoxes.forEach(box => box.classList.add('exam-format'));
-    examBtn.classList.add('active');
-    mcBtn.classList.remove('active');
-  }
-}
-
 // Question navigation
 let currentQuestionIndex = 1;
 const totalQuestionsCount = 6;
@@ -2744,7 +2580,6 @@ function initializeQuestionNavigation() {
       questionBox.style.display = i === 1 ? 'block' : 'none';
     }
   }
-  
   updateNavigationButtons();
 }
 
@@ -2753,25 +2588,16 @@ function showQuestion(questionNumber) {
   
   for (let i = 1; i <= totalQuestionsCount; i++) {
     const questionBox = document.getElementById(`question-box-${i}`);
-    if (questionBox) {
-      questionBox.style.display = 'none';
-    }
+    if (questionBox) questionBox.style.display = 'none';
   }
   
   const selectedBox = document.getElementById(`question-box-${questionNumber}`);
   if (selectedBox) {
     selectedBox.style.display = 'block';
-    setTimeout(() => {
-      selectedBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 50);
+    setTimeout(() => { selectedBox.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
   }
   
   currentQuestionIndex = questionNumber;
-  
-  if (typeof window.setCurrentQuestion === 'function') {
-    window.setCurrentQuestion(questionNumber);
-  }
-  
   updateNavigationButtons();
 }
 
@@ -2807,688 +2633,55 @@ function updateNavigationButtons() {
   }
 }
 
-// DEEPSEEK AI CHAT INTEGRATION
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('Initializing DeepSeek chat interface...');
-  
-  const chatMessages = document.getElementById('chatMessages');
-  const chatInput = document.getElementById('chatInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const promptsBtn = document.getElementById('promptsBtn');
-  const chatSubtitle = document.getElementById('chatSubtitle');
-  
-  window.conversationHistory = [];
-  window.currentQuestionId = null;
-  window.QUESTION_BANK = {
-  'Mathematics_Foundation_Number_L1_Q1': {
-    question: 'Express 12 as a product of its prime factors.',
-    correctAnswer: '2² × 3',
-    topic: 'Product of Prime Factors'
-  },
-  'Mathematics_Foundation_Number_L1_Q2': {
-    question: 'Express 18 as a product of its prime factors.',
-    correctAnswer: '2 × 3²',
-    topic: 'Product of Prime Factors'
-  },
-  'Mathematics_Foundation_Number_L1_Q3': {
-    question: 'Write 24 as a product of prime factors in index form.',
-    correctAnswer: '2³ × 3',
-    topic: 'Product of Prime Factors'
-  },
-  'Mathematics_Foundation_Number_L1_Q4': {
-    question: 'Express 30 as a product of its prime factors.',
-    correctAnswer: '2 × 3 × 5',
-    topic: 'Product of Prime Factors'
-  },
-  'Mathematics_Foundation_Number_L1_Q5': {
-    question: 'Write 36 as a product of prime factors in index form.',
-    correctAnswer: '2² × 3²',
-    topic: 'Product of Prime Factors'
-  },
-  'Mathematics_Foundation_Number_L1_Q6': {
-    question: 'Express 48 as a product of prime factors in index form.',
-    correctAnswer: '2³ × 3²',
-    topic: 'Product of Prime Factors'
-  }
-};
-
-
-
-
-  
-  function addMessageToChat(content, isUser) {
-    if (!chatMessages) return;
-    
-    const messageDiv = document.createElement('div');
-    messageDiv.className = isUser ? 'message message-user' : 'message message-assistant';
-    
-    const label = document.createElement('div');
-label.className = 'message-label';
-label.textContent = isUser ? 'You' : '';
-label.style.display = isUser ? 'block' : 'none';
-    
-    const bubble = document.createElement('div');
-    bubble.className = 'message-bubble';
-    bubble.textContent = content;
-    
-    messageDiv.appendChild(label);
-    messageDiv.appendChild(bubble);
-    chatMessages.appendChild(messageDiv);
-    
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-  
-  async function sendToDeepSeek(message) {
-    if (!window.currentQuestionId) {
-      return 'Please click on a question box first to select a question!';
-    }
-    
-    const questionData = window.QUESTION_BANK[window.currentQuestionId];
-    
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: message,
-          conversationHistory: window.conversationHistory,
-          questionData: questionData
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      window.conversationHistory.push(
-        { role: 'user', content: message },
-        { role: 'assistant', content: data.reply }
-      );
-      
-      return data.reply;
-      
-    } catch (error) {
-      console.error('DeepSeek API Error:', error);
-      return 'Sorry, I had trouble connecting to the AI. Please try again.';
-    }
-  }
-  
-  async function handleSendMessage() {
-    const message = chatInput.value.trim();
-    if (!message || !sendBtn) return;
-    
-    addMessageToChat(message, true);
-    chatInput.value = '';
-    
-    sendBtn.disabled = true;
-    sendBtn.textContent = 'Thinking...';
-    
-    const response = await sendToDeepSeek(message);
-    addMessageToChat(response, false);
-    
-    sendBtn.disabled = false;
-    sendBtn.textContent = 'Execute';
-  }
-  
-  if (sendBtn) {
-    sendBtn.addEventListener('click', handleSendMessage);
-  }
-  
-  if (chatInput) {
-    chatInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleSendMessage();
-      }
-    });
-  }
-  
-  if (promptsBtn) {
-    promptsBtn.addEventListener('click', function() {
-      const prompts = [
-        "Explain this question to me",
-        "What's the method for solving this?",
-        "Why is this the correct answer?",
-        "Can you break this down step by step?",
-        "What are prime factors?"
-      ];
-      const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
-      if (chatInput) {
-        chatInput.value = randomPrompt;
-        chatInput.focus();
-      }
-    });
-  }
-  
- window.setCurrentQuestion = function(questionNumber) {
-  console.log('Setting current question to:', questionNumber);
-  window.currentQuestionId = `Mathematics_Foundation_Number_L1_Q${questionNumber}`;
-  window.conversationHistory = []; // Clear chat history for new question
-  
-  const questionData = window.QUESTION_BANK[window.currentQuestionId];
-  
-  if (questionData && chatSubtitle) {
-    chatSubtitle.textContent = `Q${questionNumber}: ${questionData.topic}`;
-  }
-  
-  document.querySelectorAll('[class^="question-box-"]').forEach(box => {
-    box.style.borderColor = '#e5e7eb';
-  });
-  
-  const activeBox = document.getElementById(`question-box-${questionNumber}`);
-  if (activeBox) {
-    activeBox.style.borderColor = '#1d7fe2';
-  }
-  
-  // No automatic message - user can start asking questions immediately
-};
-  
-  setTimeout(() => {
-    window.setCurrentQuestion(1);
-  }, 1000);
-  
-  initializeProgressBar();
-  initializeQuestionNavigation();
-  
-  for (let i = 1; i <= totalQuestionsCount; i++) {
-    const questionBox = document.getElementById(`question-box-${i}`);
-    if (questionBox) {
-      questionBox.addEventListener('click', function(e) {
-        e.stopPropagation();
-showQuestion(i);
-if (typeof window.setCurrentQuestion === 'function') {
-window.setCurrentQuestion(i);
-}
-});
-}
-}
-const formulaBtn = document.getElementById('formulaSheetBtn');
-if (formulaBtn) {
-formulaBtn.addEventListener('click', function() {
-alert('Formula Sheet feature');
-});
-}
-});
-  
-  
- // ============================================
-// TEXT WRAPPING HANDLER FOR WRITING LINES
-// ============================================
-
-document.addEventListener('DOMContentLoaded', function() {
-  const writingContainers = document.querySelectorAll('[id^="writing-lines-"]');
-  
-  writingContainers.forEach(container => {
-    container.addEventListener('input', function(e) {
-      const line = e.target;
-      if (!line.classList.contains('writing-line')) return;
-      
-      // Check if text overflows the line
-      if (line.scrollWidth > line.clientWidth) {
-        const allLines = Array.from(container.querySelectorAll('.writing-line'));
-        const currentIndex = allLines.indexOf(line);
-        const nextLine = allLines[currentIndex + 1];
-        
-        if (nextLine) {
-          // Get overflow text
-          const text = line.textContent;
-          const tempSpan = document.createElement('span');
-          const computedStyle = window.getComputedStyle(line);
-          tempSpan.style.font = computedStyle.font;
-          tempSpan.style.fontSize = computedStyle.fontSize;
-          tempSpan.style.fontFamily = computedStyle.fontFamily;
-          tempSpan.style.fontWeight = computedStyle.fontWeight;
-          tempSpan.style.letterSpacing = computedStyle.letterSpacing;
-          tempSpan.style.position = 'absolute';
-          tempSpan.style.visibility = 'hidden';
-          tempSpan.style.whiteSpace = 'nowrap';
-          tempSpan.style.padding = '0 4px';
-          document.body.appendChild(tempSpan);
-          
-          // Account for padding (4px on each side = 8px total)
-          const availableWidth = line.clientWidth - 8;
-          
-          let cutoffIndex = text.length;
-          for (let i = 0; i < text.length; i++) {
-            tempSpan.textContent = text.substring(0, i);
-            if (tempSpan.offsetWidth > availableWidth) {
-              cutoffIndex = Math.max(0, i - 1);
-              break;
-            }
-          }
-          document.body.removeChild(tempSpan);
-          
-          // Find last space before cutoff for clean word break
-          let breakPoint = cutoffIndex;
-          const textUpToCutoff = text.substring(0, cutoffIndex);
-          const lastSpace = textUpToCutoff.lastIndexOf(' ');
-          if (lastSpace > 0 && cutoffIndex - lastSpace < 15) {
-            breakPoint = lastSpace + 1;
-          }
-          
-          // Split text
-          const currentText = text.substring(0, breakPoint).trim();
-          const overflowText = text.substring(breakPoint).trim();
-          
-          line.textContent = currentText;
-          
-          // Move overflow to next line
-          const nextLineText = nextLine.textContent.trim();
-          nextLine.textContent = overflowText + (nextLineText ? ' ' + nextLineText : '');
-          
-          // Set cursor at start of overflow text on next line
-          setTimeout(() => {
-            const range = document.createRange();
-            const sel = window.getSelection();
-            const textNode = nextLine.firstChild || nextLine;
-            range.setStart(textNode, overflowText.length);
-            range.collapse(true);
-            sel.removeAllRanges();
-            sel.addRange(range);
-            nextLine.focus();
-          }, 0);
-        }
-      }
-    });
-    
- // Handle backspace at start of line and Enter key
-    container.addEventListener('keydown', function(e) {
-      const line = e.target;
-      if (!line.classList.contains('writing-line')) return;
-      
-      // Handle Enter key - move to next line
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        const allLines = Array.from(container.querySelectorAll('.writing-line'));
-        const currentIndex = allLines.indexOf(line);
-        const nextLine = allLines[currentIndex + 1];
-        
-        if (nextLine) {
-          nextLine.focus();
-          // Place cursor at start of next line
-          const range = document.createRange();
-          const sel = window.getSelection();
-          range.setStart(nextLine, 0);
-          range.collapse(true);
-          sel.removeAllRanges();
-          sel.addRange(range);
-        }
-        return;
-      }
-      
-      if (e.key === 'Backspace') {
-        const allLines = Array.from(container.querySelectorAll('.writing-line'));
-        const currentIndex = allLines.indexOf(line);
-        const selection = window.getSelection();
-        
-        // If cursor is at start of line and line is not first
-        if (selection.anchorOffset === 0 && currentIndex > 0) {
-          e.preventDefault();
-          const previousLine = allLines[currentIndex - 1];
-          const currentText = line.textContent.trim();
-          const previousText = previousLine.textContent.trim();
-          
-          // Merge lines
-          previousLine.textContent = previousText + (currentText ? ' ' + currentText : '');
-          line.textContent = '';
-          
-          // Set cursor at junction point
-          setTimeout(() => {
-            const range = document.createRange();
-            const sel = window.getSelection();
-            const textNode = previousLine.firstChild || previousLine;
-            range.setStart(textNode, previousText.length);
-            range.collapse(true);
-            sel.removeAllRanges();
-            sel.addRange(range);
-            previousLine.focus();
-          }, 0);
-        }
-      }
-    });
-  });
-});
-  
-  
-// ============================================
-// MOCK BACKEND FOR TESTING (REMOVE LATER)
-// ============================================
-
-  
- // ============================================
-// ADD PAGE FUNCTIONALITY
-// ============================================
-
-let pageCounters = {
-  1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1
-};
-
-function addWritingPage(questionNumber) {
-  const container = document.getElementById(`additional-pages-${questionNumber}`);
-  const addPageBtn = document.getElementById(`add-page-btn-${questionNumber}`);
-  
-  if (!container) return;
-  
-  pageCounters[questionNumber]++;
-  const pageNum = pageCounters[questionNumber];
-  
-  // Create new page
-  const page = document.createElement('div');
-  page.className = 'writing-page';
-  page.id = `writing-page-${questionNumber}-${pageNum}`;
-  
-  // Create lines container
-  const linesContainer = document.createElement('div');
-  linesContainer.className = 'writing-lines-container';
-  linesContainer.id = `writing-lines-${questionNumber}-page-${pageNum}`;
-  
-  // Create 20 lines per page
-  for (let i = 1; i <= 20; i++) {
-    const line = document.createElement('div');
-    line.className = 'writing-line';
-    line.contentEditable = 'true';
-    line.setAttribute('data-line', i);
-    line.setAttribute('data-page', pageNum);
-    linesContainer.appendChild(line);
-  }
-  
-// Add page number
-  const pageNumber = document.createElement('div');
-  pageNumber.className = 'page-number';
-  pageNumber.textContent = `Page ${pageNum}`;
-  
-  // Add delete page button
-  const deleteBtn = document.createElement('button');
-  deleteBtn.className = 'delete-page-btn';
-  deleteBtn.textContent = '× Delete Page';
-  deleteBtn.onclick = function() {
-    if (confirm('Delete this page? All content will be lost.')) {
-      page.remove();
-      // Renumber remaining pages
-      renumberPages(questionNumber);
-    }
-  };
-  
-  page.appendChild(linesContainer);
-  page.appendChild(pageNumber);
-  page.appendChild(deleteBtn);
-  container.appendChild(page);
-  
-  // Initialize text wrapping for new page
-  initializeTextWrapping(linesContainer);
-  
-  // Scroll to new page
-  setTimeout(() => {
-    page.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
-}
-
-function initializeTextWrapping(container) {
-  container.addEventListener('input', function(e) {
-    const line = e.target;
-    if (!line.classList.contains('writing-line')) return;
-    
-    // Check if text overflows the line
-    if (line.scrollWidth > line.clientWidth) {
-      const allLines = Array.from(container.querySelectorAll('.writing-line'));
-      const currentIndex = allLines.indexOf(line);
-      const nextLine = allLines[currentIndex + 1];
-      
-      if (nextLine) {
-        // Get overflow text
-        const text = line.textContent;
-        const tempSpan = document.createElement('span');
-        const computedStyle = window.getComputedStyle(line);
-        tempSpan.style.font = computedStyle.font;
-        tempSpan.style.fontSize = computedStyle.fontSize;
-        tempSpan.style.fontFamily = computedStyle.fontFamily;
-        tempSpan.style.fontWeight = computedStyle.fontWeight;
-        tempSpan.style.letterSpacing = computedStyle.letterSpacing;
-        tempSpan.style.position = 'absolute';
-        tempSpan.style.visibility = 'hidden';
-        tempSpan.style.whiteSpace = 'nowrap';
-        tempSpan.style.padding = '0 4px';
-        document.body.appendChild(tempSpan);
-        
-        const availableWidth = line.clientWidth - 8;
-        
-        let cutoffIndex = text.length;
-        for (let i = 0; i < text.length; i++) {
-          tempSpan.textContent = text.substring(0, i);
-          if (tempSpan.offsetWidth > availableWidth) {
-            cutoffIndex = Math.max(0, i - 1);
-            break;
-          }
-        }
-        document.body.removeChild(tempSpan);
-        
-        let breakPoint = cutoffIndex;
-        const textUpToCutoff = text.substring(0, cutoffIndex);
-        const lastSpace = textUpToCutoff.lastIndexOf(' ');
-        if (lastSpace > 0 && cutoffIndex - lastSpace < 15) {
-          breakPoint = lastSpace + 1;
-        }
-        
-        const currentText = text.substring(0, breakPoint).trim();
-        const overflowText = text.substring(breakPoint).trim();
-        
-        line.textContent = currentText;
-        
-        const nextLineText = nextLine.textContent.trim();
-        nextLine.textContent = overflowText + (nextLineText ? ' ' + nextLineText : '');
-        
-        setTimeout(() => {
-          const range = document.createRange();
-          const sel = window.getSelection();
-          const textNode = nextLine.firstChild || nextLine;
-          range.setStart(textNode, overflowText.length);
-          range.collapse(true);
-          sel.removeAllRanges();
-          sel.addRange(range);
-          nextLine.focus();
-        }, 0);
-      }
-    }
-  });
-  
-  container.addEventListener('keydown', function(e) {
-    const line = e.target;
-    if (!line.classList.contains('writing-line')) return;
-    
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const allLines = Array.from(container.querySelectorAll('.writing-line'));
-      const currentIndex = allLines.indexOf(line);
-      const nextLine = allLines[currentIndex + 1];
-      
-      if (nextLine) {
-        nextLine.focus();
-        const range = document.createRange();
-        const sel = window.getSelection();
-        range.setStart(nextLine, 0);
-        range.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(range);
-      }
-      return;
-    }
-    
-    if (e.key === 'Backspace') {
-      const allLines = Array.from(container.querySelectorAll('.writing-line'));
-      const currentIndex = allLines.indexOf(line);
-      const selection = window.getSelection();
-      
-      if (selection.anchorOffset === 0 && currentIndex > 0) {
-        e.preventDefault();
-        const previousLine = allLines[currentIndex - 1];
-        const currentText = line.textContent.trim();
-        const previousText = previousLine.textContent.trim();
-        
-        previousLine.textContent = previousText + (currentText ? ' ' + currentText : '');
-        line.textContent = '';
-        
-        setTimeout(() => {
-          const range = document.createRange();
-          const sel = window.getSelection();
-          const textNode = previousLine.firstChild || previousLine;
-          range.setStart(textNode, previousText.length);
-          range.collapse(true);
-          sel.removeAllRanges();
-          sel.addRange(range);
-          previousLine.focus();
-        }, 0);
-      }
-    }
-  });
-} 
-  
-  
-  
-  
-  
-  
-  
-  
+// Mock backend
 const originalFetch = window.fetch;
 window.fetch = async function(url, options) {
   if (url === '/api/mark-writing') {
-    // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     const body = JSON.parse(options.body);
-    const studentText = body.studentText.toLowerCase();
     
-    // Simple AI logic for demo
-    const hasQuotes = studentText.includes('"') || studentText.includes("'");
-    const hasLanguageTechniques = studentText.includes('metaphor') || 
-                                   studentText.includes('simile') || 
-                                   studentText.includes('personification') ||
-                                   studentText.includes('imagery');
-    const hasEvidence = studentText.length > 100;
+    const mockHighlights = [];
+    const mockAnnotations = [];
     
-    let marks = 0;
-    if (hasQuotes) marks += 3;
-    if (hasLanguageTechniques) marks += 3;
-    if (hasEvidence) marks += 2;
-    
-    // Generate highlights and annotations
-    const highlights = [];
-    const annotations = [];
-    
-    // Process each line to find content to highlight
-    body.allLineData.forEach((lineData, index) => {
-      const lineText = lineData.text;
-      
-      if (!lineText || lineText.length === 0) return;
-      
-      // Check for quotes in this line
-      const quoteRegex = /"([^"]+)"|'([^']+)'/g;
-      let match;
-      while ((match = quoteRegex.exec(lineText)) !== null) {
-        highlights.push({
-          page: lineData.page,
-          lineIndex: lineData.lineIndex,
-          startChar: match.index,
-          endChar: match.index + match[0].length,
+    if (body.allLineData && body.allLineData.length > 0) {
+      const firstLine = body.allLineData[0];
+      if (firstLine.text && firstLine.text.length > 10) {
+        mockHighlights.push({
+          page: 1,
+          lineIndex: 0,
+          startChar: 0,
+          endChar: Math.min(firstLine.text.length, 20),
           color: 'green'
         });
         
-        // Add positive annotation for first quote
-        if (annotations.filter(a => a.type === 'positive').length === 0) {
-          annotations.push({
-            page: lineData.page,
-            lineIndex: lineData.lineIndex,
-            text: '✓ Good use of quotations',
-            type: 'positive'
-          });
-        }
-      }
-      
-      // Check for technique words
-      const techniqueWords = ['metaphor', 'simile', 'personification', 'imagery', 'adjective', 'verb', 'noun'];
-      techniqueWords.forEach(word => {
-        const idx = lineText.toLowerCase().indexOf(word);
-        if (idx !== -1) {
-          highlights.push({
-            page: lineData.page,
-            lineIndex: lineData.lineIndex,
-            startChar: idx,
-            endChar: idx + word.length,
-            color: 'yellow'
-          });
-        }
-      });
-      
-      // Add some feedback
-      if (index === 2 && lineText.length > 10) {
-        annotations.push({
-          page: lineData.page,
-          lineIndex: lineData.lineIndex,
-          text: 'Link this back to the question',
-          type: 'warning'
+        mockAnnotations.push({
+          page: 1,
+          lineIndex: 0,
+          text: '✓ Good start!',
+          type: 'positive'
         });
       }
-    });
+    }
     
-    // Mock AI response
     return {
+      ok: true,
       json: async () => ({
-        marksAwarded: marks,
-        highlights: highlights,
-        annotations: annotations
+        marksAwarded: 6,
+        highlights: mockHighlights,
+        annotations: mockAnnotations
       })
     };
   }
   
   return originalFetch(url, options);
 };
-            lineIndex: 1,
-            segments: [
-              { start: 0, end: 25, color: 'green' }
-            ]
-          },
-          {
-            lineIndex: 2,
-            segments: [
-              { start: 8, end: 30, color: 'red' }
-            ]
-          }
-        ],
-        annotations: [
-          { 
-            type: 'positive', 
-            text: '✓ Good use of quotations!', 
-            delay: 400 
-          },
-          { 
-            type: 'warning', 
-            text: 'Consider explaining HOW this creates imagery', 
-            delay: 800 
-          },
-          { 
-            type: 'error', 
-            text: 'This point needs a quote from the text', 
-            delay: 1200 
-          }
-        ]
-      })
-    };
-  }
-  
-  return originalFetch(url, options);
-};  
-  
-  
-  
-  
-  
-  
-  
-  
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+  initializeProgressBar();
+  initializeQuestionNavigation();
+});
 </script>
 </body>
 </html>
