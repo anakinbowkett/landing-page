@@ -1,4 +1,4 @@
-// Allowed origins - REPLACE WITH YOUR ACTUAL VERCEL DOMAINS
+// Allowed origins
 const ALLOWED_ORIGINS = [
   'https://www.monturalearn.co.uk',
   'https://monturalearn.co.uk',
@@ -7,7 +7,7 @@ const ALLOWED_ORIGINS = [
 ].filter(Boolean);
 
 export default async function handler(req, res) {
-  // 1. CHECK ORIGIN
+  // CORS setup
   const origin = req.headers.origin;
   const isAllowed = ALLOWED_ORIGINS.some(allowed => 
     typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
@@ -17,47 +17,173 @@ export default async function handler(req, res) {
     return res.status(403).json({ error: 'Forbidden' });
   }
 
-  // 2. STRICT CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');  // ← REMOVED X-API-Key
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
   
-  // 3. ONLY ALLOW POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // 4. INPUT VALIDATION - Prevent malicious data  // ← DELETED API KEY CHECK
   try {
-    const { message, conversationHistory, questionData } = req.body;
-    
-    // GUIDE LIBRARY
-    const GUIDES = {
+    const { 
+      message, 
+      conversationHistory, 
+      questionData,
+      // NEW: For marking requests
+      isMarkingRequest,
+      studentText,
+      allLineData
+    } = req.body;
 
+    // ============================================
+    // ROUTE 1: MARKING REQUEST (English Literature)
+    // ============================================
+    if (isMarkingRequest) {
+      return await handleMarkingRequest(req, res, {
+        studentText,
+        allLineData,
+        questionData
+      });
+    }
 
-      'Product of Prime Factors': `
+    // ============================================
+    // ROUTE 2: CHAT REQUEST (All subjects Q&A)
+    // ============================================
+    return await handleChatRequest(req, res, {
+      message,
+      conversationHistory,
+      questionData
+    });
+
+  } catch (error) {
+    console.error('API error:', error);
+    return res.status(500).json({ 
+      error: 'Failed to process request',
+      details: error.message 
+    });
+  }
+}
+
+// ============================================
+// MARKING HANDLER (English Literature Essays)
+// ============================================
+async function handleMarkingRequest(req, res, { studentText, allLineData, questionData }) {
+  
+  // MODEL ANSWERS (Perfect 8/8 responses - cached as input tokens)
+  const MODEL_ANSWERS = {
+    'English_Lit_Q1_Hyena': `The writer uses vivid imagery to emphasize the hyena's unappealing appearance. The phrase "ugly beyond redemption" suggests the animal's looks are permanently and irredeemably unpleasant. The description of its coat as a "bungled mix of colours" with spots that lack "the classy ostentation of a leopard's" implies the hyena's markings are chaotic and lack elegance. The metaphor comparing its ears to those of a mouse - "ridiculously mouse-like, large and round" - creates a sense of disproportionate features. The writer's use of negative descriptors such as "scraggly" for the tail and the comparison "like no dog anyone would want as a pet" reinforces the overall impression of an aesthetically displeasing creature.`
+  };
+
+  const questionId = questionData?.exerciseId || 'English_Lit_Q1_Hyena';
+  const modelAnswer = MODEL_ANSWERS[questionId] || MODEL_ANSWERS['English_Lit_Q1_Hyena'];
+
+  // STRICT MARKING PROMPT (optimized for tokens)
+  const markingPrompt = `GCSE English Literature Examiner. Mark strictly.
+
+MODEL ANSWER (8/8 - gold standard):
+${modelAnswer}
+
+STUDENT ANSWER:
+${studentText}
+
+MARK SCHEME (8 marks total):
+- Quotations with marks: 0-2 marks
+- Named techniques: 0-2 marks
+- Effect explained: 0-2 marks
+- Links to question: 0-2 marks
+
+SCORE HARSHLY:
+0-1: No quotes, no techniques, under 30 words
+2-3: Weak quote OR technique mentioned, no explanation
+4-5: 1-2 quotes, technique named, weak explanation
+6-7: 2-3 quotes, good analysis, clear effects
+8: Matches model answer quality
+
+IDENTIFY WEAKNESSES in student text:
+- Missing quotation marks
+- Vague language ("shows", "uses")
+- No technique names
+- Weak explanations
+
+OUTPUT ONLY VALID JSON:
+{
+  "marksAwarded": 3,
+  "highlights": [
+    {"page": 1, "lineIndex": 0, "startChar": 5, "endChar": 20, "color": "red"}
+  ],
+  "annotations": [
+    {"page": 1, "lineIndex": 0, "text": "Missing quotation marks", "type": "warning"}
+  ]
+}
+
+Annotations: MAX 8 words each. Be harsh.`;
+
+  const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: 'deepseek-chat',
+      messages: [
+        { 
+          role: 'system', 
+          content: 'You are a strict GCSE examiner. Compare student answers to model answers. Most students get 3-5/8. Output ONLY valid JSON.' 
+        },
+        { role: 'user', content: markingPrompt }
+      ],
+      temperature: 0.2,
+      max_tokens: 800
+    })
+  });
+
+  const data = await response.json();
+  
+  if (!response.ok) {
+    throw new Error(data.error?.message || 'DeepSeek API error');
+  }
+
+  let aiReply = data.choices[0].message.content;
+  aiReply = aiReply.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  
+  const markingResult = JSON.parse(aiReply);
+  
+  // Cap marks at 8
+  if (markingResult.marksAwarded > 8) {
+    markingResult.marksAwarded = 8;
+  }
+  
+  return res.status(200).json(markingResult);
+}
+
+// ============================================
+// CHAT HANDLER (Q&A for all subjects)
+// ============================================
+async function handleChatRequest(req, res, { message, conversationHistory, questionData }) {
+  
+  // GUIDE LIBRARY (All subjects)
+  const GUIDES = {
+    // === MATHS ===
+    'Product of Prime Factors': `
 REFERENCE GUIDE: Product of Prime Factors
 DEFINITION: Writing a number as a multiplication of only prime numbers.
 METHOD:
-Step 1: Start a factor tree - Write the number at the top. Split it into two factors. Pick easy ones like 2 if the number is even.
-Step 2: Keep splitting - If any number is not prime, split it again. Keep going until all the numbers at the bottom are prime.
-Step 3: Write the answer - Multiply all the prime numbers at the bottom. Use index form if the same prime appears more than once.
+Step 1: Start a factor tree - Write the number at the top. Split it into two factors.
+Step 2: Keep splitting - If any number is not prime, split it again.
+Step 3: Write the answer - Use index form if the same prime appears more than once.
 EXAMPLE: 24 = 2³ × 3
-- Start: 24 splits to 2 × 12
-- 12 splits to 2 × 6
-- 6 splits to 2 × 3 (both prime now)
-- Result: 2 × 2 × 2 × 3 = 2³ × 3
-COMMON MISTAKES TO AVOID:
-1. Stopping too early (e.g., writing 18 = 2 × 9). 9 is not prime. You must keep splitting until all numbers are prime.
-2. Missing a factor (e.g., 24 = 2 × 2 × 3). This only makes 12. You've lost a factor of 2.
-3. Not using index form (e.g., writing 2 × 2 × 2 × 3 instead of 2³ × 3). Foundation questions often ask for index form.
+COMMON MISTAKES:
+1. Stopping too early (e.g., 18 = 2 × 9)
+2. Missing a factor
+3. Not using index form
 `,
-
 
 'Highest Common Factor (HCF)': `
 REFERENCE GUIDE: Highest Common Factor (HCF)
@@ -1003,94 +1129,90 @@ Adding indices when dividing instead of subtracting them.
 `,
 
 
+// === ENGLISH LITERATURE ===
+    'Language Analysis - AQA Q2': `
+GCSE English Literature - Language Analysis (8 marks)
 
-      
-    };
+WHAT GETS MARKS:
+✓ Direct quotations with "marks"
+✓ Named techniques (metaphor, simile, imagery)
+✓ Explain HOW language creates effects
+✓ Link to question
 
-    const topic = questionData?.topic || '';
-    const selectedGuide = GUIDES[topic];
+METHOD:
+Step 1: Quote from text with marks
+Step 2: Name the technique
+Step 3: Explain the effect
+Step 4: Link to question
 
-    // Build system prompt - guide FIRST, own knowledge as FALLBACK
-    const systemPrompt = `You are a helpful math tutor for GCSE Foundation students (age 13-16).
+EXAMPLE:
+"The writer uses violent imagery in 'ugly beyond redemption' which suggests permanent ugliness and creates disgust."
 
-STUDENT'S CURRENT QUESTION:
-"${questionData?.question || 'No question provided'}"
+COMMON MISTAKES:
+- No quotation marks (-1 mark)
+- No technique name (-2 marks)
+- Vague phrases like "the writer shows" (-1 mark)
+`
+  };
 
-The correct answer is: ${questionData?.correctAnswer || 'Not available'}
+  const topic = questionData?.topic || '';
+  const selectedGuide = GUIDES[topic];
+
+  // Build system prompt
+  const systemPrompt = `You are a GCSE tutor for age 13-16 students.
+
+STUDENT'S QUESTION: "${questionData?.question || 'No question'}"
+CORRECT ANSWER: ${questionData?.correctAnswer || 'N/A'}
 
 ${selectedGuide ? `
-REFERENCE GUIDE FOR THIS TOPIC:
+GUIDE FOR THIS TOPIC:
 ${selectedGuide}
 
-CRITICAL: Use the guide above as your PRIMARY teaching resource. Reference its method, examples, and common mistakes.
-` : ''}
+Use this guide as your PRIMARY resource.
+` : `Use your GCSE knowledge for: "${questionData?.question}"`}
 
-${!selectedGuide ? `
-NOTE: No specific guide available for "${topic}". Use your GCSE Foundation maths knowledge to help with this specific question: "${questionData?.question}". Focus specifically on what THIS question asks.
-` : ''}
-
-YOUR TEACHING APPROACH:
-- You KNOW the exact question the student is working on (shown above)
-${selectedGuide ? '- ALWAYS reference the guide method when explaining' : '- Apply your knowledge specifically to THIS question'}
-- Keep responses to 1-2 sentences MAXIMUM (saves costs)
-- Use Socratic method: ask guiding questions, don't explain everything
-- NO formatting (no **, no #, no lists) - plain conversational text only
-- Be warm, encouraging, and personal
-${!selectedGuide ? '- Since there\'s no guide, use your expertise but keep it directly relevant to the question asked' : ''}
+TEACHING RULES:
+- Keep responses 1-2 sentences MAX (saves costs)
+- Use Socratic method: ask questions, don't explain everything
+- NO formatting (no **, no lists)
+- Be warm and encouraging
+${selectedGuide ? '- Reference the guide method' : '- Focus on the specific question'}
 
 EXAMPLES:
 Student: "I don't get it"
-${selectedGuide ? 
-`You: "No worries! For this question, let's start with step 1 from the guide. What do you think we need to do first?"` :
-`You: "No worries! For this specific question about ${questionData?.question?.split(' ').slice(-4).join(' ') || 'this problem'}, what part is confusing you?"`}
-
-Student: "Do you know what the question is?"
-You: "Yes! You're working on: ${questionData?.question}. What part are you stuck on?"
+You: "No worries! ${selectedGuide ? "Let's start with step 1 from the guide." : "What part is confusing you?"}"
 
 Student: "How do I solve this?"
-${selectedGuide ?
-`You: "Looking at your question, let's use the guide's method. What's the first step we need to do?"` :
-`You: "For this question, let's break it down. Can you tell me what you've tried so far?"`}
+You: "${selectedGuide ? "Using the guide's method, what's the first step?" : "Can you tell me what you've tried?"}"
 
-CRITICAL: ${selectedGuide ? 'Reference the guide method.' : 'Focus specifically on the question at hand.'} Be concise to save tokens.`;
+Be concise to save tokens.`;
 
-    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
-  },
-  body: JSON.stringify({
-    model: 'deepseek-chat',
-    messages: [
-      { role: 'system', content: systemPrompt },
-      ...conversationHistory,
-      { role: 'user', content: message }
-    ],
-    temperature: 0.7,
-    max_tokens: 400
-  })
-});
-    const data = await response.json();
+  const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: 'deepseek-chat',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        ...conversationHistory,
+        { role: 'user', content: message }
+      ],
+      temperature: 0.7,
+      max_tokens: 300
+    })
+  });
 
-    if (!response.ok) {
-      throw new Error(data.error?.message || 'DeepSeek API error');
-    }
+  const data = await response.json();
 
-    let reply = data.choices[0].message.content;
-    reply = reply.replace(/\*\*/g, '');
-    reply = reply.replace(/\*/g, '');
-    reply = reply.replace(/#{1,6}\s/g, '');
-
-    return res.status(200).json({
-      reply: reply
-    });
-
-  } catch (error) {
-    console.error('Chat API error:', error);
-    return res.status(500).json({ 
-      error: 'Failed to get AI response',
-      details: error.message 
-    });
+  if (!response.ok) {
+    throw new Error(data.error?.message || 'DeepSeek API error');
   }
+
+  let reply = data.choices[0].message.content;
+  reply = reply.replace(/\*\*/g, '').replace(/\*/g, '').replace(/#{1,6}\s/g, '');
+
+  return res.status(200).json({ reply });
 }
