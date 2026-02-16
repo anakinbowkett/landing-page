@@ -77,8 +77,25 @@ async function handleMarkingRequest(req, res, { studentText, allLineData, questi
   
   // MODEL ANSWERS (Perfect 8/8 responses - cached as input tokens)
   const MODEL_ANSWERS = {
-    'English_Lit_Q1_Hyena': `The writer uses vivid imagery to emphasize the hyena's unappealing appearance. The phrase "ugly beyond redemption" suggests the animal's looks are permanently and irredeemably unpleasant. The description of its coat as a "bungled mix of colours" with spots that lack "the classy ostentation of a leopard's" implies the hyena's markings are chaotic and lack elegance. The metaphor comparing its ears to those of a mouse - "ridiculously mouse-like, large and round" - creates a sense of disproportionate features. The writer's use of negative descriptors such as "scraggly" for the tail and the comparison "like no dog anyone would want as a pet" reinforces the overall impression of an aesthetically displeasing creature.`
-  };
+  // Q4: 2 marks - Name two features
+  'English_Lit_Q4': `Two key features of a Shakespearean tragedy are:
+1. Fatal flaw - The hero has a weakness that causes their downfall (Macbeth's ambition)
+2. Death of the hero - The tragic hero dies at the end (Macbeth is killed)`,
+
+  // Q5: 3 marks - Explain why tragedy
+  'English_Lit_Q5': `Macbeth is considered a tragedy for three reasons:
+1. Hero to villain arc - Macbeth starts as a brave hero but becomes a murderous tyrant
+2. Fatal flaw destroys him - His ambition (fatal flaw) leads to his downfall
+3. Death restores order - Macbeth dies and Malcolm restores peace to Scotland`,
+
+  // Q6: 4 marks - Structure of play
+  'English_Lit_Q6': `The structure of Macbeth follows a five-act tragic pattern:
+Act 1: Macbeth meets the witches and his ambition is awakened
+Act 2: Macbeth murders King Duncan to seize the throne
+Act 3: Macbeth becomes paranoid and kills his friend Banquo
+Act 4: Macbeth visits the witches again and receives more prophecies
+Act 5: Macbeth is killed by Macduff and order is restored to Scotland`
+};
 
   const questionId = questionData?.exerciseId || 'English_Lit_Q1_Hyena';
   const modelAnswer = MODEL_ANSWERS[questionId] || MODEL_ANSWERS['English_Lit_Q1_Hyena'];
@@ -1129,39 +1146,53 @@ Adding indices when dividing instead of subtracting them.
 `,
 
 
- // === ENGLISH LITERATURE (NEW) ===
-  'Language Analysis - AQA Q2': `
-GCSE English Literature - Language Analysis (8 marks)
+ // === ENGLISH LITERATURE ===
+  'Macbeth - Foundation of Play': `
+GCSE English Literature - Macbeth Foundation Guide
 
-WHAT GETS MARKS:
-✓ Direct quotations with "marks" (2 marks)
-✓ Named techniques (2 marks)
-✓ Explain HOW language creates effects (2 marks)
-✓ Link to question (2 marks)
+WHAT TYPE OF PLAY IS MACBETH?
+Macbeth is a TRAGEDY. A tragedy shows a hero's downfall caused by a fatal flaw.
 
-THE METHOD:
-Step 1: Find interesting language in the extract
-Step 2: Quote it with "quotation marks"
-Step 3: Name the technique (metaphor, simile, imagery, personification, adjective)
-Step 4: Explain the EFFECT on the reader
-Step 5: Link back to the question
+KEY FEATURES OF SHAKESPEAREAN TRAGEDY:
+1. Fatal Flaw: The hero has a weakness (Macbeth's is ambition)
+2. Downfall: The hero goes from good to bad (hero to villain)
+3. Supernatural: Witches/ghosts influence events
+4. Death: The tragic hero dies at the end
+5. Order Restored: After death, peace returns
 
-EXAMPLE ANSWER:
-The writer uses violent imagery in "ugly beyond redemption" which suggests the hyena's appearance is permanently flawed and creates a sense of disgust in the reader.
+STRUCTURE OF MACBETH (5 ACTS):
+Act 1: Macbeth meets witches → Ambition awakens
+Act 2: Macbeth murders King Duncan
+Act 3: Macbeth becomes paranoid → Kills Banquo
+Act 4: Macbeth visits witches again → More prophecies
+Act 5: Macbeth dies → Malcolm restores order
+
+WHY IS MACBETH A TRAGEDY?
+- Macbeth starts as a HERO (brave soldier)
+- His AMBITION (fatal flaw) destroys him
+- He becomes a VILLAIN (tyrant, murderer)
+- He DIES at the end (killed by Macduff)
+- This pattern = classic tragedy
+
+THEMES TO REMEMBER:
+- Ambition: Wanting power leads to destruction
+- Guilt: Lady Macbeth can't wash away blood
+- Fate vs Free Will: Do witches control Macbeth or does he choose?
+- Appearance vs Reality: "Fair is foul, foul is fair"
+
+EXAM TIPS:
+✓ Link everything to TRAGEDY structure
+✓ Mention fatal flaw (ambition)
+✓ Show hero → villain transformation
+✓ Reference supernatural elements (witches)
 
 COMMON MISTAKES:
-- No quotation marks around quotes (-1 mark)
-- Just naming techniques without explaining (-2 marks)
-- Vague phrases like "the writer shows" without detail (-1 mark)
-- Not linking back to the question (-1 mark)
-
-KEY TECHNIQUES:
-- Metaphor: Direct comparison (e.g., "the hyena is a shadow")
-- Simile: Uses 'like' or 'as' (e.g., "ears like a mouse")
-- Personification: Human qualities to non-human things
-- Imagery: Descriptive language creating pictures
-- Adjectives: Describing words adding detail
-`
+✗ Forgetting Macbeth starts as a hero
+✗ Not mentioning the fatal flaw
+✗ Missing the supernatural elements
+✗ Not explaining WHY it's a tragedy
+`,
+    
 };
 
   const topic = questionData?.topic || '';
