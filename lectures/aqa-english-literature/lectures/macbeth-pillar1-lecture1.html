@@ -1175,6 +1175,178 @@ html,body{
   color: white;
   font-size: 10px;
 }
+  
+  
+  /* ============================================
+   TIER 2: FEEDBACK PANEL STYLES
+   ============================================ */
+
+.ai-feedback-panel {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  margin: 24px 0;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.feedback-header {
+  background: linear-gradient(135deg, #1d7fe2 0%, #1d6fd1 100%);
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px 10px 0 0;
+}
+
+.marks-badge {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  font-family: 'Crimson Text', serif;
+}
+
+.feedback-status {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+.feedback-section {
+  padding: 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.feedback-section:last-of-type {
+  border-bottom: none;
+}
+
+.feedback-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  font-family: 'Crimson Text', serif;
+}
+
+.strengths h3 {
+  color: #0b7e45;
+}
+
+.weaknesses h3 {
+  color: #e16280;
+}
+
+.next-steps h3 {
+  color: #1d7fe2;
+}
+
+.feedback-section ul,
+.feedback-section ol {
+  margin: 0;
+  padding-left: 24px;
+}
+
+.feedback-section li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.weakness-item {
+  background: #fef2f2;
+  border-left: 4px solid #e16280;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+}
+
+.weakness-problem {
+  font-size: 15px;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.weakness-guide {
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.weakness-guide a {
+  color: #1d7fe2;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.weakness-guide a:hover {
+  text-decoration: underline;
+}
+
+.weakness-example {
+  background: white;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #059669;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+.feedback-actions {
+  padding: 20px 24px;
+  background: #f9fafb;
+  display: flex;
+  gap: 12px;
+  border-radius: 0 0 10px 10px;
+}
+
+.feedback-actions button {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.feedback-actions button:first-child {
+  background: #daa98a;
+  color: white;
+}
+
+.feedback-actions button:first-child:hover {
+  background: #c4916f;
+}
+
+.feedback-actions button:nth-child(2) {
+  background: white;
+  color: #1d7fe2;
+  border: 2px solid #1d7fe2;
+}
+
+.feedback-actions button:nth-child(2):hover {
+  background: #1d7fe2;
+  color: white;
+}
+
+.feedback-actions button:last-child {
+  background: #1d7fe2;
+  color: white;
+}
+
+.feedback-actions button:last-child:hover {
+  background: #1d6fd1;
+}
+
+
 </style>
 </head>
 <body>
@@ -2182,13 +2354,28 @@ function resetQuestion3() {
 // WRITTEN RESPONSE QUESTIONS (Q4-Q6)
 // ============================================
 
-// Q4: 2-mark written response
-function submitWriting4() {
-  const container = document.getElementById('question-box-4');
-  const linesContainer = document.getElementById('writing-lines-4');
+// ============================================
+// AI-POWERED MARKING (Q4-Q6) - TIER 3 SYSTEM
+// ============================================
+
+async function submitWriting4() {
+  await submitWritingQuestion(4, 2);
+}
+
+async function submitWriting5() {
+  await submitWritingQuestion(5, 3);
+}
+
+async function submitWriting6() {
+  await submitWritingQuestion(6, 4);
+}
+
+async function submitWritingQuestion(questionNumber, totalMarks) {
+  const container = document.getElementById(`question-box-${questionNumber}`);
+  const linesContainer = document.getElementById(`writing-lines-${questionNumber}`);
   const lines = linesContainer.querySelectorAll('.writing-line');
-  const submitBtn = document.getElementById('submit-button-4');
-  const markCounter = document.getElementById('mark-counter-4');
+  const submitBtn = document.getElementById(`submit-button-${questionNumber}`);
+  const markCounter = document.getElementById(`mark-counter-${questionNumber}`);
   
   let studentText = '';
   let allLineData = [];
@@ -2205,189 +2392,253 @@ function submitWriting4() {
   }
   
   submitBtn.disabled = true;
-  submitBtn.textContent = 'Marking...';
+  submitBtn.textContent = 'AI is marking...';
   
-  // Simple marking for Q4 (2 marks)
-  const keywords = ['fatal flaw', 'downfall', 'death', 'hero', 'villain', 'ambition', 'supernatural'];
-  const foundKeywords = keywords.filter(kw => studentText.toLowerCase().includes(kw));
-  const marks = Math.min(foundKeywords.length, 2);
+  allLineData.forEach(lineData => {
+    lineData.element.contentEditable = false;
+  });
   
-  markCounter.textContent = `${marks}/2`;
+  const scanOverlay = document.createElement('div');
+  scanOverlay.className = 'scanning-overlay';
+  linesContainer.appendChild(scanOverlay);
   
-  if (marks >= 2) {
-    markCounter.style.backgroundColor = '#54d3ab';
-    markCounter.style.color = 'white';
-    container.classList.add('correct');
-  } else {
-    markCounter.style.backgroundColor = '#e16280';
-    markCounter.style.color = 'white';
-    container.classList.add('incorrect-selection');
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        isMarkingRequest: true,
+        studentText: studentText.trim(),
+        allLineData: allLineData.map(l => ({ text: l.text, page: l.page, lineIndex: l.lineIndex })),
+        questionData: {
+          exerciseId: `English_Lit_Q${questionNumber}`,
+          topic: 'Macbeth - Foundation of Play',
+          question: window.QUESTION_BANK[`English_Lit_Q${questionNumber}`].question,
+          marks: totalMarks
+        }
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}`);
+    }
+    
+    const result = await response.json();
+    
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    scanOverlay.remove();
+    
+    // Apply visual highlights (Tier 1)
+    if (result.highlights && result.highlights.length > 0) {
+      await applyMarkingResults(allLineData, result);
+    }
+    
+    // Show feedback panel (Tier 2)
+    showFeedbackPanel(questionNumber, result, totalMarks);
+    
+    // Update marks
+    markCounter.textContent = `${result.marksAwarded}/${totalMarks}`;
+    if (result.marksAwarded >= Math.ceil(totalMarks * 0.7)) {
+      markCounter.style.backgroundColor = '#54d3ab';
+      markCounter.style.color = 'white';
+      container.classList.add('correct');
+    } else {
+      markCounter.style.backgroundColor = '#e16280';
+      markCounter.style.color = 'white';
+      container.classList.add('incorrect-selection');
+    }
+    
+    container.classList.add('marked');
+    updateProgressSegment(questionNumber);
+    
+    submitBtn.textContent = 'Reset Answer';
+    submitBtn.onclick = () => resetWritingQuestion(questionNumber, totalMarks);
+    submitBtn.disabled = false;
+    
+  } catch (error) {
+    console.error('Marking error:', error);
+    alert('Error during marking: ' + error.message);
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit for Marking';
+    allLineData.forEach(lineData => { lineData.element.contentEditable = true; });
+    if (scanOverlay && scanOverlay.parentNode) scanOverlay.remove();
   }
-  
-  updateProgressSegment(4);
-  submitBtn.textContent = 'Reset';
-  submitBtn.onclick = resetWriting4;
-  submitBtn.disabled = false;
 }
 
-function resetWriting4() {
-  const container = document.getElementById('question-box-4');
-  const linesContainer = document.getElementById('writing-lines-4');
+function resetWritingQuestion(questionNumber, totalMarks) {
+  const container = document.getElementById(`question-box-${questionNumber}`);
+  const linesContainer = document.getElementById(`writing-lines-${questionNumber}`);
   const lines = linesContainer.querySelectorAll('.writing-line');
-  const submitBtn = document.getElementById('submit-button-4');
-  const markCounter = document.getElementById('mark-counter-4');
+  const submitBtn = document.getElementById(`submit-button-${questionNumber}`);
+  const markCounter = document.getElementById(`mark-counter-${questionNumber}`);
   
   lines.forEach(line => {
     line.innerHTML = '';
     line.contentEditable = true;
   });
   
-  markCounter.textContent = '0/2';
+  // Remove feedback panel
+  const feedbackPanel = document.getElementById(`feedback-panel-${questionNumber}`);
+  if (feedbackPanel) feedbackPanel.remove();
+  
+  markCounter.textContent = `0/${totalMarks}`;
   markCounter.style.backgroundColor = 'transparent';
   markCounter.style.color = '#555';
   container.classList.remove('correct', 'incorrect-selection', 'marked');
   submitBtn.textContent = 'Submit for Marking';
-  submitBtn.onclick = submitWriting4;
-  resetProgressSegment(4);
+  submitBtn.onclick = () => {
+    if (questionNumber === 4) submitWriting4();
+    if (questionNumber === 5) submitWriting5();
+    if (questionNumber === 6) submitWriting6();
+  };
+  resetProgressSegment(questionNumber);
 }
 
-// Q5: 3-mark written response
-function submitWriting5() {
-  const container = document.getElementById('question-box-5');
-  const linesContainer = document.getElementById('writing-lines-5');
-  const lines = linesContainer.querySelectorAll('.writing-line');
-  const submitBtn = document.getElementById('submit-button-5');
-  const markCounter = document.getElementById('mark-counter-5');
+// ============================================
+// TIER 2: FEEDBACK PANEL
+// ============================================
+
+function showFeedbackPanel(questionNumber, result, totalMarks) {
+  // Remove existing panel if present
+  const existingPanel = document.getElementById(`feedback-panel-${questionNumber}`);
+  if (existingPanel) existingPanel.remove();
   
-  let studentText = '';
-  let allLineData = [];
+  const container = document.getElementById(`question-box-${questionNumber}`);
+  const submitBtn = document.getElementById(`submit-button-${questionNumber}`);
   
-  lines.forEach((line, index) => {
-    const text = line.textContent.trim();
-    allLineData.push({ text: text, page: 1, lineIndex: index, element: line });
-    if (text) studentText += text + ' ';
-  });
+  const feedbackPanel = document.createElement('div');
+  feedbackPanel.id = `feedback-panel-${questionNumber}`;
+  feedbackPanel.className = 'ai-feedback-panel';
   
-  if (!studentText.trim()) {
-    alert('Please write your answer first!');
-    return;
+  // Determine status
+  const percentage = (result.marksAwarded / totalMarks) * 100;
+  let statusText = 'Needs Improvement';
+  let statusColor = '#e16280';
+  
+  if (percentage >= 90) {
+    statusText = 'Excellent';
+    statusColor = '#54d3ab';
+  } else if (percentage >= 70) {
+    statusText = 'Good';
+    statusColor = '#54d3ab';
+  } else if (percentage >= 50) {
+    statusText = 'Satisfactory';
+    statusColor = '#f59e0b';
   }
   
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Marking...';
-  
-  // Simple marking for Q5 (3 marks)
-  const keywords = ['tragedy', 'hero to villain', 'ambition', 'death', 'downfall', 'fatal flaw'];
-  const foundKeywords = keywords.filter(kw => studentText.toLowerCase().includes(kw));
-  const marks = Math.min(foundKeywords.length, 3);
-  
-  markCounter.textContent = `${marks}/3`;
-  
-  if (marks >= 2) {
-    markCounter.style.backgroundColor = '#54d3ab';
-    markCounter.style.color = 'white';
-    container.classList.add('correct');
-  } else {
-    markCounter.style.backgroundColor = '#e16280';
-    markCounter.style.color = 'white';
-    container.classList.add('incorrect-selection');
+  // Build strengths HTML
+  let strengthsHTML = '';
+  if (result.strengths && result.strengths.length > 0) {
+    strengthsHTML = `
+      <div class="feedback-section strengths">
+        <h3>✓ What You Did Well (${result.marksAwarded}/${totalMarks} marks)</h3>
+        <ul>
+          ${result.strengths.map(s => `<li>${s}</li>`).join('')}
+        </ul>
+      </div>
+    `;
   }
   
-  updateProgressSegment(5);
-  submitBtn.textContent = 'Reset';
-  submitBtn.onclick = resetWriting5;
-  submitBtn.disabled = false;
+  // Build weaknesses HTML
+  let weaknessesHTML = '';
+  if (result.weaknesses && result.weaknesses.length > 0) {
+    const marksLost = totalMarks - result.marksAwarded;
+    weaknessesHTML = `
+      <div class="feedback-section weaknesses">
+        <h3>✗ How to Improve (Lost ${marksLost} mark${marksLost !== 1 ? 's' : ''})</h3>
+        ${result.weaknesses.map(w => `
+          <div class="weakness-item">
+            <div class="weakness-problem">
+              <strong>Missing:</strong> ${w.issue}
+            </div>
+            <div class="weakness-guide">
+              📖 <a href="#" onclick="openGuideSection('${w.guideSection}'); return false;">
+                See Guide: ${w.guideSection}
+              </a>
+            </div>
+            ${w.example ? `
+              <div class="weakness-example">
+                💡 Example: ${w.example}
+              </div>
+            ` : ''}
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+  
+  // Build next steps HTML
+  let nextStepsHTML = '';
+  if (result.nextSteps && result.nextSteps.length > 0) {
+    nextStepsHTML = `
+      <div class="feedback-section next-steps">
+        <h3>📋 Your Next Steps</h3>
+        <ol>
+          ${result.nextSteps.map(step => `<li>${step}</li>`).join('')}
+        </ol>
+      </div>
+    `;
+  }
+  
+  feedbackPanel.innerHTML = `
+    <div class="feedback-header">
+      <span class="marks-badge">${result.marksAwarded}/${totalMarks} marks</span>
+      <span class="feedback-status" style="background: ${statusColor}20; color: ${statusColor};">
+        ${statusText}
+      </span>
+    </div>
+    
+    ${strengthsHTML}
+    ${weaknessesHTML}
+    ${nextStepsHTML}
+    
+    <div class="feedback-actions">
+      <button onclick="openReferenceGuide()">View Full Guide</button>
+      <button onclick="resetWritingQuestion(${questionNumber}, ${totalMarks})">Try Again</button>
+      <button onclick="askAIAboutQuestion(${questionNumber})">Ask AI for Help</button>
+    </div>
+  `;
+  
+  // Insert panel after submit button
+  submitBtn.parentNode.insertBefore(feedbackPanel, submitBtn.nextSibling);
 }
 
-function resetWriting5() {
-  const container = document.getElementById('question-box-5');
-  const linesContainer = document.getElementById('writing-lines-5');
-  const lines = linesContainer.querySelectorAll('.writing-line');
-  const submitBtn = document.getElementById('submit-button-5');
-  const markCounter = document.getElementById('mark-counter-5');
-  
-  lines.forEach(line => {
-    line.innerHTML = '';
-    line.contentEditable = true;
-  });
-  
-  markCounter.textContent = '0/3';
-  markCounter.style.backgroundColor = 'transparent';
-  markCounter.style.color = '#555';
-  container.classList.remove('correct', 'incorrect-selection', 'marked');
-  submitBtn.textContent = 'Submit for Marking';
-  submitBtn.onclick = submitWriting5;
-  resetProgressSegment(5);
+function openGuideSection(section) {
+  // Open reference modal and scroll to section
+  const referenceModal = document.getElementById('referenceModal');
+  if (referenceModal) {
+    referenceModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+  alert(`Opening guide section: ${section}\n(Guide navigation will be fully implemented in next update)`);
 }
 
-// Q6: 4-mark written response
-function submitWriting6() {
-  const container = document.getElementById('question-box-6');
-  const linesContainer = document.getElementById('writing-lines-6');
-  const lines = linesContainer.querySelectorAll('.writing-line');
-  const submitBtn = document.getElementById('submit-button-6');
-  const markCounter = document.getElementById('mark-counter-6');
-  
-  let studentText = '';
-  let allLineData = [];
-  
-  lines.forEach((line, index) => {
-    const text = line.textContent.trim();
-    allLineData.push({ text: text, page: 1, lineIndex: index, element: line });
-    if (text) studentText += text + ' ';
-  });
-  
-  if (!studentText.trim()) {
-    alert('Please write your answer first!');
-    return;
+function openReferenceGuide() {
+  const referenceBtn = document.getElementById('referenceBtn');
+  if (referenceBtn) {
+    referenceBtn.click();
   }
-  
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Marking...';
-  
-  // Simple marking for Q6 (4 marks - structure of play)
-  const acts = ['act 1', 'act 2', 'act 3', 'act 4', 'act 5', 'witches', 'duncan', 'murder', 'death', 'paranoid'];
-  const foundActs = acts.filter(act => studentText.toLowerCase().includes(act));
-  const marks = Math.min(Math.floor(foundActs.length / 2), 4);
-  
-  markCounter.textContent = `${marks}/4`;
-  
-  if (marks >= 3) {
-    markCounter.style.backgroundColor = '#54d3ab';
-    markCounter.style.color = 'white';
-    container.classList.add('correct');
-  } else {
-    markCounter.style.backgroundColor = '#e16280';
-    markCounter.style.color = 'white';
-    container.classList.add('incorrect-selection');
-  }
-  
-  updateProgressSegment(6);
-  submitBtn.textContent = 'Reset';
-  submitBtn.onclick = resetWriting6;
-  submitBtn.disabled = false;
 }
 
-function resetWriting6() {
-  const container = document.getElementById('question-box-6');
-  const linesContainer = document.getElementById('writing-lines-6');
-  const lines = linesContainer.querySelectorAll('.writing-line');
-  const submitBtn = document.getElementById('submit-button-6');
-  const markCounter = document.getElementById('mark-counter-6');
+function askAIAboutQuestion(questionNumber) {
+  // Set current question and focus chat
+  if (typeof window.setCurrentQuestion === 'function') {
+    window.setCurrentQuestion(questionNumber);
+  }
   
-  lines.forEach(line => {
-    line.innerHTML = '';
-    line.contentEditable = true;
-  });
+  const chatInput = document.getElementById('chatInput');
+  if (chatInput) {
+    chatInput.value = 'Why did I lose marks on this question?';
+    chatInput.focus();
+  }
   
-  markCounter.textContent = '0/4';
-  markCounter.style.backgroundColor = 'transparent';
-  markCounter.style.color = '#555';
-  container.classList.remove('correct', 'incorrect-selection', 'marked');
-  submitBtn.textContent = 'Submit for Marking';
-  submitBtn.onclick = submitWriting6;
-  resetProgressSegment(6);
+  // Scroll to chat
+  const chatSide = document.querySelector('.chat-side');
+  if (chatSide) {
+    chatSide.scrollIntoView({ behavior: 'smooth' });
+  }
 }
+
 
 // ============================================
 // ENGLISH LITERATURE MARKING SYSTEM
