@@ -1229,146 +1229,165 @@ html,body{
 <div class="main-container">
   <div class="content-side" id="contentSide">
 
-<!-- QUESTION 1 - ENGLISH LITERATURE FORMAT -->
+<!-- QUESTION 1 - MULTIPLE CHOICE -->
 <div class="question-box-1" id="question-box-1">
   <div class="question-number-label-1">Q1 of 6</div>
-  <div class="mark-counter-1" id="mark-counter-1">0/8</div>
-  
-  <!-- Question Header -->
-  <div class="question-header-container">
-    <div class="question-number-box">
-      <span class="q-num-small">0</span>
-      <span class="q-num-divider">|</span>
-      <span class="q-num-large">2</span>
-    </div>
-    
-    <div class="question-instruction">
-      Look in detail at this extract, from lines 10 to 19 of the source:
-    </div>
-    
+  <div class="mark-counter-1" id="mark-counter-1">0/1</div>
+  <div class="question-title-1">What type of play is Macbeth?</div>
+  <div class="answer-container-1">
+    <button class="answer-option-1-1" onclick="toggleSingleAnswer1('option1', this)">A Comedy</button>
+    <button class="answer-option-1-2" onclick="toggleSingleAnswer1('option2', this)">A Tragedy</button>
+    <button class="answer-option-1-3" onclick="toggleSingleAnswer1('option3', this)">A History Play</button>
+    <button class="answer-option-1-4" onclick="toggleSingleAnswer1('option4', this)">A Romance</button>
   </div>
-  
-  <!-- Extract Box -->
-  <div class="extract-box">
-    <p>I am not one to hold a prejudice against any animal, but it is a plain fact that the spotted hyena is not well served by its appearance. It is ugly beyond redemption. Its shaggy, coarse coat is a bungled mix of colours, with the spots having none of the classy ostentation of a leopard's, they look rather like the symptoms of a skin disease, and the animal is broad and too massive, with a high forehead, like that of a bear, but suffering from a receding hairline, and with ears that look ridiculously mouse-like, large and round, when they haven't been torn off in battle. The mouth is forever open and panting. The nostrils are too big. The tail is scraggly and unwavering. All the parts put together look doglike, but like no dog anyone would want as a pet.</p>
-  </div>
-  
-  <!-- Question Prompt -->
-  <div class="question-prompt-text">
-    How does the writer use language here to describe the hyena's appearance?
-  </div>
-  
-  <!-- Writing Guidance -->
-  <div class="writing-guidance">
-    You could include the writer's choice of:
-    <ul>
-      <li>words and phrases</li>
-      <li>language features and techniques</li>
-      <li>sentence forms.</li>
-    </ul>
-  </div>
-  
-  <!-- Mark Allocation -->
-  <div class="marks-indicator">[8 marks]</div>
-  
-  <!-- AI Annotations Container (appears above lines after marking) -->
-  <div class="ai-annotations-container" id="ai-annotations-1"></div>
-  
-  <!-- Writing Lines -->
-  <div class="writing-lines-container" id="writing-lines-1">
-    <div class="writing-line" contenteditable="true" data-line="1" placeholder="Start typing your answer here..."></div>
-    <div class="writing-line" contenteditable="true" data-line="2"></div>
-    <div class="writing-line" contenteditable="true" data-line="3"></div>
-    <div class="writing-line" contenteditable="true" data-line="4"></div>
-    <div class="writing-line" contenteditable="true" data-line="5"></div>
-    <div class="writing-line" contenteditable="true" data-line="6"></div>
-    <div class="writing-line" contenteditable="true" data-line="7"></div>
-    <div class="writing-line" contenteditable="true" data-line="8"></div>
-    <div class="writing-line" contenteditable="true" data-line="9"></div>
-    <div class="writing-line" contenteditable="true" data-line="10"></div>
-  </div>
-  
- <button class="submit-button-1" id="submit-button-1" onclick="submitWriting1()">Submit for Marking</button>
-  
-  <!-- Add Page Button -->
-  <div class="add-page-controls">
-    <button class="add-page-btn" id="add-page-btn-1" onclick="addWritingPage(1)">
-      + Add Page
-    </button>
-  </div>
-  
-  <!-- Additional Pages Container -->
-  <div class="additional-pages-container" id="additional-pages-1"></div>
+  <button class="submit-button-1" id="submit-button-1" onclick="submitAnswer1()">Submit</button>
 </div>
 
-<!-- QUESTION 2 -->
+<!-- QUESTION 2 - MULTIPLE CHOICE -->
 <div class="question-box-2" id="question-box-2">
   <div class="question-number-label-2">Q2 of 6</div>
   <div class="mark-counter-2" id="mark-counter-2">0/1</div>
-  <div class="question-title-2">Express 18 as a product of its prime factors.</div>
+  <div class="question-title-2">What is Macbeth's fatal flaw that leads to his downfall?</div>
   <div class="answer-container-2">
-    <button class="answer-option-2-1" onclick="toggleSingleAnswer2('option1', this)">2 × 3²</button>
-    <button class="answer-option-2-2" onclick="toggleSingleAnswer2('option2', this)">2 × 9</button>
-    <button class="answer-option-2-3" onclick="toggleSingleAnswer2('option3', this)">3 × 6</button>
-    <button class="answer-option-2-4" onclick="toggleSingleAnswer2('option4', this)">2 × 2 × 9</button>
+    <button class="answer-option-2-1" onclick="toggleSingleAnswer2('option1', this)">His loyalty</button>
+    <button class="answer-option-2-2" onclick="toggleSingleAnswer2('option2', this)">His ambition</button>
+    <button class="answer-option-2-3" onclick="toggleSingleAnswer2('option3', this)">His honesty</button>
+    <button class="answer-option-2-4" onclick="toggleSingleAnswer2('option4', this)">His cowardice</button>
   </div>
   <button class="submit-button-2" id="submit-button-2" onclick="submitAnswer2()">Submit</button>
 </div>
 
-<!-- QUESTION 3 -->
+<!-- QUESTION 3 - MULTIPLE CHOICE -->
 <div class="question-box-3" id="question-box-3">
   <div class="question-number-label-3">Q3 of 6</div>
   <div class="mark-counter-3" id="mark-counter-3">0/1</div>
-  <div class="question-title-3">Write 24 as a product of prime factors in index form.</div>
+  <div class="question-title-3">Which supernatural element appears in Macbeth?</div>
   <div class="answer-container-3">
-    <button class="answer-option-3-1" onclick="toggleSingleAnswer3('option1', this)">2³ × 3</button>
-    <button class="answer-option-3-2" onclick="toggleSingleAnswer3('option2', this)">2 × 2 × 6</button>
-    <button class="answer-option-3-3" onclick="toggleSingleAnswer3('option3', this)">4 × 6</button>
-    <button class="answer-option-3-4" onclick="toggleSingleAnswer3('option4', this)">2 × 12</button>
+    <button class="answer-option-3-1" onclick="toggleSingleAnswer3('option1', this)">Ghosts only</button>
+    <button class="answer-option-3-2" onclick="toggleSingleAnswer3('option2', this)">The Witches</button>
+    <button class="answer-option-3-3" onclick="toggleSingleAnswer3('option3', this)">Angels</button>
+    <button class="answer-option-3-4" onclick="toggleSingleAnswer3('option4', this)">Dragons</button>
   </div>
   <button class="submit-button-3" id="submit-button-3" onclick="submitAnswer3()">Submit</button>
 </div>
 
-<!-- QUESTION 4 -->
+<!-- QUESTION 4 - WRITTEN RESPONSE (2 MARKS) -->
 <div class="question-box-4" id="question-box-4">
   <div class="question-number-label-4">Q4 of 6</div>
-  <div class="mark-counter-4" id="mark-counter-4">0/1</div>
-  <div class="question-title-4">Express 30 as a product of its prime factors.</div>
-  <div class="answer-container-4">
-    <button class="answer-option-4-1" onclick="toggleSingleAnswer4('option1', this)">2 × 3 × 5</button>
-    <button class="answer-option-4-2" onclick="toggleSingleAnswer4('option2', this)">2 × 15</button>
-    <button class="answer-option-4-3" onclick="toggleSingleAnswer4('option3', this)">3 × 10</button>
-    <button class="answer-option-4-4" onclick="toggleSingleAnswer4('option4', this)">5 × 6</button>
+  <div class="mark-counter-4" id="mark-counter-4">0/2</div>
+  
+  <div class="question-header-container">
+    <div class="question-number-box">
+      <span class="q-num-small">0</span>
+      <span class="q-num-divider">|</span>
+      <span class="q-num-large">4</span>
+    </div>
+    <div class="question-instruction">
+      Name two key features of a Shakespearean tragedy.
+    </div>
   </div>
-  <button class="submit-button-4" id="submit-button-4" onclick="submitAnswer4()">Submit</button>
+  
+  <div class="writing-guidance">
+    Think about:
+    <ul>
+      <li>What happens to the main character?</li>
+      <li>What causes their downfall?</li>
+    </ul>
+  </div>
+  
+  <div class="marks-indicator">[2 marks]</div>
+  
+  <div class="ai-annotations-container" id="ai-annotations-4"></div>
+  
+  <div class="writing-lines-container" id="writing-lines-4">
+    <div class="writing-line" contenteditable="true" data-line="1" placeholder="Feature 1:"></div>
+    <div class="writing-line" contenteditable="true" data-line="2" placeholder="Feature 2:"></div>
+    <div class="writing-line" contenteditable="true" data-line="3"></div>
+  </div>
+  
+  <button class="submit-button-4" id="submit-button-4" onclick="submitWriting4()">Submit for Marking</button>
 </div>
 
-<!-- QUESTION 5 -->
+<!-- QUESTION 5 - WRITTEN RESPONSE (3 MARKS) -->
 <div class="question-box-5" id="question-box-5">
   <div class="question-number-label-5">Q5 of 6</div>
-  <div class="mark-counter-5" id="mark-counter-5">0/1</div>
-  <div class="question-title-5">Write 36 as a product of prime factors in index form.</div>
-  <div class="answer-container-5">
-    <button class="answer-option-5-1" onclick="toggleSingleAnswer5('option1', this)">2² × 3²</button>
-    <button class="answer-option-5-2" onclick="toggleSingleAnswer5('option2', this)">2 × 18</button>
-    <button class="answer-option-5-3" onclick="toggleSingleAnswer5('option3', this)">6 × 6</button>
-    <button class="answer-option-5-4" onclick="toggleSingleAnswer5('option4', this)">3 × 12</button>
+  <div class="mark-counter-5" id="mark-counter-5">0/3</div>
+  
+  <div class="question-header-container">
+    <div class="question-number-box">
+      <span class="q-num-small">0</span>
+      <span class="q-num-divider">|</span>
+      <span class="q-num-large">5</span>
+    </div>
+    <div class="question-instruction">
+      Explain why Macbeth is considered a tragedy. Give three reasons.
+    </div>
   </div>
-  <button class="submit-button-5" id="submit-button-5" onclick="submitAnswer5()">Submit</button>
+  
+  <div class="writing-guidance">
+    You should mention:
+    <ul>
+      <li>Macbeth's character arc (hero to villain)</li>
+      <li>The role of ambition</li>
+      <li>The outcome of the play</li>
+    </ul>
+  </div>
+  
+  <div class="marks-indicator">[3 marks]</div>
+  
+  <div class="ai-annotations-container" id="ai-annotations-5"></div>
+  
+  <div class="writing-lines-container" id="writing-lines-5">
+    <div class="writing-line" contenteditable="true" data-line="1" placeholder="Reason 1:"></div>
+    <div class="writing-line" contenteditable="true" data-line="2" placeholder="Reason 2:"></div>
+    <div class="writing-line" contenteditable="true" data-line="3" placeholder="Reason 3:"></div>
+    <div class="writing-line" contenteditable="true" data-line="4"></div>
+  </div>
+  
+  <button class="submit-button-5" id="submit-button-5" onclick="submitWriting5()">Submit for Marking</button>
 </div>
 
-<!-- QUESTION 6 -->
+<!-- QUESTION 6 - WRITTEN RESPONSE (4 MARKS) -->
 <div class="question-box-6" id="question-box-6">
   <div class="question-number-label-6">Q6 of 6</div>
-  <div class="mark-counter-6" id="mark-counter-6">0/1</div>
-  <div class="question-title-6">Express 48 as a product of prime factors in index form.</div>
-  <div class="answer-container-6">
-    <button class="answer-option-6-1" onclick="toggleSingleAnswer6('option1', this)">2⁴ × 3</button>
-    <button class="answer-option-6-2" onclick="toggleSingleAnswer6('option2', this)">2³ × 3²</button>
-    <button class="answer-option-6-3" onclick="toggleSingleAnswer6('option3', this)">4 × 12</button>
-    <button class="answer-option-6-4" onclick="toggleSingleAnswer6('option4', this)">2 × 24</button>
+  <div class="mark-counter-6" id="mark-counter-6">0/4</div>
+  
+  <div class="question-header-container">
+    <div class="question-number-box">
+      <span class="q-num-small">0</span>
+      <span class="q-num-divider">|</span>
+      <span class="q-num-large">6</span>
+    </div>
+    <div class="question-instruction">
+      Describe the structure of Macbeth. What happens in each act?
+    </div>
   </div>
-  <button class="submit-button-6" id="submit-button-6" onclick="submitAnswer6()">Submit</button>
+  
+  <div class="writing-guidance">
+    Include:
+    <ul>
+      <li>Act 1: The beginning (witches, ambition starts)</li>
+      <li>Act 2: The murder of Duncan</li>
+      <li>Act 3: Macbeth becomes paranoid</li>
+      <li>Act 4: Witches' prophecies again</li>
+      <li>Act 5: Macbeth's death</li>
+    </ul>
+  </div>
+  
+  <div class="marks-indicator">[4 marks]</div>
+  
+  <div class="ai-annotations-container" id="ai-annotations-6"></div>
+  
+  <div class="writing-lines-container" id="writing-lines-6">
+    <div class="writing-line" contenteditable="true" data-line="1" placeholder="Act 1:"></div>
+    <div class="writing-line" contenteditable="true" data-line="2" placeholder="Act 2:"></div>
+    <div class="writing-line" contenteditable="true" data-line="3" placeholder="Act 3:"></div>
+    <div class="writing-line" contenteditable="true" data-line="4" placeholder="Act 4:"></div>
+    <div class="writing-line" contenteditable="true" data-line="5" placeholder="Act 5:"></div>
+    <div class="writing-line" contenteditable="true" data-line="6"></div>
+  </div>
+  
+  <button class="submit-button-6" id="submit-button-6" onclick="submitWriting6()">Submit for Marking</button>
 </div>
 
 
@@ -1971,6 +1990,72 @@ document.addEventListener('DOMContentLoaded', function() {
   
 <script>
 // Question answer functions
+
+  // ============================================
+// MULTIPLE CHOICE QUESTIONS (Q1-Q3)
+// ============================================
+
+function toggleSingleAnswer1(answer, button) {
+  const questionBox = document.getElementById('question-box-1');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-1"]');
+  allButtons.forEach(btn => btn.classList.remove('selected'));
+  button.classList.add('selected');
+}
+
+function submitAnswer1() {
+  const correctAnswer = 'A Tragedy';
+  const questionBox = document.getElementById('question-box-1');
+  const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-1"].selected');
+  const allButtons = questionBox.querySelectorAll('[class^="answer-option-1"]');
+  const markCounter = document.getElementById('mark-counter-1');
+
+  const gotItRight = Array.from(selectedButtons).some(btn => btn.textContent.trim() === correctAnswer);
+  const yourScore = gotItRight ? 1 : 0;
+
+  markCounter.textContent = `${yourScore}/1`;
+  allButtons.forEach(button => {
+    if (button.textContent.trim() === correctAnswer) {
+      button.classList.add('correct-answer');
+    }
+    button.disabled = true;
+  });
+
+  if (yourScore === 1) {
+    markCounter.style.backgroundColor = '#54d3ab';
+    markCounter.style.color = 'white';
+    questionBox.classList.add('correct');
+  } else {
+    markCounter.style.backgroundColor = '#e16280';
+    markCounter.style.color = 'white';
+    questionBox.classList.add('incorrect-selection');
+  }
+
+  updateProgressSegment(1);
+  const submitBtn = document.getElementById('submit-button-1');
+  submitBtn.innerText = 'Reset';
+  submitBtn.onclick = resetQuestion1;
+}
+
+function resetQuestion1() {
+  const questionBox = document.getElementById('question-box-1');
+  const buttons = questionBox.querySelectorAll('[class^="answer-option-1"]');
+  const submitBtn = document.getElementById('submit-button-1');
+  const markCounter = document.getElementById('mark-counter-1');
+
+  buttons.forEach(button => {
+    button.classList.remove('selected', 'correct-answer');
+    button.disabled = false;
+  });
+
+  markCounter.textContent = '0/1';
+  markCounter.style.backgroundColor = 'transparent';
+  markCounter.style.color = '#555';
+  questionBox.classList.remove('correct', 'incorrect-selection');
+  resetProgressSegment(1);
+  submitBtn.innerText = 'Submit';
+  submitBtn.onclick = submitAnswer1;
+}
+
 function toggleSingleAnswer2(answer, button) {
   const questionBox = document.getElementById('question-box-2');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-2"]');
@@ -1979,7 +2064,7 @@ function toggleSingleAnswer2(answer, button) {
 }
 
 function submitAnswer2() {
-  const correctAnswer = '2 × 3²';
+  const correctAnswer = 'His ambition';
   const questionBox = document.getElementById('question-box-2');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-2"].selected');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-2"]');
@@ -2040,7 +2125,7 @@ function toggleSingleAnswer3(answer, button) {
 }
 
 function submitAnswer3() {
-  const correctAnswer = '2³ × 3';
+  const correctAnswer = 'The Witches';
   const questionBox = document.getElementById('question-box-3');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-3"].selected');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-3"]');
@@ -2093,187 +2178,215 @@ function resetQuestion3() {
   submitBtn.onclick = submitAnswer3;
 }
 
-function toggleSingleAnswer4(answer, button) {
-  const questionBox = document.getElementById('question-box-4');
-  const allButtons = questionBox.querySelectorAll('[class^="answer-option-4"]');
-  allButtons.forEach(btn => btn.classList.remove('selected'));
-  button.classList.add('selected');
-}
+// ============================================
+// WRITTEN RESPONSE QUESTIONS (Q4-Q6)
+// ============================================
 
-function submitAnswer4() {
-  const correctAnswer = '2 × 3 × 5';
-  const questionBox = document.getElementById('question-box-4');
-  const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-4"].selected');
-  const allButtons = questionBox.querySelectorAll('[class^="answer-option-4"]');
+// Q4: 2-mark written response
+function submitWriting4() {
+  const container = document.getElementById('question-box-4');
+  const linesContainer = document.getElementById('writing-lines-4');
+  const lines = linesContainer.querySelectorAll('.writing-line');
+  const submitBtn = document.getElementById('submit-button-4');
   const markCounter = document.getElementById('mark-counter-4');
-
-  const gotItRight = Array.from(selectedButtons).some(btn => btn.textContent.trim() === correctAnswer);
-  const yourScore = gotItRight ? 1 : 0;
-
-  markCounter.textContent = `${yourScore}/1`;
-  allButtons.forEach(button => {
-    if (button.textContent.trim() === correctAnswer) {
-      button.classList.add('correct-answer');
-    }
-    button.disabled = true;
+  
+  let studentText = '';
+  let allLineData = [];
+  
+  lines.forEach((line, index) => {
+    const text = line.textContent.trim();
+    allLineData.push({ text: text, page: 1, lineIndex: index, element: line });
+    if (text) studentText += text + ' ';
   });
-
-  if (yourScore === 1) {
+  
+  if (!studentText.trim()) {
+    alert('Please write your answer first!');
+    return;
+  }
+  
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Marking...';
+  
+  // Simple marking for Q4 (2 marks)
+  const keywords = ['fatal flaw', 'downfall', 'death', 'hero', 'villain', 'ambition', 'supernatural'];
+  const foundKeywords = keywords.filter(kw => studentText.toLowerCase().includes(kw));
+  const marks = Math.min(foundKeywords.length, 2);
+  
+  markCounter.textContent = `${marks}/2`;
+  
+  if (marks >= 2) {
     markCounter.style.backgroundColor = '#54d3ab';
     markCounter.style.color = 'white';
-    questionBox.classList.add('correct');
+    container.classList.add('correct');
   } else {
     markCounter.style.backgroundColor = '#e16280';
     markCounter.style.color = 'white';
-    questionBox.classList.add('incorrect-selection');
+    container.classList.add('incorrect-selection');
   }
-
+  
   updateProgressSegment(4);
-  const submitBtn = document.getElementById('submit-button-4');
-  submitBtn.innerText = 'Reset';
-  submitBtn.onclick = resetQuestion4;
+  submitBtn.textContent = 'Reset';
+  submitBtn.onclick = resetWriting4;
+  submitBtn.disabled = false;
 }
 
-function resetQuestion4() {
-  const questionBox = document.getElementById('question-box-4');
-  const buttons = questionBox.querySelectorAll('[class^="answer-option-4"]');
+function resetWriting4() {
+  const container = document.getElementById('question-box-4');
+  const linesContainer = document.getElementById('writing-lines-4');
+  const lines = linesContainer.querySelectorAll('.writing-line');
   const submitBtn = document.getElementById('submit-button-4');
   const markCounter = document.getElementById('mark-counter-4');
-
-  buttons.forEach(button => {
-    button.classList.remove('selected', 'correct-answer');
-    button.disabled = false;
+  
+  lines.forEach(line => {
+    line.innerHTML = '';
+    line.contentEditable = true;
   });
-
-  markCounter.textContent = '0/1';
+  
+  markCounter.textContent = '0/2';
   markCounter.style.backgroundColor = 'transparent';
   markCounter.style.color = '#555';
-  questionBox.classList.remove('correct', 'incorrect-selection');
+  container.classList.remove('correct', 'incorrect-selection', 'marked');
+  submitBtn.textContent = 'Submit for Marking';
+  submitBtn.onclick = submitWriting4;
   resetProgressSegment(4);
-  submitBtn.innerText = 'Submit';
-  submitBtn.onclick = submitAnswer4;
 }
 
-function toggleSingleAnswer5(answer, button) {
-  const questionBox = document.getElementById('question-box-5');
-  const allButtons = questionBox.querySelectorAll('[class^="answer-option-5"]');
-  allButtons.forEach(btn => btn.classList.remove('selected'));
-  button.classList.add('selected');
-}
-
-function submitAnswer5() {
-  const correctAnswer = '2² × 3²';
-  const questionBox = document.getElementById('question-box-5');
-  const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-5"].selected');
-  const allButtons = questionBox.querySelectorAll('[class^="answer-option-5"]');
+// Q5: 3-mark written response
+function submitWriting5() {
+  const container = document.getElementById('question-box-5');
+  const linesContainer = document.getElementById('writing-lines-5');
+  const lines = linesContainer.querySelectorAll('.writing-line');
+  const submitBtn = document.getElementById('submit-button-5');
   const markCounter = document.getElementById('mark-counter-5');
-
-  const gotItRight = Array.from(selectedButtons).some(btn => btn.textContent.trim() === correctAnswer);
-  const yourScore = gotItRight ? 1 : 0;
-
-  markCounter.textContent = `${yourScore}/1`;
-  allButtons.forEach(button => {
-    if (button.textContent.trim() === correctAnswer) {
-      button.classList.add('correct-answer');
-    }
-    button.disabled = true;
+  
+  let studentText = '';
+  let allLineData = [];
+  
+  lines.forEach((line, index) => {
+    const text = line.textContent.trim();
+    allLineData.push({ text: text, page: 1, lineIndex: index, element: line });
+    if (text) studentText += text + ' ';
   });
-
-  if (yourScore === 1) {
+  
+  if (!studentText.trim()) {
+    alert('Please write your answer first!');
+    return;
+  }
+  
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Marking...';
+  
+  // Simple marking for Q5 (3 marks)
+  const keywords = ['tragedy', 'hero to villain', 'ambition', 'death', 'downfall', 'fatal flaw'];
+  const foundKeywords = keywords.filter(kw => studentText.toLowerCase().includes(kw));
+  const marks = Math.min(foundKeywords.length, 3);
+  
+  markCounter.textContent = `${marks}/3`;
+  
+  if (marks >= 2) {
     markCounter.style.backgroundColor = '#54d3ab';
     markCounter.style.color = 'white';
-    questionBox.classList.add('correct');
+    container.classList.add('correct');
   } else {
     markCounter.style.backgroundColor = '#e16280';
     markCounter.style.color = 'white';
-    questionBox.classList.add('incorrect-selection');
+    container.classList.add('incorrect-selection');
   }
-
+  
   updateProgressSegment(5);
-  const submitBtn = document.getElementById('submit-button-5');
-  submitBtn.innerText = 'Reset';
-  submitBtn.onclick = resetQuestion5;
+  submitBtn.textContent = 'Reset';
+  submitBtn.onclick = resetWriting5;
+  submitBtn.disabled = false;
 }
 
-function resetQuestion5() {
-  const questionBox = document.getElementById('question-box-5');
-  const buttons = questionBox.querySelectorAll('[class^="answer-option-5"]');
+function resetWriting5() {
+  const container = document.getElementById('question-box-5');
+  const linesContainer = document.getElementById('writing-lines-5');
+  const lines = linesContainer.querySelectorAll('.writing-line');
   const submitBtn = document.getElementById('submit-button-5');
   const markCounter = document.getElementById('mark-counter-5');
-
-  buttons.forEach(button => {
-    button.classList.remove('selected', 'correct-answer');
-    button.disabled = false;
+  
+  lines.forEach(line => {
+    line.innerHTML = '';
+    line.contentEditable = true;
   });
-
-  markCounter.textContent = '0/1';
+  
+  markCounter.textContent = '0/3';
   markCounter.style.backgroundColor = 'transparent';
   markCounter.style.color = '#555';
-  questionBox.classList.remove('correct', 'incorrect-selection');
+  container.classList.remove('correct', 'incorrect-selection', 'marked');
+  submitBtn.textContent = 'Submit for Marking';
+  submitBtn.onclick = submitWriting5;
   resetProgressSegment(5);
-  submitBtn.innerText = 'Submit';
-  submitBtn.onclick = submitAnswer5;
 }
 
-function toggleSingleAnswer6(answer, button) {
-  const questionBox = document.getElementById('question-box-6');
-  const allButtons = questionBox.querySelectorAll('[class^="answer-option-6"]');
-  allButtons.forEach(btn => btn.classList.remove('selected'));
-  button.classList.add('selected');
-}
-
-function submitAnswer6() {
-  const correctAnswer = '2⁴ × 3';
-  const questionBox = document.getElementById('question-box-6');
-  const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-6"].selected');
-  const allButtons = questionBox.querySelectorAll('[class^="answer-option-6"]');
+// Q6: 4-mark written response
+function submitWriting6() {
+  const container = document.getElementById('question-box-6');
+  const linesContainer = document.getElementById('writing-lines-6');
+  const lines = linesContainer.querySelectorAll('.writing-line');
+  const submitBtn = document.getElementById('submit-button-6');
   const markCounter = document.getElementById('mark-counter-6');
-
-  const gotItRight = Array.from(selectedButtons).some(btn => btn.textContent.trim() === correctAnswer);
-  const yourScore = gotItRight ? 1 : 0;
-
-  markCounter.textContent = `${yourScore}/1`;
-  allButtons.forEach(button => {
-    if (button.textContent.trim() === correctAnswer) {
-      button.classList.add('correct-answer');
-    }
-    button.disabled = true;
+  
+  let studentText = '';
+  let allLineData = [];
+  
+  lines.forEach((line, index) => {
+    const text = line.textContent.trim();
+    allLineData.push({ text: text, page: 1, lineIndex: index, element: line });
+    if (text) studentText += text + ' ';
   });
-
-  if (yourScore === 1) {
+  
+  if (!studentText.trim()) {
+    alert('Please write your answer first!');
+    return;
+  }
+  
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Marking...';
+  
+  // Simple marking for Q6 (4 marks - structure of play)
+  const acts = ['act 1', 'act 2', 'act 3', 'act 4', 'act 5', 'witches', 'duncan', 'murder', 'death', 'paranoid'];
+  const foundActs = acts.filter(act => studentText.toLowerCase().includes(act));
+  const marks = Math.min(Math.floor(foundActs.length / 2), 4);
+  
+  markCounter.textContent = `${marks}/4`;
+  
+  if (marks >= 3) {
     markCounter.style.backgroundColor = '#54d3ab';
     markCounter.style.color = 'white';
-    questionBox.classList.add('correct');
+    container.classList.add('correct');
   } else {
     markCounter.style.backgroundColor = '#e16280';
     markCounter.style.color = 'white';
-    questionBox.classList.add('incorrect-selection');
+    container.classList.add('incorrect-selection');
   }
-
+  
   updateProgressSegment(6);
-  const submitBtn = document.getElementById('submit-button-6');
-  submitBtn.innerText = 'Reset';
-  submitBtn.onclick = resetQuestion6;
+  submitBtn.textContent = 'Reset';
+  submitBtn.onclick = resetWriting6;
+  submitBtn.disabled = false;
 }
 
-function resetQuestion6() {
-  const questionBox = document.getElementById('question-box-6');
-  const buttons = questionBox.querySelectorAll('[class^="answer-option-6"]');
+function resetWriting6() {
+  const container = document.getElementById('question-box-6');
+  const linesContainer = document.getElementById('writing-lines-6');
+  const lines = linesContainer.querySelectorAll('.writing-line');
   const submitBtn = document.getElementById('submit-button-6');
   const markCounter = document.getElementById('mark-counter-6');
-
-  buttons.forEach(button => {
-    button.classList.remove('selected', 'correct-answer');
-    button.disabled = false;
+  
+  lines.forEach(line => {
+    line.innerHTML = '';
+    line.contentEditable = true;
   });
-
-  markCounter.textContent = '0/1';
+  
+  markCounter.textContent = '0/4';
   markCounter.style.backgroundColor = 'transparent';
   markCounter.style.color = '#555';
-  questionBox.classList.remove('correct', 'incorrect-selection');
+  container.classList.remove('correct', 'incorrect-selection', 'marked');
+  submitBtn.textContent = 'Submit for Marking';
+  submitBtn.onclick = submitWriting6;
   resetProgressSegment(6);
-  submitBtn.innerText = 'Submit';
-  submitBtn.onclick = submitAnswer6;
 }
 
 // ============================================
@@ -2761,45 +2874,44 @@ document.addEventListener('DOMContentLoaded', function() {
   window.currentQuestionId = null;
   
   // ENGLISH LITERATURE QUESTION BANK
-  window.QUESTION_BANK = {
-    'English_Lit_Q1_Hyena': {
-      question: 'How does the writer use language here to describe the hyena\'s appearance?',
-      correctAnswer: 'N/A',
-      topic: 'Language Analysis - AQA Q2',
-      marks: 8,
-      extract: 'I am not one to hold a prejudice against any animal, but it is a plain fact that the spotted hyena is not well served by its appearance...'
-    },
-    'English_Lit_Q2': {
-      question: 'Express 18 as a product of its prime factors.',
-      correctAnswer: '2 × 3²',
-      topic: 'Product of Prime Factors',
-      marks: 1
-    },
-    'English_Lit_Q3': {
-      question: 'Write 24 as a product of prime factors in index form.',
-      correctAnswer: '2³ × 3',
-      topic: 'Product of Prime Factors',
-      marks: 1
-    },
-    'English_Lit_Q4': {
-      question: 'Express 30 as a product of its prime factors.',
-      correctAnswer: '2 × 3 × 5',
-      topic: 'Product of Prime Factors',
-      marks: 1
-    },
-    'English_Lit_Q5': {
-      question: 'Write 36 as a product of prime factors in index form.',
-      correctAnswer: '2² × 3²',
-      topic: 'Product of Prime Factors',
-      marks: 1
-    },
-    'English_Lit_Q6': {
-      question: 'Express 48 as a product of prime factors in index form.',
-      correctAnswer: '2⁴ × 3',
-      topic: 'Product of Prime Factors',
-      marks: 1
-    }
-  };
+ window.QUESTION_BANK = {
+  'English_Lit_Q1': {
+    question: 'What type of play is Macbeth?',
+    correctAnswer: 'A Tragedy',
+    topic: 'Macbeth - Foundation of Play',
+    marks: 1
+  },
+  'English_Lit_Q2': {
+    question: 'What is Macbeth\'s fatal flaw that leads to his downfall?',
+    correctAnswer: 'His ambition',
+    topic: 'Macbeth - Foundation of Play',
+    marks: 1
+  },
+  'English_Lit_Q3': {
+    question: 'Which supernatural element appears in Macbeth?',
+    correctAnswer: 'The Witches',
+    topic: 'Macbeth - Foundation of Play',
+    marks: 1
+  },
+  'English_Lit_Q4': {
+    question: 'Name two key features of a Shakespearean tragedy.',
+    correctAnswer: 'Fatal flaw, downfall, death',
+    topic: 'Macbeth - Foundation of Play',
+    marks: 2
+  },
+  'English_Lit_Q5': {
+    question: 'Explain why Macbeth is considered a tragedy. Give three reasons.',
+    correctAnswer: 'Hero to villain, ambition, death',
+    topic: 'Macbeth - Foundation of Play',
+    marks: 3
+  },
+  'English_Lit_Q6': {
+    question: 'Describe the structure of Macbeth. What happens in each act?',
+    correctAnswer: 'Act structure with key events',
+    topic: 'Macbeth - Foundation of Play',
+    marks: 4
+  }
+};
   
   function addMessageToChat(content, isUser) {
     if (!chatMessages) return;
@@ -2910,25 +3022,26 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   window.setCurrentQuestion = function(questionNumber) {
-    console.log('Setting current question to:', questionNumber);
-    window.currentQuestionId = `English_Lit_Q${questionNumber}${questionNumber === 1 ? '_Hyena' : ''}`;
-    window.conversationHistory = [];
-    
-    const questionData = window.QUESTION_BANK[window.currentQuestionId];
-    
-    if (questionData && chatSubtitle) {
-      chatSubtitle.textContent = `Q${questionNumber}: ${questionData.topic}`;
-    }
-    
-    document.querySelectorAll('[class^="question-box-"]').forEach(box => {
-      box.style.borderColor = '#e5e7eb';
-    });
-    
-    const activeBox = document.getElementById(`question-box-${questionNumber}`);
-    if (activeBox) {
-      activeBox.style.borderColor = '#1d7fe2';
-    }
-  };
+  console.log('Setting current question to:', questionNumber);
+  window.currentQuestionId = `English_Lit_Q${questionNumber}`; // ← REMOVED _Hyena
+  window.conversationHistory = [];
+  
+  const questionData = window.QUESTION_BANK[window.currentQuestionId];
+  const chatSubtitle = document.getElementById('chatSubtitle');
+  
+  if (questionData && chatSubtitle) {
+    chatSubtitle.textContent = `Q${questionNumber}: ${questionData.topic}`;
+  }
+  
+  document.querySelectorAll('[class^="question-box-"]').forEach(box => {
+    box.style.borderColor = '#e5e7eb';
+  });
+  
+  const activeBox = document.getElementById(`question-box-${questionNumber}`);
+  if (activeBox) {
+    activeBox.style.borderColor = '#1d7fe2';
+  }
+};
   
   setTimeout(() => {
     window.setCurrentQuestion(1);
