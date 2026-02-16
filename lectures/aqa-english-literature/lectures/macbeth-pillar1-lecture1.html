@@ -823,7 +823,7 @@ html,body{
 
 .writing-line {
   min-height: 44px;
-  padding: 0 4px;
+  padding: 4px;
   margin-bottom: 4px;
   border-bottom: 1px solid #000;
   font-size: 32px;
@@ -836,8 +836,10 @@ html,body{
   transition: background 0.2s ease;
   position: relative;
   display: block;
-  white-space: nowrap;
-  overflow: hidden;
+  white-space: pre-wrap; /* ← CHANGED: Allows text wrapping */
+  word-wrap: break-word; /* ← ADDED: Breaks long words */
+  overflow-wrap: break-word; /* ← ADDED: Better wrapping */
+  overflow: visible; /* ← CHANGED: From hidden to visible */
   box-sizing: border-box;
 }
 
@@ -864,6 +866,10 @@ html,body{
   display: none; /* Hidden until marking happens */
 }
 
+/* ============================================
+   AI ANNOTATIONS & HIGHLIGHTING (UPDATED)
+   ============================================ */
+
 .ai-annotation {
   font-size: 11px;
   line-height: 1.2;
@@ -879,24 +885,6 @@ html,body{
   opacity: 0;
 }
 
-.ai-annotation.warning {
-  color: #e16280;
-}
-
-.highlight-red {
-  background: linear-gradient(120deg, transparent 0%, #e16280 50%, transparent 100%);
-  background-repeat: no-repeat;
-  background-size: 200% 60%;
-  background-position: -100% 90%;
-  animation: highlightSweep 1.2s ease forwards;
-  animation-delay: 0.3s;
-  color: white;
-}
-
-.highlight-yellow {
-  display: none;
-}
-
 @keyframes fadeInAnnotation {
   to {
     opacity: 1;
@@ -905,55 +893,40 @@ html,body{
 
 .ai-annotation.positive {
   color: #0b7e45;
-  border-left-color: #0b7e45;
-  background: rgba(232, 245, 233, 0.9);
 }
 
 .ai-annotation.warning {
-  color: #d97706;
-  border-left-color: #d97706;
-  background: rgba(254, 243, 199, 0.9);
+  color: #e16280;
 }
 
-/* Highlighting Animation */
-@keyframes highlightSweep {
-  0% {
-    background-position: -100% 90%;
-  }
-  100% {
-    background-position: 100% 90%;
-  }
-}
-
+/* Highlighting - ON TOP of text */
 .highlight-green {
-  background: linear-gradient(120deg, transparent 0%, #d4f4dd 50%, transparent 100%);
-  background-repeat: no-repeat;
-  background-size: 200% 40%;
-  background-position: -100% 90%;
-  animation: highlightSweep 1.2s ease forwards;
-  animation-delay: 0.3s;
-  font-weight: 500;
+  background: rgba(212, 244, 221, 0.85);
+  padding: 2px 0;
+  border-radius: 2px;
+  position: relative;
+  z-index: 1;
 }
 
 .highlight-yellow {
-  background: linear-gradient(120deg, transparent 0%, #fef3c7 50%, transparent 100%);
-  background-repeat: no-repeat;
-  background-size: 200% 40%;
-  background-position: -100% 90%;
-  animation: highlightSweep 1.2s ease forwards;
-  animation-delay: 0.3s;
+  background: rgba(254, 243, 199, 0.85);
+  padding: 2px 0;
+  border-radius: 2px;
+  position: relative;
+  z-index: 1;
 }
 
 .highlight-red {
-  background: linear-gradient(120deg, transparent 0%, #fee2e2 50%, transparent 100%);
-  background-repeat: no-repeat;
-  background-size: 200% 40%;
-  background-position: -100% 90%;
-  animation: highlightSweep 1.2s ease forwards;
-  animation-delay: 0.3s;
+  background: rgba(254, 226, 226, 0.85);
+  padding: 2px 0;
+  border-radius: 2px;
+  position: relative;
+  z-index: 1;
+  color: #991b1b;
+  font-weight: 500;
 }
 
-/* Scanning Effect Overlay */
+/* Scanning Effect */
 .scanning-overlay {
   position: absolute;
   top: 0;
@@ -2975,15 +2948,85 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
-  const formulaBtn = document.getElementById('formulaSheetBtn');
+const formulaBtn = document.getElementById('formulaSheetBtn');
   if (formulaBtn) {
     formulaBtn.addEventListener('click', function() {
       alert('Formula Sheet feature');
     });
   }
-});  
+});
+
+// ============================================
+// FIX 3: PREVENT LINE MOVEMENT ON ENTER/BACKSPACE
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+  const writingLines = document.querySelectorAll('.writing-line');
   
-  
+  writingLines.forEach((line, index, allLines) => {
+    line.addEventListener('keydown', function(e) {
+      
+      // Handle ENTER key
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        
+        // Move cursor to next line
+        const nextLine = allLines[index + 1];
+        if (nextLine) {
+          nextLine.focus();
+          
+          // Place cursor at start of next line
+          const range = document.createRange();
+          const sel = window.getSelection();
+          
+          if (nextLine.childNodes.length > 0) {
+            range.setStart(nextLine.childNodes[0], 0);
+          } else {
+            range.setStart(nextLine, 0);
+          }
+          
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+      
+      // Handle BACKSPACE at start of line
+      if (e.key === 'Backspace') {
+        const sel = window.getSelection();
+        const cursorPosition = sel.anchorOffset;
+        
+        // If cursor is at the very start of the line
+        if (cursorPosition === 0 && sel.anchorNode === line) {
+          e.preventDefault();
+          
+          // Move to end of previous line
+          const prevLine = allLines[index - 1];
+          if (prevLine) {
+            prevLine.focus();
+            
+            // Place cursor at end of previous line
+            const range = document.createRange();
+            const sel = window.getSelection();
+            
+            if (prevLine.childNodes.length > 0) {
+              const lastNode = prevLine.childNodes[prevLine.childNodes.length - 1];
+              const offset = lastNode.textContent ? lastNode.textContent.length : 0;
+              range.setStart(lastNode, offset);
+            } else {
+              range.setStart(prevLine, 0);
+            }
+            
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+          }
+        }
+      }
+    });
+  });
+});
+
 </script>
 </body>
 </html>
