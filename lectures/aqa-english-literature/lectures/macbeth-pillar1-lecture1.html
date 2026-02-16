@@ -2770,6 +2770,220 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeProgressBar();
   initializeQuestionNavigation();
 });
+  
+// ============================================
+// AI CHAT SYSTEM (Transferred from Maths)
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Initializing DeepSeek chat interface...');
+  
+  const chatMessages = document.getElementById('chatMessages');
+  const chatInput = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const promptsBtn = document.getElementById('promptsBtn');
+  const chatSubtitle = document.getElementById('chatSubtitle');
+  
+  window.conversationHistory = [];
+  window.currentQuestionId = null;
+  
+  // ENGLISH LITERATURE QUESTION BANK
+  window.QUESTION_BANK = {
+    'English_Lit_Q1_Hyena': {
+      question: 'How does the writer use language here to describe the hyena\'s appearance?',
+      correctAnswer: 'N/A',
+      topic: 'Language Analysis - AQA Q2',
+      marks: 8,
+      extract: 'I am not one to hold a prejudice against any animal, but it is a plain fact that the spotted hyena is not well served by its appearance...'
+    },
+    'English_Lit_Q2': {
+      question: 'Express 18 as a product of its prime factors.',
+      correctAnswer: '2 × 3²',
+      topic: 'Product of Prime Factors',
+      marks: 1
+    },
+    'English_Lit_Q3': {
+      question: 'Write 24 as a product of prime factors in index form.',
+      correctAnswer: '2³ × 3',
+      topic: 'Product of Prime Factors',
+      marks: 1
+    },
+    'English_Lit_Q4': {
+      question: 'Express 30 as a product of its prime factors.',
+      correctAnswer: '2 × 3 × 5',
+      topic: 'Product of Prime Factors',
+      marks: 1
+    },
+    'English_Lit_Q5': {
+      question: 'Write 36 as a product of prime factors in index form.',
+      correctAnswer: '2² × 3²',
+      topic: 'Product of Prime Factors',
+      marks: 1
+    },
+    'English_Lit_Q6': {
+      question: 'Express 48 as a product of prime factors in index form.',
+      correctAnswer: '2⁴ × 3',
+      topic: 'Product of Prime Factors',
+      marks: 1
+    }
+  };
+  
+  function addMessageToChat(content, isUser) {
+    if (!chatMessages) return;
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = isUser ? 'message message-user' : 'message message-assistant';
+    
+    const label = document.createElement('div');
+    label.className = 'message-label';
+    label.textContent = isUser ? 'You' : '';
+    label.style.display = isUser ? 'block' : 'none';
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    bubble.textContent = content;
+    
+    messageDiv.appendChild(label);
+    messageDiv.appendChild(bubble);
+    chatMessages.appendChild(messageDiv);
+    
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+  
+  async function sendToDeepSeek(message) {
+    if (!window.currentQuestionId) {
+      return 'Please click on a question box first to select a question!';
+    }
+    
+    const questionData = window.QUESTION_BANK[window.currentQuestionId];
+    
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: message,
+          conversationHistory: window.conversationHistory,
+          questionData: questionData
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      window.conversationHistory.push(
+        { role: 'user', content: message },
+        { role: 'assistant', content: data.reply }
+      );
+      
+      return data.reply;
+      
+    } catch (error) {
+      console.error('DeepSeek API Error:', error);
+      return 'Sorry, I had trouble connecting to the AI. Please try again.';
+    }
+  }
+  
+  async function handleSendMessage() {
+    const message = chatInput.value.trim();
+    if (!message || !sendBtn) return;
+    
+    addMessageToChat(message, true);
+    chatInput.value = '';
+    
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Thinking...';
+    
+    const response = await sendToDeepSeek(message);
+    addMessageToChat(response, false);
+    
+    sendBtn.disabled = false;
+    sendBtn.textContent = 'Execute';
+  }
+  
+  if (sendBtn) {
+    sendBtn.addEventListener('click', handleSendMessage);
+  }
+  
+  if (chatInput) {
+    chatInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSendMessage();
+      }
+    });
+  }
+  
+  if (promptsBtn) {
+    promptsBtn.addEventListener('click', function() {
+      const prompts = [
+        "How do I analyze language?",
+        "What techniques should I look for?",
+        "How do I explain effects?",
+        "What makes a good quotation?",
+        "How do I structure my answer?"
+      ];
+      const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+      if (chatInput) {
+        chatInput.value = randomPrompt;
+        chatInput.focus();
+      }
+    });
+  }
+  
+  window.setCurrentQuestion = function(questionNumber) {
+    console.log('Setting current question to:', questionNumber);
+    window.currentQuestionId = `English_Lit_Q${questionNumber}${questionNumber === 1 ? '_Hyena' : ''}`;
+    window.conversationHistory = [];
+    
+    const questionData = window.QUESTION_BANK[window.currentQuestionId];
+    
+    if (questionData && chatSubtitle) {
+      chatSubtitle.textContent = `Q${questionNumber}: ${questionData.topic}`;
+    }
+    
+    document.querySelectorAll('[class^="question-box-"]').forEach(box => {
+      box.style.borderColor = '#e5e7eb';
+    });
+    
+    const activeBox = document.getElementById(`question-box-${questionNumber}`);
+    if (activeBox) {
+      activeBox.style.borderColor = '#1d7fe2';
+    }
+  };
+  
+  setTimeout(() => {
+    window.setCurrentQuestion(1);
+  }, 1000);
+  
+  // Make question boxes clickable for chat
+  for (let i = 1; i <= totalQuestionsCount; i++) {
+    const questionBox = document.getElementById(`question-box-${i}`);
+    if (questionBox) {
+      questionBox.addEventListener('click', function(e) {
+        e.stopPropagation();
+        showQuestion(i);
+        if (typeof window.setCurrentQuestion === 'function') {
+          window.setCurrentQuestion(i);
+        }
+      });
+    }
+  }
+  
+  const formulaBtn = document.getElementById('formulaSheetBtn');
+  if (formulaBtn) {
+    formulaBtn.addEventListener('click', function() {
+      alert('Formula Sheet feature');
+    });
+  }
+});  
+  
+  
 </script>
 </body>
 </html>
