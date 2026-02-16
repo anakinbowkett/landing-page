@@ -1129,31 +1129,40 @@ Adding indices when dividing instead of subtracting them.
 `,
 
 
-// === ENGLISH LITERATURE ===
-    'Language Analysis - AQA Q2': `
+ // === ENGLISH LITERATURE (NEW) ===
+  'Language Analysis - AQA Q2': `
 GCSE English Literature - Language Analysis (8 marks)
 
 WHAT GETS MARKS:
-✓ Direct quotations with "marks"
-✓ Named techniques (metaphor, simile, imagery)
-✓ Explain HOW language creates effects
-✓ Link to question
+✓ Direct quotations with "marks" (2 marks)
+✓ Named techniques (2 marks)
+✓ Explain HOW language creates effects (2 marks)
+✓ Link to question (2 marks)
 
-METHOD:
-Step 1: Quote from text with marks
-Step 2: Name the technique
-Step 3: Explain the effect
-Step 4: Link to question
+THE METHOD:
+Step 1: Find interesting language in the extract
+Step 2: Quote it with "quotation marks"
+Step 3: Name the technique (metaphor, simile, imagery, personification, adjective)
+Step 4: Explain the EFFECT on the reader
+Step 5: Link back to the question
 
-EXAMPLE:
-"The writer uses violent imagery in 'ugly beyond redemption' which suggests permanent ugliness and creates disgust."
+EXAMPLE ANSWER:
+The writer uses violent imagery in "ugly beyond redemption" which suggests the hyena's appearance is permanently flawed and creates a sense of disgust in the reader.
 
 COMMON MISTAKES:
-- No quotation marks (-1 mark)
-- No technique name (-2 marks)
-- Vague phrases like "the writer shows" (-1 mark)
+- No quotation marks around quotes (-1 mark)
+- Just naming techniques without explaining (-2 marks)
+- Vague phrases like "the writer shows" without detail (-1 mark)
+- Not linking back to the question (-1 mark)
+
+KEY TECHNIQUES:
+- Metaphor: Direct comparison (e.g., "the hyena is a shadow")
+- Simile: Uses 'like' or 'as' (e.g., "ears like a mouse")
+- Personification: Human qualities to non-human things
+- Imagery: Descriptive language creating pictures
+- Adjectives: Describing words adding detail
 `
-  };
+};
 
   const topic = questionData?.topic || '';
   const selectedGuide = GUIDES[topic];
