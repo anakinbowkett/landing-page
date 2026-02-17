@@ -8,25 +8,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
             background: #f9fafb;
             min-height: 100vh;
         }
 
-        /* Top Navigation */
+        /* Nav */
         .top-nav {
             background: white;
             border-bottom: 1px solid #e5e7eb;
-            padding: 1.5rem 2rem;
+            padding: 1.25rem 2rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -38,13 +33,10 @@
         .nav-left {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1.25rem;
         }
 
-        .logo-img {
-            height: 50px;
-            width: auto;
-        }
+        .logo-img { height: 45px; width: auto; }
 
         .nav-title {
             font-size: 1.125rem;
@@ -74,29 +66,26 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
 
-        .logout-btn:hover {
-            background: #e5e7eb;
-        }
+        .logout-btn:hover { background: #e5e7eb; }
 
-        /* Main Container */
+        /* Container */
         .container {
-            max-width: 1280px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 3rem 2rem;
+            padding: 2.5rem 2rem;
         }
 
-        /* Welcome Section */
-        .welcome-section {
-            margin-bottom: 3rem;
-        }
+        /* Welcome */
+        .welcome-section { margin-bottom: 2.5rem; }
 
         .welcome-title {
-            font-size: 2rem;
+            font-size: 1.875rem;
             font-weight: 700;
             color: #111827;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.375rem;
         }
 
         .welcome-subtitle {
@@ -104,20 +93,41 @@
             color: #6b7280;
         }
 
+        /* Phase Labels */
+        .phase-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .phase-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .phase-1-label { color: #f59e0b; }
+        .phase-2-label { color: #1d7fe2; }
+
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1rem;
         }
 
         .stat-card {
             background: white;
-            border-radius: 16px;
-            padding: 2rem;
+            border-radius: 14px;
+            padding: 1.75rem;
             border: 2px solid #e5e7eb;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             transition: all 0.3s;
         }
 
@@ -126,67 +136,125 @@
             box-shadow: 0 4px 16px rgba(29, 127, 226, 0.1);
         }
 
+        .stat-card.highlight {
+            border-color: #1d7fe2;
+            background: linear-gradient(135deg, #f0f7ff, #ffffff);
+        }
+
         .stat-label {
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             font-weight: 600;
             color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.625rem;
         }
 
         .stat-value {
-            font-size: 2.5rem;
+            font-size: 2.25rem;
             font-weight: 800;
             color: #111827;
             line-height: 1;
         }
 
-        .stat-currency {
-            color: #1d7fe2;
+        .stat-currency { color: #1d7fe2; }
+
+        .stat-sub {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 0.5rem;
         }
 
-        /* Referral Code Section */
-        .referral-section {
+        .stat-sub span {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        /* Progress Bar */
+        .progress-section {
             background: white;
-            border-radius: 16px;
-            padding: 2rem;
+            border-radius: 14px;
+            padding: 1.75rem;
             border: 2px solid #e5e7eb;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
         }
 
-        .referral-header {
+        .progress-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
-        .referral-title {
-            font-size: 1.25rem;
+        .progress-title {
+            font-size: 1rem;
             font-weight: 700;
             color: #111827;
         }
 
-        .referral-content {
+        .progress-count {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: #f3f4f6;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            border-radius: 9999px;
+            transition: width 1s ease;
+        }
+
+        .progress-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.625rem;
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        /* Referral Section */
+        .referral-section {
+            background: white;
+            border-radius: 14px;
+            padding: 1.75rem;
+            border: 2px solid #e5e7eb;
+            margin-bottom: 2.5rem;
+        }
+
+        .referral-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1.25rem;
+        }
+
+        .referral-link-box {
             display: flex;
             gap: 1rem;
             align-items: center;
             flex-wrap: wrap;
         }
 
-        .referral-code-display {
+        .referral-link-display {
             flex: 1;
             min-width: 200px;
             background: #f9fafb;
             border: 2px solid #1d7fe2;
-            border-radius: 12px;
-            padding: 1.25rem;
-            font-size: 1.5rem;
-            font-weight: 700;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            font-size: 1rem;
+            font-weight: 600;
             color: #1d7fe2;
-            letter-spacing: 0.05em;
-            text-align: center;
+            font-family: 'Inter', sans-serif;
         }
 
         .copy-btn {
@@ -194,7 +262,7 @@
             color: white;
             border: none;
             border-radius: 10px;
-            padding: 1rem 2rem;
+            padding: 1rem 1.5rem;
             font-size: 0.9375rem;
             font-weight: 700;
             cursor: pointer;
@@ -208,38 +276,38 @@
             transform: translateY(-2px);
         }
 
-        /* Referrals Table */
+        .referral-hint {
+            font-size: 0.8125rem;
+            color: #6b7280;
+            margin-top: 0.75rem;
+        }
+
+        /* Table Section */
         .table-section {
             background: white;
-            border-radius: 16px;
-            padding: 2rem;
+            border-radius: 14px;
+            padding: 1.75rem;
             border: 2px solid #e5e7eb;
+            margin-bottom: 2.5rem;
         }
 
-        .table-header {
-            font-size: 1.25rem;
+        .table-title {
+            font-size: 1rem;
             font-weight: 700;
             color: #111827;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
-        .table-wrapper {
-            overflow-x: auto;
-        }
+        .table-wrapper { overflow-x: auto; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+        table { width: 100%; border-collapse: collapse; }
 
-        thead {
-            background: #f9fafb;
-        }
+        thead { background: #f9fafb; }
 
         th {
-            padding: 1rem;
+            padding: 0.875rem 1rem;
             text-align: left;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: #6b7280;
             text-transform: uppercase;
@@ -248,40 +316,28 @@
         }
 
         td {
-            padding: 1rem;
+            padding: 0.875rem 1rem;
             border-bottom: 1px solid #f3f4f6;
             color: #374151;
             font-size: 0.9375rem;
         }
 
-        tbody tr:hover {
-            background: #f9fafb;
-        }
+        tbody tr:hover { background: #f9fafb; }
 
-        .status-badge {
+        .badge {
             display: inline-block;
-            padding: 0.25rem 0.75rem;
+            padding: 0.25rem 0.625rem;
             border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.6875rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
-        .status-active {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-cancelled {
-            background: #fee2e2;
-            color: #991b1b;
-        }
+        .badge-verified { background: #d1fae5; color: #065f46; }
+        .badge-pending { background: #fef3c7; color: #92400e; }
+        .badge-payable { background: #dbeafe; color: #1e40af; }
+        .badge-paid { background: #f3f4f6; color: #6b7280; }
 
         .empty-state {
             text-align: center;
@@ -289,87 +345,79 @@
             color: #9ca3af;
         }
 
-        .empty-state-icon {
+        .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+        /* Total Payout Card */
+        .total-card {
+            background: linear-gradient(135deg, #0a1e3d 0%, #1d7fe2 100%);
+            border-radius: 14px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .total-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-value {
             font-size: 3rem;
-            margin-bottom: 1rem;
+            font-weight: 800;
+            line-height: 1;
         }
 
-        /* Loading State */
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            color: #6b7280;
+        .total-note {
+            font-size: 0.8125rem;
+            opacity: 0.7;
+            margin-top: 0.5rem;
         }
 
-        /* Mobile Responsive */
+        .payout-info {
+            text-align: right;
+        }
+
+        .payout-date {
+            font-size: 1.125rem;
+            font-weight: 700;
+        }
+
+        .payout-note {
+            font-size: 0.8125rem;
+            opacity: 0.7;
+        }
+
+        /* Mobile */
         @media (max-width: 768px) {
-            .top-nav {
-                padding: 1rem 1.5rem;
-            }
+            .top-nav { padding: 1rem; }
+            .container { padding: 1.5rem 1rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .ambassador-name { display: none; }
+            .total-card { flex-direction: column; }
+            .payout-info { text-align: left; }
+            .referral-link-box { flex-direction: column; }
+            .referral-link-display { width: 100%; }
+            .copy-btn { width: 100%; }
+        }
 
-            .nav-left {
-                gap: 1rem;
-            }
-
-            .logo-img {
-                height: 40px;
-            }
-
-            .nav-title {
-                font-size: 1rem;
-            }
-
-            .container {
-                padding: 2rem 1rem;
-            }
-
-            .welcome-title {
-                font-size: 1.5rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stat-value {
-                font-size: 2rem;
-            }
-
-            .referral-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .referral-content {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .referral-code-display {
-                width: 100%;
-            }
-
-            .copy-btn {
-                width: 100%;
-            }
-
-            .ambassador-name {
-                display: none;
-            }
-
-            table {
-                font-size: 0.875rem;
-            }
-
-            th, td {
-                padding: 0.75rem 0.5rem;
-            }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .welcome-title { font-size: 1.5rem; }
+            .total-value { font-size: 2.25rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Top Navigation -->
+    <!-- Nav -->
     <nav class="top-nav">
         <div class="nav-left">
             <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="GMM Logo" class="logo-img">
@@ -381,148 +429,237 @@
         </div>
     </nav>
 
-    <!-- Main Container -->
+    <!-- Main -->
     <div class="container">
-        <!-- Welcome Section -->
+
+        <!-- Welcome -->
         <div class="welcome-section">
             <h1 class="welcome-title">Welcome back, <span id="welcomeName">Ambassador</span>! 👋</h1>
-            <p class="welcome-subtitle">Here's your performance overview</p>
+            <p class="welcome-subtitle">Here's your live performance overview</p>
         </div>
 
-        <!-- Stats Grid -->
-        <div class="stats-grid">
+        <!-- Total Payout Card -->
+        <div class="total-card">
+            <div>
+                <div class="total-label">Total Payout Value</div>
+                <div class="total-value">£<span id="totalPayout">0.00</span></div>
+                <div class="total-note">Phase 1 waitlist + Phase 2 subscriptions combined</div>
+            </div>
+            <div class="payout-info">
+                <div class="payout-note">Next payout date</div>
+                <div class="payout-date" id="nextPayoutDate">-</div>
+                <div class="payout-note">Net-15 rolling commission</div>
+            </div>
+        </div>
+
+        <!-- Phase 1 -->
+        <div class="phase-label phase-1-label">⚡ Phase 1 — Waitlist Growth (ends 28 Feb)</div>
+
+        <div class="stats-grid" style="margin-bottom: 1.25rem;">
             <div class="stat-card">
-                <div class="stat-label">Leads Acquired</div>
-                <div class="stat-value" id="totalLeads">0</div>
+                <div class="stat-label">Total Signups</div>
+                <div class="stat-value" id="totalSignups">0</div>
+                <div class="stat-sub">All referral clicks</div>
+            </div>
+            <div class="stat-card highlight">
+                <div class="stat-label">Verified Signups</div>
+                <div class="stat-value" id="verifiedSignups">0</div>
+                <div class="stat-sub"><span id="remainingCap">100</span> remaining before cap</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Your Payout Value</div>
-                <div class="stat-value"><span class="stat-currency">£</span><span id="totalPayout">0.00</span></div>
+                <div class="stat-label">Phase 1 Earnings</div>
+                <div class="stat-value"><span class="stat-currency">£</span><span id="phase1Earnings">0.00</span></div>
+                <div class="stat-sub">50p per verified signup</div>
             </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-section" style="margin-bottom: 2.5rem;">
+            <div class="progress-header">
+                <span class="progress-title">Signup Cap Progress</span>
+                <span class="progress-count"><span id="capCount">0</span> / 100 signups</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+            <div class="progress-footer">
+                <span>0</span>
+                <span>Max £50 earnings</span>
+                <span>100</span>
+            </div>
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="phase-label phase-2-label">🚀 Phase 2 — Subscription Commissions (post launch)</div>
+
+        <div class="stats-grid" style="margin-bottom: 2.5rem;">
             <div class="stat-card">
-                <div class="stat-label">Active Subscriptions</div>
+                <div class="stat-label">Active Subscribers</div>
                 <div class="stat-value" id="activeSubscriptions">0</div>
+                <div class="stat-sub">Currently paying monthly</div>
+            </div>
+            <div class="stat-card highlight">
+                <div class="stat-label">Phase 2 Earnings</div>
+                <div class="stat-value"><span class="stat-currency">£</span><span id="phase2Earnings">0.00</span></div>
+                <div class="stat-sub">£2 per active subscriber/month</div>
             </div>
         </div>
 
-        <!-- Referral Code Section -->
+        <!-- Referral Link -->
         <div class="referral-section">
-            <div class="referral-header">
-                <h2 class="referral-title">Your Referral Code</h2>
+            <h2 class="referral-title">Your Referral Link</h2>
+            <div class="referral-link-box">
+                <input class="referral-link-display" id="referralLinkDisplay" readonly value="Loading...">
+                <button class="copy-btn" onclick="copyReferralLink()">Copy Link</button>
             </div>
-            <div class="referral-content">
-                <div class="referral-code-display" id="referralCodeDisplay">Loading...</div>
-                <button class="copy-btn" onclick="copyReferralCode()">Copy Code</button>
+            <p class="referral-hint">Share this link. Anyone who signs up through it will be tracked automatically.</p>
+        </div>
+
+        <!-- Waitlist Signups Table -->
+        <div class="table-section">
+            <h2 class="table-title">Waitlist Signups (Phase 1)</h2>
+            <div class="table-wrapper" id="waitlistTable">
+                <div class="loading" style="text-align:center; padding: 2rem; color: #9ca3af;">Loading...</div>
             </div>
         </div>
 
-        <!-- Referrals Table -->
-        <div class="table-section">
-            <h2 class="table-header">Your Referrals</h2>
-            <div class="table-wrapper" id="tableContainer">
-                <div class="loading">Loading referrals...</div>
-            </div>
-        </div>
     </div>
 
     <script>
         let currentAmbassadorId = null;
         let currentReferralCode = null;
 
-        async function loadDashboardData() {
-            try {
-                // Get ambassador ID from session storage or URL
-                const ambassadorId = sessionStorage.getItem('ambassador_id');
-                
-                if (!ambassadorId) {
-                    // Redirect to signup if no ID
-                    window.location.href = 'ambassador-signup.html';
-                    return;
-                }
+        async function loadDashboard() {
+            const ambassadorId = sessionStorage.getItem('ambassador_id');
 
-                currentAmbassadorId = ambassadorId;
-
-                // Fetch ambassador data
-                const response = await fetch(`/api/ambassador-dashboard?id=${ambassadorId}`);
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Update UI with data
-                    document.getElementById('ambassadorName').textContent = data.firstName + ' ' + data.lastName;
-                    document.getElementById('welcomeName').textContent = data.firstName;
-                    document.getElementById('referralCodeDisplay').textContent = data.referralCode;
-                    document.getElementById('totalLeads').textContent = data.totalLeads;
-                    document.getElementById('totalPayout').textContent = data.totalPayout.toFixed(2);
-                    document.getElementById('activeSubscriptions').textContent = data.activeSubscriptions;
-
-                    currentReferralCode = data.referralCode;
-
-                    // Load referrals table
-                    loadReferralsTable(data.referrals);
-                } else {
-                    console.error('Failed to load dashboard data');
-                    alert('Failed to load dashboard. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error loading dashboard:', error);
-                alert('Network error. Please check your connection.');
-            }
-        }
-
-        function loadReferralsTable(referrals) {
-            const tableContainer = document.getElementById('tableContainer');
-
-            if (!referrals || referrals.length === 0) {
-                tableContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📭</div>
-                        <p>No referrals yet. Share your referral code to start earning!</p>
-                    </div>
-                `;
+            if (!ambassadorId) {
+                window.location.href = 'ambassador-login.html';
                 return;
             }
 
-            const tableHTML = `
+            currentAmbassadorId = ambassadorId;
+
+            try {
+                const response = await fetch(`/api/ambassador-dashboard?id=${ambassadorId}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    console.error('Dashboard error:', data.error);
+                    return;
+                }
+
+                // Names
+                document.getElementById('ambassadorName').textContent = data.firstName + ' ' + data.lastName;
+                document.getElementById('welcomeName').textContent = data.firstName;
+
+                // Referral link
+                currentReferralCode = data.referralCode;
+                const referralLink = `https://www.monturalearn.co.uk/?ref=${data.referralCode}`;
+                document.getElementById('referralLinkDisplay').value = referralLink;
+
+                // Total payout
+                document.getElementById('totalPayout').textContent = data.totalPayout.toFixed(2);
+
+                // Next payout date (15th of next month)
+                const nextPayout = getNextPayoutDate();
+                document.getElementById('nextPayoutDate').textContent = nextPayout;
+
+                // Phase 1
+                document.getElementById('totalSignups').textContent = data.phase1.totalSignups;
+                document.getElementById('verifiedSignups').textContent = data.phase1.verifiedSignups;
+                document.getElementById('phase1Earnings').textContent = data.phase1.earnings.toFixed(2);
+                document.getElementById('remainingCap').textContent = data.phase1.remainingCap;
+                document.getElementById('capCount').textContent = data.phase1.cappedSignups;
+
+                // Progress bar
+                const pct = Math.min((data.phase1.verifiedSignups / 100) * 100, 100);
+                document.getElementById('progressBar').style.width = pct + '%';
+
+                // Phase 2
+                document.getElementById('activeSubscriptions').textContent = data.phase2.activeSubscriptions;
+                document.getElementById('phase2Earnings').textContent = data.phase2.earnings.toFixed(2);
+
+                // Waitlist table
+                renderWaitlistTable(data.waitlistCommissions);
+
+            } catch (err) {
+                console.error('Network error:', err);
+            }
+        }
+
+        function renderWaitlistTable(commissions) {
+            const container = document.getElementById('waitlistTable');
+
+            if (!commissions || commissions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <p>No waitlist signups yet. Share your referral link to start earning!</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = `
                 <table>
                     <thead>
                         <tr>
-                            <th>Student Email</th>
-                            <th>Signup Date</th>
+                            <th>Email</th>
+                            <th>Signed Up</th>
                             <th>Status</th>
-                            <th>First Payment</th>
+                            <th>Payable Date</th>
+                            <th>Commission</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${referrals.map(ref => `
+                        ${commissions.map(c => `
                             <tr>
-                                <td>${ref.student_email}</td>
-                                <td>${new Date(ref.signup_date).toLocaleDateString()}</td>
-                                <td>
-                                    <span class="status-badge status-${ref.status}">
-                                        ${ref.status}
-                                    </span>
-                                </td>
-                                <td>${ref.first_payment_date ? new Date(ref.first_payment_date).toLocaleDateString() : 'Pending'}</td>
+                                <td>${maskEmail(c.waitlist_email)}</td>
+                                <td>${new Date(c.created_at).toLocaleDateString('en-GB')}</td>
+                                <td><span class="badge badge-${c.status}">${c.status}</span></td>
+                                <td>${c.payable_date ? new Date(c.payable_date).toLocaleDateString('en-GB') : '—'}</td>
+                                <td>£${parseFloat(c.commission_amount).toFixed(2)}</td>
                             </tr>
                         `).join('')}
                     </tbody>
-                </table>
-            `;
-
-            tableContainer.innerHTML = tableHTML;
+                </table>`;
         }
 
-        function copyReferralCode() {
-            if (!currentReferralCode) return;
+        function maskEmail(email) {
+            if (!email) return '—';
+            const parts = email.split('@');
+            const masked = parts[0].substring(0, 3) + '***';
+            return masked + '@' + parts[1];
+        }
 
-            navigator.clipboard.writeText(currentReferralCode).then(() => {
+        function getNextPayoutDate() {
+            const today = new Date();
+            let payoutMonth = today.getMonth();
+            let payoutYear = today.getFullYear();
+
+            if (today.getDate() >= 15) {
+                payoutMonth += 1;
+                if (payoutMonth > 11) {
+                    payoutMonth = 0;
+                    payoutYear += 1;
+                }
+            }
+
+            const payout = new Date(payoutYear, payoutMonth, 15);
+            return payout.toLocaleDateString('en-GB', { 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric' 
+            });
+        }
+
+        function copyReferralLink() {
+            const link = document.getElementById('referralLinkDisplay').value;
+            navigator.clipboard.writeText(link).then(() => {
                 const btn = event.target;
-                const originalText = btn.textContent;
                 btn.textContent = 'Copied! ✓';
                 btn.style.background = '#10b981';
-                
                 setTimeout(() => {
-                    btn.textContent = originalText;
+                    btn.textContent = 'Copy Link';
                     btn.style.background = '#1d7fe2';
                 }, 2000);
             });
@@ -533,11 +670,11 @@
             window.location.href = 'index.html';
         }
 
-        // Load data on page load
-        document.addEventListener('DOMContentLoaded', loadDashboardData);
+        // Load on page load
+        document.addEventListener('DOMContentLoaded', loadDashboard);
 
-        // Refresh data every 30 seconds
-        setInterval(loadDashboardData, 30000);
+        // Refresh every 30 seconds
+        setInterval(loadDashboard, 30000);
     </script>
 </body>
 </html>
