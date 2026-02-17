@@ -3146,13 +3146,18 @@ window.handleWaitlistSubmit = async function() {
     btn.disabled = true;
     btn.textContent = 'Joining...';
 
+    // 🆕 Get referral code from URL or localStorage
+    var urlParams = new URLSearchParams(window.location.search);
+    var referralCode = urlParams.get('ref') || localStorage.getItem('referral_code') || null;
+
     try {
         var res = await fetch('/api/waitlist', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 email: email, 
-                tiktok_username: tiktok || null 
+                tiktok_username: tiktok || null,
+                referral_code: referralCode
             })
         });
 
@@ -3363,6 +3368,7 @@ window.handleWaitlistSubmit = async function() {
       
 </body>
 </html>
+
 
 
 
