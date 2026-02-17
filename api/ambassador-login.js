@@ -22,12 +22,19 @@ export default async function handler(req, res) {
     console.log('Login attempt - Referral Code:', referralCode);
     console.log('Uppercase code:', referralCode.toUpperCase());
 
-    // Find ambassador by email and referral code
+    // Try exact match first, then try with lowercase amb_ prefix
+    const cleanCode = referralCode.trim();
+    const lowerCode = cleanCode.toLowerCase().startsWith('amb_') 
+      ? 'amb_' + cleanCode.slice(4).toUpperCase()
+      : cleanCode;
+
+    console.log('Trying code:', lowerCode);
+
     const { data: ambassador, error } = await supabase
       .from('ambassadors')
       .select('*')
-      .eq('email', email)
-      .eq('referral_code', referralCode.toUpperCase())
+      .eq('email', email.toLowerCase().trim())
+      .ilike('referral_code', cleanCode)
       .single();
 
     console.log('Ambassador found:', ambassador);
