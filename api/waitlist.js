@@ -1,5 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const fetch = require('node-fetch');
+const crypto = require('crypto');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -9,13 +10,23 @@ const supabase = createClient(
 const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY;
 const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
 
-async function addToKlaviyo(email, tiktokUsername) {
+// Get real IP from request
+function getIP(req) {
+    const forwarded = req.headers['x-forwarded-for'];
+    const ip = forwarded ? forwarded.split(',')[0].trim() : req.socket?.remoteAddress;
+    return ip || 'unknown';
+}
+
+// Generate verification token
+function generateToken() {
+    return crypto.randomBytes(32).toString('hex');
+}
+
+async function sendVerificationEmail(email, token, referralCode) {
+    const verifyUrl = `https://www.monturalearn.co.uk/api/verify-waitlist?token=${token}&email=${encodeURIComponent(email)}`;
+    
     try {
-        console.log('Adding to Klaviyo...');
-        console.log('List ID:', KLAVIYO_LIST_ID);
-        console.log('Email:', email);
-        
-        // Step 1: Create or update the profile
+        // Create or update profile in Klaviyo with verification link
         const profileResponse = await fetch('https://a.klaviyo.com/api/profiles/', {
             method: 'POST',
             headers: {
@@ -29,7 +40,9 @@ async function addToKlaviyo(email, tiktokUsername) {
                     attributes: {
                         email: email,
                         properties: {
-                            tiktok_username: tiktokUsername || ''
+                            verification_url: verifyUrl,
+                            referral_code: referralCode || '',
+                            needs_verification: true
                         }
                     }
                 }
@@ -37,62 +50,31 @@ async function addToKlaviyo(email, tiktokUsername) {
         });
 
         const profileResult = await profileResponse.json();
-        console.log('Profile response status:', profileResponse.status);
-        
-        if (!profileResponse.ok && profileResponse.status !== 409) {
-            console.error('Profile creation error:', profileResult);
-            throw new Error('Failed to create profile');
-        }
-
-        // Get profile ID (either from creation or from existing)
         const profileId = profileResult.data?.id;
-        
+
         if (!profileId) {
-            console.error('No profile ID returned');
-            throw new Error('No profile ID');
+            throw new Error('No profile ID returned');
         }
 
-        console.log('Profile ID:', profileId);
-
-        // Step 2: Add profile to list using the relationships endpoint
-        const addToListResponse = await fetch(`https://a.klaviyo.com/api/lists/${KLAVIYO_LIST_ID}/relationships/profiles/`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-                'revision': '2024-02-15',
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                data: [
-                    {
-                        type: 'profile',
-                        id: profileId
-                    }
-                ]
-            })
-        });
-
-        console.log('Add to list status:', addToListResponse.status);
-
-        // A 204 response means success (no content returned)
-        if (addToListResponse.status === 204) {
-            console.log('Successfully added to Klaviyo list!');
-            return { success: true };
+        // Add to verification list in Klaviyo
+        // This triggers your verification email flow in Klaviyo
+        if (KLAVIYO_LIST_ID) {
+            await fetch(`https://a.klaviyo.com/api/lists/${KLAVIYO_LIST_ID}/relationships/profiles/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                    'revision': '2024-02-15',
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: [{ type: 'profile', id: profileId }]
+                })
+            });
         }
 
-        // For other responses, try to parse JSON
-        const addToListText = await addToListResponse.text();
-        console.log('Add to list response:', addToListText);
-
-        if (!addToListResponse.ok) {
-            throw new Error('Failed to add to list');
-        }
-
-        console.log('Successfully added to Klaviyo!');
         return { success: true };
-
     } catch (err) {
-        console.error('Klaviyo error:', err.message);
+        console.error('Email error:', err.message);
         throw err;
     }
 }
@@ -106,12 +88,13 @@ module.exports = async function handler(req, res) {
         return res.status(200).end();
     }
 
-    // GET count
+    // GET count - only count verified signups
     if (req.method === 'GET' && req.query.count === 'true') {
         try {
             const { count, error } = await supabase
                 .from('waitlist')
-                .select('*', { count: 'exact', head: true });
+                .select('*', { count: 'exact', head: true })
+                .eq('verified', true);
             
             if (error) throw error;
             return res.status(200).json({ count: count || 0 });
@@ -123,30 +106,82 @@ module.exports = async function handler(req, res) {
 
     // POST signup
     if (req.method === 'POST') {
-        const { email, tiktok_username } = req.body || {};
+        const { email, tiktok_username, referral_code } = req.body || {};
+        const ip = getIP(req);
 
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             return res.status(400).json({ error: 'Valid email is required' });
         }
 
         try {
-            // Check existing in Supabase
+            // Check if email already exists
             const { data: existing } = await supabase
                 .from('waitlist')
-                .select('email')
-                .eq('email', email)
+                .select('email, verified')
+                .eq('email', email.toLowerCase().trim())
                 .single();
 
             if (existing) {
                 return res.status(409).json({ message: 'Already on waitlist' });
             }
 
+            // FRAUD CHECK: Max 1 verified signup per IP per 24 hours
+            if (ip !== 'unknown') {
+                const yesterday = new Date();
+                yesterday.setHours(yesterday.getHours() - 24);
+
+                const { data: ipSignups } = await supabase
+                    .from('waitlist')
+                    .select('id')
+                    .eq('ip_address', ip)
+                    .eq('verified', true)
+                    .gte('created_at', yesterday.toISOString());
+
+                if (ipSignups && ipSignups.length >= 1) {
+                    console.log('IP fraud check failed:', ip);
+                    // Still return success to not reveal fraud detection
+                    // But don't actually save or count it
+                    return res.status(200).json({ message: 'Success' });
+                }
+            }
+
+            // Find ambassador if referral code provided
+            let ambassadorId = null;
+            let cleanReferralCode = null;
+
+            if (referral_code) {
+                const { data: ambassador } = await supabase
+                    .from('ambassadors')
+                    .select('id, leads_acquired')
+                    .ilike('referral_code', referral_code.trim())
+                    .single();
+
+                if (ambassador) {
+                    // Check ambassador hasn't hit 100 signup cap
+                    if (ambassador.leads_acquired >= 100) {
+                        console.log('Ambassador hit cap:', referral_code);
+                        ambassadorId = null;
+                    } else {
+                        ambassadorId = ambassador.id;
+                        cleanReferralCode = referral_code.trim();
+                    }
+                }
+            }
+
+            // Generate verification token
+            const token = generateToken();
+
             // Insert to Supabase
             const { error: insertError } = await supabase
                 .from('waitlist')
                 .insert({ 
-                    email, 
-                    tiktok_username: tiktok_username || null 
+                    email: email.toLowerCase().trim(),
+                    tiktok_username: tiktok_username || null,
+                    referral_code: cleanReferralCode,
+                    ambassador_id: ambassadorId,
+                    verified: false,
+                    verification_token: token,
+                    ip_address: ip
                 });
 
             if (insertError) {
@@ -154,13 +189,29 @@ module.exports = async function handler(req, res) {
                 return res.status(500).json({ error: 'Database error' });
             }
 
-            // Add to Klaviyo
+            // If referred, create pending commission record
+            if (ambassadorId) {
+                await supabase
+                    .from('waitlist_commissions')
+                    .insert({
+                        ambassador_id: ambassadorId,
+                        waitlist_email: email.toLowerCase().trim(),
+                        referral_code: cleanReferralCode,
+                        verified: false,
+                        status: 'pending',
+                        commission_amount: 0.50
+                    });
+            }
+
+            // Send verification email via Klaviyo
             try {
-                await addToKlaviyo(email, tiktok_username);
-                console.log('Klaviyo completed successfully');
-            } catch (klaviyoErr) {
-                console.error('Klaviyo failed but continuing:', klaviyoErr.message);
-                // Don't fail the whole request
+                await sendVerificationEmail(
+                    email.toLowerCase().trim(), 
+                    token, 
+                    cleanReferralCode
+                );
+            } catch (emailErr) {
+                console.error('Email failed but continuing:', emailErr.message);
             }
 
             return res.status(200).json({ message: 'Success' });
