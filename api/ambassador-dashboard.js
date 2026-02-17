@@ -28,38 +28,49 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'Ambassador not found' });
     }
 
-    // Fetch referrals for this ambassador
-    const { data: referrals, error: referralsError } = await supabase
+    // PHASE 1: Fetch waitlist commissions
+    const { data: waitlistCommissions } = await supabase
+      .from('waitlist_commissions')
+      .select('*')
+      .eq('ambassador_id', id)
+      .order('created_at', { ascending: false });
+
+    // Phase 1 stats
+    const totalWaitlistSignups = waitlistCommissions?.length || 0;
+    const verifiedSignups = waitlistCommissions?.filter(c => c.verified).length || 0;
+    const payableWaitlist = waitlistCommissions?.filter(c => 
+      c.status === 'payable' || c.status === 'verified'
+    ) || [];
+    const phase1Earnings = verifiedSignups * 0.50;
+    const phase1Cap = Math.min(verifiedSignups, 100);
+
+    // PHASE 2: Fetch subscription commissions
+    const { data: subCommissions } = await supabase
+      .from('monthly_commissions')
+      .select('*')
+      .eq('ambassador_id', id)
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+
+    const activeSubscriptions = subCommissions?.length || 0;
+    const phase2Earnings = activeSubscriptions * 2.00;
+
+    // Total payout
+    const totalPayout = phase1Earnings + phase2Earnings;
+
+    // PHASE 2: Fetch referrals
+    const { data: referrals } = await supabase
       .from('referrals')
       .select('*')
       .eq('ambassador_id', id)
       .order('signup_date', { ascending: false });
 
-    if (referralsError) {
-      console.error('Error fetching referrals:', referralsError);
-    }
-
-    // Count active subscriptions (where status = 'active')
-    const activeSubscriptions = referrals?.filter(ref => ref.status === 'active').length || 0;
-
-    // Calculate total payout from monthly_commissions
-    const { data: commissions, error: commissionsError } = await supabase
-      .from('monthly_commissions')
-      .select('commission_amount')
-      .eq('ambassador_id', id)
-      .eq('is_active', true);
-
-    let totalPayout = 0;
-    if (commissions && !commissionsError) {
-      totalPayout = commissions.reduce((sum, comm) => sum + parseFloat(comm.commission_amount), 0);
-    }
-
-    // Update ambassador's total_payout in database
+    // Update ambassador totals
     await supabase
       .from('ambassadors')
       .update({ 
         total_payout: totalPayout,
-        total_leads: referrals?.length || 0
+        leads_acquired: verifiedSignups
       })
       .eq('id', id);
 
@@ -67,10 +78,27 @@ export default async function handler(req, res) {
       firstName: ambassador.first_name,
       lastName: ambassador.last_name,
       referralCode: ambassador.referral_code,
-      totalLeads: referrals?.length || 0,
+      
+      // Phase 1 data
+      phase1: {
+        totalSignups: totalWaitlistSignups,
+        verifiedSignups: verifiedSignups,
+        cappedSignups: phase1Cap,
+        earnings: phase1Earnings,
+        cap: 100,
+        remainingCap: Math.max(0, 100 - verifiedSignups)
+      },
+
+      // Phase 2 data
+      phase2: {
+        activeSubscriptions: activeSubscriptions,
+        earnings: phase2Earnings
+      },
+
+      // Combined
       totalPayout: totalPayout,
-      activeSubscriptions: activeSubscriptions,
-      referrals: referrals || []
+      referrals: referrals || [],
+      waitlistCommissions: waitlistCommissions || []
     });
 
   } catch (error) {
