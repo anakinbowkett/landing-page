@@ -17,6 +17,11 @@ export default async function handler(req, res) {
   }
 
   try {
+    // DEBUG LOGS
+    console.log('Login attempt - Email:', email);
+    console.log('Login attempt - Referral Code:', referralCode);
+    console.log('Uppercase code:', referralCode.toUpperCase());
+
     // Find ambassador by email and referral code
     const { data: ambassador, error } = await supabase
       .from('ambassadors')
@@ -24,6 +29,9 @@ export default async function handler(req, res) {
       .eq('email', email)
       .eq('referral_code', referralCode.toUpperCase())
       .single();
+
+    console.log('Ambassador found:', ambassador);
+    console.log('Supabase error:', error);
 
     if (error || !ambassador) {
       return res.status(401).json({ error: 'Invalid credentials' });
