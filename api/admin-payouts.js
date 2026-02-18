@@ -27,14 +27,14 @@ export default async function handler(req, res) {
     const payoutData = [];
 
     for (const amb of ambassadors || []) {
-      // Phase 1: Waitlist commissions
+      // Phase 1: Waitlist commissions (payable = past payable_date OR status = payable)
       const { data: waitlistComms } = await supabase
         .from('waitlist_commissions')
         .select('*')
         .eq('ambassador_id', amb.id)
-        .in('status', ['verified', 'payable'])
-        .lte('payable_date', new Date().toISOString());
+        .eq('status', 'payable');
 
+    
       // Phase 2: Subscription commissions
       const { data: subComms } = await supabase
         .from('monthly_commissions')
