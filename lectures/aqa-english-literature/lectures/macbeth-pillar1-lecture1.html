@@ -1166,14 +1166,325 @@ html,body{
   border-right: none;
 }
 
-.quiz-segment-icon {
+/* ============================================
+   MODERN GUIDE DESIGN
+   ============================================ */
+
+.guide-hero {
+  text-align: center;
+  padding: 40px 20px 60px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 16px;
+  margin-bottom: 40px;
+}
+
+.guide-hero h1 {
+  font-size: 42px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.02em;
+}
+
+.guide-subtitle {
+  font-size: 18px;
+  color: #6b7280;
+  margin: 0;
+  font-weight: 400;
+}
+
+.guide-definition-card {
+  background: linear-gradient(135deg, #daa98a 0%, #c4916f 100%);
+  padding: 28px 32px;
+  border-radius: 12px;
+  margin-bottom: 50px;
+  box-shadow: 0 4px 12px rgba(218, 169, 138, 0.3);
+}
+
+.definition-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.definition-text {
+  font-size: 20px;
+  color: white;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.guide-section {
+  margin-bottom: 60px;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 24px 0;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #daa98a;
+}
+
+.section-content p {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #374151;
+  margin-bottom: 16px;
+}
+
+.section-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.section-content li {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #374151;
+  padding-left: 32px;
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.section-content li:before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #daa98a;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.highlight-term {
+  background: rgba(218, 169, 138, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  color: #8b5a3c;
+}
+
+.example-box {
+  background: #f0f9ff;
+  border-left: 4px solid #1d7fe2;
+  padding: 16px 20px;
+  margin: 20px 0;
+  border-radius: 6px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #1e40af;
+}
+
+/* Three Images Layout */
+.guide-images-triple {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin: 50px 0;
+}
+
+.guide-image-card {
+  text-align: center;
+}
+
+.guide-image-card img {
   width: 100%;
-  height: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 12px;
+}
+
+.image-caption {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Feature Rows */
+.feature-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 28px;
+  align-items: flex-start;
+}
+
+.feature-number {
+  width: 40px;
+  height: 40px;
+  background: #daa98a;
+  color: white;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.feature-content h3 {
+  font-size: 19px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 8px 0;
+}
+
+.feature-content p {
+  font-size: 16px;
+  color: #4b5563;
+  margin: 0 0 10px 0;
+}
+
+.feature-example {
+  background: #fef3c7;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 15px;
+  color: #92400e;
+  border-left: 3px solid #f59e0b;
+}
+
+/* Act Timeline */
+.act-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.act-item {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.act-item:hover {
+  border-color: #daa98a;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.act-badge {
+  width: 80px;
+  padding: 8px 0;
+  background: #daa98a;
   color: white;
-  font-size: 10px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.act-content h4 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 6px 0;
+}
+
+.act-content p {
+  font-size: 16px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Mistakes Section */
+.mistakes-section {
+  background: #fef2f2;
+  padding: 40px;
+  border-radius: 12px;
+  border: 2px solid #fecaca;
+}
+
+.mistakes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.mistake-card {
+  display: flex;
+  gap: 16px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #fee2e2;
+}
+
+.mistake-icon {
+  font-size: 28px;
+  color: #e16280;
+  flex-shrink: 0;
+}
+
+.mistake-text strong {
+  display: block;
+  font-size: 16px;
+  color: #991b1b;
+  margin-bottom: 6px;
+}
+
+.mistake-text p {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Quick Reference Card */
+.quick-ref-card {
+  background: linear-gradient(135deg, #1d7fe2 0%, #1d6fd1 100%);
+  padding: 32px;
+  border-radius: 12px;
+  margin-top: 50px;
+  color: white;
+}
+
+.quick-ref-card h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 20px 0;
+}
+
+.checklist {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.checklist-item {
+  font-size: 16px;
+  color: white;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .guide-images-triple {
+    grid-template-columns: 1fr;
+  }
+  
+  .mistakes-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .checklist {
+    grid-template-columns: 1fr;
+  }
 }
   
   
@@ -1898,95 +2209,207 @@ html,body{
 
 
   
-  <div id="guideContent">
-   <div class="container">
-  <h1>Product of Prime Factors</h1>
+<div class="container">
   
-  <div class="definition">
-    Writing a number as a multiplication of only prime numbers.
+  <!-- Hero Section -->
+  <div class="guide-hero">
+    <h1>Macbeth: Foundation of the Play</h1>
+    <p class="guide-subtitle">Everything you need to master the basics of Shakespeare's tragedy</p>
   </div>
-  
-  <div class="mark-scheme-container">
-    <div class="mark-scheme-header">Common Errors & Mark Deductions</div>
-    <div class="mark-scheme-content">
-      <div class="marks-column">
-        <div class="mark-item">-1</div>
-        <div class="mark-item">-1</div>
-        <div class="mark-item">-1</div>
-      </div>
-      <div class="mistakes-column">
-        <div class="mistake-row">
-          <span class="mistake-bold">Stopping too early</span> (e.g., writing 18 = 2 × 9). 9 is not prime. You must keep splitting until all numbers are prime.
-        </div>
-        <div class="mistake-row">
-          <span class="mistake-bold">Missing a factor</span> (e.g., 24 = 2 × 2 × 3). This only makes 12. You’ve lost a factor of 2.
-        </div>
-        <div class="mistake-row">
-          <span class="mistake-bold">Not using index form</span> (e.g., writing 2 × 2 × 2 × 3 instead of 2³ × 3). Foundation questions often ask for index form.
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="question-variations">
-    <div class="variations-title">How Questions Ask This</div>
-    <div class="variation-item">Write 24 as a product of its prime factors.</div>
-    <div class="variation-item">Express 36 as a product of prime factors in index form.</div>
-    <div class="variation-item">Find the prime factorisation of 18.</div>
-    <div class="variation-item">Show that 40 = 2³ × 5.</div>
-    <div class="variation-item">Complete the prime factor tree for 60.</div>
-  </div>
-  
-  <div class="main-content">
-    <div class="question">Write 24 as a product of its prime factors.</div>
-    
-    <div class="method-title">The Method</div>
-    
-    <div class="steps-container">
-      <div class="step">
-        <div class="step-left">
-          <div class="step-number">Step One</div>
-          <div class="step-intro">Start a factor tree</div>
-          <div class="step-detail">
-            Write the number at the top. Split it into two factors. Pick easy ones like 2 if the number is even.
-          </div>
-        </div>
-        <div class="step-right">
-          <canvas class="step-canvas" id="canvas-step1"></canvas>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-left">
-          <div class="step-number">Step Two</div>
-          <div class="step-intro">Keep splitting</div>
-          <div class="step-detail">
-            If any number is not prime, split it again. Keep going until all the numbers at the bottom are prime.
-          </div>
-        </div>
-        <div class="step-right">
-          <canvas class="step-canvas" id="canvas-step2"></canvas>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-left">
-          <div class="step-number">Step Three</div>
-          <div class="step-intro">Write the answer</div>
-          <div class="step-detail">
-            Multiply all the prime numbers at the bottom. Use index form if the same prime appears more than once.
-          </div>
-        </div>
-        <div class="step-right">
-          <canvas class="step-canvas" id="canvas-step3"></canvas>
-        </div>
-      </div>
-    </div>
 
-    <div class="final-answer">
-      24 = 2 × 2 × 2 × 3 = <strong>2³ × 3</strong>
+  <!-- Quick Definition -->
+  <div class="guide-definition-card">
+    <div class="definition-label">What is Macbeth?</div>
+    <div class="definition-text">
+      A <strong>tragedy</strong> – a play where a hero's fatal flaw leads to their downfall and death.
     </div>
   </div>
+
+  <!-- Section 1: Type of Play -->
+  <div class="guide-section">
+    <h2 class="section-title">1. Type of Play</h2>
+    <div class="section-content">
+      <p><strong>Macbeth is a tragedy.</strong> This means:</p>
+      <ul>
+        <li>The hero has a <span class="highlight-term">fatal flaw</span> (a weakness in their character)</li>
+        <li>This flaw causes their <span class="highlight-term">downfall</span> (they go from good to bad)</li>
+        <li>The play ends with the hero's <span class="highlight-term">death</span></li>
+        <li>Order is <span class="highlight-term">restored</span> after their death</li>
+      </ul>
+      
+      <div class="example-box">
+        <strong>e.g.</strong> Macbeth starts as a brave hero but his ambition (fatal flaw) turns him into a murderous tyrant. He dies at the end and peace returns to Scotland.
+      </div>
+    </div>
+  </div>
+
+  <!-- Visual Break: Three Images -->
+  <div class="guide-images-triple">
+    <div class="guide-image-card">
+      <img src="https://i.postimg.cc/fTLkvXYY/P1-sect-A-lect-1.png" alt="Macbeth as tragic hero" />
+      <p class="image-caption">The Tragic Hero</p>
+    </div>
+    <div class="guide-image-card">
+      <img src="https://i.postimg.cc/c15d0z8z/P1-sect-A-lect-1-img-2.png" alt="Hero's journey" />
+      <p class="image-caption">Hero to Villain Arc</p>
+    </div>
+    <div class="guide-image-card">
+      <img src="/uploaded_image_2.png" alt="Final downfall" />
+      <p class="image-caption">The Downfall</p>
+    </div>
+  </div>
+
+  <!-- Section 2: Key Features -->
+  <div class="guide-section">
+    <h2 class="section-title">2. Key Features of Shakespearean Tragedy</h2>
+    <div class="section-content">
+      
+      <div class="feature-row">
+        <div class="feature-number">1</div>
+        <div class="feature-content">
+          <h3>Fatal Flaw</h3>
+          <p>The hero has a weakness that destroys them.</p>
+          <div class="feature-example">In Macbeth: <strong>Ambition</strong> – his desire for power</div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-number">2</div>
+        <div class="feature-content">
+          <h3>Downfall (Hero → Villain)</h3>
+          <p>The hero transforms from good to evil.</p>
+          <div class="feature-example">Macbeth goes from: brave soldier → murderous tyrant</div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-number">3</div>
+        <div class="feature-content">
+          <h3>Supernatural Elements</h3>
+          <p>Magic, ghosts, or prophecies influence events.</p>
+          <div class="feature-example">The three witches give Macbeth prophecies that fuel his ambition</div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-number">4</div>
+        <div class="feature-content">
+          <h3>Death of the Hero</h3>
+          <p>The tragic hero always dies at the end.</p>
+          <div class="feature-example">Macbeth is killed by Macduff in the final battle</div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-number">5</div>
+        <div class="feature-content">
+          <h3>Order Restored</h3>
+          <p>After the hero's death, peace returns.</p>
+          <div class="feature-example">Malcolm becomes king and brings stability back to Scotland</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Section 3: Structure -->
+  <div class="guide-section">
+    <h2 class="section-title">3. Structure of Macbeth (5 Acts)</h2>
+    
+    <div class="act-timeline">
+      <div class="act-item">
+        <div class="act-badge">Act 1</div>
+        <div class="act-content">
+          <h4>The Beginning</h4>
+          <p>Macbeth meets the witches → His ambition is awakened</p>
+        </div>
+      </div>
+
+      <div class="act-item">
+        <div class="act-badge">Act 2</div>
+        <div class="act-content">
+          <h4>The Murder</h4>
+          <p>Macbeth kills King Duncan to seize the throne</p>
+        </div>
+      </div>
+
+      <div class="act-item">
+        <div class="act-badge">Act 3</div>
+        <div class="act-content">
+          <h4>Paranoia Sets In</h4>
+          <p>Macbeth becomes paranoid → Kills his friend Banquo</p>
+        </div>
+      </div>
+
+      <div class="act-item">
+        <div class="act-badge">Act 4</div>
+        <div class="act-content">
+          <h4>More Prophecies</h4>
+          <p>Macbeth visits the witches again → Gets false hope</p>
+        </div>
+      </div>
+
+      <div class="act-item">
+        <div class="act-badge">Act 5</div>
+        <div class="act-content">
+          <h4>The Downfall</h4>
+          <p>Macbeth dies → Malcolm restores order to Scotland</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Common Mistakes -->
+  <div class="guide-section mistakes-section">
+    <h2 class="section-title">4. Common Exam Mistakes</h2>
+    
+    <div class="mistakes-grid">
+      <div class="mistake-card">
+        <div class="mistake-icon">✗</div>
+        <div class="mistake-text">
+          <strong>Forgetting Macbeth starts as a hero</strong>
+          <p>Always mention he begins as a brave, loyal soldier</p>
+        </div>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-icon">✗</div>
+        <div class="mistake-text">
+          <strong>Not mentioning the fatal flaw</strong>
+          <p>Ambition is the KEY weakness – always include it</p>
+        </div>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-icon">✗</div>
+        <div class="mistake-text">
+          <strong>Missing supernatural elements</strong>
+          <p>Witches are crucial – they trigger Macbeth's ambition</p>
+        </div>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-icon">✗</div>
+        <div class="mistake-text">
+          <strong>Not explaining WHY it's a tragedy</strong>
+          <p>Link: fatal flaw → downfall → death = tragedy pattern</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Reference Card -->
+  <div class="quick-ref-card">
+    <h3>Quick Reference: Tragedy Checklist</h3>
+    <div class="checklist">
+      <div class="checklist-item">✓ Fatal flaw (ambition)</div>
+      <div class="checklist-item">✓ Hero → Villain transformation</div>
+      <div class="checklist-item">✓ Supernatural (witches)</div>
+      <div class="checklist-item">✓ Death of hero</div>
+      <div class="checklist-item">✓ Order restored</div>
+    </div>
+  </div>
+
 </div>
 
 <script>
