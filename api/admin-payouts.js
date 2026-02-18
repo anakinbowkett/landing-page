@@ -10,7 +10,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Simple password protection
   const { password } = req.query;
   if (password !== process.env.ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -18,54 +17,49 @@ export default async function handler(req, res) {
 
   try {
     // Get all ambassadors
-    const { data: ambassadors, error: ambError } = await supabase
+    const { data: ambassadors } = await supabase
       .from('ambassadors')
       .select('*')
       .order('created_at', { ascending: false });
 
-    console.log('Total ambassadors found:', ambassadors?.length);
-    console.log('Ambassador error:', ambError);
-
-    // For each ambassador, get their payable commissions
     const payoutData = [];
 
     for (const amb of ambassadors || []) {
-      
-      // Phase 1: Waitlist commissions (payable = past payable_date OR status = payable)
-      const { data: waitlistComms, error: commError } = await supabase
+      // Phase 1: Waitlist commissions
+      const { data: waitlistComms } = await supabase
         .from('waitlist_commissions')
         .select('*')
         .eq('ambassador_id', amb.id)
         .eq('status', 'payable');
 
-      console.log(`Ambassador ${amb.email}: ${waitlistComms?.length || 0} commissions`, commError);
-
-    
-      // Phase 2: Subscription commissions
+      // Phase 2: Subscription commissions  
       const { data: subComms } = await supabase
         .from('monthly_commissions')
         .select('*')
         .eq('ambassador_id', amb.id)
-        .eq('is_active', true)
-        .lte('created_at', new Date().toISOString());
+        .eq('is_active', true);
 
-      const phase1Total = (waitlistComms?.length || 0) * 0.50;
-      const phase2Total = (subComms?.length || 0) * 2.00;
+      const phase1Count = waitlistComms?.length || 0;
+      const phase2Count = subComms?.length || 0;
+      
+      const phase1Total = phase1Count * 0.50;
+      const phase2Total = phase2Count * 2.00;
       const totalPayout = phase1Total + phase2Total;
 
+      // Only include ambassadors with payouts > 0
       if (totalPayout > 0) {
         payoutData.push({
           ambassadorId: amb.id,
           name: `${amb.first_name} ${amb.last_name}`,
           email: amb.email,
           referralCode: amb.referral_code,
-          phase1Signups: waitlistComms?.length || 0,
+          phase1Signups: phase1Count,
           phase1Total: phase1Total,
-          phase2Subscribers: subComms?.length || 0,
+          phase2Subscribers: phase2Count,
           phase2Total: phase2Total,
           totalPayout: totalPayout,
-          payoutMethod: amb.payout_method || 'PayPal',
-          paypalEmail: amb.paypal_email || amb.email
+          payoutMethod: 'PayPal',
+          paypalEmail: amb.email
         });
       }
     }
@@ -79,6 +73,7 @@ export default async function handler(req, res) {
       phase1Total: payoutData.reduce((sum, p) => sum + p.phase1Total, 0),
       phase2Total: payoutData.reduce((sum, p) => sum + p.phase2Total, 0),
       generatedAt: new Date().toISOString(),
+      nextPayoutDate: getNextPayoutDate(),
       payouts: payoutData
     };
 
@@ -88,4 +83,21 @@ export default async function handler(req, res) {
     console.error('Admin error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
+}
+
+function getNextPayoutDate() {
+  const today = new Date();
+  let payoutMonth = today.getMonth();
+  let payoutYear = today.getFullYear();
+
+  if (today.getDate() >= 15) {
+    payoutMonth += 1;
+    if (payoutMonth > 11) {
+      payoutMonth = 0;
+      payoutYear += 1;
+    }
+  }
+
+  const payout = new Date(payoutYear, payoutMonth, 15);
+  return payout.toISOString().split('T')[0];
 }
