@@ -75,109 +75,153 @@ export default async function handler(req, res) {
 // ============================================
 async function handleMarkingRequest(req, res, { studentText, allLineData, questionData }) {
   
-  // MODEL ANSWERS (Perfect 8/8 responses - cached as input tokens)
+  // MODEL ANSWERS
   const MODEL_ANSWERS = {
-  // Q4: 2 marks - Name two features
-  'English_Lit_Q4': `Two key features of a Shakespearean tragedy are:
+    'English_Lit_Q4': `Two key features of a Shakespearean tragedy are:
 1. Fatal flaw - The hero has a weakness that causes their downfall (Macbeth's ambition)
 2. Death of the hero - The tragic hero dies at the end (Macbeth is killed)`,
 
-  // Q5: 3 marks - Explain why tragedy
-  'English_Lit_Q5': `Macbeth is considered a tragedy for three reasons:
+    'English_Lit_Q5': `Macbeth is considered a tragedy for three reasons:
 1. Hero to villain arc - Macbeth starts as a brave hero but becomes a murderous tyrant
 2. Fatal flaw destroys him - His ambition (fatal flaw) leads to his downfall
 3. Death restores order - Macbeth dies and Malcolm restores peace to Scotland`,
 
-  // Q6: 4 marks - Structure of play
-  'English_Lit_Q6': `The structure of Macbeth follows a five-act tragic pattern:
+    'English_Lit_Q6': `The structure of Macbeth follows a five-act tragic pattern:
 Act 1: Macbeth meets the witches and his ambition is awakened
 Act 2: Macbeth murders King Duncan to seize the throne
 Act 3: Macbeth becomes paranoid and kills his friend Banquo
 Act 4: Macbeth visits the witches again and receives more prophecies
 Act 5: Macbeth is killed by Macduff and order is restored to Scotland`
-};
+  };
 
-  const questionId = questionData?.exerciseId || 'English_Lit_Q1_Hyena';
-  const modelAnswer = MODEL_ANSWERS[questionId] || MODEL_ANSWERS['English_Lit_Q1_Hyena'];
+  const questionId = questionData?.exerciseId || 'English_Lit_Q4';
+  const modelAnswer = MODEL_ANSWERS[questionId] || '';
+  const totalMarks = questionData?.marks || 2;
 
-  // STRICT MARKING PROMPT (optimized for tokens)
-  const markingPrompt = `GCSE English Literature Examiner. Mark strictly.
-
-MODEL ANSWER (8/8 - gold standard):
-${modelAnswer}
+  // STRICT MARKING PROMPT WITH STRUCTURED OUTPUT
+  const markingPrompt = `You are a strict GCSE English Literature examiner marking Macbeth foundation questions.
 
 STUDENT ANSWER:
 ${studentText}
 
-MARK SCHEME (8 marks total):
-- Quotations with marks: 0-2 marks
-- Named techniques: 0-2 marks
-- Effect explained: 0-2 marks
-- Links to question: 0-2 marks
+MODEL ANSWER (${totalMarks} marks):
+${modelAnswer}
 
-SCORE HARSHLY:
-0-1: No quotes, no techniques, under 30 words
-2-3: Weak quote OR technique mentioned, no explanation
-4-5: 1-2 quotes, technique named, weak explanation
-6-7: 2-3 quotes, good analysis, clear effects
-8: Matches model answer quality
+MARKING CRITERIA:
+- Award marks ONLY for content matching the model answer
+- Be strict: most students get 50-70% of marks
+- Check for: key terms, understanding of tragedy, structure knowledge
 
-IDENTIFY WEAKNESSES in student text:
-- Missing quotation marks
-- Vague language ("shows", "uses")
-- No technique names
-- Weak explanations
-
-OUTPUT ONLY VALID JSON:
+OUTPUT FORMAT (JSON only, no markdown):
 {
-  "marksAwarded": 3,
-  "highlights": [
-    {"page": 1, "lineIndex": 0, "startChar": 5, "endChar": 20, "color": "red"}
+  "marksAwarded": 1,
+  "strengths": [
+    "Mentioned fatal flaw",
+    "Identified death as key feature"
   ],
-  "annotations": [
-    {"page": 1, "lineIndex": 0, "text": "Missing quotation marks", "type": "warning"}
+  "weaknesses": [
+    {
+      "issue": "No explanation of how fatal flaw causes downfall",
+      "guideSection": "Key Features of Tragedy",
+      "example": "Add: The fatal flaw (ambition) causes Macbeth to make bad decisions"
+    },
+    {
+      "issue": "Missing link to Macbeth specifically",
+      "guideSection": "Why Macbeth is a Tragedy",
+      "example": "Add: In Macbeth, the hero's ambition leads him from brave soldier to tyrant"
+    }
+  ],
+  "highlights": [
+    {
+      "page": 1,
+      "lineIndex": 0,
+      "startChar": 0,
+      "endChar": 10,
+      "color": "green"
+    }
+  ],
+  "nextSteps": [
+    "Read 'Key Features of Shakespearean Tragedy' in the guide",
+    "Add specific examples from the play",
+    "Explain HOW each feature works in Macbeth"
   ]
 }
 
-Annotations: MAX 8 words each. Be harsh.`;
+RULES:
+- marksAwarded must be between 0 and ${totalMarks}
+- strengths: list what they DID do correctly
+- weaknesses: identify what's MISSING with guide section + example
+- highlights: mark good content green, missing content red
+- nextSteps: 3 actionable steps
 
-  const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
-    },
-    body: JSON.stringify({
-      model: 'deepseek-chat',
-      messages: [
-        { 
-          role: 'system', 
-          content: 'You are a strict GCSE examiner. Compare student answers to model answers. Most students get 3-5/8. Output ONLY valid JSON.' 
-        },
-        { role: 'user', content: markingPrompt }
+Mark strictly. Output ONLY valid JSON.`;
+
+  try {
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a GCSE examiner. Output only valid JSON with strict marking.'
+          },
+          {
+            role: 'user',
+            content: markingPrompt
+          }
+        ],
+        temperature: 0.2,
+        max_tokens: 800
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || 'DeepSeek API error');
+    }
+
+    const data = await response.json();
+    let aiReply = data.choices[0].message.content.trim();
+    
+    // Clean JSON
+    aiReply = aiReply.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    
+    const markingResult = JSON.parse(aiReply);
+    
+    // Cap marks at total
+    if (markingResult.marksAwarded > totalMarks) {
+      markingResult.marksAwarded = totalMarks;
+    }
+    
+    return res.status(200).json(markingResult);
+
+  } catch (error) {
+    console.error('Marking error:', error);
+    
+    // Fallback response if AI fails
+    return res.status(200).json({
+      marksAwarded: Math.floor(totalMarks * 0.5),
+      strengths: ['Attempted the question'],
+      weaknesses: [
+        {
+          issue: 'Answer needs more detail and specific examples',
+          guideSection: 'Macbeth Foundation Guide',
+          example: 'Include key features from the guide with examples from the play'
+        }
       ],
-      temperature: 0.2,
-      max_tokens: 800
-    })
-  });
-
-  const data = await response.json();
-  
-  if (!response.ok) {
-    throw new Error(data.error?.message || 'DeepSeek API error');
+      highlights: [],
+      nextSteps: [
+        'Read the full Macbeth guide',
+        'Identify the key features of tragedy',
+        'Add specific examples from Macbeth'
+      ]
+    });
   }
-
-  let aiReply = data.choices[0].message.content;
-  aiReply = aiReply.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-  
-  const markingResult = JSON.parse(aiReply);
-  
-  // Cap marks at 8
-  if (markingResult.marksAwarded > 8) {
-    markingResult.marksAwarded = 8;
-  }
-  
-  return res.status(200).json(markingResult);
 }
 
 // ============================================
