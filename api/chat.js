@@ -112,7 +112,42 @@ MARKING CRITERIA:
 - Be strict: most students get 50-70% of marks
 - Check for: key terms, understanding of tragedy, structure knowledge
 
+KEY TERMS TO HIGHLIGHT (if found in student answer):
+GREEN (correct usage):
+- "fatal flaw", "ambition", "hamartia"
+- "hero to villain", "downfall", "peripeteia"
+- "death", "restoration of order"
+- "witches", "supernatural", "prophecy"
+- "tragedy", "tragic hero"
+
+RED (missing or needs context):
+- Generic terms without explanation ("good", "bad", "shows")
+- Unsupported claims
+- Areas where key terms are missing
+
 OUTPUT FORMAT (JSON only, no markdown):
+{
+  "marksAwarded": 1,
+  "strengths": ["Mentioned fatal flaw", "Identified ambition"],
+  "weaknesses": [
+    {
+      "issue": "No explanation of how fatal flaw causes downfall",
+      "guideSection": "Key Features of Tragedy",
+      "example": "Add: Ambition drives Macbeth to murder Duncan"
+    }
+  ],
+  "highlights": [
+    {"page": 1, "lineIndex": 0, "startChar": 5, "endChar": 15, "color": "green"},
+    {"page": 1, "lineIndex": 1, "startChar": 0, "endChar": 20, "color": "red"}
+  ],
+  "nextSteps": [
+    "Read 'Key Features of Shakespearean Tragedy' in guide",
+    "Add specific examples from Macbeth",
+    "Explain HOW ambition leads to downfall"
+  ]
+}
+
+Highlight key terms in GREEN. Highlight vague/missing areas in RED.
 {
   "marksAwarded": 1,
   "strengths": [
