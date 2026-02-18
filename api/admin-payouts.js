@@ -24,7 +24,9 @@ export default async function handler(req, res) {
 
     const payoutData = [];
 
-    for (const amb of ambassadors || []) {
+for (const amb of ambassadors || []) {
+      console.log('Processing ambassador:', amb.id, amb.email);
+      
       // Phase 1: Waitlist commissions
       const { data: waitlistComms } = await supabase
         .from('waitlist_commissions')
@@ -41,6 +43,8 @@ export default async function handler(req, res) {
 
       const phase1Count = waitlistComms?.length || 0;
       const phase2Count = subComms?.length || 0;
+      
+      console.log(`Ambassador ${amb.email}: phase1=${phase1Count}, phase2=${phase2Count}, total=${phase1Count * 0.50 + phase2Count * 2.00}`);
       
       const phase1Total = phase1Count * 0.50;
       const phase2Total = phase2Count * 2.00;
