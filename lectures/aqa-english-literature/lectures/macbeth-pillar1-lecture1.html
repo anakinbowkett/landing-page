@@ -1932,240 +1932,192 @@ html,body{
   padding: 40px 20px;
 ">
   <style>
-    #referenceModal .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 12px;
-      padding: 60px 40px 100px;
-      position: relative;
-    }
     
-    #referenceModal h1 {
-      font-size: 48px;
-      font-weight: 600;
-      margin-bottom: 70px;
-      color: #000000;
-      letter-spacing: -0.09em;
-      line-height: 1.2;
-      font-family: 'Crimson Text', serif;
-    }
     
-    #referenceModal .definition {
-      font-size: 21px;
-      color: #2a2a2a;
-      margin-bottom: 90px;
-      padding-left: 24px;
-      border-left: 4px solid #daa98a;
-      line-height: 1.6;
-    }
     
-    #referenceModal .mark-scheme-container {
-      background: white;
-      border: 2px solid #000;
-      margin-bottom: 50px;
-      border-radius: 13px;
-      overflow: hidden;
-    }
-    
-    #referenceModal .mark-scheme-header {
-      background: #000;
-      color: white;
-      padding: 12px 20px;
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    
-    #referenceModal .mark-scheme-content {
-      display: flex;
-    }
-    
-    #referenceModal .marks-column {
-      width: 80px;
-      background: #f5f5f5;
-      border-right: 2px solid #000;
-      flex-shrink: 0;
-    }
-    
-    #referenceModal .mark-item {
-      padding: 18px 0;
-      text-align: center;
-      border-bottom: 1px solid #d0d0d0;
-      font-size: 16px;
-      font-weight: 600;
-      color: #000;
-    }
-    
-    #referenceModal .mark-item:last-child {
-      border-bottom: none;
-    }
-    
-    #referenceModal .mistakes-column {
-      flex: 1;
-    }
-    
-    #referenceModal .mistake-row {
-      padding: 18px 20px;
-      border-bottom: 1px solid #d0d0d0;
-      font-size: 17px;
-      line-height: 1.6;
-      color: #1a1a1a;
-    }
-    
-    #referenceModal .mistake-row:last-child {
-      border-bottom: none;
-    }
-    
-    #referenceModal .mistake-bold {
-      font-weight: 600;
-      color: #000;
-    }
-    
-    #referenceModal .question-variations {
-      background: linear-gradient(135deg, rgba(218, 169, 138, 0.03) 0%, rgba(218, 169, 138, 0.06) 100%);
-      padding: 0;
-      border-radius: 13px;
-      margin-bottom: 56px;
-      border: 0.5px solid rgba(218, 169, 138, 0.12);
-      overflow: hidden;
-      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
-    }
-    
-    #referenceModal .variations-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: rgba(0, 0, 0, 0.45);
-      margin-bottom: 0;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      padding: 24px 28px 12px;
-    }
-    
-    #referenceModal .variation-item {
-      font-size: 17px;
-      color: #1a1a1a;
-      margin-bottom: 0;
-      padding: 14px 28px;
-      border-top: 0.5px solid rgba(0, 0, 0, 0.06);
-      transition: all 0.25s;
-      font-weight: 400;
-    }
-    
-    #referenceModal .variation-item:first-of-type {
-      border-top: none;
-    }
-    
-    #referenceModal .variation-item:hover {
-      background: rgba(218, 169, 138, 0.08);
-      padding-left: 32px;
-    }
-    
-    #referenceModal .main-content {
-      background: white;
-      padding: 60px 55px;
-      border-radius: 13px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      margin-bottom: 90px;
-    }
-    
-    #referenceModal .question {
-      font-size: 28px;
-      font-weight: 600;
-      color: #000000;
-      margin-bottom: 55px;
-      letter-spacing: -0.02em;
-      line-height: 1.3;
-    }
-    
-    #referenceModal .method-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #daa98a;
-      margin-bottom: 35px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
+   /* ============================================
+   PROFESSIONAL GUIDE DESIGN
+   ============================================ */
 
-    #referenceModal .steps-container {
-      margin: 45px 0;
-    }
+#referenceModal .container {
+  max-width: 900px;  /* Narrower - fits A4 */
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  padding: 50px 60px;
+  position: relative;
+}
 
-    #referenceModal .step {
-      margin-bottom: 60px;
-      display: flex;
-      gap: 40px;
-      align-items: flex-start;
-    }
+#referenceModal h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #000000;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  font-family: 'Crimson Text', serif;
+  text-align: center;
+  border-bottom: 3px solid #daa98a;
+  padding-bottom: 20px;
+}
 
-    #referenceModal .step-left {
-      flex: 1;
-      padding: 28px 0;
-    }
+.guide-definition-card {
+  background: linear-gradient(135deg, #8b5a3c 0%, #6b4423 100%);
+  padding: 24px 28px;
+  border-radius: 8px;
+  margin-bottom: 40px;
+}
 
-    #referenceModal .step-right {
-      flex: 1;
-      background: white;
-      border: 3px solid #daa98a;
-      border-radius: 13px;
-      padding: 40px;
-      height: 220px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+.definition-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 10px;
+}
 
-    #referenceModal .step-number {
-      font-size: 15px;
-      font-weight: 700;
-      color: #daa98a;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 12px;
-    }
+.definition-text {
+  font-size: 16px;
+  color: white;
+  line-height: 1.7;
+  font-weight: 400;
+}
 
-    #referenceModal .step-intro {
-      font-size: 20px;
-      font-weight: 600;
-      color: #000;
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
+.guide-section {
+  margin-bottom: 45px;
+}
 
-    #referenceModal .step-detail {
-      font-size: 18px;
-      color: #444;
-      line-height: 1.7;
-    }
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #daa98a;
+  font-family: 'Crimson Text', serif;
+}
 
-    #referenceModal .step-canvas {
-      width: 100%;
-      height: 100%;
-    }
+.section-content p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #1f2937;
+  margin-bottom: 16px;
+  text-align: justify;
+}
 
-    #referenceModal .final-answer {
-      font-size: 24px;
-      font-weight: 700;
-      color: #000;
-      margin-top: 25px;
-      padding: 30px;
-      background: #fafafa;
-      border-radius: 13px;
-      border: 2px solid #daa98a;
-      text-align: center;
-    }
-    
-    @media (max-width: 968px) {
-      #referenceModal .step {
-        flex-direction: column;
-      }
-      
-      #referenceModal .step-right {
-        width: 100%;
-        height: 200px;
-      }
-    }
+.example-text {
+  font-style: italic;
+  color: #4b5563;
+  padding-left: 20px;
+  border-left: 3px solid #daa98a;
+  margin-top: 20px;
+}
+
+/* Three Images Layout */
+.guide-images-triple {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 35px 0;
+}
+
+.guide-image-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.image-caption {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 600;
+  margin: 8px 0 0 0;
+  text-align: center;
+}
+
+/* Feature Items */
+.feature-item {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+
+.feature-num {
+  width: 24px;
+  height: 24px;
+  background: #daa98a;
+  color: white;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.feature-text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #1f2937;
+  text-align: justify;
+}
+
+.feature-text strong {
+  color: #000;
+  font-weight: 700;
+}
+
+/* Act Structure */
+.act-detailed {
+  margin-bottom: 24px;
+  border-left: 3px solid #daa98a;
+  padding-left: 20px;
+}
+
+.act-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.act-label {
+  background: #8b5a3c;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: Arial, sans-serif;
+}
+
+.act-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #000;
+}
+
+.act-description {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #374151;
+  text-align: justify;
+}
+
+@media (max-width: 768px) {
+  #referenceModal .container {
+    padding: 30px 24px;
+  }
+  
+  .guide-images-triple {
+    grid-template-columns: 1fr;
+  }
+}
   </style>
   
   <button id="closeModalBtn" style="
@@ -2211,101 +2163,94 @@ html,body{
   
 <div class="container">
   
-  <!-- Hero Section -->
-  <div class="guide-hero">
-    <h1>Macbeth: Foundation of the Play</h1>
-    <p class="guide-subtitle">Everything you need to master the basics of Shakespeare's tragedy</p>
-  </div>
-
-  <!-- Quick Definition -->
+  <!-- Title -->
+  <h1>Macbeth: Foundation of the Play</h1>
+  
+  <!-- Definition Card -->
   <div class="guide-definition-card">
-    <div class="definition-label">What is Macbeth?</div>
+    <div class="definition-label">Definition</div>
     <div class="definition-text">
-      A <strong>tragedy</strong> – a play where a hero's fatal flaw leads to their downfall and death.
+      <strong>Tragedy:</strong> A serious play in which the protagonist (main character) experiences a downfall due to a character flaw or poor decision, ultimately leading to their death. The downfall creates a sense of waste, as the protagonist often possesses admirable qualities but is destroyed by their weakness.
     </div>
   </div>
 
-  <!-- Section 1: Type of Play -->
+  <!-- Section 1: What Type of Play -->
   <div class="guide-section">
-    <h2 class="section-title">1. Type of Play</h2>
+    <h2 class="section-title">What Type of Play is Macbeth?</h2>
     <div class="section-content">
-      <p><strong>Macbeth is a tragedy.</strong> This means:</p>
-      <ul>
-        <li>The hero has a <span class="highlight-term">fatal flaw</span> (a weakness in their character)</li>
-        <li>This flaw causes their <span class="highlight-term">downfall</span> (they go from good to bad)</li>
-        <li>The play ends with the hero's <span class="highlight-term">death</span></li>
-        <li>Order is <span class="highlight-term">restored</span> after their death</li>
-      </ul>
+      <p>Macbeth is a <strong>Shakespearean tragedy</strong>. This classification means the play follows a specific dramatic structure where a noble character is brought down by a critical flaw in their personality. In Macbeth's case, he begins as a respected and valiant Scottish general, admired for his loyalty and courage on the battlefield. However, his unchecked ambition—his fatal flaw—drives him to commit regicide (killing the king), setting off a chain of violent actions that ultimately lead to his own destruction.</p>
       
-      <div class="example-box">
-        <strong>e.g.</strong> Macbeth starts as a brave hero but his ambition (fatal flaw) turns him into a murderous tyrant. He dies at the end and peace returns to Scotland.
-      </div>
+      <p class="example-text">... Macbeth starts as a brave hero, praised by King Duncan for defeating traitors in battle. His ambition (fatal flaw) is awakened by the witches' prophecies, turning him into a murderous tyrant who kills Duncan, Banquo, and Macduff's family. He dies at the end when Macduff kills him in combat, and Malcolm restores order to Scotland by becoming the rightful king.</p>
     </div>
   </div>
 
   <!-- Visual Break: Three Images -->
   <div class="guide-images-triple">
     <div class="guide-image-card">
-      <img src="https://i.postimg.cc/fTLkvXYY/P1-sect-A-lect-1.png" alt="Macbeth as tragic hero" />
-      <p class="image-caption">The Tragic Hero</p>
+      <img src="https://via.placeholder.com/350x200/8b5a3c/ffffff?text=The+Noble+Hero" alt="Macbeth as hero" />
+      <p class="image-caption">Act I: The Noble Hero</p>
     </div>
     <div class="guide-image-card">
-      <img src="https://i.postimg.cc/c15d0z8z/P1-sect-A-lect-1-img-2.png" alt="Hero's journey" />
-      <p class="image-caption">Hero to Villain Arc</p>
+      <img src="https://via.placeholder.com/350x200/6b4423/ffffff?text=The+Corruption" alt="Corruption" />
+      <p class="image-caption">Acts II-IV: The Corruption</p>
     </div>
     <div class="guide-image-card">
-      <img src="/uploaded_image_2.png" alt="Final downfall" />
-      <p class="image-caption">The Downfall</p>
+      <img src="https://via.placeholder.com/350x200/4a2f1a/ffffff?text=The+Downfall" alt="Downfall" />
+      <p class="image-caption">Act V: The Downfall</p>
     </div>
   </div>
 
   <!-- Section 2: Key Features -->
   <div class="guide-section">
-    <h2 class="section-title">2. Key Features of Shakespearean Tragedy</h2>
+    <h2 class="section-title">Key Features of Shakespearean Tragedy</h2>
     <div class="section-content">
       
-      <div class="feature-row">
-        <div class="feature-number">1</div>
-        <div class="feature-content">
-          <h3>Fatal Flaw</h3>
-          <p>The hero has a weakness that destroys them.</p>
-          <div class="feature-example">In Macbeth: <strong>Ambition</strong> – his desire for power</div>
+      <div class="feature-item">
+        <span class="feature-num">1</span>
+        <div class="feature-text">
+          <strong>The Tragic Hero:</strong> The protagonist is a person of high status (king, general, nobleman) who commands respect. Macbeth is a Thane (Scottish nobleman) and a celebrated military commander. The hero must be noble enough that their fall from grace creates genuine tragedy—we witness someone with potential for greatness destroyed by their own choices.
         </div>
       </div>
 
-      <div class="feature-row">
-        <div class="feature-number">2</div>
-        <div class="feature-content">
-          <h3>Downfall (Hero → Villain)</h3>
-          <p>The hero transforms from good to evil.</p>
-          <div class="feature-example">Macbeth goes from: brave soldier → murderous tyrant</div>
+      <div class="feature-item">
+        <span class="feature-num">2</span>
+        <div class="feature-text">
+          <strong>Fatal Flaw (Hamartia):</strong> The hero possesses a critical weakness in their character that leads to their downfall. Macbeth's fatal flaw is his "vaulting ambition" (as he himself describes it). While ambition alone is not inherently evil, Macbeth's ambition is excessive and uncontrolled—he is willing to murder, betray, and terrorize to achieve power. This flaw is exploited by external forces (the witches, Lady Macbeth) but ultimately stems from within his own character.
         </div>
       </div>
 
-      <div class="feature-row">
-        <div class="feature-number">3</div>
-        <div class="feature-content">
-          <h3>Supernatural Elements</h3>
-          <p>Magic, ghosts, or prophecies influence events.</p>
-          <div class="feature-example">The three witches give Macbeth prophecies that fuel his ambition</div>
+      <div class="feature-item">
+        <span class="feature-num">3</span>
+        <div class="feature-text">
+          <strong>Reversal of Fortune (Peripeteia):</strong> The protagonist experiences a dramatic change from prosperity to ruin. Macbeth moves from being honored by the king ("O worthiest cousin!") to becoming a hated tyrant whom his own subjects want dead. His transformation is complete: hero to villain, protector to murderer, loyal subject to usurper.
         </div>
       </div>
 
-      <div class="feature-row">
-        <div class="feature-number">4</div>
-        <div class="feature-content">
-          <h3>Death of the Hero</h3>
-          <p>The tragic hero always dies at the end.</p>
-          <div class="feature-example">Macbeth is killed by Macduff in the final battle</div>
+      <div class="feature-item">
+        <span class="feature-num">4</span>
+        <div class="feature-text">
+          <strong>Recognition (Anagnorisis):</strong> The hero gains self-awareness and recognizes the truth of their situation, often too late to change it. Macbeth realizes his ambition has led to isolation and meaninglessness. In his "Tomorrow, and tomorrow, and tomorrow" soliloquy, he reflects that life is "a tale told by an idiot, full of sound and fury, signifying nothing"—showing he understands the emptiness of what he has achieved.
         </div>
       </div>
 
-      <div class="feature-row">
-        <div class="feature-number">5</div>
-        <div class="feature-content">
-          <h3>Order Restored</h3>
-          <p>After the hero's death, peace returns.</p>
-          <div class="feature-example">Malcolm becomes king and brings stability back to Scotland</div>
+      <div class="feature-item">
+        <span class="feature-num">5</span>
+        <div class="feature-text">
+          <strong>Catharsis:</strong> The audience experiences pity and fear through the hero's suffering, leading to emotional purging. We pity Macbeth because he had potential for good, and we fear because his downfall shows how ambition can corrupt anyone. His death, while deserved, brings a sense of waste—he could have been a great man.
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <span class="feature-num">6</span>
+        <div class="feature-text">
+          <strong>Supernatural Elements:</strong> The presence of fate, prophecy, or supernatural forces that influence events. The three witches provide prophecies that set Macbeth's ambition in motion. However, Shakespeare leaves it ambiguous whether the witches control fate or merely reveal Macbeth's existing desires. Their prophecies are self-fulfilling: Macbeth's actions to make them come true are what actually cause his downfall.
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <span class="feature-num">7</span>
+        <div class="feature-text">
+          <strong>Death and Restoration of Order:</strong> The tragic hero must die, and their death restores moral and political order. Macbeth's tyrannical rule creates chaos in Scotland: "Each new day a gash is added to her wounds." His death at Macduff's hands ends the suffering. Malcolm, the rightful heir, becomes king and promises to restore justice, making Scotland "whole" again.
         </div>
       </div>
 
@@ -2314,99 +2259,59 @@ html,body{
 
   <!-- Section 3: Structure -->
   <div class="guide-section">
-    <h2 class="section-title">3. Structure of Macbeth (5 Acts)</h2>
-    
-    <div class="act-timeline">
-      <div class="act-item">
-        <div class="act-badge">Act 1</div>
-        <div class="act-content">
-          <h4>The Beginning</h4>
-          <p>Macbeth meets the witches → His ambition is awakened</p>
+    <h2 class="section-title">Structure of Macbeth: The Five-Act Tragic Arc</h2>
+    <div class="section-content">
+      
+      <div class="act-detailed">
+        <div class="act-header">
+          <span class="act-label">Act I</span>
+          <span class="act-name">Exposition and Inciting Incident</span>
+        </div>
+        <div class="act-description">
+          Macbeth, a loyal general, defeats traitors in battle and is praised by King Duncan. On his way home, he encounters three witches who prophesy that he will become Thane of Cawdor and eventually King of Scotland. When the first prophecy immediately comes true (Duncan names him Thane of Cawdor), Macbeth's ambition is awakened. He begins to contemplate murder but is uncertain. Lady Macbeth, upon reading his letter about the prophecies, resolves to push him toward action. She manipulates him by questioning his masculinity and courage, convincing him to murder Duncan when the king visits their castle.
         </div>
       </div>
 
-      <div class="act-item">
-        <div class="act-badge">Act 2</div>
-        <div class="act-content">
-          <h4>The Murder</h4>
-          <p>Macbeth kills King Duncan to seize the throne</p>
+      <div class="act-detailed">
+        <div class="act-header">
+          <span class="act-label">Act II</span>
+          <span class="act-name">Rising Action and The Murder</span>
+        </div>
+        <div class="act-description">
+          Macbeth murders King Duncan while he sleeps. Immediately, he is consumed with guilt—he hallucinates a bloody dagger and cannot say "Amen" when he hears the guards praying. Lady Macbeth takes control, returning the daggers to frame the guards. When the murder is discovered, Macbeth kills the guards (supposedly in rage) to silence them. Duncan's sons, Malcolm and Donalbain, flee in fear, making them appear guilty. Macbeth is crowned king, but the moral transgression has already begun to corrupt him.
         </div>
       </div>
 
-      <div class="act-item">
-        <div class="act-badge">Act 3</div>
-        <div class="act-content">
-          <h4>Paranoia Sets In</h4>
-          <p>Macbeth becomes paranoid → Kills his friend Banquo</p>
+      <div class="act-detailed">
+        <div class="act-header">
+          <span class="act-label">Act III</span>
+          <span class="act-name">Climax and Further Decline</span>
+        </div>
+        <div class="act-description">
+          Now king, Macbeth is paranoid because the witches prophesied that Banquo's descendants, not his own, will be kings. To secure his position, he hires murderers to kill Banquo and his son Fleance. Banquo is killed, but Fleance escapes. At a banquet, Macbeth sees Banquo's ghost (visible only to him), revealing his guilt and instability to his guests. His erratic behavior causes nobles to suspect him. Macduff notably refuses to attend the banquet and flees to England to join Malcolm. Macbeth's rule is increasingly tyrannical as he seeks to eliminate all threats.
         </div>
       </div>
 
-      <div class="act-item">
-        <div class="act-badge">Act 4</div>
-        <div class="act-content">
-          <h4>More Prophecies</h4>
-          <p>Macbeth visits the witches again → Gets false hope</p>
+      <div class="act-detailed">
+        <div class="act-header">
+          <span class="act-label">Act IV</span>
+          <span class="act-name">Falling Action and Deepening Corruption</span>
+        </div>
+        <div class="act-description">
+          Macbeth visits the witches again, demanding more prophecies. They show him three apparitions: beware Macduff; none "of woman born" can harm him; he is safe until Birnam Wood comes to Dunsinane Hill. These prophecies give him false confidence—he believes he is invincible. To punish Macduff for fleeing, Macbeth orders the murder of Macduff's wife and children, a brutal and senseless act that shows his complete moral degradation. Meanwhile, in England, Malcolm tests Macduff's loyalty before agreeing to lead an army against Macbeth.
         </div>
       </div>
 
-      <div class="act-item">
-        <div class="act-badge">Act 5</div>
-        <div class="act-content">
-          <h4>The Downfall</h4>
-          <p>Macbeth dies → Malcolm restores order to Scotland</p>
+      <div class="act-detailed">
+        <div class="act-header">
+          <span class="act-label">Act V</span>
+          <span class="act-name">Catastrophe and Resolution</span>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Section 4: Common Mistakes -->
-  <div class="guide-section mistakes-section">
-    <h2 class="section-title">4. Common Exam Mistakes</h2>
-    
-    <div class="mistakes-grid">
-      <div class="mistake-card">
-        <div class="mistake-icon">✗</div>
-        <div class="mistake-text">
-          <strong>Forgetting Macbeth starts as a hero</strong>
-          <p>Always mention he begins as a brave, loyal soldier</p>
+        <div class="act-description">
+          Lady Macbeth, consumed by guilt, sleepwalks and tries to wash imaginary bloodstains from her hands ("Out, damned spot!"). She eventually dies (implied suicide). Macbeth receives news of her death with numb indifference—his famous "Tomorrow, and tomorrow, and tomorrow" soliloquy reveals his complete despair and sense of life's meaninglessness. Malcolm's army advances, carrying branches from Birnam Wood as camouflage, fulfilling the prophecy. In battle, Macbeth learns that Macduff was "not of woman born" (born by Caesarean section), nullifying his sense of invincibility. Macduff kills Macbeth in combat, and Malcolm is crowned the rightful King of Scotland, restoring order.
         </div>
       </div>
 
-      <div class="mistake-card">
-        <div class="mistake-icon">✗</div>
-        <div class="mistake-text">
-          <strong>Not mentioning the fatal flaw</strong>
-          <p>Ambition is the KEY weakness – always include it</p>
-        </div>
-      </div>
-
-      <div class="mistake-card">
-        <div class="mistake-icon">✗</div>
-        <div class="mistake-text">
-          <strong>Missing supernatural elements</strong>
-          <p>Witches are crucial – they trigger Macbeth's ambition</p>
-        </div>
-      </div>
-
-      <div class="mistake-card">
-        <div class="mistake-icon">✗</div>
-        <div class="mistake-text">
-          <strong>Not explaining WHY it's a tragedy</strong>
-          <p>Link: fatal flaw → downfall → death = tragedy pattern</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Quick Reference Card -->
-  <div class="quick-ref-card">
-    <h3>Quick Reference: Tragedy Checklist</h3>
-    <div class="checklist">
-      <div class="checklist-item">✓ Fatal flaw (ambition)</div>
-      <div class="checklist-item">✓ Hero → Villain transformation</div>
-      <div class="checklist-item">✓ Supernatural (witches)</div>
-      <div class="checklist-item">✓ Death of hero</div>
-      <div class="checklist-item">✓ Order restored</div>
     </div>
   </div>
 
@@ -3217,19 +3122,9 @@ async function applyMarkingResults(allLineData, result) {
     markingByPage[pageKey][lineData.lineIndex] = {
       element: lineData.element,
       text: lineData.text,
-      annotations: [],
       highlights: []
     };
   });
-  
-  if (result.annotations) {
-    result.annotations.forEach(annotation => {
-      const pageKey = `page_${annotation.page}`;
-      if (markingByPage[pageKey] && markingByPage[pageKey][annotation.lineIndex]) {
-        markingByPage[pageKey][annotation.lineIndex].annotations.push(annotation);
-      }
-    });
-  }
   
   if (result.highlights) {
     result.highlights.forEach(highlight => {
@@ -3248,11 +3143,7 @@ async function applyMarkingResults(allLineData, result) {
         applyHighlightsToLine(lineMarking.element, lineMarking.text, lineMarking.highlights);
       }
       
-      if (lineMarking.annotations.length > 0) {
-        await addAnnotationsAboveLine(lineMarking.element, lineMarking.annotations);
-      }
-      
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 200));
     }
   }
 }
@@ -3274,15 +3165,7 @@ function applyHighlightsToLine(lineElement, originalText, highlights) {
   lineElement.innerHTML = html;
 }
 
-async function addAnnotationsAboveLine(lineElement, annotations) {
-  for (const annotation of annotations) {
-    const annotationDiv = document.createElement('div');
-    annotationDiv.className = `ai-annotation ${annotation.type}`;
-    annotationDiv.textContent = annotation.text;
-    lineElement.parentNode.insertBefore(annotationDiv, lineElement);
-    await new Promise(resolve => setTimeout(resolve, 200));
-  }
-}
+  
 
 function escapeHtml(text) {
   const div = document.createElement('div');
