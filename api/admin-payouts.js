@@ -18,21 +18,27 @@ export default async function handler(req, res) {
 
   try {
     // Get all ambassadors
-    const { data: ambassadors } = await supabase
+    const { data: ambassadors, error: ambError } = await supabase
       .from('ambassadors')
       .select('*')
       .order('created_at', { ascending: false });
+
+    console.log('Total ambassadors found:', ambassadors?.length);
+    console.log('Ambassador error:', ambError);
 
     // For each ambassador, get their payable commissions
     const payoutData = [];
 
     for (const amb of ambassadors || []) {
+      
       // Phase 1: Waitlist commissions (payable = past payable_date OR status = payable)
-      const { data: waitlistComms } = await supabase
+      const { data: waitlistComms, error: commError } = await supabase
         .from('waitlist_commissions')
         .select('*')
         .eq('ambassador_id', amb.id)
         .eq('status', 'payable');
+
+      console.log(`Ambassador ${amb.email}: ${waitlistComms?.length || 0} commissions`, commError);
 
     
       // Phase 2: Subscription commissions
