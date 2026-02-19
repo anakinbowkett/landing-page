@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     const { data: ambassadors, error: ambError } = await supabase
       .from('ambassadors')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('joined_at', { ascending: false });
 
     // If no ambassadors, return early with debug info
     if (!ambassadors || ambassadors.length === 0) {
