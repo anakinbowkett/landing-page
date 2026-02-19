@@ -17,10 +17,19 @@ export default async function handler(req, res) {
 
   try {
     // Get all ambassadors
-    const { data: ambassadors } = await supabase
+    const { data: ambassadors, error: ambError } = await supabase
       .from('ambassadors')
       .select('*')
       .order('created_at', { ascending: false });
+
+    // If no ambassadors, return early with debug info
+    if (!ambassadors || ambassadors.length === 0) {
+      return res.status(200).json({
+        error: 'No ambassadors found',
+        ambError: ambError,
+        ambassadorCount: ambassadors?.length || 0
+      });
+    }
 
     const payoutData = [];
     const debugInfo = [];
