@@ -708,57 +708,34 @@
 
 
 async function generateReceipt(ambassadorId, ambassadorName) {
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = 'Generating...';
-            btn.disabled = true;
+    const btn = event.target;
+    btn.textContent = 'Generating...';
+    btn.disabled = true;
 
-            try {
-                // Use today's date or 15th of current month
-                const today = new Date();
-                const paymentDate = new Date(today.getFullYear(), today.getMonth(), 15).toISOString().split('T')[0];
+    try {
+        const response = await fetch(`/api/admin-payouts?password=${encodeURIComponent(adminPassword)}&action=receipt&ambassadorId=${ambassadorId}`);
+        const data = await response.json();
 
-                const response = await fetch('/api/generate-receipt', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        password: adminPassword,
-                        ambassadorId: ambassadorId,
-                        paymentDate: paymentDate
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Open receipt in new window
-                    const receiptWindow = window.open('', '_blank');
-                    receiptWindow.document.write(data.receiptHTML);
-                    receiptWindow.document.close();
-
-                    btn.textContent = 'Generated ✓';
-                    btn.style.background = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
-                    
-                    setTimeout(() => {
-                        btn.textContent = originalText;
-                        btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-                        btn.disabled = false;
-                    }, 2000);
-
-                    // Reload payouts to show updated status
-                    setTimeout(() => loadPayouts(), 2500);
-                } else {
-                    alert(`Error: ${data.error || 'Failed to generate receipt'}`);
-                    btn.textContent = originalText;
-                    btn.disabled = false;
-                }
-            } catch (err) {
-                console.error('Receipt error:', err);
-                alert('Network error. Please try again.');
-                btn.textContent = originalText;
+        if (response.ok) {
+            const receiptWindow = window.open('', '_blank');
+            receiptWindow.document.write(data.receiptHTML);
+            receiptWindow.document.close();
+            btn.textContent = 'Generated ✓';
+            setTimeout(() => {
+                btn.textContent = 'Generate Receipt';
                 btn.disabled = false;
-            }
+            }, 2000);
+        } else {
+            alert('Error: ' + data.error);
+            btn.textContent = 'Generate Receipt';
+            btn.disabled = false;
         }
+    } catch (err) {
+        alert('Error generating receipt');
+        btn.textContent = 'Generate Receipt';
+        btn.disabled = false;
+    }
+}
 
 
 
