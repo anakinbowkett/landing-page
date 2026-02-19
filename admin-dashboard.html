@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - GMM Ambassador Payouts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0e1a;
+            color: #e5e7eb;
+            min-height: 100vh;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: linear-gradient(135deg, #1a1f35 0%, #0f1419 100%);
+            border-bottom: 1px solid #1f2937;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-img {
+            height: 45px;
+            filter: brightness(0) invert(1);
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 0.375rem 0.875rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .date-display {
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+
+        /* Login Modal */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-box {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            border: 1px solid #374151;
+            border-radius: 16px;
+            padding: 3rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-subtitle {
+            color: #9ca3af;
+            margin-bottom: 2rem;
+            font-size: 0.875rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #d1d5db;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-field {
+            width: 100%;
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 0.875rem 1rem;
+            color: #e5e7eb;
+            font-size: 0.9375rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.875rem;
+            font-size: 0.9375rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .error-msg {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-msg.show {
+            display: block;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 1.75rem;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .stat-label {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .stat-currency {
+            color: #10b981;
+        }
+
+        .stat-sub {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+
+        /* Payout Table */
+        .table-section {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #e5e7eb;
+        }
+
+        .refresh-btn {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            color: #60a5fa;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        thead {
+            background: #0f1419;
+        }
+
+        th {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #374151;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 1.25rem 1.25rem;
+            border-bottom: 1px solid #1f2937;
+            color: #d1d5db;
+            font-size: 0.9375rem;
+        }
+
+        tbody tr {
+            transition: all 0.2s;
+        }
+
+        tbody tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        tbody tr.paid {
+            opacity: 0.5;
+        }
+
+        .phase-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .phase-1 {
+            background: rgba(251, 146, 60, 0.1);
+            border: 1px solid rgba(251, 146, 60, 0.3);
+            color: #fb923c;
+        }
+
+        .phase-2 {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+        }
+
+        .phase-both {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            color: #a855f7;
+        }
+
+        .amount {
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .paid-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #10b981;
+        }
+
+        .paid-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .loading-spinner {
+            border: 3px solid #374151;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Export Button */
+        .export-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            color: white;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            th, td {
+                padding: 0.875rem;
+                font-size: 0.8125rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Modal -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <h1 class="login-title">Admin Access</h1>
+            <p class="login-subtitle">Enter your password to view payout dashboard</p>
+            
+            <div class="error-msg" id="errorMsg">Invalid password. Please try again.</div>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <label class="input-label">Password</label>
+                    <input type="password" id="passwordInput" class="input-field" placeholder="Enter admin password" required>
+                </div>
+                <button type="submit" class="login-btn">Access Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard (hidden until login) -->
+    <div id="dashboard" style="display: none;">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="logo-section">
+                <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="GMM Logo" class="logo-img">
+                <span class="admin-badge">Admin</span>
+            </div>
+            <div class="date-display">
+                Next Payout: <span id="nextPayoutDate">—</span>
+            </div>
+        </div>
+
+        <!-- Container -->
+        <div class="container">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Ambassadors</div>
+                    <div class="stat-value" id="totalAmbassadors">0</div>
+                    <div class="stat-sub">With pending payouts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Payout Amount</div>
+                    <div class="stat-value"><span class="stat-currency">£</span><span id="totalPayout">0.00</span></div>
+                    <div class="stat-sub">Due on payout date</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Phase 1 (Waitlist)</div>
+                    <div class="stat-value"><span class="stat-currency">£</span><span id="phase1Total">0.00</span></div>
+                    <div class="stat-sub">50p per verified signup</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Phase 2 (Subscriptions)</div>
+                    <div class="stat-value"><span class="stat-currency">£</span><span id="phase2Total">0.00</span></div>
+                    <div class="stat-sub">£2 per active subscriber</div>
+                </div>
+            </div>
+
+            <!-- Payout Table -->
+            <div class="table-section">
+                <div class="table-header">
+                    <h2 class="table-title">Ambassador Payouts</h2>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="export-btn" onclick="exportToCSV()">Export CSV</button>
+                        <button class="refresh-btn" onclick="loadPayouts()">↻ Refresh</button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper" id="tableContainer">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Loading payout data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let adminPassword = '';
+        let payoutsData = null;
+
+        // Login Handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('errorMsg');
+
+            try {
+                const response = await fetch(`/api/admin-payouts?password=${encodeURIComponent(password)}`);
+                
+                if (response.ok) {
+                    adminPassword = password;
+                    sessionStorage.setItem('admin_password', password);
+                    document.getElementById('loginOverlay').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    loadPayouts();
+                } else {
+                    errorMsg.classList.add('show');
+                    setTimeout(() => errorMsg.classList.remove('show'), 3000);
+                }
+            } catch (err) {
+                errorMsg.textContent = 'Network error. Please try again.';
+                errorMsg.classList.add('show');
+            }
+        });
+
+        // Check if already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedPassword = sessionStorage.getItem('admin_password');
+            if (savedPassword) {
+                adminPassword = savedPassword;
+                document.getElementById('passwordInput').value = savedPassword;
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Load Payouts
+        async function loadPayouts() {
+            const container = document.getElementById('tableContainer');
+            container.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Loading payout data...</p></div>';
+
+            try {
+                const response = await fetch(`/api/admin-payouts?password=${encodeURIComponent(adminPassword)}`);
+                const data = await response.json();
+
+                if (!response.ok) throw new Error('Failed to load');
+
+                payoutsData = data;
+
+                // Update stats
+                document.getElementById('totalAmbassadors').textContent = data.totalAmbassadors;
+                document.getElementById('totalPayout').textContent = data.totalPayoutAmount.toFixed(2);
+                document.getElementById('phase1Total').textContent = data.phase1Total.toFixed(2);
+                document.getElementById('phase2Total').textContent = data.phase2Total.toFixed(2);
+                document.getElementById('nextPayoutDate').textContent = new Date(data.nextPayoutDate).toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+
+                // Render table
+                renderTable(data.payouts);
+
+            } catch (err) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Failed to load payout data</p></div>';
+            }
+        }
+
+        function renderTable(payouts) {
+            const container = document.getElementById('tableContainer');
+
+            if (!payouts || payouts.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No payouts pending</p></div>';
+                return;
+            }
+
+            // Load paid status from localStorage
+            const paidStatus = JSON.parse(localStorage.getItem('paid_ambassadors') || '{}');
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ambassador</th>
+                            <th>Email</th>
+                            <th>Referral Code</th>
+                            <th>Phase</th>
+                            <th>Phase 1</th>
+                            <th>Phase 2</th>
+                            <th>Total</th>
+                            <th>Paid</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${payouts.map(p => {
+                            const phase = p.phase1Total > 0 && p.phase2Total > 0 ? 'both' : 
+                                        p.phase1Total > 0 ? '1' : '2';
+                            const isPaid = paidStatus[p.ambassadorId] || false;
+                            
+                            return `
+                                <tr class="${isPaid ? 'paid' : ''}" data-id="${p.ambassadorId}">
+                                    <td><strong>${p.name}</strong></td>
+                                    <td>${p.email}</td>
+                                    <td><code>${p.referralCode}</code></td>
+                                    <td>
+                                        <span class="phase-badge phase-${phase}">
+                                            ${phase === 'both' ? 'Phase 1+2' : 'Phase ' + phase}
+                                        </span>
+                                    </td>
+                                    <td>${p.phase1Signups} signups (£${p.phase1Total.toFixed(2)})</td>
+                                    <td>${p.phase2Subscribers} subs (£${p.phase2Total.toFixed(2)})</td>
+                                    <td class="amount">£${p.totalPayout.toFixed(2)}</td>
+                                    <td>
+                                        <div class="checkbox-wrapper">
+                                            <input 
+                                                type="checkbox" 
+                                                class="paid-checkbox" 
+                                                ${isPaid ? 'checked' : ''}
+                                                onchange="togglePaid('${p.ambassadorId}')"
+                                            >
+                                            <span class="paid-label">${isPaid ? 'Paid' : 'Pending'}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function togglePaid(ambassadorId) {
+            const paidStatus = JSON.parse(localStorage.getItem('paid_ambassadors') || '{}');
+            paidStatus[ambassadorId] = !paidStatus[ambassadorId];
+            localStorage.setItem('paid_ambassadors', JSON.stringify(paidStatus));
+            
+            // Update row styling
+            const row = document.querySelector(`tr[data-id="${ambassadorId}"]`);
+            if (paidStatus[ambassadorId]) {
+                row.classList.add('paid');
+                row.querySelector('.paid-label').textContent = 'Paid';
+            } else {
+                row.classList.remove('paid');
+                row.querySelector('.paid-label').textContent = 'Pending';
+            }
+        }
+
+        function exportToCSV() {
+            if (!payoutsData || !payoutsData.payouts) return;
+
+            const paidStatus = JSON.parse(localStorage.getItem('paid_ambassadors') || '{}');
+            
+            const headers = ['Name', 'Email', 'Referral Code', 'Phase 1 Signups', 'Phase 1 Total', 'Phase 2 Subscribers', 'Phase 2 Total', 'Total Payout', 'PayPal Email', 'Paid Status'];
+            
+            const rows = payoutsData.payouts.map(p => [
+                p.name,
+                p.email,
+                p.referralCode,
+                p.phase1Signups,
+                `£${p.phase1Total.toFixed(2)}`,
+                p.phase2Subscribers,
+                `£${p.phase2Total.toFixed(2)}`,
+                `£${p.totalPayout.toFixed(2)}`,
+                p.paypalEmail,
+                paidStatus[p.ambassadorId] ? 'Paid' : 'Pending'
+            ]);
+
+            const csv = [headers, ...rows]
+                .map(row => row.map(cell => `"${cell}"`).join(','))
+                .join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `payouts_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+    </script>
+</body>
+</html>
