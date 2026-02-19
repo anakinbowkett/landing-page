@@ -6,103 +6,37 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
+  if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { id } = req.query;
+  const { password, ambassadorId } = req.body;
 
-  if (!id) {
-    return res.status(400).json({ error: 'Ambassador ID required' });
+  if (password !== process.env.ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {
-    // Fetch ambassador data
-    const { data: ambassador, error: ambassadorError } = await supabase
+    const { data: ambassador } = await supabase
       .from('ambassadors')
       .select('*')
-      .eq('id', id)
+      .eq('id', ambassadorId)
       .single();
 
-    if (ambassadorError || !ambassador) {
+    if (!ambassador) {
       return res.status(404).json({ error: 'Ambassador not found' });
     }
 
-    // PHASE 1: Fetch waitlist commissions
-    const { data: waitlistCommissions } = await supabase
-      .from('waitlist_commissions')
-      .select('*')
-      .eq('ambassador_id', id)
-      .order('created_at', { ascending: false });
+    const today = new Date();
+    const paymentDate = new Date(today.getFullYear(), today.getMonth(), 15);
+    const receiptNumber = `REC-${ambassador.referral_code}-${Date.now()}`;
 
-    // Phase 1 stats
-    const totalWaitlistSignups = waitlistCommissions?.length || 0;
-    const verifiedSignups = waitlistCommissions?.filter(c => c.verified).length || 0;
-    const payableWaitlist = waitlistCommissions?.filter(c => 
-      c.status === 'payable' || c.status === 'verified'
-    ) || [];
-    const phase1Earnings = verifiedSignups * 0.50;
-    const phase1Cap = Math.min(verifiedSignups, 100);
+    const receiptHTML = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Receipt</title><style>body{font-family:Arial;padding:40px;max-width:800px;margin:0 auto}h1{color:#1d7fe2}table{width:100%;border-collapse:collapse}td,th{padding:12px;text-align:left;border-bottom:1px solid #ddd}</style></head><body><h1>PAYMENT RECEIPT</h1><p><strong>Receipt Number:</strong> ${receiptNumber}</p><p><strong>Date:</strong> ${paymentDate.toLocaleDateString('en-GB')}</p><p><strong>Pay To:</strong> ${ambassador.first_name} ${ambassador.last_name}</p><p><strong>Email:</strong> ${ambassador.email}</p><p><strong>Address:</strong> ${ambassador.address_line1}, ${ambassador.city}, ${ambassador.postcode}, United Kingdom</p><h2>Amount Paid: £0.50</h2><p>Payment Method: PayPal</p><p>Description: Monturalearn Startup Circle UGC Creator</p></body></html>`;
 
-    // PHASE 2: Fetch subscription commissions
-    const { data: subCommissions } = await supabase
-      .from('monthly_commissions')
-      .select('*')
-      .eq('ambassador_id', id)
-      .eq('is_active', true)
-      .order('created_at', { ascending: false });
-
-    const activeSubscriptions = subCommissions?.length || 0;
-    const phase2Earnings = activeSubscriptions * 2.00;
-
-    // Total payout
-    const totalPayout = phase1Earnings + phase2Earnings;
-
-    // PHASE 2: Fetch referrals
-    const { data: referrals } = await supabase
-      .from('referrals')
-      .select('*')
-      .eq('ambassador_id', id)
-      .order('signup_date', { ascending: false });
-
-    // Update ambassador totals
-    await supabase
-      .from('ambassadors')
-      .update({ 
-        total_payout: totalPayout,
-        leads_acquired: verifiedSignups
-      })
-      .eq('id', id);
-
-    return res.status(200).json({
-      firstName: ambassador.first_name,
-      lastName: ambassador.last_name,
-      referralCode: ambassador.referral_code,
-      
-      // Phase 1 data
-      phase1: {
-        totalSignups: totalWaitlistSignups,
-        verifiedSignups: verifiedSignups,
-        cappedSignups: phase1Cap,
-        earnings: phase1Earnings,
-        cap: 100,
-        remainingCap: Math.max(0, 100 - verifiedSignups)
-      },
-
-      // Phase 2 data
-      phase2: {
-        activeSubscriptions: activeSubscriptions,
-        earnings: phase2Earnings
-      },
-
-      // Combined
-      totalPayout: totalPayout,
-      referrals: referrals || [],
-      waitlistCommissions: waitlistCommissions || []
-    });
+    return res.status(200).json({ success: true, receiptHTML: receiptHTML });
 
   } catch (error) {
-    console.error('Server error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: error.message });
   }
 }
