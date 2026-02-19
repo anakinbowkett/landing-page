@@ -10,11 +10,35 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { password } = req.query;
+  const { password, action, ambassadorId } = req.query;
+
   if (password !== process.env.ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
+  // NEW: Receipt generation
+  if (action === 'receipt' && ambassadorId) {
+    try {
+      const { data: ambassador } = await supabase
+        .from('ambassadors')
+        .select('*')
+        .eq('id', ambassadorId)
+        .single();
+
+      if (!ambassador) {
+        return res.status(404).json({ error: 'Ambassador not found' });
+      }
+
+      const today = new Date();
+      const receiptHTML = `<!DOCTYPE html><html><head><title>Receipt</title></head><body><h1>Receipt for ${ambassador.first_name} ${ambassador.last_name}</h1><p>Amount: £0.50</p></body></html>`;
+
+      return res.status(200).json({ success: true, receiptHTML });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
+  // Original payout logic continues below...
   try {
     // Get all ambassadors
     const { data: ambassadors, error: ambError } = await supabase
