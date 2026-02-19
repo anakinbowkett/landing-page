@@ -605,6 +605,7 @@
                             <th>Phase 2</th>
                             <th>Total</th>
                             <th>Paid</th>
+                            <th>Receipt</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -636,6 +637,17 @@
                                             >
                                             <span class="paid-label">${isPaid ? 'Paid' : 'Pending'}</span>
                                         </div>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            class="receipt-btn" 
+                                            onclick="generateReceipt('${p.ambassadorId}', '${p.name}')"
+                                            style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.8125rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s;"
+                                            onmouseover="this.style.transform='translateY(-2px)'"
+                                            onmouseout="this.style.transform='translateY(0)'"
+                                        >
+                                            Generate Receipt
+                                        </button>
                                     </td>
                                 </tr>
                             `;
@@ -692,6 +704,64 @@
             a.download = `payouts_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
         }
-    </script>
+
+
+
+async function generateReceipt(ambassadorId, ambassadorName) {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Generating...';
+            btn.disabled = true;
+
+            try {
+                // Use today's date or 15th of current month
+                const today = new Date();
+                const paymentDate = new Date(today.getFullYear(), today.getMonth(), 15).toISOString().split('T')[0];
+
+                const response = await fetch('/api/generate-receipt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        password: adminPassword,
+                        ambassadorId: ambassadorId,
+                        paymentDate: paymentDate
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Open receipt in new window
+                    const receiptWindow = window.open('', '_blank');
+                    receiptWindow.document.write(data.receiptHTML);
+                    receiptWindow.document.close();
+
+                    btn.textContent = 'Generated ✓';
+                    btn.style.background = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+                    
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                        btn.disabled = false;
+                    }, 2000);
+
+                    // Reload payouts to show updated status
+                    setTimeout(() => loadPayouts(), 2500);
+                } else {
+                    alert(`Error: ${data.error || 'Failed to generate receipt'}`);
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                console.error('Receipt error:', err);
+                alert('Network error. Please try again.');
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+
+
+</script>
 </body>
 </html>
