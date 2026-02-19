@@ -238,12 +238,18 @@
                             
                             <input type="email" id="email" class="form-field" placeholder="Email address" required>
                             
+                            <input type="text" id="addressLine1" class="form-field" placeholder="Address Line 1" required>
+                            <input type="text" id="addressLine2" class="form-field" placeholder="Address Line 2 (optional)">
+                            
+                            <div class="form-row">
+                                <input type="text" id="city" class="form-field" placeholder="Town / City" required>
+                                <input type="text" id="postcode" class="form-field" placeholder="Postcode" required>
+                            </div>
+                            
                             <div class="form-row">
                                 <input type="text" id="tiktokUsername" class="form-field" placeholder="TikTok username" required>
                                 <input type="text" id="discordUsername" class="form-field" placeholder="Discord username" required>
                             </div>
-
-                            <input type="text" id="country" class="form-field" placeholder="Country / Region" required>
                         </div>
 
                         <div class="payout-info">
@@ -265,13 +271,15 @@
         document.getElementById('ambassadorForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const btn = document.getElementById('submitBtn');
-const firstName = document.getElementById('firstName').value.trim();
+            const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
+            const addressLine1 = document.getElementById('addressLine1').value.trim();
+            const addressLine2 = document.getElementById('addressLine2').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const postcode = document.getElementById('postcode').value.trim();
             const tiktok = document.getElementById('tiktokUsername').value.trim();
             const discord = document.getElementById('discordUsername').value.trim();
-            const country = document.getElementById('country').value.trim();
 
             // Clear previous errors
             document.querySelectorAll('.form-field').forEach(field => {
@@ -279,13 +287,15 @@ const firstName = document.getElementById('firstName').value.trim();
             });
 
             // Validate
-            if (!firstName || !lastName || !email || !tiktok || !discord || !country) {
+            if (!firstName || !lastName || !email || !addressLine1 || !city || !postcode || !tiktok || !discord) {
                 if (!firstName) document.getElementById('firstName').classList.add('error');
                 if (!lastName) document.getElementById('lastName').classList.add('error');
                 if (!email) document.getElementById('email').classList.add('error');
+                if (!addressLine1) document.getElementById('addressLine1').classList.add('error');
+                if (!city) document.getElementById('city').classList.add('error');
+                if (!postcode) document.getElementById('postcode').classList.add('error');
                 if (!tiktok) document.getElementById('tiktokUsername').classList.add('error');
                 if (!discord) document.getElementById('discordUsername').classList.add('error');
-                if (!country) document.getElementById('country').classList.add('error');
                 return;
             }
 
@@ -301,11 +311,13 @@ const response = await fetch('/api/ambassador-signup', {
                         firstName,
                         lastName,
                         email,
+                        addressLine1,
+                        addressLine2,
+                        city,
+                        postcode,
                         tiktokUsername: tiktok.startsWith('@') ? tiktok : '@' + tiktok,
-                        discordUsername: discord,
-                        country
+                        discordUsername: discord
                     })
-                });
 
                 const data = await response.json();
 
