@@ -658,27 +658,20 @@
         }
 
         function togglePaid(ambassadorId) {
-    const paidStatus = JSON.parse(localStorage.getItem('paid_ambassadors') || '{}');
-    const wasUnpaid = !paidStatus[ambassadorId];
-    
-    paidStatus[ambassadorId] = !paidStatus[ambassadorId];
-    localStorage.setItem('paid_ambassadors', JSON.stringify(paidStatus));
-    
-    const row = document.querySelector(`tr[data-id="${ambassadorId}"]`);
-    if (paidStatus[ambassadorId]) {
-        row.classList.add('paid');
-        row.querySelector('.paid-label').textContent = 'Paid';
-        
-        // Auto-generate receipt when marking as paid
-        if (wasUnpaid) {
-            const ambassadorName = row.querySelector('td:first-child strong').textContent;
-            setTimeout(() => generateReceipt(ambassadorId, ambassadorName), 500);
+            const paidStatus = JSON.parse(localStorage.getItem('paid_ambassadors') || '{}');
+            paidStatus[ambassadorId] = !paidStatus[ambassadorId];
+            localStorage.setItem('paid_ambassadors', JSON.stringify(paidStatus));
+            
+            // Update row styling
+            const row = document.querySelector(`tr[data-id="${ambassadorId}"]`);
+            if (paidStatus[ambassadorId]) {
+                row.classList.add('paid');
+                row.querySelector('.paid-label').textContent = 'Paid';
+            } else {
+                row.classList.remove('paid');
+                row.querySelector('.paid-label').textContent = 'Pending';
+            }
         }
-    } else {
-        row.classList.remove('paid');
-        row.querySelector('.paid-label').textContent = 'Pending';
-    }
-}
 
         function exportToCSV() {
             if (!payoutsData || !payoutsData.payouts) return;
@@ -715,55 +708,9 @@
 
 
 async function generateReceipt(ambassadorId, ambassadorName) {
-    const btn = event?.target;
-    if (btn) {
-        const originalText = btn.textContent;
-        btn.textContent = 'Generating...';
-        btn.disabled = true;
-    }
-
-    try {
-        const response = await fetch(`/api/admin-payouts?password=${encodeURIComponent(adminPassword)}&action=receipt&ambassadorId=${ambassadorId}`);
-        const data = await response.json();
-
-        if (response.ok) {
-            const receiptWindow = window.open('', '_blank');
-            receiptWindow.document.write(data.receiptHTML);
-            receiptWindow.document.close();
-            
-            // Auto-trigger print dialog
-            setTimeout(() => {
-                receiptWindow.print();
-            }, 500);
-
-            if (btn) {
-                btn.textContent = 'Generated ✓';
-                btn.style.background = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
-                
-                setTimeout(() => {
-                    btn.textContent = 'Generate Receipt';
-                    btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-                    btn.disabled = false;
-                }, 2000);
-            }
-
-            setTimeout(() => loadPayouts(), 2500);
-        } else {
-            alert(`Error: ${data.error || 'Failed to generate receipt'}`);
-            if (btn) {
-                btn.textContent = 'Generate Receipt';
-                btn.disabled = false;
-            }
-        }
-    } catch (err) {
-        console.error('Receipt error:', err);
-        alert('Network error. Please try again.');
-        if (btn) {
-            btn.textContent = 'Generate Receipt';
-            btn.disabled = false;
-        }
-    }
-}
+    const btn = event.target;
+    btn.textContent = 'Generating...';
+    btn.disabled = true;
 
     try {
         const response = await fetch(`/api/admin-payouts?password=${encodeURIComponent(adminPassword)}&action=receipt&ambassadorId=${ambassadorId}`);
