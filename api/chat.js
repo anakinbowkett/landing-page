@@ -98,8 +98,8 @@ Act 5: Macbeth is killed by Macduff and order is restored to Scotland`
   const modelAnswer = MODEL_ANSWERS[questionId] || '';
   const totalMarks = questionData?.marks || 2;
 
-  // STRICT MARKING PROMPT WITH STRUCTURED OUTPUT
-  const markingPrompt = `You are a strict GCSE English Literature examiner marking Macbeth foundation questions.
+ // LENIENT MARKING PROMPT WITH SYNONYM ACCEPTANCE
+  const markingPrompt = `You are a GCSE English Literature examiner marking Macbeth foundation questions.
 
 STUDENT ANSWER:
 ${studentText}
@@ -107,89 +107,68 @@ ${studentText}
 MODEL ANSWER (${totalMarks} marks):
 ${modelAnswer}
 
-MARKING CRITERIA:
-- Award marks ONLY for content matching the model answer
-- Be strict: most students get 50-70% of marks
-- Check for: key terms, understanding of tragedy, structure knowledge
+MARKING CRITERIA (Accept synonyms and variations):
+
+For Q4 (2 marks) - Award 1 mark for EACH of these (max 2):
+✓ Fatal flaw / hamartia / weakness (accept: "ambition", "flaw", "weakness", "vaulting ambition")
+✓ Death of hero (accept: "dies", "killed", "death", "Macduff kills him", "dies at end")
+✓ Downfall / hero to villain (accept: "becomes tyrant", "turns evil", "transformation", "hero to villain")
+✓ Supernatural (accept: "witches", "prophecies", "fate", "three witches")
+✓ Recognition / catharsis / order restored (accept: "realizes mistake", "pity and fear", "Malcolm becomes king")
+
+For Q5 (3 marks) - Award 1 mark for EACH (max 3):
+✓ Hero to villain arc (accept: "brave to tyrant", "noble to evil", "soldier to murderer", "hero becomes villain")
+✓ Fatal flaw causes downfall (accept: "ambition destroys him", "weakness leads to death", "ambition causes downfall")
+✓ Death restores order (accept: "Malcolm becomes king", "peace returns", "Scotland restored", "order after death")
+
+For Q6 (4 marks) - Award marks based on acts covered:
+4 marks: All 5 acts with key events mentioned
+3 marks: 4 acts OR all 5 with minimal detail
+2 marks: 3 acts described
+1 mark: 1-2 acts mentioned
+
+IMPORTANT MATCHING RULES:
+- Accept synonyms: "ambition" = "vaulting ambition" = "desire for power" = "wanting to be king"
+- Accept variations: "dies" = "death" = "killed" = "murdered" = "is killed"
+- Accept paraphrasing: "witches" = "three witches" = "weird sisters" = "supernatural forces"
+- Be lenient with spelling and grammar errors
+- Award marks if the CORE CONCEPT is present, even if wording differs
+- Don't require exact quotes - understanding is what matters
 
 KEY TERMS TO HIGHLIGHT (if found in student answer):
 GREEN (correct usage):
-- "fatal flaw", "ambition", "hamartia"
-- "hero to villain", "downfall", "peripeteia"
-- "death", "restoration of order"
-- "witches", "supernatural", "prophecy"
+- "fatal flaw", "ambition", "hamartia", "weakness"
+- "hero to villain", "downfall", "peripeteia", "transformation"
+- "death", "dies", "killed", "restoration of order"
+- "witches", "supernatural", "prophecy", "prophecies"
 - "tragedy", "tragic hero"
 
-RED (missing or needs context):
+RED (vague or missing):
 - Generic terms without explanation ("good", "bad", "shows")
-- Unsupported claims
-- Areas where key terms are missing
+- Incomplete thoughts
+- Areas missing key concepts
 
 OUTPUT FORMAT (JSON only, no markdown):
 {
-  "marksAwarded": 1,
-  "strengths": ["Mentioned fatal flaw", "Identified ambition"],
-  "weaknesses": [
-    {
-      "issue": "No explanation of how fatal flaw causes downfall",
-      "guideSection": "Key Features of Tragedy",
-      "example": "Add: Ambition drives Macbeth to murder Duncan"
-    }
+  "marksAwarded": 2,
+  "strengths": [
+    "Identified fatal flaw (ambition)",
+    "Mentioned death of hero"
   ],
   "highlights": [
     {"page": 1, "lineIndex": 0, "startChar": 5, "endChar": 15, "color": "green"},
-    {"page": 1, "lineIndex": 1, "startChar": 0, "endChar": 20, "color": "red"}
-  ],
-  "nextSteps": [
-    "Read 'Key Features of Shakespearean Tragedy' in guide",
-    "Add specific examples from Macbeth",
-    "Explain HOW ambition leads to downfall"
-  ]
-}
-
-Highlight key terms in GREEN. Highlight vague/missing areas in RED.
-{
-  "marksAwarded": 1,
-  "strengths": [
-    "Mentioned fatal flaw",
-    "Identified death as key feature"
-  ],
-  "weaknesses": [
-    {
-      "issue": "No explanation of how fatal flaw causes downfall",
-      "guideSection": "Key Features of Tragedy",
-      "example": "Add: The fatal flaw (ambition) causes Macbeth to make bad decisions"
-    },
-    {
-      "issue": "Missing link to Macbeth specifically",
-      "guideSection": "Why Macbeth is a Tragedy",
-      "example": "Add: In Macbeth, the hero's ambition leads him from brave soldier to tyrant"
-    }
-  ],
-  "highlights": [
-    {
-      "page": 1,
-      "lineIndex": 0,
-      "startChar": 0,
-      "endChar": 10,
-      "color": "green"
-    }
-  ],
-  "nextSteps": [
-    "Read 'Key Features of Shakespearean Tragedy' in the guide",
-    "Add specific examples from the play",
-    "Explain HOW each feature works in Macbeth"
+    {"page": 1, "lineIndex": 1, "startChar": 0, "endChar": 10, "color": "green"}
   ]
 }
 
 RULES:
 - marksAwarded must be between 0 and ${totalMarks}
-- strengths: list what they DID do correctly
-- weaknesses: identify what's MISSING with guide section + example
-- highlights: mark good content green, missing content red
-- nextSteps: 3 actionable steps
+- Be LENIENT - award marks for correct concepts even if wording differs
+- strengths: list what they got RIGHT
+- highlights: mark correct concepts in GREEN
+- If student shows understanding of the concept, award the mark
 
-Mark strictly. Output ONLY valid JSON.`;
+Award marks generously if core understanding is demonstrated. Output ONLY valid JSON.`;
 
   try {
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
