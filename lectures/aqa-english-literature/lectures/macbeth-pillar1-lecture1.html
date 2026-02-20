@@ -1653,225 +1653,186 @@ html,body{
   color: white;
 }
 
-.feedback-actions button:last-child:hover {
-  background: #1d6fd1;
-}
-
-  
 /* ============================================
-   MASTER THIS QUESTION MODAL
+   TIER 2: FEEDBACK PANEL - AQA STYLE
    ============================================ */
 
-.master-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.master-modal {
+.ai-feedback-panel {
   background: white;
-  border-radius: 16px;
-  max-width: 700px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.master-header {
-  background: linear-gradient(135deg, #1d7fe2 0%, #1d6fd1 100%);
-  padding: 28px 32px;
-  border-radius: 16px 16px 0 0;
-  color: white;
-}
-
-.master-header h2 {
-  font-size: 26px;
-  font-weight: 700;
-  margin: 0 0 8px 0;
-  font-family: 'Crimson Text', serif;
-}
-
-.master-header p {
-  font-size: 15px;
-  margin: 0;
-  opacity: 0.95;
-}
-
-.master-progress {
-  padding: 20px 32px;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.progress-bar-container {
-  background: #e5e7eb;
-  height: 8px;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 8px;
-}
-
-.progress-bar-fill {
-  background: linear-gradient(90deg, #54d3ab 0%, #0b7e45 100%);
-  height: 100%;
-  transition: width 0.5s ease;
-  border-radius: 10px;
-}
-
-.progress-text {
-  font-size: 13px;
-  color: #6b7280;
-  font-weight: 600;
-}
-
-.master-content {
-  padding: 32px;
-}
-
-.feature-reveal {
-  background: #f0f9ff;
-  border: 2px solid #1d7fe2;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 24px;
-}
-
-.feature-reveal h3 {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1d7fe2;
-  margin: 0 0 12px 0;
-}
-
-.feature-reveal p {
-  font-size: 16px;
-  line-height: 1.7;
-  color: #1e40af;
-  margin: 0;
-}
-
-.student-practice-area {
-  margin-top: 24px;
-}
-
-.student-practice-area label {
-  display: block;
-  font-size: 15px;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 10px;
-}
-
-.student-practice-input {
-  width: 100%;
-  padding: 14px 16px;
   border: 2px solid #e5e7eb;
-  border-radius: 10px;
-  font-size: 15px;
-  font-family: 'Crimson Text', serif;
-  resize: vertical;
-  min-height: 80px;
-  transition: border-color 0.2s;
+  border-radius: 12px;
+  margin: 24px 0;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  animation: slideDown 0.4s ease;
 }
 
-.student-practice-input:focus {
-  outline: none;
-  border-color: #1d7fe2;
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.check-answer-btn {
-  width: 100%;
-  padding: 14px 24px;
-  background: #1d7fe2;
+.feedback-header {
+  background: linear-gradient(135deg, #1d7fe2 0%, #1d6fd1 100%);
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px 10px 0 0;
+}
+
+.marks-badge {
+  font-size: 28px;
+  font-weight: 700;
   color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
+  font-family: 'Crimson Text', serif;
+}
+
+.feedback-status {
+  font-size: 14px;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin-top: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
 }
 
-.check-answer-btn:hover {
-  background: #1d6fd1;
-  transform: translateY(-1px);
+.feedback-section {
+  padding: 24px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.check-answer-btn:disabled {
-  background: #cbd5e1;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.feedback-message {
-  margin-top: 16px;
-  padding: 16px;
-  border-radius: 8px;
-  font-size: 15px;
+.strengths-section h3 {
+  font-size: 18px;
   font-weight: 600;
-  text-align: center;
-}
-
-.feedback-message.correct {
-  background: #d4f4dd;
   color: #0b7e45;
-  border: 2px solid #54d3ab;
+  margin: 0 0 16px 0;
+  font-family: 'Crimson Text', serif;
 }
 
-.feedback-message.incorrect {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 2px solid #e16280;
+.strengths-section ul {
+  margin: 0;
+  padding-left: 24px;
+  list-style: none;
 }
 
-.master-actions {
-  padding: 24px 32px;
+.strengths-section li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+  color: #374151;
+  position: relative;
+  padding-left: 8px;
+}
+
+.strengths-section li:before {
+  content: "→";
+  position: absolute;
+  left: -16px;
+  color: #0b7e45;
+  font-weight: 700;
+}
+
+/* AQA Mark Scheme Design */
+.aqa-mark-scheme {
+  margin: 0;
+  border: 2px solid #000;
+  border-radius: 0;
+  overflow: hidden;
+  background: white;
+}
+
+.mark-scheme-header {
+  background: #000;
+  color: white;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: Arial, sans-serif;
+}
+
+.mark-scheme-body {
+  display: flex;
+}
+
+.marks-column {
+  width: 70px;
+  background: #f5f5f5;
+  border-right: 2px solid #000;
+  flex-shrink: 0;
+}
+
+.mark-cell {
+  padding: 18px 0;
+  text-align: center;
+  border-bottom: 1px solid #d0d0d0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+  font-family: Arial, sans-serif;
+}
+
+.mark-cell:last-child {
+  border-bottom: none;
+}
+
+.criteria-column {
+  flex: 1;
+}
+
+.criteria-cell {
+  padding: 18px 20px;
+  border-bottom: 1px solid #d0d0d0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1a1a1a;
+  font-family: Arial, sans-serif;
+  background: white;
+}
+
+.criteria-cell:last-child {
+  border-bottom: none;
+}
+
+.feedback-actions {
+  padding: 20px 24px;
   background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
   display: flex;
   gap: 12px;
+  border-radius: 0 0 10px 10px;
 }
 
-.master-actions button {
+.feedback-actions button {
   flex: 1;
   padding: 12px 24px;
-  border-radius: 10px;
-  font-size: 15px;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   border: none;
 }
 
-.master-close-btn {
-  background: white;
-  color: #6b7280;
-  border: 2px solid #e5e7eb !important;
-}
-
-.master-close-btn:hover {
-  background: #f9fafb;
-  border-color: #cbd5e1 !important;
-}
-
-.master-complete-btn {
-  background: #54d3ab;
+.feedback-actions button:first-child {
+  background: #daa98a;
   color: white;
 }
 
-.master-complete-btn:hover {
-  background: #0b7e45;
-}  
+.feedback-actions button:first-child:hover {
+  background: #c4916f;
+}
+
+.feedback-actions button:nth-child(2) {
+  background: white;
+  color: #1d7fe2;
+  border: 2px solid #1d7fe2;
+}
+
+.feedback-actions button:nth-child(2):hover {
+  background: #1d7fe2;
+  color: white;
+}
+
+ 
   
   
 
@@ -3075,8 +3036,8 @@ function showFeedbackPanel(questionNumber, result, totalMarks) {
   let strengthsHTML = '';
   if (result.strengths && result.strengths.length > 0) {
     strengthsHTML = `
-      <div class="feedback-section strengths">
-        <h3>✓ What You Did Well (${result.marksAwarded}/${totalMarks} marks)</h3>
+      <div class="feedback-section strengths-section">
+        <h3>✓ What You Did Well</h3>
         <ul>
           ${result.strengths.map(s => `<li>${s}</li>`).join('')}
         </ul>
@@ -3084,46 +3045,22 @@ function showFeedbackPanel(questionNumber, result, totalMarks) {
     `;
   }
   
-  // Build weaknesses HTML
-  let weaknessesHTML = '';
-  if (result.weaknesses && result.weaknesses.length > 0) {
-    const marksLost = totalMarks - result.marksAwarded;
-    weaknessesHTML = `
-      <div class="feedback-section weaknesses">
-        <h3>✗ How to Improve (Lost ${marksLost} mark${marksLost !== 1 ? 's' : ''})</h3>
-        ${result.weaknesses.map(w => `
-          <div class="weakness-item">
-            <div class="weakness-problem">
-              <strong>Missing:</strong> ${w.issue}
-            </div>
-            <div class="weakness-guide">
-              📖 <a href="#" onclick="openGuideSection('${w.guideSection}'); return false;">
-                See Guide: ${w.guideSection}
-              </a>
-            </div>
-            ${w.example ? `
-              <div class="weakness-example">
-                💡 Example: ${w.example}
-              </div>
-            ` : ''}
-          </div>
-        `).join('')}
+  // Build AQA-style mark scheme
+  const markSchemeHTML = `
+    <div class="aqa-mark-scheme">
+      <div class="mark-scheme-header">Mark Scheme</div>
+      <div class="mark-scheme-body">
+        <div class="marks-column">
+          ${Array.from({length: totalMarks}, (_, i) => `
+            <div class="mark-cell">${totalMarks - i}</div>
+          `).join('')}
+        </div>
+        <div class="criteria-column">
+          ${generateMarkSchemeCriteria(questionNumber, totalMarks)}
+        </div>
       </div>
-    `;
-  }
-  
-  // Build next steps HTML
-  let nextStepsHTML = '';
-  if (result.nextSteps && result.nextSteps.length > 0) {
-    nextStepsHTML = `
-      <div class="feedback-section next-steps">
-        <h3>📋 Your Next Steps</h3>
-        <ol>
-          ${result.nextSteps.map(step => `<li>${step}</li>`).join('')}
-        </ol>
-      </div>
-    `;
-  }
+    </div>
+  `;
   
   feedbackPanel.innerHTML = `
     <div class="feedback-header">
@@ -3134,18 +3071,48 @@ function showFeedbackPanel(questionNumber, result, totalMarks) {
     </div>
     
     ${strengthsHTML}
-    ${weaknessesHTML}
-    ${nextStepsHTML}
+    ${markSchemeHTML}
     
     <div class="feedback-actions">
       <button onclick="openReferenceGuide()">View Full Guide</button>
       <button onclick="resetWritingQuestion(${questionNumber}, ${totalMarks})">Try Again</button>
-      <button onclick="masterThisQuestion(${questionNumber}, ${JSON.stringify(result).replace(/"/g, '&quot;')}, ${totalMarks})">Master This Question</button>
     </div>
   `;
   
   // Insert panel after submit button
   submitBtn.parentNode.insertBefore(feedbackPanel, submitBtn.nextSibling);
+}
+
+function generateMarkSchemeCriteria(questionNumber, totalMarks) {
+  const MARK_SCHEMES = {
+    2: { // Q4 - 2 marks
+      2: 'Two clear features identified with explanation (e.g., "Fatal flaw - ambition drives Macbeth to murder" AND "Death of hero - Macbeth is killed by Macduff")',
+      1: 'One feature identified with explanation OR two features without explanation',
+      0: 'No valid features identified'
+    },
+    3: { // Q5 - 3 marks
+      3: 'Three clear reasons with explanation: (1) Hero to villain transformation, (2) Fatal flaw (ambition) causes downfall, (3) Death restores order',
+      2: 'Two reasons explained OR three reasons without detail',
+      1: 'One reason explained OR vague understanding of tragedy',
+      0: 'No valid reasons given'
+    },
+    4: { // Q6 - 4 marks
+      4: 'All five acts described with key events: Act 1 (witches/ambition), Act 2 (murder Duncan), Act 3 (paranoia/kills Banquo), Act 4 (witches again), Act 5 (death/restoration)',
+      3: 'Four acts described OR all five with limited detail',
+      2: 'Three acts described OR five acts with very basic detail',
+      1: 'One or two acts mentioned with some accuracy',
+      0: 'No accurate structure described'
+    }
+  };
+  
+  const scheme = MARK_SCHEMES[totalMarks] || {};
+  let html = '';
+  
+  for (let mark = totalMarks; mark >= 0; mark--) {
+    html += `<div class="criteria-cell">${scheme[mark] || 'No response'}</div>`;
+  }
+  
+  return html;
 }
 
 function openGuideSection(section) {
@@ -3185,157 +3152,6 @@ function askAIAboutQuestion(questionNumber) {
 }
 
   
-// ============================================
-// TIER 3: MASTER THIS QUESTION (Active Recall)
-// ============================================
-
-function masterThisQuestion(questionNumber, result, totalMarks) {
-  // Get model answer features
-  const MODEL_FEATURES = {
-    4: [
-      { name: "Fatal Flaw", text: "The hero has a weakness - Macbeth's fatal flaw is his ambition" },
-      { name: "Death of Hero", text: "The tragic hero dies at the end - Macbeth is killed by Macduff" }
-    ],
-    5: [
-      { name: "Hero to Villain Arc", text: "Macbeth starts as a brave hero but becomes a murderous tyrant" },
-      { name: "Fatal Flaw Destroys Him", text: "His ambition (fatal flaw) leads to his downfall" },
-      { name: "Death Restores Order", text: "Macbeth dies and Malcolm restores peace to Scotland" }
-    ],
-    6: [
-      { name: "Act 1", text: "Macbeth meets the witches and his ambition is awakened" },
-      { name: "Act 2", text: "Macbeth murders King Duncan to seize the throne" },
-      { name: "Act 3", text: "Macbeth becomes paranoid and kills his friend Banquo" },
-      { name: "Act 4", text: "Macbeth visits the witches again and receives more prophecies" },
-      { name: "Act 5", text: "Macbeth is killed by Macduff and order is restored to Scotland" }
-    ]
-  };
-  
-  const features = MODEL_FEATURES[questionNumber] || [];
-  let currentFeatureIndex = 0;
-  let completedFeatures = [];
-  
-  // Create modal
-  const overlay = document.createElement('div');
-  overlay.className = 'master-modal-overlay';
-  overlay.innerHTML = `
-    <div class="master-modal">
-      <div class="master-header">
-        <h2>🎯 Master This Question</h2>
-        <p>Learn each feature one at a time. Write it in your own words to progress.</p>
-      </div>
-      
-      <div class="master-progress">
-        <div class="progress-bar-container">
-          <div class="progress-bar-fill" id="master-progress-fill" style="width: 0%"></div>
-        </div>
-        <div class="progress-text" id="master-progress-text">Feature 0 of ${features.length}</div>
-      </div>
-      
-      <div class="master-content" id="master-content">
-        <!-- Dynamic content goes here -->
-      </div>
-      
-      <div class="master-actions">
-        <button class="master-close-btn" onclick="closeMasterModal()">Close</button>
-        <button class="master-complete-btn" id="master-complete-btn" style="display: none;" onclick="completeMasterMode(${questionNumber})">
-          Try Question Again
-        </button>
-      </div>
-    </div>
-  `;
-  
-  document.body.appendChild(overlay);
-  
-  // Show first feature
-  showFeature();
-  
-  function showFeature() {
-    const content = document.getElementById('master-content');
-    const feature = features[currentFeatureIndex];
-    
-    if (!feature) {
-      // All done!
-      content.innerHTML = `
-        <div style="text-align: center; padding: 40px 20px;">
-          <div style="font-size: 64px; margin-bottom: 20px;">🎉</div>
-          <h3 style="font-size: 24px; color: #0b7e45; margin: 0 0 12px 0;">You've Mastered This!</h3>
-          <p style="font-size: 16px; color: #6b7280; margin: 0;">You've learned all ${features.length} features. Ready to try the question again?</p>
-        </div>
-      `;
-      document.getElementById('master-complete-btn').style.display = 'block';
-      return;
-    }
-    
-    content.innerHTML = `
-      <div class="feature-reveal">
-        <h3>Feature ${currentFeatureIndex + 1}: ${feature.name}</h3>
-        <p>${feature.text}</p>
-      </div>
-      
-      <div class="student-practice-area">
-        <label>Now write this in YOUR OWN words:</label>
-        <textarea 
-          class="student-practice-input" 
-          id="student-input-${currentFeatureIndex}"
-          placeholder="Type your answer here..."
-        ></textarea>
-        <button class="check-answer-btn" onclick="checkFeatureAnswer(${currentFeatureIndex})">
-          Check My Answer
-        </button>
-        <div id="feedback-${currentFeatureIndex}"></div>
-      </div>
-    `;
-    
-    updateProgress();
-  }
-  
-  function updateProgress() {
-    const progressFill = document.getElementById('master-progress-fill');
-    const progressText = document.getElementById('master-progress-text');
-    const percentage = (currentFeatureIndex / features.length) * 100;
-    
-    progressFill.style.width = `${percentage}%`;
-    progressText.textContent = `Feature ${currentFeatureIndex} of ${features.length}`;
-  }
-  
-  window.checkFeatureAnswer = function(featureIndex) {
-    const input = document.getElementById(`student-input-${featureIndex}`);
-    const feedback = document.getElementById(`feedback-${featureIndex}`);
-    const studentAnswer = input.value.trim().toLowerCase();
-    const feature = features[featureIndex];
-    
-    if (studentAnswer.length < 10) {
-      feedback.innerHTML = `<div class="feedback-message incorrect">Please write more than a few words!</div>`;
-      return;
-    }
-    
-    // Simple keyword check
-    const keywords = feature.text.toLowerCase().split(' ').filter(w => w.length > 4);
-    const matchCount = keywords.filter(kw => studentAnswer.includes(kw)).length;
-    const matchPercent = (matchCount / keywords.length) * 100;
-    
-    if (matchPercent >= 30) {
-      feedback.innerHTML = `<div class="feedback-message correct">✓ Correct! Moving to next feature...</div>`;
-      completedFeatures.push(featureIndex);
-      
-      setTimeout(() => {
-        currentFeatureIndex++;
-        showFeature();
-      }, 1500);
-    } else {
-      feedback.innerHTML = `<div class="feedback-message incorrect">Not quite - try including key terms from the feature above</div>`;
-    }
-  };
-  
-  window.closeMasterModal = function() {
-    overlay.remove();
-  };
-  
-  window.completeMasterMode = function(qNum) {
-    overlay.remove();
-    resetWritingQuestion(qNum, totalMarks);
-  };
-}  
   
   
 
