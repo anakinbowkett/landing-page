@@ -421,21 +421,8 @@
 let currentAmbassadorId = null;
 
 // Check if onboarding needed on page load
-async function checkOnboardingStatus() {
-  const ambassador = JSON.parse(localStorage.getItem('ambassador'));
-  if (!ambassador) return;
-  
-  currentAmbassadorId = ambassador.id;
-  
-  // Fetch current status
-  const response = await fetch(`/api/ambassador-dashboard?email=${ambassador.email}&referralCode=${ambassador.referralCode}`);
-  const data = await response.json();
-  
-  if (!data.onboarding_completed) {
-    showOnboarding(data);
-  }
-}
 
+    
 function showOnboarding(data) {
   document.getElementById('onboardingModal').style.display = 'block';
   
@@ -669,7 +656,7 @@ checkOnboardingStatus();
           No fluff. No endless hours. Just results.
         </p>
         
-        <img src="YOUR_IMAGE_URL_HERE" alt="Welcome" style="max-width:200px; margin:20px auto; display:block; border-radius:12px;">
+        <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="Welcome" style="max-width:200px; margin:20px auto; display:block; border-radius:12px;">
         
         <p style="font-size:15px; color:#6b7280; margin-top:20px;">Text below image goes here</p>
         
@@ -795,62 +782,62 @@ checkOnboardingStatus();
         let currentReferralCode = null;
 
         async function loadDashboard() {
-            const ambassadorId = sessionStorage.getItem('ambassador_id');
+    const ambassador = JSON.parse(localStorage.getItem('ambassador'));
 
-            if (!ambassadorId) {
-                window.location.href = 'ambassador-login.html';
-                return;
-            }
+    if (!ambassador) {
+        window.location.href = 'ambassador-login.html';
+        return;
+    }
 
-            currentAmbassadorId = ambassadorId;
+    currentAmbassadorId = ambassador.id;
 
-            try {
-                const response = await fetch(`/api/ambassador-dashboard?id=${ambassadorId}`);
-                const data = await response.json();
+    try {
+        const response = await fetch(`/api/ambassador-dashboard?email=${ambassador.email}&referralCode=${ambassador.referralCode}`);
+        const data = await response.json();
 
-                if (!response.ok) {
-                    console.error('Dashboard error:', data.error);
-                    return;
-                }
-
-                // Names
-                document.getElementById('ambassadorName').textContent = data.firstName + ' ' + data.lastName;
-                document.getElementById('welcomeName').textContent = data.firstName;
-
-                // Referral link
-                currentReferralCode = data.referralCode;
-                const referralLink = `https://www.monturalearn.co.uk/?ref=${data.referralCode}`;
-                document.getElementById('referralLinkDisplay').value = referralLink;
-
-                // Total payout
-                document.getElementById('totalPayout').textContent = data.totalPayout.toFixed(2);
-
-                // Next payout date (15th of next month)
-                const nextPayout = getNextPayoutDate();
-                document.getElementById('nextPayoutDate').textContent = nextPayout;
-
-                // Phase 1
-                document.getElementById('totalSignups').textContent = data.phase1.totalSignups;
-                document.getElementById('verifiedSignups').textContent = data.phase1.verifiedSignups;
-                document.getElementById('phase1Earnings').textContent = data.phase1.earnings.toFixed(2);
-                document.getElementById('remainingCap').textContent = data.phase1.remainingCap;
-                document.getElementById('capCount').textContent = data.phase1.cappedSignups;
-
-                // Progress bar
-                const pct = Math.min((data.phase1.verifiedSignups / 100) * 100, 100);
-                document.getElementById('progressBar').style.width = pct + '%';
-
-                // Phase 2
-                document.getElementById('activeSubscriptions').textContent = data.phase2.activeSubscriptions;
-                document.getElementById('phase2Earnings').textContent = data.phase2.earnings.toFixed(2);
-
-                // Waitlist table
-                renderWaitlistTable(data.waitlistCommissions);
-
-            } catch (err) {
-                console.error('Network error:', err);
-            }
+        if (!response.ok || data.error) {
+            console.error('Dashboard error:', data.error);
+            return;
         }
+
+        // Names
+        document.getElementById('ambassadorName').textContent = data.firstName + ' ' + data.lastName;
+        document.getElementById('welcomeName').textContent = data.firstName;
+
+        // Referral link
+        currentReferralCode = data.referralCode;
+        const referralLink = `https://www.monturalearn.co.uk/?ref=${data.referralCode}`;
+        document.getElementById('referralLinkDisplay').value = referralLink;
+
+        // Total payout
+        document.getElementById('totalPayout').textContent = data.totalPayout.toFixed(2);
+
+        // Next payout date (15th of next month)
+        const nextPayout = getNextPayoutDate();
+        document.getElementById('nextPayoutDate').textContent = nextPayout;
+
+        // Phase 1
+        document.getElementById('totalSignups').textContent = data.phase1.totalSignups;
+        document.getElementById('verifiedSignups').textContent = data.phase1.verifiedSignups;
+        document.getElementById('phase1Earnings').textContent = data.phase1.earnings.toFixed(2);
+        document.getElementById('remainingCap').textContent = data.phase1.remainingCap;
+        document.getElementById('capCount').textContent = data.phase1.cappedSignups;
+
+        // Progress bar
+        const pct = Math.min((data.phase1.verifiedSignups / 100) * 100, 100);
+        document.getElementById('progressBar').style.width = pct + '%';
+
+        // Phase 2
+        document.getElementById('activeSubscriptions').textContent = data.phase2.activeSubscriptions;
+        document.getElementById('phase2Earnings').textContent = data.phase2.earnings.toFixed(2);
+
+        // Waitlist table
+        renderWaitlistTable(data.waitlistCommissions);
+
+    } catch (err) {
+        console.error('Network error:', err);
+    }
+}
 
         function renderWaitlistTable(commissions) {
             const container = document.getElementById('waitlistTable');
@@ -950,11 +937,16 @@ async function checkOnboardingStatus() {
   const ambassador = JSON.parse(localStorage.getItem('ambassador'));
   if (!ambassador) return;
   
-  currentAmbassadorId = ambassador.id;
-  
   // Fetch current status
   const response = await fetch(`/api/ambassador-dashboard?email=${ambassador.email}&referralCode=${ambassador.referralCode}`);
   const data = await response.json();
+  
+  if (data.error) {
+    console.error('Failed to load ambassador:', data.error);
+    return;
+  }
+  
+  currentAmbassadorId = data.id;
   
   if (!data.onboarding_completed) {
     showOnboarding(data);
