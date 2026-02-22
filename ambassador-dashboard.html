@@ -778,8 +778,7 @@ checkOnboardingStatus();
     </div>
 
     <script>
-        let currentAmbassadorId = null;
-        let currentReferralCode = null;
+let currentReferralCode = null;
 
         async function loadDashboard() {
     const ambassador = JSON.parse(localStorage.getItem('ambassador'));
@@ -789,7 +788,7 @@ checkOnboardingStatus();
         return;
     }
 
-    currentAmbassadorId = ambassador.id;
+    currentAmbassadorId = ambassador.id || sessionStorage.getItem('ambassador_id');
 
     try {
         const response = await fetch(`/api/ambassador-dashboard?email=${ambassador.email}&referralCode=${ambassador.referralCode}`);
