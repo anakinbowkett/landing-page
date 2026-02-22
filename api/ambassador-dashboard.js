@@ -77,88 +77,16 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Failed to save' });
     }
   }
- 
-  // Original GET logic continues below
+
+  // Handle GET for dashboard data
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  const { id, action } = req.query;
-const bodyData = req.body || {};
 
-  // Handle onboarding saves (POST requests)
-if (req.method === 'POST' && action === 'onboarding') {
-  const { ambassadorId, stage, formData } = bodyData;
-  
-  if (!ambassadorId || !stage) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
+  const { email, referralCode } = req.query;
 
-  try {
-    if (stage === 'terms') {
-      await supabase
-        .from('ambassadors')
-        .update({ 
-          accepted_terms: true,
-          terms_accepted_at: new Date().toISOString()
-        })
-        .eq('id', ambassadorId);
-
-      await supabase
-        .from('ambassador_documents')
-        .upsert({
-          ambassador_id: ambassadorId,
-          terms_full_name: formData.fullName,
-          terms_parent_guardian_name: formData.parentName,
-          terms_signature: formData.signature,
-          terms_date: formData.date,
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'ambassador_id' });
-
-    } else if (stage === 'consent') {
-      await supabase
-        .from('ambassadors')
-        .update({ 
-          accepted_consent: true,
-          consent_accepted_at: new Date().toISOString()
-        })
-        .eq('id', ambassadorId);
-
-      await supabase
-        .from('ambassador_documents')
-        .upsert({
-          ambassador_id: ambassadorId,
-          consent_parent_name: formData.parentName,
-          consent_relationship: formData.relationship,
-          consent_parent_email: formData.parentEmail,
-          consent_parent_phone: formData.parentPhone,
-          consent_participant_name: formData.participantName,
-          consent_participant_dob: formData.participantDob,
-          consent_signature: formData.signature,
-          consent_date: formData.date,
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'ambassador_id' });
-
-    } else if (stage === 'guide') {
-      await supabase
-        .from('ambassadors')
-        .update({ 
-          accepted_guide: true,
-          guide_accepted_at: new Date().toISOString(),
-          onboarding_completed: true
-        })
-        .eq('id', ambassadorId);
-    }
-
-    return res.status(200).json({ success: true });
-
-  } catch (error) {
-    console.error('Onboarding save error:', error);
-    return res.status(500).json({ error: 'Failed to save' });
-  }
-}
-
-  if (!id) {
-    return res.status(400).json({ error: 'Ambassador ID required' });
+  if (!email || !referralCode) {
+    return res.status(400).json({ error: 'Email and referral code required' });
   }
 
   try {
@@ -166,7 +94,8 @@ if (req.method === 'POST' && action === 'onboarding') {
     const { data: ambassador, error: ambassadorError } = await supabase
       .from('ambassadors')
       .select('*')
-      .eq('id', id)
+      .eq('email', email)
+      .ilike('referral_code', referralCode)
       .single();
 
     if (ambassadorError || !ambassador) {
@@ -177,15 +106,12 @@ if (req.method === 'POST' && action === 'onboarding') {
     const { data: waitlistCommissions } = await supabase
       .from('waitlist_commissions')
       .select('*')
-      .eq('ambassador_id', id)
+      .eq('ambassador_id', ambassador.id)
       .order('created_at', { ascending: false });
 
     // Phase 1 stats
     const totalWaitlistSignups = waitlistCommissions?.length || 0;
     const verifiedSignups = waitlistCommissions?.filter(c => c.verified).length || 0;
-    const payableWaitlist = waitlistCommissions?.filter(c => 
-      c.status === 'payable' || c.status === 'verified'
-    ) || [];
     const phase1Earnings = verifiedSignups * 0.50;
     const phase1Cap = Math.min(verifiedSignups, 100);
 
@@ -193,7 +119,7 @@ if (req.method === 'POST' && action === 'onboarding') {
     const { data: subCommissions } = await supabase
       .from('monthly_commissions')
       .select('*')
-      .eq('ambassador_id', id)
+      .eq('ambassador_id', ambassador.id)
       .eq('is_active', true)
       .order('created_at', { ascending: false });
 
@@ -207,7 +133,7 @@ if (req.method === 'POST' && action === 'onboarding') {
     const { data: referrals } = await supabase
       .from('referrals')
       .select('*')
-      .eq('ambassador_id', id)
+      .eq('ambassador_id', ambassador.id)
       .order('signup_date', { ascending: false });
 
     // Update ambassador totals
@@ -217,12 +143,17 @@ if (req.method === 'POST' && action === 'onboarding') {
         total_payout: totalPayout,
         leads_acquired: verifiedSignups
       })
-      .eq('id', id);
+      .eq('id', ambassador.id);
 
     return res.status(200).json({
+      id: ambassador.id,
       firstName: ambassador.first_name,
       lastName: ambassador.last_name,
       referralCode: ambassador.referral_code,
+      accepted_terms: ambassador.accepted_terms || false,
+      accepted_consent: ambassador.accepted_consent || false,
+      accepted_guide: ambassador.accepted_guide || false,
+      onboarding_completed: ambassador.onboarding_completed || false,
       
       // Phase 1 data
       phase1: {
