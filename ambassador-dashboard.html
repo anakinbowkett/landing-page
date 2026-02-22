@@ -466,7 +466,7 @@ document.getElementById('termsForm').addEventListener('submit', async function(e
   e.preventDefault();
   const formData = new FormData(this);
   
-  const response = await fetch('/api/save-onboarding', {
+  const response = await fetch('/api/ambassador-dashboard', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -498,7 +498,7 @@ document.getElementById('consentForm').addEventListener('submit', async function
   e.preventDefault();
   const formData = new FormData(this);
   
-  const response = await fetch('/api/save-onboarding', {
+  const response = await fetch('/api/ambassador-dashboard', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -531,7 +531,7 @@ document.getElementById('guideCheckbox').addEventListener('change', function() {
 });
 
 document.getElementById('guideSubmit').addEventListener('click', async function() {
-  const response = await fetch('/api/save-onboarding', {
+  const response = await fetch('/api/ambassador-dashboard', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -679,18 +679,20 @@ checkOnboardingStatus();
     
   </div>
 </div>
+
     
     <!-- Nav -->
-    <nav class="top-nav">
-        <div class="nav-left">
-            <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="GMM Logo" class="logo-img">
-            <span class="nav-title">Ambassador Programme</span>
-        </div>
-        <div class="nav-right">
-            <span class="ambassador-name" id="ambassadorName">Loading...</span>
-            <button class="logout-btn" onclick="logout()">Logout</button>
-        </div>
-    </nav>
+<nav class="top-nav">
+    <div class="nav-left">
+        <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="GMM Logo" class="logo-img">
+        <span class="nav-title">Ambassador Programme</span>
+    </div>
+    <div class="nav-right">
+        <button onclick="window.open('/procurement.html', '_blank')" style="padding:12px 24px; background:#1d7fe2; color:#fff; border:none; border-radius:13px; font-weight:600; cursor:pointer; font-size:15px; margin-right:16px;">Procurement</button>
+        <span class="ambassador-name" id="ambassadorName">Loading...</span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+</nav>
 
     <!-- Main -->
     <div class="container">
@@ -989,7 +991,7 @@ document.getElementById('termsForm').addEventListener('submit', async function(e
   e.preventDefault();
   const formData = new FormData(this);
   
-  const response = await fetch('/api/save-onboarding', {
+  const response = await fetch('/api/ambassador-dashboard', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -1021,7 +1023,7 @@ document.getElementById('consentForm').addEventListener('submit', async function
   e.preventDefault();
   const formData = new FormData(this);
   
-  const response = await fetch('/api/save-onboarding', {
+  const response = await fetch('/api/ambassador-dashboard', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -1054,7 +1056,7 @@ document.getElementById('guideCheckbox').addEventListener('change', function() {
 });
 
 document.getElementById('guideSubmit').addEventListener('click', async function() {
-  const response = await fetch('/api/save-onboarding', {
+  const response = await fetch('/api/ambassador-dashboard', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
