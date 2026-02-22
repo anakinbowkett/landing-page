@@ -232,17 +232,26 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Store session
-                    sessionStorage.setItem('ambassador_id', data.ambassadorId);
-                    sessionStorage.setItem('referral_code', data.referralCode);
-                    sessionStorage.setItem('ambassador_email', email);
-                    
-                    loginBtn.textContent = 'Success! ✓';
-                    loginBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                    
-                    setTimeout(() => {
-                        window.location.href = 'ambassador-dashboard.html';
-                    }, 1000);
+    // Store in sessionStorage
+    sessionStorage.setItem('ambassador_id', data.ambassadorId);
+    sessionStorage.setItem('referral_code', data.referralCode);
+    sessionStorage.setItem('ambassador_email', email);
+    
+    // ALSO store in localStorage for dashboard
+    localStorage.setItem('ambassador', JSON.stringify({
+        id: data.ambassadorId,
+        email: email,
+        referralCode: data.referralCode,
+        firstName: data.firstName || '',
+        lastName: data.lastName || ''
+    }));
+    
+    loginBtn.textContent = 'Success! ✓';
+    loginBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+    
+    setTimeout(() => {
+        window.location.href = 'ambassador-dashboard.html';
+    }, 1000);
                 } else {
                     loginBtn.disabled = false;
                     loginBtn.textContent = 'Login';
