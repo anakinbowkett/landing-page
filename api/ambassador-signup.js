@@ -19,10 +19,16 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-const { firstName, lastName, email, addressLine1, addressLine2, city, postcode, tiktokUsername, discordUsername } = req.body;
+const { 
+  firstName, 
+  lastName, 
+  email, 
+  tiktokUsername, 
+  discordUsername 
+} = req.body;
 
   // Validate required fields
-if (!firstName || !lastName || !email || !addressLine1 || !city || !postcode || !tiktokUsername || !discordUsername) {
+if (!firstName || !lastName || !email || !tiktokUsername || !discordUsername) {
     return res.status(400).json({ error: 'All required fields must be filled' });
   }
 
@@ -54,28 +60,20 @@ if (!firstName || !lastName || !email || !addressLine1 || !city || !postcode || 
 
 // Insert ambassador into database
     const { data: ambassador, error } = await supabase
-      .from('ambassadors')
-      .insert({
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        address_line1: addressLine1,
-        address_line2: addressLine2 || null,
-        city: city,
-        postcode: postcode,
-        tiktok_username: tiktokUsername,
-        discord_username: discordUsername,
-        country_region: 'United Kingdom',
-        referral_code: referralCode,
-        invoice_number: `INV-${referralCode}`,
-        receipt_number_prefix: `REC-${referralCode}`,
-        leads_acquired: 0,
-        total_payout: 0.00,
-        payout_method: 'PayPal',
-        paypal_email: email,
-        is_senior: false,
-        status: 'active'
-      })
+  .from('ambassadors')
+  .insert({
+    first_name: firstName,
+    last_name: lastName,
+    email: email,
+    tiktok_username: tiktokUsername,
+    discord_username: discordUsername,
+    referral_code: referralCode,
+    invoice_number: `INV-${referralCode}`,
+    receipt_number_prefix: `REC-${referralCode}`,
+    paypal_email: email,
+    country_region: 'United Kingdom',
+    joined_at: new Date().toISOString()
+  })
       .select()
       .single();
 
