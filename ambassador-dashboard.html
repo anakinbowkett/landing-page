@@ -417,126 +417,6 @@
     </style>
 </head>
 
-<script>
-let currentAmbassadorId = null;
-
-// Check if onboarding needed on page load
-
-    
-function showOnboarding(data) {
-  document.getElementById('onboardingModal').style.display = 'block';
-  
-  if (!data.accepted_terms) {
-    document.getElementById('stage1').style.display = 'block';
-  } else if (!data.accepted_consent) {
-    document.getElementById('stage2').style.display = 'block';
-  } else if (!data.accepted_guide) {
-    document.getElementById('stage3').style.display = 'block';
-  } else {
-    document.getElementById('stage4').style.display = 'block';
-  }
-}
-
-function closeOnboarding() {
-  document.getElementById('onboardingModal').style.display = 'none';
-  location.reload();
-}
-
-// Stage 1: Terms
-document.getElementById('termsCheckbox').addEventListener('change', function() {
-  document.getElementById('termsSubmit').disabled = !this.checked;
-  document.getElementById('termsSubmit').style.background = this.checked ? '#1d7fe2' : '#cbd5e1';
-  document.getElementById('termsSubmit').style.cursor = this.checked ? 'pointer' : 'not-allowed';
-});
-
-document.getElementById('termsForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const formData = new FormData(this);
-  
-  const response = await fetch('/api/ambassador-dashboard', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ambassadorId: currentAmbassadorId,
-      stage: 'terms',
-      formData: {
-        fullName: formData.get('fullName'),
-        parentName: formData.get('parentName'),
-        signature: formData.get('signature'),
-        date: new Date().toISOString().split('T')[0]
-      }
-    })
-  });
-  
-  if (response.ok) {
-    document.getElementById('stage1').style.display = 'none';
-    document.getElementById('stage2').style.display = 'block';
-  }
-});
-
-// Stage 2: Consent
-document.getElementById('consentCheckbox').addEventListener('change', function() {
-  document.getElementById('consentSubmit').disabled = !this.checked;
-  document.getElementById('consentSubmit').style.background = this.checked ? '#1d7fe2' : '#cbd5e1';
-  document.getElementById('consentSubmit').style.cursor = this.checked ? 'pointer' : 'not-allowed';
-});
-
-document.getElementById('consentForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const formData = new FormData(this);
-  
-  const response = await fetch('/api/ambassador-dashboard', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ambassadorId: currentAmbassadorId,
-      stage: 'consent',
-      formData: {
-        parentName: formData.get('parentName'),
-        relationship: formData.get('relationship'),
-        parentEmail: formData.get('parentEmail'),
-        parentPhone: formData.get('parentPhone'),
-        participantName: formData.get('participantName'),
-        participantDob: formData.get('participantDob'),
-        signature: formData.get('signature'),
-        date: new Date().toISOString().split('T')[0]
-      }
-    })
-  });
-  
-  if (response.ok) {
-    document.getElementById('stage2').style.display = 'none';
-    document.getElementById('stage3').style.display = 'block';
-  }
-});
-
-// Stage 3: Guide
-document.getElementById('guideCheckbox').addEventListener('change', function() {
-  document.getElementById('guideSubmit').disabled = !this.checked;
-  document.getElementById('guideSubmit').style.background = this.checked ? '#1d7fe2' : '#cbd5e1';
-  document.getElementById('guideSubmit').style.cursor = this.checked ? 'pointer' : 'not-allowed';
-});
-
-document.getElementById('guideSubmit').addEventListener('click', async function() {
-  const response = await fetch('/api/ambassador-dashboard', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ambassadorId: currentAmbassadorId,
-      stage: 'guide'
-    })
-  });
-  
-  if (response.ok) {
-    document.getElementById('stage3').style.display = 'none';
-    document.getElementById('stage4').style.display = 'block';
-  }
-});
-
-// Run on page load
-checkOnboardingStatus();
-</script>
-
     
 <body>
 
@@ -780,6 +660,21 @@ checkOnboardingStatus();
     <script>
 let currentReferralCode = null;
 
+// Force show onboarding for testing
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        const modal = document.getElementById('onboardingModal');
+        if (modal) {
+            console.log('Modal found, checking status...');
+            checkOnboardingStatus();
+        } else {
+            console.log('Modal NOT found in DOM!');
+        }
+    }, 2000);
+});
+
+
+        
         async function loadDashboard() {
     const ambassador = JSON.parse(localStorage.getItem('ambassador'));
 
@@ -1062,8 +957,15 @@ document.getElementById('guideSubmit').addEventListener('click', async function(
   }
 });
 
-// Run on page load
-checkOnboardingStatus();
+// Run on page load - AFTER DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    checkOnboardingStatus();
+});
+
+// Also run after loadDashboard completes
+window.addEventListener('load', function() {
+    setTimeout(checkOnboardingStatus, 1000);
+});
 </script>
     
 </body>
