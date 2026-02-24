@@ -101,7 +101,7 @@ const receiptHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Pay
       });
 
       // Only include ambassadors with payouts > 0
-      if (totalPayout > 0) {
+      if (totalPayout >= 0) {
         payoutData.push({
           ambassadorId: amb.id,
           name: `${amb.first_name} ${amb.last_name}`,
