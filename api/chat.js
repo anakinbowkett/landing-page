@@ -73,237 +73,124 @@ export default async function handler(req, res) {
 // ============================================
 // MARKING HANDLER (English Literature Essays)
 // ============================================
+
 async function handleMarkingRequest(req, res, { studentText, allLineData, questionData }) {
   
-  // MODEL ANSWERS (Perfect responses - cached as input tokens)
-  const MODEL_ANSWERS = {
-    'English_Lit_Q4': `Two key features of a Shakespearean tragedy are:
-1. Fatal flaw - The hero has a weakness that causes their downfall (Macbeth's ambition)
-2. Death of the hero - The tragic hero dies at the end (Macbeth is killed)`,
-
-    'English_Lit_Q5': `Macbeth is considered a tragedy for three reasons:
-1. Hero to villain arc - Macbeth starts as a brave hero but becomes a murderous tyrant
-2. Fatal flaw destroys him - His ambition (fatal flaw) leads to his downfall
-3. Death restores order - Macbeth dies and Malcolm restores peace to Scotland`,
-
-    'English_Lit_Q6': `The structure of Macbeth follows a five-act tragic pattern:
-Act 1: Macbeth meets the witches and his ambition is awakened
-Act 2: Macbeth murders King Duncan to seize the throne
-Act 3: Macbeth becomes paranoid and kills his friend Banquo
-Act 4: Macbeth visits the witches again and receives more prophecies
-Act 5: Macbeth is killed by Macduff and order is restored to Scotland`
-  };
-
   const questionId = questionData?.exerciseId || 'English_Lit_Q4';
-  const modelAnswer = MODEL_ANSWERS[questionId] || '';
   const totalMarks = questionData?.marks || 2;
+  const question = questionData?.question || '';
+
+  // STRICT PROFESSIONAL MARKING PROMPT
+  const markingPrompt = `You are a UK AQA GCSE English Literature examiner. Mark this answer with PROFESSIONAL EXAM BOARD STRICTNESS.
+
+QUESTION (${totalMarks} marks):
+${question}
+
+STUDENT ANSWER:
+${studentText}
+
+STRICT MARKING CRITERIA:
+
+For 2-mark questions (Q4):
+- 2 marks: TWO distinct features clearly explained in full sentences (e.g., "The fatal flaw is a weakness in the hero's character, such as Macbeth's ambition" AND "The hero dies at the end, like when Macbeth is killed by Macduff")
+- 1 mark: ONE feature explained in a full sentence OR two features mentioned without explanation
+- 0 marks: No valid features, single words, or irrelevant answers
+
+For 3-mark questions (Q5):
+- 3 marks: THREE reasons explained in full sentences with reference to Macbeth (e.g., "Macbeth transforms from a brave hero to a murderous tyrant", "His fatal flaw of ambition causes his downfall", "His death restores order to Scotland")
+- 2 marks: TWO reasons explained OR three reasons with minimal explanation
+- 1 mark: ONE reason explained OR vague understanding
+- 0 marks: No valid reasons or irrelevant answer
+
+For 4-mark questions (Q6):
+- 4 marks: ALL FIVE acts described with key events in full sentences
+- 3 marks: FOUR acts described with events
+- 2 marks: THREE acts described
+- 1 mark: ONE or TWO acts mentioned
+- 0 marks: No accurate structure
+
+REJECTION CRITERIA (Award 0 marks if):
+- Single words or phrases without sentences (e.g., "ambition", "death", "not sure")
+- Vague statements without explanation (e.g., "He is bad", "Things happen")
+- Answers under 15 words total
+- No reference to Macbeth or tragedy concepts
+- Completely irrelevant content
+
+PROFESSIONAL STANDARDS:
+- Require FULL SENTENCES for each mark
+- Require EXPLANATION, not just naming
+- Require SUBJECT-SPECIFIC terminology
+- Be as strict as a real UK examiner would be
+
+OUTPUT (JSON only, no markdown):
+{
+  "marksAwarded": 1,
+  "strengths": ["Mentioned fatal flaw with brief explanation"]
+}
+
+Mark strictly like a real GCSE examiner. Output ONLY JSON.`;
 
   try {
-    // ============================================
-    // STAGE 1: GUIDE-BASED MARKING (Primary)
-    // ============================================
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a strict UK GCSE examiner. Require full sentences and explanations. Single words or phrases get 0 marks. Output only JSON.'
+          },
+          {
+            role: 'user',
+            content: markingPrompt
+          }
+        ],
+        temperature: 0.1,
+        max_tokens: 300
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || 'DeepSeek API error');
+    }
+
+    const data = await response.json();
+    let aiReply = data.choices[0].message.content.trim();
     
-    const stage1Result = await performStage1Marking(studentText, modelAnswer, totalMarks, questionId);
+    // Clean JSON
+    aiReply = aiReply.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     
-    // Check if Stage 2 validation is needed
-    const percentage = (stage1Result.marksAwarded / totalMarks) * 100;
-    const needsValidation = percentage < 70; // Only validate if student got < 70%
+    const markingResult = JSON.parse(aiReply);
     
-    if (!needsValidation) {
-      // Student did well - return Stage 1 results
-      return res.status(200).json(stage1Result);
+    // Cap marks at total
+    if (markingResult.marksAwarded > totalMarks) {
+      markingResult.marksAwarded = totalMarks;
     }
     
-    // ============================================
-    // STAGE 2: EXTERNAL VALIDATION (Safety Net)
-    // ============================================
+    // NO HIGHLIGHTS - Remove them completely
+    markingResult.highlights = [];
     
-    console.log(`Stage 2 validation triggered for ${questionId} (${stage1Result.marksAwarded}/${totalMarks})`);
-    
-    const stage2Result = await performStage2Validation(
-      studentText, 
-      modelAnswer, 
-      totalMarks, 
-      questionId, 
-      stage1Result
-    );
-    
-    // Return the better of the two results
-    const finalResult = stage2Result.marksAwarded > stage1Result.marksAwarded 
-      ? stage2Result 
-      : stage1Result;
-    
-    console.log(`Final marks: ${finalResult.marksAwarded}/${totalMarks} (Stage 1: ${stage1Result.marksAwarded}, Stage 2: ${stage2Result.marksAwarded})`);
-    
-    return res.status(200).json(finalResult);
+    return res.status(200).json(markingResult);
 
   } catch (error) {
     console.error('Marking error:', error);
     
-    // Fallback response
+    // Fallback
     return res.status(200).json({
-      marksAwarded: Math.floor(totalMarks * 0.5),
-      strengths: ['Attempted the question'],
+      marksAwarded: 0,
+      strengths: [],
       highlights: []
     });
   }
 }
 
 // ============================================
-// STAGE 1: GUIDE-BASED MARKING
-// ============================================
-
-async function performStage1Marking(studentText, modelAnswer, totalMarks, questionId) {
-  
-  const stage1Prompt = `You are a GCSE examiner. Mark this answer against the guide-based criteria.
-
-STUDENT ANSWER:
-${studentText}
-
-MODEL ANSWER (${totalMarks} marks):
-${modelAnswer}
-
-MARKING RULES (LENIENT - Accept synonyms):
-
-Q4 (2 marks) - Award 1 mark for EACH concept (max 2):
-✓ Fatal flaw/hamartia/weakness → Accept: "ambition", "flaw", "weakness", "hubris", "vaulting ambition"
-✓ Death of hero → Accept: "dies", "killed", "death", "mortality", "demise", "is killed"
-✓ Downfall/transformation → Accept: "hero to villain", "becomes tyrant", "noble to evil"
-✓ Supernatural → Accept: "witches", "prophecies", "fate"
-
-Q5 (3 marks) - Award 1 mark for EACH concept (max 3):
-✓ Hero to villain → Accept: "brave to tyrant", "soldier to murderer", "noble becomes evil", "transformation"
-✓ Fatal flaw causes downfall → Accept: "ambition destroys", "weakness leads to death", "hamartia causes fall"
-✓ Death restores order → Accept: "Malcolm king", "peace returns", "order after death"
-
-Q6 (4 marks) - Based on acts covered:
-4 marks: All 5 acts with events
-3 marks: 4 acts OR all 5 minimal
-2 marks: 3 acts
-1 mark: 1-2 acts
-
-IMPORTANT:
-- Accept sophisticated vocabulary (hubris = fatal flaw, mortality = death)
-- Accept paraphrasing and synonyms
-- Award marks if CORE CONCEPT is present
-- Be generous with spelling/grammar errors
-
-OUTPUT (JSON only):
-{
-  "marksAwarded": 2,
-  "strengths": ["Identified fatal flaw", "Mentioned death"],
-  "highlights": [
-    {"page": 1, "lineIndex": 0, "startChar": 0, "endChar": 10, "color": "green"}
-  ]
-}
-
-Award generously. Output ONLY JSON.`;
-
-  const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
-    },
-    body: JSON.stringify({
-      model: 'deepseek-chat',
-      messages: [
-        { role: 'system', content: 'You are a lenient GCSE examiner. Accept synonyms and variations. Output only JSON.' },
-        { role: 'user', content: stage1Prompt }
-      ],
-      temperature: 0.3,
-      max_tokens: 500
-    })
-  });
-
-  const data = await response.json();
-  let result = data.choices[0].message.content.trim();
-  result = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-  
-  return JSON.parse(result);
-}
-
-// ============================================
-// STAGE 2: EXTERNAL VALIDATION
-// ============================================
-
-async function performStage2Validation(studentText, modelAnswer, totalMarks, questionId, stage1Result) {
-  
-  const stage2Prompt = `You are a senior GCSE English Literature examiner with deep knowledge of Macbeth and Shakespearean tragedy.
-
-A student received ${stage1Result.marksAwarded}/${totalMarks} marks in Stage 1 (guide-based marking).
-
-STUDENT ANSWER:
-"${studentText}"
-
-QUESTION CONTEXT:
-${getQuestionContext(questionId)}
-
-TASK: Use your external GCSE knowledge to validate if this answer deserves MORE marks than ${stage1Result.marksAwarded}.
-
-VALIDATION CHECKLIST:
-1. Does the student demonstrate understanding of the core concepts?
-2. Are they using valid GCSE-level terminology (even if different from the guide)?
-3. Would an AQA examiner accept this phrasing?
-4. Is the content factually accurate about Macbeth?
-
-EXAMPLES OF VALID ALTERNATIVE PHRASINGS:
-- "hubris" = fatal flaw ✓
-- "mortality" = death theme ✓
-- "tragic hamartia" = fatal flaw ✓
-- "catharsis" = pity and fear ✓
-- "peripeteia" = reversal of fortune ✓
-- "anagnorisis" = recognition ✓
-
-OUTPUT (JSON only):
-{
-  "marksAwarded": 2,
-  "strengths": ["Used sophisticated term 'hubris' (fatal flaw)", "Correctly identified mortality theme"],
-  "highlights": [
-    {"page": 1, "lineIndex": 0, "startChar": 0, "endChar": 10, "color": "green"}
-  ],
-  "validationNotes": "Student used advanced terminology correctly - deserves full marks"
-}
-
-Be fair. If they show understanding, award marks. Output ONLY JSON.`;
-
-  const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
-    },
-    body: JSON.stringify({
-      model: 'deepseek-chat',
-      messages: [
-        { role: 'system', content: 'You are a fair GCSE examiner using external knowledge. Accept valid GCSE terminology.' },
-        { role: 'user', content: stage2Prompt }
-      ],
-      temperature: 0.4,
-      max_tokens: 500
-    })
-  });
-
-  const data = await response.json();
-  let result = data.choices[0].message.content.trim();
-  result = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-  
-  return JSON.parse(result);
-}
-
-// ============================================
-// HELPER: QUESTION CONTEXT
-// ============================================
-
-function getQuestionContext(questionId) {
-  const contexts = {
-    'English_Lit_Q4': 'Question asks: Name TWO key features of a Shakespearean tragedy. Valid answers include: fatal flaw, death of hero, downfall, supernatural elements, recognition, catharsis, restoration of order.',
-    'English_Lit_Q5': 'Question asks: Explain why Macbeth is considered a tragedy (THREE reasons). Valid answers include: hero to villain arc, fatal flaw causes downfall, death restores order, catharsis, recognition of mistake.',
-    'English_Lit_Q6': 'Question asks: Describe the structure of Macbeth (FIVE acts). Must cover: Act 1 (witches/ambition), Act 2 (murder Duncan), Act 3 (paranoia/Banquo), Act 4 (witches again), Act 5 (death/restoration).'
-  };
-  
-  return contexts[questionId] || 'General Macbeth tragedy question.';
-}
+// CHAT HANDLER (Q&A for all subjects)
 
 // ============================================
 // CHAT HANDLER (Q&A for all subjects)
