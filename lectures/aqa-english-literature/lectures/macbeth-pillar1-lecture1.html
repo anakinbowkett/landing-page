@@ -2934,12 +2934,7 @@ async function submitWritingQuestion(questionNumber, totalMarks) {
     await new Promise(resolve => setTimeout(resolve, 2000));
     scanOverlay.remove();
     
-    // Apply visual highlights (Tier 1)
-    if (result.highlights && result.highlights.length > 0) {
-      await applyMarkingResults(allLineData, result);
-    }
-    
-    // Show feedback panel (Tier 2)
+    // Show feedback panel only (no highlights)
     showFeedbackPanel(questionNumber, result, totalMarks);
     
     // Update marks
@@ -3337,65 +3332,16 @@ async function submitWriting1() {
   }
 }
 
+
+
 async function applyMarkingResults(allLineData, result) {
-  const markingByPage = {};
-  
-  allLineData.forEach((lineData) => {
-    const pageKey = `page_${lineData.page}`;
-    if (!markingByPage[pageKey]) markingByPage[pageKey] = {};
-    markingByPage[pageKey][lineData.lineIndex] = {
-      element: lineData.element,
-      text: lineData.text,
-      highlights: []
-    };
-  });
-  
-  if (result.highlights) {
-    result.highlights.forEach(highlight => {
-      const pageKey = `page_${highlight.page}`;
-      if (markingByPage[pageKey] && markingByPage[pageKey][highlight.lineIndex]) {
-        markingByPage[pageKey][highlight.lineIndex].highlights.push(highlight);
-      }
-    });
-  }
-  
-  for (const pageKey in markingByPage) {
-    for (const lineIndex in markingByPage[pageKey]) {
-      const lineMarking = markingByPage[pageKey][lineIndex];
-      
-      if (lineMarking.highlights.length > 0) {
-        applyHighlightsToLine(lineMarking.element, lineMarking.text, lineMarking.highlights);
-      }
-      
-      await new Promise(resolve => setTimeout(resolve, 200));
-    }
-  }
+  // NO HIGHLIGHTS - Just complete the marking animation
+  await new Promise(resolve => setTimeout(resolve, 500));
 }
 
-function applyHighlightsToLine(lineElement, originalText, highlights) {
-  highlights.sort((a, b) => a.startChar - b.startChar);
-  
-  let html = '';
-  let lastIndex = 0;
-  
-  highlights.forEach(highlight => {
-    html += escapeHtml(originalText.substring(lastIndex, highlight.startChar));
-    const highlightedText = originalText.substring(highlight.startChar, highlight.endChar);
-    html += `<span class="highlight-${highlight.color}">${escapeHtml(highlightedText)}</span>`;
-    lastIndex = highlight.endChar;
-  });
-  
-  html += escapeHtml(originalText.substring(lastIndex));
-  lineElement.innerHTML = html;
-}
+
 
   
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
 
 // Progress bar
 const totalQuestions = 6;
