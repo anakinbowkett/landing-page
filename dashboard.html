@@ -1276,103 +1276,66 @@ nav {
             </div>
         </div>
 
-<!-- Leaderboard Section -->
-        <div class="leaderboard-section">
-            <h2>Leaderboard</h2>
-            <div class="leaderboard-list">
-                <div class="leaderboard-item">
-                    <div class="leaderboard-left">
-                        <span class="leaderboard-rank">#1</span>
-                        <span class="leaderboard-name">Sarah K.</span>
-                    </div>
-                    <div class="leaderboard-right">
-                        <div class="leaderboard-miles">
-                            <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
-                            <span class="leaderboard-miles-amount">2,340</span>
-                        </div>
-                        <div class="leaderboard-actions">
-                            <button class="action-btn steal-btn">Steal Miles</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="leaderboard-left">
-                        <span class="leaderboard-rank">#2</span>
-                        <span class="leaderboard-name">James T.</span>
-                    </div>
-                    <div class="leaderboard-right">
-                        <div class="leaderboard-miles">
-                            <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
-                            <span class="leaderboard-miles-amount">2,180</span>
-                        </div>
-                        <div class="leaderboard-actions">
-                            <button class="action-btn steal-btn">Steal Miles</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="leaderboard-left">
-                        <span class="leaderboard-rank">#3</span>
-                        <span class="leaderboard-name">Emma R.</span>
-                    </div>
-                    <div class="leaderboard-right">
-                        <div class="leaderboard-miles">
-                            <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
-                            <span class="leaderboard-miles-amount">1,965</span>
-                        </div>
-                        <div class="leaderboard-actions">
-                            <button class="action-btn steal-btn">Steal Miles</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="leaderboard-left">
-                        <span class="leaderboard-rank">#4</span>
-                        <span class="leaderboard-name">Michael B.</span>
-                    </div>
-                    <div class="leaderboard-right">
-                        <div class="leaderboard-miles">
-                            <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
-                            <span class="leaderboard-miles-amount">1,820</span>
-                        </div>
-                        <div class="leaderboard-actions">
-                            <button class="action-btn steal-btn">Steal Miles</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="leaderboard-left">
-                        <span class="leaderboard-rank">#5</span>
-                        <span class="leaderboard-name">Olivia M.</span>
-                    </div>
-                    <div class="leaderboard-right">
-                        <div class="leaderboard-miles">
-                            <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
-                            <span class="leaderboard-miles-amount">1,740</span>
-                        </div>
-                        <div class="leaderboard-actions">
-                            <button class="action-btn steal-btn">Steal Miles</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="leaderboard-left">
-                        <span class="leaderboard-rank">#6</span>
-                        <span class="leaderboard-name">Daniel P.</span>
-                    </div>
-                    <div class="leaderboard-right">
-                        <div class="leaderboard-miles">
-                            <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
-                            <span class="leaderboard-miles-amount">1,650</span>
-                        </div>
-                        <div class="leaderboard-actions">
-                            <button class="action-btn steal-btn">Steal Miles</button>
-                        </div>
-                    </div>
+<div class="leaderboard-section">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                <h2 style="font-size:1.25rem;font-weight:600;color:#111827;letter-spacing:-0.02em;margin:0;">
+                    Leaderboard
+                </h2>
+                <button onclick="scrollToRival()" style="
+                    background:#000;color:white;border:none;
+                    padding:0.45rem 1rem;border-radius:8px;
+                    font-size:0.75rem;font-weight:600;cursor:pointer;
+                    font-family:'Inter',sans-serif;display:flex;align-items:center;gap:0.375rem;">
+                    🎯 Find Rival
+                </button>
+            </div>
+            <div id="lb-list" style="
+                max-height:520px;overflow-y:auto;padding-right:4px;
+                scrollbar-width:thin;scrollbar-color:#e0e4e9 transparent;">
+                <div style="text-align:center;padding:2rem;color:#9ca3af;font-size:0.875rem;">
+                    Loading leaderboard...
                 </div>
             </div>
         </div>
     </div>
+
+
+<!-- Battle Feed -->
+    <div style="
+        background:white;border:1px solid #e0e4e9;border-radius:10px;
+        margin-bottom:1.5rem;overflow:hidden;
+    ">
+        <div style="
+            padding:1rem 1.5rem;border-bottom:1px solid #f3f4f6;
+            display:flex;justify-content:space-between;align-items:center;
+        ">
+            <span style="font-size:1rem;font-weight:600;color:#111827;">⚔️ Battle Feed</span>
+            <span style="font-size:0.75rem;color:#9ca3af;font-weight:500;">Live</span>
+        </div>
+        <div id="battle-feed-list" style="max-height:200px;overflow-y:auto;">
+            <div style="padding:1rem;text-align:center;color:#9ca3af;font-size:0.8rem;">
+                No battles yet today...
+            </div>
+        </div>
+    </div>
+
+    <!-- Quote of the Day Box -->
+    <div style="
+        background:white;border:1px solid #e0e4e9;border-radius:10px;
+        padding:1.75rem 2rem;margin-bottom:1.5rem;
+    ">
+        <div style="font-size:0.75rem;font-weight:600;color:#9ca3af;text-transform:uppercase;
+            letter-spacing:0.08em;margin-bottom:0.875rem;">
+            ✍️ Quote of the Day
+        </div>
+        <div id="quote-of-day-box">
+            <div style="font-family:'Crimson Text',serif;font-size:1.1rem;color:#9ca3af;text-align:center;">
+                Loading...
+            </div>
+        </div>
+    </div>
+
+        
 
     <!-- Learning Goals Accordion -->
     <div class="learning-goals-container">
@@ -2021,6 +1984,7 @@ async function checkAuth() {
         userData.subscriptionStatus = profile.subscription_status;
 
         updateUserData();
+        initLeaderboard(user, profile);
 
         const subjects = await loadUserSubjects(userId);
         
@@ -2266,6 +2230,7 @@ async function initializeDashboard() {
 
 initializeDashboard();
 </script>
+<script src="leaderboard.js"></script>
 <script src="auth-check.js"></script>
 </body>
 </html>
