@@ -178,7 +178,7 @@ function renderLeaderboard() {
 
             <!-- Dropdown -->
             <div class="lb-dropdown" data-user-id="${user.user_id}" style="
-                display:none; position:absolute; top:calc(100% + 4px); right:0;
+                display:none; position:absolute; top:0; right:calc(100% + 8px);
                 background:white; border:1px solid #e0e4e9; border-radius:10px;
                 box-shadow:0 8px 24px rgba(0,0,0,0.12); z-index:999; min-width:220px;
                 padding:0.5rem; overflow:hidden;
@@ -260,7 +260,7 @@ function closeAllDropdowns() {
 }
 
 document.addEventListener('click', (e) => {
-    if (!e.target.closest('.lb-item')) {
+    if (!e.target.closest('.lb-item') && !e.target.closest('.lb-dropdown')) {
         closeAllDropdowns();
     }
 });
