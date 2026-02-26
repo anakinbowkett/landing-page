@@ -187,14 +187,20 @@ function renderLeaderboard() {
             </div>
         `;
 
-        // Click anywhere on item = toggle dropdown
+// Click anywhere on item = toggle dropdown
         item.addEventListener('click', (e) => {
             e.stopPropagation();
-            closeAllDropdowns();
-            if (!isMe) {
-                const dd = item.querySelector('.lb-dropdown');
-                dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+            const dd = item.querySelector('.lb-dropdown');
+            if (!isMe && dd) {
+                const isOpen = dd.style.display === 'block';
+                closeAllDropdowns();
+                if (!isOpen) dd.style.display = 'block';
             }
+        });
+
+        // Keep dropdown open when hovering over it
+        item.querySelector('.lb-dropdown')?.addEventListener('click', (e) => {
+            e.stopPropagation();
         });
 
         container.appendChild(item);
@@ -252,6 +258,12 @@ function ddBtn(label, color, onclick) {
 function closeAllDropdowns() {
     document.querySelectorAll('.lb-dropdown').forEach(d => d.style.display = 'none');
 }
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.lb-item')) {
+        closeAllDropdowns();
+    }
+});
 
 // ─── STEAL logic ──────────────────────────────────────────
 async function handleSteal(victimId, victimName, victimMiles) {
