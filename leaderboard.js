@@ -3,11 +3,11 @@
 // GCSE Mastery Platform
 // ============================================================
 
-const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+const LB_SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+const LB_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
 
 // Use the already-initialised supabase client from dashboard if available, else create one
-const lb_sb = window.sbClient || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const lb_sb = window.sbClient || window.supabase.createClient(LB_SUPABASE_URL, LB_SUPABASE_ANON_KEY);
 
 // ─── State ────────────────────────────────────────────────
 let currentUser = null;        // full Supabase user object
