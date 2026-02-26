@@ -178,29 +178,28 @@ function renderLeaderboard() {
 
             <!-- Dropdown -->
             <div class="lb-dropdown" data-user-id="${user.user_id}" style="
-                display:none; position:absolute; top:0; right:calc(100% + 8px);
-                background:white; border:1px solid #e0e4e9; border-radius:10px;
-                box-shadow:0 8px 24px rgba(0,0,0,0.12); z-index:999; min-width:220px;
-                padding:0.5rem; overflow:hidden;
+                display:none; position:fixed; background:white; border:1px solid #e0e4e9;
+                border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+                z-index:99999; min-width:220px; padding:0.5rem;
             ">
                 ${buildDropdownButtons(user, rank, tier, myTier, isMe, myId)}
             </div>
         `;
 
 // Click anywhere on item = toggle dropdown
-        item.addEventListener('click', (e) => {
+item.addEventListener('click', (e) => {
             e.stopPropagation();
+            if (isMe) return;
             const dd = item.querySelector('.lb-dropdown');
-            if (!isMe && dd) {
-                const isOpen = dd.style.display === 'block';
-                closeAllDropdowns();
-                if (!isOpen) dd.style.display = 'block';
+            if (!dd) return;
+            const isOpen = dd.style.display === 'block';
+            closeAllDropdowns();
+            if (!isOpen) {
+                const rect = item.getBoundingClientRect();
+                dd.style.display = 'block';
+                dd.style.top = (rect.bottom + 4) + 'px';
+                dd.style.left = rect.right - 220 + 'px';
             }
-        });
-
-        // Keep dropdown open when hovering over it
-        item.querySelector('.lb-dropdown')?.addEventListener('click', (e) => {
-            e.stopPropagation();
         });
 
         container.appendChild(item);
