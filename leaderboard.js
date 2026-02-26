@@ -68,15 +68,19 @@ async function upsertPresence(online) {
 
 // ─── Fetch + sort leaderboard ─────────────────────────────
 async function fetchLeaderboard() {
+    console.log('fetchLeaderboard called, currentUser:', currentUser?.id);
+    
     const { data, error } = await lb_sb
         .from('leaderboard_presence')
         .select('*')
-        .eq('is_online', true)
         .order('mastery_miles', { ascending: false })
         .limit(130);
 
+    console.log('LB data:', data, 'LB error:', error);
+
     if (error) { console.error('LB fetch error', error); return; }
     leaderboardData = data || [];
+    console.log('leaderboardData length:', leaderboardData.length);
     renderLeaderboard();
     renderBattleFeed();
 }
