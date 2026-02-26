@@ -143,64 +143,77 @@ function renderLeaderboard() {
         item.dataset.userId = user.user_id;
         item.dataset.rank = rank;
         item.setAttribute('style', `
-            position: relative; cursor: pointer; padding: 0.875rem 1rem;
+            position: relative;
             border-radius: 10px; margin-bottom: 0.5rem;
             background: ${isMe ? '#f0f9ff' : '#fff'};
-            display: flex; align-items: center; justify-content: space-between;
             transition: all 0.2s; ${getTierBorderStyle(rank)}
+            overflow: hidden;
         `);
 
         // Rank badge colour
         const rankColour = tier === 'prodigy' ? '#000' : tier === 'elite' ? '#5b8dee' : tier === 'superior' ? '#cd7f32' : '#9ca3af';
 
-        item.innerHTML = `
-            <div style="display:flex;align-items:center;gap:0.875rem;flex:1;min-width:0;">
-                <span style="font-size:0.8rem;font-weight:700;color:${rankColour};min-width:28px;">#${rank}</span>
-                <span style="font-size:0.875rem;font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                    ${user.user_name}
-                    ${isVerified ? '<span title="500k+ Miles Verified" style="color:#1d9bf0;font-size:0.875rem;margin-left:4px;">✓</span>' : ''}
-                    ${isMe ? '<span style="font-size:0.7rem;background:#e0f2fe;color:#0284c7;padding:1px 6px;border-radius:4px;margin-left:6px;">You</span>' : ''}
-                </span>
-                <span style="font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;
-                    background:${tier==='prodigy'?'#000':tier==='elite'?'#eff6ff':tier==='superior'?'#fef3c7':'#f3f4f6'};
-                    color:${tier==='prodigy'?'#fff':tier==='elite'?'#3b82f6':tier==='superior'?'#92400e':'#6b7280'};">
-                    ${getTierLabel(rank)}
-                </span>
-            </div>
-            <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
-                <span style="font-size:0.8rem;font-weight:700;color:#111827;">
-                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" 
-                         style="width:16px;height:16px;vertical-align:middle;margin-right:3px;">
-                    ${Number(user.mastery_miles).toLocaleString()}
-                </span>
-                <span style="font-size:0.65rem;color:#6b7280;">▼</span>
-            </div>
+item.innerHTML = `
+            <div style="width:100%;">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1rem;cursor:default;">
+                    <div style="display:flex;align-items:center;gap:0.875rem;flex:1;min-width:0;">
+                        <span style="font-size:0.8rem;font-weight:700;color:${rankColour};min-width:28px;">#${rank}</span>
+                        <span style="font-size:0.875rem;font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            ${user.user_name}
+                            ${isVerified ? '<span title="500k+ Miles Verified" style="color:#1d9bf0;font-size:0.875rem;margin-left:4px;">✓</span>' : ''}
+                            ${isMe ? '<span style="font-size:0.7rem;background:#e0f2fe;color:#0284c7;padding:1px 6px;border-radius:4px;margin-left:6px;">You</span>' : ''}
+                        </span>
+                        <span style="font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;
+                            background:${tier==='prodigy'?'#000':tier==='elite'?'#eff6ff':tier==='superior'?'#fef3c7':'#f3f4f6'};
+                            color:${tier==='prodigy'?'#fff':tier==='elite'?'#3b82f6':tier==='superior'?'#92400e':'#6b7280'};">
+                            ${getTierLabel(rank)}
+                        </span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
+                        <span style="font-size:0.8rem;font-weight:700;color:#111827;">
+                            <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" 
+                                 style="width:16px;height:16px;vertical-align:middle;margin-right:3px;">
+                            ${Number(user.mastery_miles).toLocaleString()}
+                        </span>
+                        ${!isMe ? `<span class="lb-arrow" style="
+                            font-size:0.75rem;color:#6b7280;cursor:pointer;
+                            transition:transform 0.2s;display:inline-block;
+                            padding:4px 8px;border-radius:6px;
+                            background:#f3f4f6;user-select:none;
+                        ">▼</span>` : ''}
+                    </div>
+                </div>
 
-            <!-- Dropdown -->
-            <div class="lb-dropdown" data-user-id="${user.user_id}" style="
-                display:none; position:fixed; background:white; border:1px solid #e0e4e9;
-                border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
-                z-index:99999; min-width:220px; padding:0.5rem;
-            ">
-                ${buildDropdownButtons(user, rank, tier, myTier, isMe, myId)}
+                <!-- Dropdown expands inline below the row -->
+                <div class="lb-dropdown" style="
+                    display:none;
+                    border-top:1px solid #f3f4f6;
+                    padding:0.5rem 1rem;
+                    background:#fafafa;
+                    border-radius:0 0 10px 10px;
+                ">
+                    ${buildDropdownButtons(user, rank, tier, myTier, isMe, myId)}
+                </div>
             </div>
         `;
 
+
+
+
 // Click anywhere on item = toggle dropdown
-item.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (isMe) return;
-            const dd = item.querySelector('.lb-dropdown');
-            if (!dd) return;
-            const isOpen = dd.style.display === 'block';
-            closeAllDropdowns();
-            if (!isOpen) {
-                const rect = item.getBoundingClientRect();
-                dd.style.display = 'block';
-                dd.style.top = (rect.bottom + 4) + 'px';
-                dd.style.left = rect.right - 220 + 'px';
-            }
-        });
+const arrow = item.querySelector('.lb-arrow');
+        if (arrow) {
+            arrow.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (isMe) return;
+                const dd = item.querySelector('.lb-dropdown');
+                if (!dd) return;
+                const isOpen = dd.style.display === 'block';
+                closeAllDropdowns();
+                dd.style.display = isOpen ? 'none' : 'block';
+                arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+            });
+        }
 
         container.appendChild(item);
     });
