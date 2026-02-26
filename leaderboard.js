@@ -863,22 +863,30 @@ function updateNavMiles(miles) {
 // ─── Tab visibility (presence) ────────────────────────────
 document.addEventListener('visibilitychange', async () => {
     if (document.hidden) {
+        stopHeartbeat();
         await upsertPresence(false);
     } else {
         await upsertPresence(true);
+        startHeartbeat();
         await fetchLeaderboard();
     }
 });
 
 window.addEventListener('beforeunload', () => {
-    // Best-effort sync on tab close
-    if (currentUser) {
-        navigator.sendBeacon &&
-        navigator.sendBeacon(`${SUPABASE_URL}/rest/v1/leaderboard_presence?user_id=eq.${currentUser.id}`,
-            JSON.stringify({ is_online: false }));
-    }
+    stopHeartbeat();
+    if (!currentUser) return;
+    const url = `${LB_SUPABASE_URL}/rest/v1/leaderboard_presence?user_id=eq.${currentUser.id}`;
+    const data = JSON.stringify({ is_online: false, last_seen: new Date().toISOString() });
+    navigator.sendBeacon(url + '&apikey=' + LB_SUPABASE_ANON_KEY, new Blob([data], { type: 'application/json' }));
 });
 
+window.addEventListener('pagehide', () => {
+    stopHeartbeat();
+    if (!currentUser) return;
+    const url = `${LB_SUPABASE_URL}/rest/v1/leaderboard_presence?user_id=eq.${currentUser.id}`;
+    const data = JSON.stringify({ is_online: false, last_seen: new Date().toISOString() });
+    navigator.sendBeacon(url + '&apikey=' + LB_SUPABASE_ANON_KEY, new Blob([data], { type: 'application/json' }));
+});
 // ─── INIT ─────────────────────────────────────────────────
 async function initLeaderboard(user, profile) {
     currentUser = user;
