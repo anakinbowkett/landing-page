@@ -1976,9 +1976,10 @@ async function checkAuth() {
         const firstName = profile.first_name || user.user_metadata.first_name || 'Student';
         const currentStreak = await updateStreak(userId);
         
-        userData.name = firstName;
+userData.name = firstName;
         userData.userId = userId.slice(0, 8);
         userData.streak = currentStreak;
+        userData.miles = profile.mastery_miles || 0;
         userData.trialStatus = checkTrialStatus(profile);
         userData.trialEndDate = profile.trial_end_date;
         userData.subscriptionStatus = profile.subscription_status;
@@ -2025,6 +2026,11 @@ function updateUserData() {
     document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
     document.querySelector('.streak-badge').textContent = `🔥 ${userData.streak} Day Streak`;
     document.getElementById('streak-metric').textContent = userData.streak;
+    // Sync miles to nav
+    const milesBadge = document.querySelector('.mastery-miles-badge span');
+    if (milesBadge && userData.miles) {
+        milesBadge.textContent = Number(userData.miles).toLocaleString();
+    }
 }
 
 const userProfileTrigger = document.getElementById('user-profile-trigger');
