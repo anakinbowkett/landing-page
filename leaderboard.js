@@ -70,12 +70,13 @@ async function upsertPresence(online) {
 async function fetchLeaderboard() {
     console.log('fetchLeaderboard called, currentUser:', currentUser?.id);
     
-    const { data, error } = await lb_sb
+const { data, error } = await lb_sb
         .from('leaderboard_presence')
         .select('*')
         .order('mastery_miles', { ascending: false })
         .limit(130);
 
+    
     console.log('LB data:', data, 'LB error:', error);
 
     if (error) { console.error('LB fetch error', error); return; }
@@ -159,7 +160,10 @@ item.innerHTML = `
                     <div style="display:flex;align-items:center;gap:0.875rem;flex:1;min-width:0;">
                         <span style="font-size:0.8rem;font-weight:700;color:${rankColour};min-width:28px;">#${rank}</span>
                         <span style="font-size:0.875rem;font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                            ${user.user_name}
+                            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;
+                            background:${user.is_online ? '#22c55e' : '#d1d5db'};
+                            margin-right:5px;vertical-align:middle;"></span>
+                        ${user.user_name}
                             ${isVerified ? '<span title="500k+ Miles Verified" style="color:#1d9bf0;font-size:0.875rem;margin-left:4px;">✓</span>' : ''}
                             ${isMe ? '<span style="font-size:0.7rem;background:#e0f2fe;color:#0284c7;padding:1px 6px;border-radius:4px;margin-left:6px;">You</span>' : ''}
                         </span>
@@ -708,8 +712,10 @@ function addBattleFeedEntry(tx) {
 // ─── Prodigy decay (Glass Throne) ────────────────────────
 function startProdigyDecay() {
     if (decayInterval) clearInterval(decayInterval);
-    decayInterval = setInterval(async () => {
+        decayInterval = setInterval(async () => {
         if (!currentUser || !leaderboardData.length) return;
+        // No decay if user is actively on the platform (any page)
+        if (!document.hidden) return;
         const myRank = leaderboardData.findIndex(u => u.user_id === currentUser.id) + 1;
         if (myRank !== 1) return;
 
