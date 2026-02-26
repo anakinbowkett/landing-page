@@ -1983,7 +1983,10 @@ async function checkAuth() {
         userData.trialEndDate = profile.trial_end_date;
         userData.subscriptionStatus = profile.subscription_status;
 
-        updateUserData();
+updateUserData();
+
+        // Sync this user's miles to leaderboard presence
+        await syncMilesToLeaderboard(userId, profile.mastery_miles || 0);
 
         // Only init leaderboard once, safely
         if (typeof initLeaderboard === 'function') {
@@ -2230,6 +2233,16 @@ function showPaymentErrorMessage(errorMsg) {
 async function initializeDashboard() {
     await checkAuth();
     await handlePaymentSuccess();
+}
+
+// Sync mastery_miles from user_profiles to leaderboard_presence on load
+async function syncMilesToLeaderboard(userId, miles) {
+    await sbClient.from('leaderboard_presence').upsert({
+        user_id: userId,
+        mastery_miles: miles,
+        is_online: true,
+        last_seen: new Date().toISOString()
+    }, { onConflict: 'user_id' });
 }
 
 initializeDashboard();
