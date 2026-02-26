@@ -1984,7 +1984,11 @@ async function checkAuth() {
         userData.subscriptionStatus = profile.subscription_status;
 
         updateUserData();
-        initLeaderboard(user, profile);
+
+        // Only init leaderboard once, safely
+        if (typeof initLeaderboard === 'function') {
+            initLeaderboard(user, profile);
+        }
 
         const subjects = await loadUserSubjects(userId);
         
