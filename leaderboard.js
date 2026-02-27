@@ -138,7 +138,7 @@ function renderLeaderboard() {
         const tier = getTier(rank);
         const isMe = user.user_id === myId;
         const myTier = getTier(leaderboardData.findIndex(u => u.user_id === myId) + 1);
-        const isVerified = user.mastery_miles >= 500000;
+        const isVerified = user.mastery_miles >= 250000;
         const earnRate = getLectureEarnRate(rank, prodigyMiles);
 
         // Build item
@@ -582,7 +582,7 @@ function showUserCard(userId, userName, miles, rank) {
     if (existing) existing.remove();
 
     const tier = getTier(rank || (leaderboardData.findIndex(u => u.user_id === userId) + 1));
-    const isVerified = miles >= 500000;
+    const isVerified = miles >= 250000;
 
     const modal = document.createElement('div');
     modal.id = 'user-card-modal';
@@ -642,6 +642,134 @@ function showUserCard(userId, userName, miles, rank) {
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
     document.body.appendChild(modal);
 }
+
+
+
+function showUserCard(userId, userName, miles, rank) {
+    closeAllDropdowns();
+    const existing = document.getElementById('user-card-modal');
+    if (existing) existing.remove();
+
+    const actualRank = rank || (leaderboardData.findIndex(u => u.user_id === userId) + 1);
+    const tier = getTier(actualRank);
+    const isVerified = miles >= 500000;
+    const userEntry = leaderboardData.find(u => u.user_id === userId);
+    const isOnline = userEntry?.is_online || false;
+
+    const tierConfig = {
+        prodigy: { label: '👑 Prodigy', color: '#ffffff', bg: '#000000', accent: '#60a5fa' },
+        elite:   { label: '⚡ Elite',   color: '#111827', bg: '#eff6ff', accent: '#3b82f6' },
+        superior:{ label: '🥉 Superior',color: '#111827', bg: '#fef3c7', accent: '#92400e' },
+        student: { label: '📚 Student', color: '#111827', bg: '#f3f4f6', accent: '#6b7280' }
+    };
+    const tc = tierConfig[tier];
+
+    const modal = document.createElement('div');
+    modal.id = 'user-card-modal';
+    modal.style.cssText = `
+        position:fixed;top:0;left:0;width:100%;height:100%;
+        background:rgba(0,0,0,0.75);z-index:100000;
+        display:flex;align-items:center;justify-content:center;
+        padding:1rem;
+    `;
+
+    modal.innerHTML = `
+        <div style="
+            background:${tc.bg};
+            border-radius:16px;
+            max-width:480px;width:100%;
+            overflow:hidden;
+            box-shadow:0 24px 64px rgba(0,0,0,0.4);
+        ">
+            <!-- Top black bar matching welcome box style -->
+            <div style="
+                background:#000000;
+                padding:1.75rem 2rem;
+                display:flex;justify-content:space-between;align-items:center;
+            ">
+                <div>
+                    <div style="
+                        font-family:'Crimson Text',serif;
+                        font-size:1.875rem;font-weight:600;
+                        color:#ffffff;letter-spacing:-0.03em;line-height:1.2;
+                    ">
+                        ${userName}
+                        ${isVerified ? '<span style="color:#1d9bf0;font-size:1.5rem;margin-left:6px;" title="500k+ Miles Verified">✓</span>' : ''}
+                    </div>
+                    <div style="margin-top:0.375rem;display:flex;align-items:center;gap:0.5rem;">
+                        <span style="
+                            display:inline-block;width:8px;height:8px;border-radius:50%;
+                            background:${isOnline ? '#22c55e' : '#6b7280'};
+                        "></span>
+                        <span style="font-size:0.8rem;color:#9ca3af;font-weight:500;">
+                            ${isOnline ? 'Online now' : 'Offline'}
+                        </span>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:0.8rem;font-weight:600;color:#ffffff;margin-bottom:0.25rem;">
+                        Mastery Miles: <span style="color:#60a5fa;">${Number(miles).toLocaleString()}</span>
+                    </div>
+                    <div style="font-size:0.8rem;font-weight:600;color:#ffffff;margin-bottom:0.25rem;">
+                        Leaderboard: <span style="color:#60a5fa;">#${actualRank}</span>
+                    </div>
+                    <div style="font-size:0.8rem;font-weight:600;color:#ffffff;">
+                        Tier: <span style="color:#60a5fa;">${tc.label}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom section -->
+            <div style="padding:1.5rem 2rem;background:white;">
+                <!-- Miles bar -->
+                <div style="margin-bottom:1.25rem;">
+                    <div style="display:flex;justify-content:space-between;
+                        font-size:0.75rem;font-weight:600;color:#6b7280;margin-bottom:0.5rem;">
+                        <span>Progress to next tier</span>
+                        <span>${Number(miles).toLocaleString()} miles</span>
+                    </div>
+                    <div style="width:100%;height:8px;background:#f3f4f6;border-radius:4px;overflow:hidden;">
+                        <div style="
+                            height:100%;border-radius:4px;
+                            background:linear-gradient(90deg,#000,#374151);
+                            width:${Math.min((miles / 250000) * 100, 100)}%;
+                            transition:width 0.5s ease;
+                        "></div>
+                    </div>
+                    <div style="font-size:0.7rem;color:#9ca3af;margin-top:0.375rem;text-align:right;">
+                        ${miles >= 250000 ? '✓ Verified status achieved' : `${Number(250000 - miles).toLocaleString()} miles to verified`}
+                    </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div style="display:flex;gap:0.75rem;">
+                    ${userId !== currentUser?.id ? `
+                    <button onclick="handleSteal('${userId}','${userName}',${miles});document.getElementById('user-card-modal').remove();" style="
+                        flex:1;background:#dc143c;color:white;border:none;
+                        padding:0.75rem;border-radius:8px;font-size:0.875rem;
+                        font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">
+                        🗡️ Steal Miles
+                    </button>` : ''}
+                    <button onclick="document.getElementById('user-card-modal').remove()" style="
+                        flex:1;background:#000;color:white;border:none;
+                        padding:0.75rem;border-radius:8px;font-size:0.875rem;
+                        font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+    });
+
+    document.body.appendChild(modal);
+}
+
+
+
 window.showUserCard = showUserCard;
 window.handleSteal = handleSteal;
 window.handleRaid = handleRaid;
@@ -1052,6 +1180,55 @@ window.addEventListener('pagehide', () => {
     const data = JSON.stringify({ is_online: false, last_seen: new Date().toISOString() });
     navigator.sendBeacon(url + '&apikey=' + LB_SUPABASE_ANON_KEY, new Blob([data], { type: 'application/json' }));
 });
+
+
+
+// ─── Award Lecture Miles ──────────────────────────────────
+async function awardLectureMiles() {
+    if (!currentUser || !currentProfile) return;
+
+    const myEntry = leaderboardData.find(u => u.user_id === currentUser.id);
+    const myRank = leaderboardData.findIndex(u => u.user_id === currentUser.id) + 1;
+    const prodigyMiles = leaderboardData[0]?.mastery_miles || 0;
+    const myCurrentMiles = myEntry?.mastery_miles || currentProfile.mastery_miles || 0;
+
+    // Calculate earn rate with rubber-band
+    let earnRate = 1000; // base
+    const gap = prodigyMiles - myCurrentMiles;
+    const tier = getTier(myRank);
+
+    if (tier === 'student') {
+        earnRate = 2000; // double for students
+    }
+    if (gap > 50000) {
+        earnRate = Math.round(earnRate * 1.5); // 1.5x rubber-band boost
+    } else if (gap > 20000) {
+        earnRate = Math.round(earnRate * 1.2); // 1.2x closer boost
+    }
+
+    const newMiles = myCurrentMiles + earnRate;
+
+    // Update leaderboard_presence
+    await lb_sb.from('leaderboard_presence').update({
+        mastery_miles: newMiles
+    }).eq('user_id', currentUser.id);
+
+    // Update user_profiles
+    await lb_sb.from('user_profiles').update({
+        mastery_miles: newMiles
+    }).eq('id', currentUser.id);
+
+    currentProfile.mastery_miles = newMiles;
+    updateNavMiles(newMiles);
+
+    showToast(`🎓 +${earnRate.toLocaleString()} Mastery Miles earned!`, '#059669');
+    await fetchLeaderboard();
+}
+
+window.awardLectureMiles = awardLectureMiles;
+
+
+
 // ─── INIT ─────────────────────────────────────────────────
 async function initLeaderboard(user, profile) {
     currentUser = user;
