@@ -1352,7 +1352,23 @@ async function awardLectureMiles() {
 
 window.awardLectureMiles = awardLectureMiles;
 
+// ─── Heartbeat ────────────────────────────────────────────
+let heartbeatInterval = null;
 
+function startHeartbeat() {
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+    heartbeatInterval = setInterval(async () => {
+        if (!currentUser || document.hidden) return;
+        await lb_sb.from('leaderboard_presence').update({
+            is_online: true,
+            last_seen: new Date().toISOString()
+        }).eq('user_id', currentUser.id);
+    }, 30000);
+}
+
+function stopHeartbeat() {
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+}
 
 // ─── INIT ─────────────────────────────────────────────────
 async function initLeaderboard(user, profile) {
