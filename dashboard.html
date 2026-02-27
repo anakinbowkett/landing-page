@@ -1278,8 +1278,11 @@ nav {
 
 <div class="leaderboard-section">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-                <h2 style="font-size:1.25rem;font-weight:600;color:#111827;letter-spacing:-0.02em;margin:0;">
+<h2 style="font-size:1.25rem;font-weight:600;color:#111827;letter-spacing:-0.02em;margin:0;display:flex;align-items:center;gap:0.75rem;">
                     Leaderboard
+                    <span id="steal-cooldown-timer" style="display:none;font-size:0.7rem;font-weight:600;
+                        color:#dc143c;background:#fef2f2;padding:2px 8px;border-radius:20px;
+                        border:1px solid #fecaca;">⏳ 60s</span>
                 </h2>
                 <button onclick="scrollToRival()" style="
                     background:#000;color:white;border:none;
