@@ -306,7 +306,9 @@ async function handleSteal(victimId, victimName, victimMiles) {
     // Elite stealing from Prodigy = 65% success rate
     let success = true;
     if (myTier === 'elite' && victimTier === 'prodigy') {
-        success = Math.random() < 0.65;
+        // Check revolution boost
+        const hasRevolutionBoost = window._revolutionBoost && Date.now() < window._revolutionBoost;
+        success = Math.random() < (hasRevolutionBoost ? 0.95 : 0.65);
     }
 
     const milesStolen = Math.min(5000, victimMiles);
@@ -469,6 +471,11 @@ async function triggerRevolution(eliteId, eliteName) {
     const eliteMiles = eliteEntry?.mastery_miles || 0;
     await lb_sb.from('leaderboard_presence').update({ mastery_miles: eliteMiles + 25000 }).eq('user_id', eliteId);
     await lb_sb.from('user_profiles').update({ mastery_miles: eliteMiles + 25000 }).eq('id', eliteId);
+    // Temporarily boost elite steal success rate to 95% for 5 minutes
+    if (eliteId === currentUser?.id) {
+        stealCooldownEnd = 0; // reset any cooldown
+        window._revolutionBoost = Date.now() + (5 * 60 * 1000);
+    }
 
     await lb_sb.from('notifications').insert({
         recipient_id: eliteId,
@@ -484,18 +491,120 @@ async function triggerRevolution(eliteId, eliteName) {
 }
 
 function showRevolutionBanner(eliteName) {
+    // Remove existing if any
+    const existing = document.getElementById('revolution-banner');
+    if (existing) existing.remove();
+
     const banner = document.createElement('div');
+    banner.id = 'revolution-banner';
     banner.style.cssText = `
-        position:fixed; top:80px; left:50%; transform:translateX(-50%);
-        background:linear-gradient(135deg,#7c3aed,#dc2626); color:white;
-        padding:1rem 2rem; border-radius:12px; z-index:99999;
-        font-weight:700; font-size:1rem; text-align:center;
-        box-shadow:0 8px 32px rgba(124,58,237,0.4);
-        animation: slideDown 0.4s ease;
+        position:fixed;top:0;left:0;width:100%;height:100%;
+        background:rgba(0,0,0,0.85);z-index:100001;
+        display:flex;align-items:center;justify-content:center;
+        animation:fadeIn 0.3s ease;
     `;
-    banner.textContent = `🔥 REVOLUTION! The people have spoken — ${eliteName} surges forward!`;
+
+    banner.innerHTML = `
+        <div style="
+            max-width:480px;width:90%;text-align:center;
+            padding:3rem 2.5rem;border-radius:20px;
+            background:linear-gradient(135deg,#0f0f0f 0%,#1a0a2e 50%,#2d0a0a 100%);
+            border:1px solid rgba(124,58,237,0.4);
+            box-shadow:0 0 60px rgba(124,58,237,0.3),0 0 120px rgba(220,20,60,0.15);
+        ">
+            <!-- Animated fire emoji -->
+            <div style="font-size:4rem;margin-bottom:1rem;animation:pulse 0.5s infinite alternate;">
+                🔥
+            </div>
+
+            <div style="
+                font-family:'Crimson Text',serif;
+                font-size:2.5rem;font-weight:700;
+                color:#ffffff;letter-spacing:-0.03em;
+                margin-bottom:0.5rem;line-height:1.2;
+            ">
+                REVOLUTION
+            </div>
+
+            <div style="
+                font-size:0.875rem;font-weight:600;
+                color:#a78bfa;letter-spacing:0.1em;
+                text-transform:uppercase;margin-bottom:1.5rem;
+            ">
+                The People Have Spoken
+            </div>
+
+            <div style="
+                background:rgba(255,255,255,0.05);
+                border:1px solid rgba(255,255,255,0.1);
+                border-radius:12px;padding:1.25rem;
+                margin-bottom:1.5rem;
+            ">
+                <div style="font-size:1rem;color:#e5e7eb;margin-bottom:0.5rem;">
+                    3 Students rallied behind
+                </div>
+                <div style="
+                    font-family:'Crimson Text',serif;
+                    font-size:1.75rem;font-weight:700;color:#ffffff;
+                ">
+                    ${eliteName}
+                </div>
+                <div style="
+                    margin-top:0.75rem;font-size:0.875rem;
+                    font-weight:700;color:#4ade80;
+                ">
+                    +25,000 Mastery Miles Surge ⚡
+                </div>
+            </div>
+
+            <!-- Progress indicators -->
+            <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1.5rem;">
+                <div style="width:40px;height:4px;border-radius:2px;background:#7c3aed;"></div>
+                <div style="width:40px;height:4px;border-radius:2px;background:#dc2626;"></div>
+                <div style="width:40px;height:4px;border-radius:2px;background:#7c3aed;"></div>
+            </div>
+
+            <div style="font-size:0.8rem;color:#6b7280;margin-bottom:1.5rem;">
+                Elite Steal Power temporarily boosted to 95%
+            </div>
+
+            <button onclick="document.getElementById('revolution-banner').remove()" style="
+                background:white;color:#000;border:none;
+                padding:0.875rem 2.5rem;border-radius:10px;
+                font-size:0.9rem;font-weight:700;cursor:pointer;
+                font-family:'Inter',sans-serif;
+                transition:transform 0.2s;
+            " onmouseover="this.style.transform='scale(1.03)'"
+               onmouseout="this.style.transform='scale(1)'">
+                Let's Go 🚀
+            </button>
+        </div>
+    `;
+
+    // Add pulse animation
+    const style = document.createElement('style');
+    style.id = 'revolution-style';
+    style.textContent = `
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to   { transform: scale(1.2); }
+        }
+    `;
+    if (!document.getElementById('revolution-style')) {
+        document.head.appendChild(style);
+    }
+
+    banner.addEventListener('click', (e) => {
+        if (e.target === banner) banner.remove();
+    });
+
     document.body.appendChild(banner);
-    setTimeout(() => banner.remove(), 5000);
+
+    // Auto remove after 8 seconds
+    setTimeout(() => {
+        const el = document.getElementById('revolution-banner');
+        if (el) el.remove();
+    }, 8000);
 }
 
 // ─── Notifications polling ────────────────────────────────
