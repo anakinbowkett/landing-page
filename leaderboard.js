@@ -16,7 +16,10 @@ let leaderboardData = [];      // sorted array of presence rows
 let presenceChannel = null;    // Supabase realtime channel
 let battleFeedChannel = null;
 let decayInterval = null;
-let lastStolenFromMe = null;   // user_id of whoever last stole from current user
+let lastStolenFromMe = null;
+let stealCooldownEnd = 0;
+let cooldownTimerInterval = null;
+let quoteCountdownInterval = null;
 
 // ─── Tier helpers ─────────────────────────────────────────
 function getTier(rank) {
@@ -286,6 +289,13 @@ async function handleSteal(victimId, victimName, victimMiles) {
     closeAllDropdowns();
     if (!currentUser) return;
 
+    // Check cooldown
+    if (Date.now() < stealCooldownEnd) {
+        const secsLeft = Math.ceil((stealCooldownEnd - Date.now()) / 1000);
+        showToast(`⏳ Cooldown active! Wait ${secsLeft}s before stealing again.`, '#dc143c');
+        return;
+    }
+
     const myEntry = leaderboardData.find(u => u.user_id === currentUser.id);
     const myMiles = myEntry?.mastery_miles || 0;
     const myRank = leaderboardData.findIndex(u => u.user_id === currentUser.id) + 1;
@@ -344,6 +354,9 @@ async function handleSteal(victimId, victimName, victimMiles) {
         }).eq('id', currentUser.id);
 
         showToast(`✅ You stole ${milesStolen.toLocaleString()} miles from ${victimName}!`, '#059669');
+        // Start 60 second cooldown
+        stealCooldownEnd = Date.now() + 60000;
+        startCooldownTimer();
         currentProfile.mastery_miles = myMiles + milesStolen;
         updateNavMiles(currentProfile.mastery_miles);
         await fetchLeaderboard();
@@ -634,6 +647,26 @@ window.handleSteal = handleSteal;
 window.handleRaid = handleRaid;
 window.handleDonate = handleDonate;
 
+
+function startCooldownTimer() {
+    if (cooldownTimerInterval) clearInterval(cooldownTimerInterval);
+    const timerEl = document.getElementById('steal-cooldown-timer');
+    if (!timerEl) return;
+    timerEl.style.display = 'inline';
+
+    cooldownTimerInterval = setInterval(() => {
+        const secsLeft = Math.ceil((stealCooldownEnd - Date.now()) / 1000);
+        if (secsLeft <= 0) {
+            clearInterval(cooldownTimerInterval);
+            timerEl.style.display = 'none';
+            showToast('✅ You can steal again!', '#059669');
+        } else {
+            timerEl.textContent = `⏳ ${secsLeft}s`;
+        }
+    }, 1000);
+}
+
+
 // ─── Rival Finder ─────────────────────────────────────────
 function scrollToRival() {
     if (!currentProfile?.last_steal_victim_id) {
@@ -792,6 +825,132 @@ async function loadQuoteOfDay() {
         }
     }
 }
+
+
+async function loadQuoteOfDay() {
+    const box = document.getElementById('quote-of-day-box');
+    if (!box) return;
+
+    const now = new Date();
+    // 2 hour slot: 0-2, 2-4, 4-6 etc
+    const slotHour = Math.floor(now.getHours() / 2) * 2;
+    const slotStart = new Date(now);
+    slotStart.setHours(slotHour, 0, 0, 0);
+    const slotEnd = new Date(slotStart);
+    slotEnd.setHours(slotHour + 2, 0, 0, 0);
+
+    const { data: quotes } = await lb_sb
+        .from('quote_of_the_day')
+        .select('*')
+        .gte('created_at', slotStart.toISOString())
+        .lt('created_at', slotEnd.toISOString())
+        .order('vote_miles', { ascending: false });
+
+    const topQuote = quotes && quotes.length > 0 ? quotes[0] : null;
+    const myRank = leaderboardData.findIndex(u => u.user_id === currentUser?.id) + 1;
+
+    // Build countdown
+    function getCountdown() {
+        const secsLeft = Math.floor((slotEnd - new Date()) / 1000);
+        const mins = Math.floor(secsLeft / 60);
+        const secs = secsLeft % 60;
+        return `${mins}m ${secs}s`;
+    }
+
+    // Render
+    function renderQuoteBox() {
+        if (topQuote) {
+            box.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;">
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:'Crimson Text',serif;font-size:1.375rem;color:#111827;
+                            line-height:1.4;margin-bottom:0.5rem;">
+                            "${topQuote.quote_text}"
+                        </div>
+                        <div style="font-size:0.8125rem;color:#6b7280;font-weight:500;">
+                            — ${topQuote.author_name}
+                            · <span style="color:#6b7280;">
+                                <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" 
+                                    style="width:12px;height:12px;vertical-align:middle;">
+                                ${Number(topQuote.vote_miles).toLocaleString()} boosts
+                            </span>
+                        </div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;flex-shrink:0;">
+                        <span id="quote-countdown" style="font-size:0.75rem;color:#9ca3af;
+                            background:#f3f4f6;padding:3px 8px;border-radius:20px;">
+                            ⏱ ${getCountdown()}
+                        </span>
+                        ${topQuote.author_id !== currentUser?.id ? `
+                        <button onclick="voteForQuote('${topQuote.id}')" style="
+                            background:#000;color:white;border:none;padding:0.5rem 1rem;
+                            border-radius:8px;font-size:0.75rem;font-weight:600;cursor:pointer;
+                            font-family:'Inter',sans-serif;white-space:nowrap;">
+                            ⭐ Boost (100 miles)
+                        </button>` : `
+                        <span style="font-size:0.75rem;color:#6b7280;font-style:italic;">Your quote</span>`}
+                    </div>
+                </div>
+                <div style="margin-top:0.875rem;padding-top:0.875rem;border-top:1px solid #f3f4f6;">
+                    <div style="display:flex;gap:0.5rem;">
+                        <input id="quote-input" placeholder="Submit your quote for the next slot..." style="
+                            flex:1;border:1px solid #e0e4e9;border-radius:8px;
+                            padding:0.5rem 0.875rem;font-family:'Crimson Text',serif;
+                            font-size:0.95rem;color:#111827;outline:none;">
+                        <button onclick="submitQuote()" style="
+                            background:#000;color:white;border:none;padding:0.5rem 1rem;
+                            border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;
+                            font-family:'Inter',sans-serif;">Post</button>
+                    </div>
+                </div>
+            `;
+        } else {
+            box.innerHTML = `
+                <div style="margin-bottom:0.875rem;display:flex;justify-content:space-between;align-items:center;">
+                    <div style="font-family:'Crimson Text',serif;font-size:1.1rem;color:#9ca3af;">
+                        No quote this slot yet — be the first!
+                    </div>
+                    <span id="quote-countdown" style="font-size:0.75rem;color:#9ca3af;
+                        background:#f3f4f6;padding:3px 8px;border-radius:20px;">
+                        ⏱ ${getCountdown()}
+                    </span>
+                </div>
+                <div style="display:flex;gap:0.5rem;">
+                    <input id="quote-input" placeholder="Write your quote..." style="
+                        flex:1;border:1px solid #e0e4e9;border-radius:8px;
+                        padding:0.5rem 0.875rem;font-family:'Crimson Text',serif;
+                        font-size:0.95rem;color:#111827;outline:none;">
+                    <button onclick="submitQuote()" style="
+                        background:#000;color:white;border:none;padding:0.5rem 1rem;
+                        border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;
+                        font-family:'Inter',sans-serif;">Post</button>
+                </div>
+            `;
+        }
+
+        // Start countdown tick
+        if (quoteCountdownInterval) clearInterval(quoteCountdownInterval);
+        quoteCountdownInterval = setInterval(() => {
+            const el = document.getElementById('quote-countdown');
+            if (el) {
+                const secsLeft = Math.floor((slotEnd - new Date()) / 1000);
+                if (secsLeft <= 0) {
+                    clearInterval(quoteCountdownInterval);
+                    loadQuoteOfDay(); // reload for new slot
+                } else {
+                    const mins = Math.floor(secsLeft / 60);
+                    const secs = secsLeft % 60;
+                    el.textContent = `⏱ ${mins}m ${secs}s`;
+                }
+            }
+        }, 1000);
+    }
+
+    renderQuoteBox();
+}
+
+
+
 
 async function submitQuote() {
     const input = document.getElementById('quote-input');
