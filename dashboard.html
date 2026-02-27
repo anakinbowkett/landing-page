@@ -1247,10 +1247,48 @@ nav {
 
     <div class="container">
     <!-- Welcome Box -->
-    <div class="welcome-box">
-        <h1>Welcome back, <span class="highlight" id="welcome-name">Anakin</span></h1>
+    <div class="welcome-box" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding:2rem 2.5rem;">
+        
+        <!-- Left: Name + verified -->
+        <div>
+            <div style="font-size:0.75rem;font-weight:600;color:#6b7280;
+                text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">
+                Welcome back
+            </div>
+            <div style="font-family:'Crimson Text',serif;font-size:2.75rem;font-weight:700;
+                color:#ffffff;letter-spacing:-0.04em;line-height:1.1;
+                display:flex;align-items:center;gap:0.5rem;">
+                <span id="welcome-name">Anakin</span>
+                <span id="welcome-verified" style="display:none;color:#1d9bf0;
+                    font-size:2rem;vertical-align:middle;">✓</span>
+            </div>
+        </div>
+
+        <!-- Right: Stats -->
+        <div style="border-left:1px solid rgba(255,255,255,0.15);
+            padding-left:2rem;display:flex;flex-direction:column;gap:0.5rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <span style="font-size:0.8rem;color:#9ca3af;font-weight:500;min-width:120px;">
+                    Mastery Miles</span>
+                <span style="font-size:0.875rem;font-weight:700;color:#60a5fa;" 
+                    id="welcome-miles">0</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <span style="font-size:0.8rem;color:#9ca3af;font-weight:500;min-width:120px;">
+                    Leaderboard</span>
+                <span style="font-size:0.875rem;font-weight:700;color:#60a5fa;" 
+                    id="welcome-rank">#—</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <span style="font-size:0.8rem;color:#9ca3af;font-weight:500;min-width:120px;">
+                    Day Streak</span>
+                <span style="font-size:0.875rem;font-weight:700;color:#60a5fa;" 
+                    id="welcome-streak">0</span>
+            </div>
+        </div>
     </div>
 
+        
     <!-- Metrics & Leaderboard Container -->
     <div class="metrics-leaderboard-container">
         <!-- Metrics Section -->
