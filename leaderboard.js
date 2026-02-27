@@ -289,11 +289,21 @@ async function handleSteal(victimId, victimName, victimMiles) {
     closeAllDropdowns();
     if (!currentUser) return;
 
-    // Check cooldown
-    if (Date.now() < stealCooldownEnd) {
-        const secsLeft = Math.ceil((stealCooldownEnd - Date.now()) / 1000);
-        showToast(`⏳ Cooldown active! Wait ${secsLeft}s before stealing again.`, '#dc143c');
-        return;
+    // Check cooldown server-side (refresh-proof)
+    const { data: myPresence } = await lb_sb
+        .from('leaderboard_presence')
+        .select('last_steal_time')
+        .eq('user_id', currentUser.id)
+        .single();
+
+    if (myPresence?.last_steal_time) {
+        const lastSteal = new Date(myPresence.last_steal_time).getTime();
+        const secsLeft = Math.ceil((lastSteal + 60000 - Date.now()) / 1000);
+        if (secsLeft > 0) {
+            showToast(`⏳ Cooldown active! Wait ${secsLeft}s before stealing again.`, '#dc143c');
+            startCooldownTimer(secsLeft);
+            return;
+        }
     }
 
     const myEntry = leaderboardData.find(u => u.user_id === currentUser.id);
@@ -356,7 +366,10 @@ async function handleSteal(victimId, victimName, victimMiles) {
         }).eq('id', currentUser.id);
 
         showToast(`✅ You stole ${milesStolen.toLocaleString()} miles from ${victimName}!`, '#059669');
-        // Start 60 second cooldown
+        // Store cooldown server-side so refresh can't bypass it
+        await lb_sb.from('leaderboard_presence').update({
+            last_steal_time: new Date().toISOString()
+        }).eq('user_id', currentUser.id);
         stealCooldownEnd = Date.now() + 60000;
         startCooldownTimer();
         currentProfile.mastery_miles = myMiles + milesStolen;
@@ -885,11 +898,14 @@ window.handleRaid = handleRaid;
 window.handleDonate = handleDonate;
 
 
-function startCooldownTimer() {
+function startCooldownTimer(initialSecs) {
     if (cooldownTimerInterval) clearInterval(cooldownTimerInterval);
     const timerEl = document.getElementById('steal-cooldown-timer');
     if (!timerEl) return;
     timerEl.style.display = 'inline';
+    if (initialSecs) {
+        stealCooldownEnd = Date.now() + (initialSecs * 1000);
+    }
 
     cooldownTimerInterval = setInterval(() => {
         const secsLeft = Math.ceil((stealCooldownEnd - Date.now()) / 1000);
@@ -1344,13 +1360,30 @@ async function initLeaderboard(user, profile) {
     currentProfile = profile;
 
     await upsertPresence(true);
+    startHeartbeat();
+
+    // Restore cooldown timer if page was refreshed mid-cooldown
+    const { data: myPresence } = await lb_sb
+        .from('leaderboard_presence')
+        .select('last_steal_time')
+        .eq('user_id', currentUser.id)
+        .single();
+
+    if (myPresence?.last_steal_time) {
+        const lastSteal = new Date(myPresence.last_steal_time).getTime();
+        const secsLeft = Math.ceil((lastSteal + 60000 - Date.now()) / 1000);
+        if (secsLeft > 0) {
+            stealCooldownEnd = Date.now() + (secsLeft * 1000);
+            startCooldownTimer();
+        }
+    }
+
     await fetchLeaderboard();
     subscribeRealtime();
     startProdigyDecay();
-    setInterval(pollNotifications, 8000); // poll every 8s
+    setInterval(pollNotifications, 8000);
     await loadQuoteOfDay();
 }
-
 window.initLeaderboard = initLeaderboard;
 
 // CSS animations
