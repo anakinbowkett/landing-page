@@ -2072,13 +2072,28 @@ function updateUserData() {
     document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
     document.querySelector('.streak-badge').textContent = `🔥 ${userData.streak} Day Streak`;
     document.getElementById('streak-metric').textContent = userData.streak;
-    // Sync miles to nav
+
+    // Welcome box stats
+    const welcomeStreak = document.getElementById('welcome-streak');
+    const welcomeMiles = document.getElementById('welcome-miles');
+    const verifiedBadge = document.getElementById('welcome-verified');
+
+    if (welcomeStreak) welcomeStreak.textContent = userData.streak;
+    if (welcomeMiles && userData.miles !== undefined) {
+        welcomeMiles.textContent = Number(userData.miles).toLocaleString();
+    }
+    if (verifiedBadge) {
+        verifiedBadge.style.display = userData.miles >= 250000 ? 'inline' : 'none';
+    }
+
+    // Nav miles
     const milesBadge = document.querySelector('.mastery-miles-badge span');
-    if (milesBadge && userData.miles) {
+    if (milesBadge && userData.miles !== undefined) {
         milesBadge.textContent = Number(userData.miles).toLocaleString();
     }
 }
 
+       
 const userProfileTrigger = document.getElementById('user-profile-trigger');
 const userDropdown = document.getElementById('user-dropdown');
 const signoutBtn = document.getElementById('signout-btn');
