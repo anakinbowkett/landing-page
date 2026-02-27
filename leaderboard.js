@@ -60,13 +60,30 @@ function getLectureEarnRate(rank, prodigyMiles) {
 // ─── Supabase: upsert presence (I'm online) ───────────────
 async function upsertPresence(online) {
     if (!currentUser || !currentProfile) return;
-    await lb_sb.from('leaderboard_presence').upsert({
-        user_id: currentUser.id,
-        user_name: currentProfile.first_name + ' ' + (currentProfile.last_name || '').trim(),
-        mastery_miles: currentProfile.mastery_miles || 0,
-        is_online: online,
-        last_seen: new Date().toISOString()
-    }, { onConflict: 'user_id' });
+    
+    // Check if row exists first
+    const { data: existing } = await lb_sb
+        .from('leaderboard_presence')
+        .select('user_id')
+        .eq('user_id', currentUser.id)
+        .single();
+
+    if (existing) {
+        await lb_sb.from('leaderboard_presence').update({
+            user_name: currentProfile.first_name + ' ' + (currentProfile.last_name || '').trim(),
+            mastery_miles: currentProfile.mastery_miles || 0,
+            is_online: online,
+            last_seen: new Date().toISOString()
+        }).eq('user_id', currentUser.id);
+    } else {
+        await lb_sb.from('leaderboard_presence').insert({
+            user_id: currentUser.id,
+            user_name: currentProfile.first_name + ' ' + (currentProfile.last_name || '').trim(),
+            mastery_miles: currentProfile.mastery_miles || 0,
+            is_online: online,
+            last_seen: new Date().toISOString()
+        });
+    }
 }
 
 // ─── Fetch + sort leaderboard ─────────────────────────────
