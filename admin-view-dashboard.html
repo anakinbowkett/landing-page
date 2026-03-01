@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin View - Ambassador Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f9fafb;
+            min-height: 100vh;
+        }
+        .admin-banner {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-banner h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .close-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .info-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+        }
+        .info-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+        }
+        .table-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+            margin-bottom: 2rem;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            padding: 0.875rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        td {
+            padding: 0.875rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.9375rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.625rem;
+            border-radius: 9999px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-verified { background: #d1fae5; color: #065f46; }
+        .badge-pending { background: #fef3c7; color: #92400e; }
+        .badge-payable { background: #dbeafe; color: #1e40af; }
+        .badge-paid { background: #f3f4f6; color: #6b7280; }
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-banner">
+        <h1>🔍 Admin View: <span id="ambassadorNameHeader">Loading...</span></h1>
+        <button class="close-btn" onclick="window.close()">Close View</button>
+    </div>
+
+    <div class="container">
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label">Ambassador Name</div>
+                <div class="info-value" id="fullName">-</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Email</div>
+                <div class="info-value" style="font-size:1rem;" id="email">-</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Referral Code</div>
+                <div class="info-value" id="referralCode">-</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Total Payout</div>
+                <div class="info-value">£<span id="totalPayout">0.00</span></div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Verified Signups</div>
+                <div class="info-value" id="verifiedSignups">0</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Active Subscribers</div>
+                <div class="info-value" id="activeSubscribers">0</div>
+            </div>
+        </div>
+
+        <div class="table-section">
+            <h2 style="margin-bottom:1.5rem; font-size:1.25rem;">Waitlist Signups (Phase 1)</h2>
+            <div id="waitlistTable" class="loading">Loading...</div>
+        </div>
+
+        <div class="table-section">
+            <h2 style="margin-bottom:1.5rem; font-size:1.25rem;">Active Subscriptions (Phase 2)</h2>
+            <div id="subscriptionsTable" class="loading">Loading...</div>
+        </div>
+    </div>
+
+    <script>
+        async function loadAmbassadorData() {
+            const ambassadorId = sessionStorage.getItem('admin_view_ambassador_id');
+            const ambassadorName = sessionStorage.getItem('admin_view_ambassador_name');
+
+            if (!ambassadorId) {
+                alert('No ambassador selected');
+                window.close();
+                return;
+            }
+
+            document.getElementById('ambassadorNameHeader').textContent = ambassadorName;
+
+            try {
+                const response = await fetch(`/api/admin-view-ambassador?ambassadorId=${ambassadorId}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert('Failed to load data: ' + data.error);
+                    return;
+                }
+
+                // Fill info cards
+                document.getElementById('fullName').textContent = data.firstName + ' ' + data.lastName;
+                document.getElementById('email').textContent = data.email;
+                document.getElementById('referralCode').textContent = data.referralCode;
+                document.getElementById('totalPayout').textContent = data.totalPayout.toFixed(2);
+                document.getElementById('verifiedSignups').textContent = data.phase1.verifiedSignups;
+                document.getElementById('activeSubscribers').textContent = data.phase2.activeSubscriptions;
+
+                // Render waitlist table
+                renderWaitlistTable(data.waitlistCommissions);
+                
+                // Render subscriptions table
+                renderSubscriptionsTable(data.subscriptions);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Network error');
+            }
+        }
+
+        function renderWaitlistTable(commissions) {
+            const container = document.getElementById('waitlistTable');
+            
+            if (!commissions || commissions.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#9ca3af; padding:2rem;">No waitlist signups yet</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Signed Up</th>
+                            <th>Verified</th>
+                            <th>Status</th>
+                            <th>Payable Date</th>
+                            <th>Commission</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${commissions.map(c => `
+                            <tr>
+                                <td>${c.waitlist_email}</td>
+                                <td>${new Date(c.created_at).toLocaleString('en-GB')}</td>
+                                <td>${c.verified ? '✅' : '❌'}</td>
+                                <td><span class="badge badge-${c.status}">${c.status}</span></td>
+                                <td>${c.payable_date ? new Date(c.payable_date).toLocaleDateString('en-GB') : '—'}</td>
+                                <td>£${parseFloat(c.commission_amount).toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function renderSubscriptionsTable(subscriptions) {
+            const container = document.getElementById('subscriptionsTable');
+            
+            if (!subscriptions || subscriptions.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#9ca3af; padding:2rem;">No active subscriptions yet</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer Email</th>
+                            <th>Started</th>
+                            <th>Monthly Commission</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${subscriptions.map(s => `
+                            <tr>
+                                <td>${s.customer_email}</td>
+                                <td>${new Date(s.created_at).toLocaleDateString('en-GB')}</td>
+                                <td>£${parseFloat(s.commission_amount).toFixed(2)}</td>
+                                <td><span class="badge badge-${s.is_active ? 'verified' : 'paid'}">${s.is_active ? 'Active' : 'Inactive'}</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Load on page load
+        document.addEventListener('DOMContentLoaded', loadAmbassadorData);
+    </script>
+</body>
+</html>
