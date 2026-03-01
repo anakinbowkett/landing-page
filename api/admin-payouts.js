@@ -6,6 +6,66 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
+  export default async function handler(req, res) {
+  // Admin view ambassador - NEW
+  if (req.query.ambassadorId && !req.query.password) {
+    const { ambassadorId } = req.query;
+
+    try {
+      const { data: ambassador } = await supabase
+        .from('ambassadors')
+        .select('*')
+        .eq('id', ambassadorId)
+        .single();
+
+      if (!ambassador) {
+        return res.status(404).json({ error: 'Ambassador not found' });
+      }
+
+      const { data: waitlistCommissions } = await supabase
+        .from('waitlist_commissions')
+        .select('*')
+        .eq('ambassador_id', ambassadorId)
+        .order('created_at', { ascending: false });
+
+      const { data: subscriptions } = await supabase
+        .from('monthly_commissions')
+        .select('*')
+        .eq('ambassador_id', ambassadorId)
+        .order('created_at', { ascending: false });
+
+      const verifiedSignups = waitlistCommissions?.filter(c => c.verified).length || 0;
+      const phase1Earnings = verifiedSignups * 0.50;
+      const activeSubscriptions = subscriptions?.filter(s => s.is_active).length || 0;
+      const phase2Earnings = activeSubscriptions * 2.00;
+      const totalPayout = phase1Earnings + phase2Earnings;
+
+      return res.status(200).json({
+        id: ambassador.id,
+        firstName: ambassador.first_name,
+        lastName: ambassador.last_name,
+        email: ambassador.email,
+        referralCode: ambassador.referral_code,
+        totalPayout: totalPayout,
+        phase1: {
+          totalSignups: waitlistCommissions?.length || 0,
+          verifiedSignups: verifiedSignups,
+          earnings: phase1Earnings
+        },
+        phase2: {
+          activeSubscriptions: activeSubscriptions,
+          earnings: phase2Earnings
+        },
+        waitlistCommissions: waitlistCommissions || [],
+        subscriptions: subscriptions || []
+      });
+
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  // Original admin-payouts logic continues below...
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
