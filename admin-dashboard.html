@@ -606,6 +606,7 @@
                             <th>Total</th>
                             <th>Paid</th>
                             <th>Receipt</th>
+                            <th>View</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -642,10 +643,19 @@
                                         <button 
                                             class="receipt-btn" 
                                             onclick="generateReceipt('${p.ambassadorId}', '${p.name}')"
-                                            style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.8125rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s;"
-                                            onmouseover="this.style.transform='translateY(-2px)'"
-                                            onmouseout="this.style.transform='translateY(0)'"
-                                        >
+style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.8125rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s;"
+onmouseover="this.style.transform='translateY(-2px)'"
+onmouseout="this.style.transform='translateY(0)'"
+>
+Generate Receipt
+</button>
+</td>
+<td style="text-align:center;">
+  <button onclick="viewAmbassadorDashboard('${p.ambassadorId}', '${p.name}')" 
+    style="padding:8px 16px; background:linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:13px;">
+    View Dashboard
+  </button>
+</td>
                                             Generate Receipt
                                         </button>
                                     </td>
@@ -740,5 +750,16 @@ async function generateReceipt(ambassadorId, ambassadorName) {
 
 
 </script>
+
+<script>
+function viewAmbassadorDashboard(ambassadorId, ambassadorName) {
+  // Store in sessionStorage so the new page can access it
+  sessionStorage.setItem('admin_view_ambassador_id', ambassadorId);
+  sessionStorage.setItem('admin_view_ambassador_name', ambassadorName);
+  
+  // Open in new tab
+  window.open('/admin-view-dashboard.html', '_blank');
+}
+    
 </body>
 </html>
