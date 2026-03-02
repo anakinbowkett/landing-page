@@ -628,7 +628,9 @@
                             <th>Paid</th>
                             <th>Receipt</th>
                             <th>View</th>
-                        </tr>
+                            <th>PayPal Transaction</th>
+                            <th>Actions</th>
+                            </tr>
                     </thead>
                     <tbody>
                         ${payouts.map(p => {
@@ -675,12 +677,21 @@ Generate Receipt
   <button onclick="viewAmbassadorDashboard('${p.ambassadorId}', '${p.name}')" 
     style="padding:8px 16px; background:linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:13px;">
     View Dashboard
+</button>
+</td>
+<td style="text-align:center;">
+  <input type="text" 
+    id="txn_${p.ambassadorId}" 
+    placeholder="Enter PayPal ID" 
+    style="padding:8px; border:1px solid #e5e7eb; border-radius:6px; width:180px; font-size:13px;">
+</td>
+<td style="text-align:center;">
+  <button onclick="generateAndEmailReceipt('${p.ambassadorId}', '${p.name}', '${p.email}')" 
+    style="padding:8px 16px; background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:13px;">
+    Generate & Email Receipt
   </button>
 </td>
-                                            Generate Receipt
-                                        </button>
-                                    </td>
-                                </tr>
+</tr>
                             `;
                         }).join('')}
                     </tbody>
