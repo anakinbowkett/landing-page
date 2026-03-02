@@ -6,8 +6,8 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
-  export default async function handler(req, res) {
-  // Admin view ambassador - NEW
+  
+    // Admin view ambassador - NEW
   if (req.query.adminView === 'true' && req.query.ambassadorId) {
     const { ambassadorId } = req.query;
 
@@ -64,6 +64,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: error.message });
     }
   }
+  
 
   // Original admin-payouts logic continues below...
   if (req.method !== 'GET') {
