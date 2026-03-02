@@ -8,7 +8,7 @@ const supabase = createClient(
 export default async function handler(req, res) {
   export default async function handler(req, res) {
   // Admin view ambassador - NEW
-  if (req.query.ambassadorId && req.method === 'GET' && !req.query.password) {
+  if (req.query.adminView === 'true' && req.query.ambassadorId) {
     const { ambassadorId } = req.query;
 
     try {
