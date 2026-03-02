@@ -178,6 +178,9 @@
                 document.getElementById('totalPayout').textContent = data.totalPayout.toFixed(2);
                 document.getElementById('verifiedSignups').textContent = data.phase1.verifiedSignups;
                 document.getElementById('activeSubscribers').textContent = data.phase2.activeSubscriptions;
+                // Load admin notes
+document.getElementById('adminNote1').value = data.adminNote1 || '';
+document.getElementById('adminNote2').value = data.adminNote2 || '';
 
                 // Render waitlist table
                 renderWaitlistTable(data.waitlistCommissions);
@@ -261,6 +264,39 @@
 
         // Load on page load
         document.addEventListener('DOMContentLoaded', loadAmbassadorData);
+
+async function saveAdminNotes() {
+    const ambassadorId = sessionStorage.getItem('admin_view_ambassador_id');
+    const note1 = document.getElementById('adminNote1').value;
+    const note2 = document.getElementById('adminNote2').value;
+    
+    try {
+        const response = await fetch('/api/admin-payouts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'saveNotes',
+                ambassadorId: ambassadorId,
+                note1: note1,
+                note2: note2
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            document.getElementById('saveStatus').textContent = 'Saved ✓';
+            setTimeout(() => {
+                document.getElementById('saveStatus').textContent = '';
+            }, 2000);
+        } else {
+            alert('Failed to save: ' + data.error);
+        }
+    } catch (error) {
+        alert('Error saving notes');
+    }
+}
+        
     </script>
 </body>
 </html>
