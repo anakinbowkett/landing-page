@@ -753,13 +753,12 @@ async function generateReceipt(ambassadorId, ambassadorName) {
 
 <script>
 function viewAmbassadorDashboard(ambassadorId, ambassadorName) {
-  // Store in sessionStorage so the new page can access it
   sessionStorage.setItem('admin_view_ambassador_id', ambassadorId);
   sessionStorage.setItem('admin_view_ambassador_name', ambassadorName);
-  
-  // Open in new tab
   window.open('/admin-view-dashboard.html', '_blank');
 }
+</script>
+
     
 </body>
 </html>
