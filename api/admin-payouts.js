@@ -88,6 +88,127 @@ if (req.method === 'POST') {
       return res.status(500).json({ error: error.message });
     }
   }
+}
+
+  // Generate and email receipt
+  if (action === 'generateAndEmailReceipt' && ambassadorId) {
+    const { ambassadorName, ambassadorEmail, paypalTxnId, password } = req.body;
+    
+    if (password !== process.env.ADMIN_PASSWORD) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    try {
+      // Get ambassador data
+      const { data: ambassador } = await supabase
+        .from('ambassadors')
+        .select('*')
+        .eq('id', ambassadorId)
+        .single();
+
+      if (!ambassador) {
+        return res.status(404).json({ error: 'Ambassador not found' });
+      }
+
+      // Calculate payout amounts
+      const { data: waitlistComms } = await supabase
+        .from('waitlist_commissions')
+        .select('*')
+        .eq('ambassador_id', ambassadorId)
+        .eq('status', 'payable');
+
+      const phase1Amount = (waitlistComms?.length || 0) * 0.50;
+      const totalAmount = phase1Amount;
+
+      // Generate receipt number
+      const receiptNumber = 'REC-' + ambassador.referral_code + '-' + Date.now();
+      const paymentDate = new Date(new Date().getFullYear(), new Date().getMonth(), 15);
+
+      // Save to payment history
+      await supabase
+        .from('payment_history')
+        .insert({
+          ambassador_id: ambassadorId,
+          payment_date: paymentDate.toISOString().split('T')[0],
+          amount_paid: totalAmount,
+          paypal_transaction_id: paypalTxnId,
+          phase1_amount: phase1Amount,
+          phase2_amount: 0,
+          receipt_number: receiptNumber,
+          email_sent: false
+        });
+
+      // Update ambassador
+      await supabase
+        .from('ambassadors')
+        .update({
+          last_payout_date: paymentDate.toISOString().split('T')[0],
+          last_payout_amount: totalAmount,
+          paypal_transaction_id: paypalTxnId
+        })
+        .eq('id', ambassadorId);
+
+      // Send email with Resend
+      const emailResponse = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: 'Monturalearn <payments@monturalearn.co.uk>',
+          to: ambassadorEmail,
+          subject: `Payment Receipt - £${totalAmount.toFixed(2)} - ${paymentDate.toLocaleDateString('en-GB', {month: 'long', year: 'numeric'})}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #1d7fe2;">Payment Received ✓</h2>
+              <p>Hi ${ambassador.first_name},</p>
+              <p>Your commission payment has been sent via PayPal!</p>
+              
+              <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <p style="margin: 5px 0;"><strong>Amount Paid:</strong> £${totalAmount.toFixed(2)}</p>
+                <p style="margin: 5px 0;"><strong>Payment Date:</strong> ${paymentDate.toLocaleDateString('en-GB')}</p>
+                <p style="margin: 5px 0;"><strong>Receipt Number:</strong> ${receiptNumber}</p>
+                <p style="margin: 5px 0;"><strong>PayPal Transaction ID:</strong> ${paypalTxnId}</p>
+              </div>
+              
+              <p style="font-size: 14px; color: #6b7280;">Keep this email as proof of payment for your records.</p>
+              
+              <p>Thanks,<br>Monturalearn Team</p>
+            </div>
+          `
+        })
+      });
+
+      const emailData = await emailResponse.json();
+
+      if (!emailResponse.ok) {
+        console.error('Email error:', emailData);
+        return res.status(500).json({ error: 'Failed to send email: ' + emailData.message });
+      }
+
+      // Mark email as sent
+      await supabase
+        .from('payment_history')
+        .update({ email_sent: true })
+        .eq('receipt_number', receiptNumber);
+
+      return res.status(200).json({ 
+        success: true, 
+        receiptNumber: receiptNumber,
+        emailId: emailData.id
+      });
+
+    } catch (error) {
+      console.error('Receipt generation error:', error);
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  // Onboarding saves (existing logic)
+
+
+  
 
   // Onboarding saves (existing logic)
   if (!ambassadorId || !stage) {
