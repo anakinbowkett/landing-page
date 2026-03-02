@@ -791,6 +791,67 @@ function viewAmbassadorDashboard(ambassadorId, ambassadorName) {
 }
 </script>
 
+
+
+<script>
+async function generateAndEmailReceipt(ambassadorId, ambassadorName, ambassadorEmail) {
+    const txnInput = document.getElementById('txn_' + ambassadorId);
+    const paypalTxnId = txnInput.value.trim();
+    
+    if (!paypalTxnId) {
+        alert('Please enter a PayPal Transaction ID first!');
+        txnInput.focus();
+        return;
+    }
+    
+    const btn = event.target;
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    
+    try {
+        const response = await fetch('/api/admin-payouts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'generateAndEmailReceipt',
+                ambassadorId: ambassadorId,
+                ambassadorName: ambassadorName,
+                ambassadorEmail: ambassadorEmail,
+                paypalTxnId: paypalTxnId,
+                password: adminPassword
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            btn.textContent = 'Sent ✓';
+            btn.style.background = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+            txnInput.value = '';
+            
+            alert('Receipt generated and emailed to ' + ambassadorEmail);
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                btn.disabled = false;
+            }, 3000);
+        } else {
+            alert('Error: ' + data.error);
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }
+    } catch (error) {
+        alert('Network error');
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+}
+</script>
+
+
+    
     
 </body>
 </html>
