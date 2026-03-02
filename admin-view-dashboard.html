@@ -163,7 +163,7 @@
             document.getElementById('ambassadorNameHeader').textContent = ambassadorName;
 
             try {
-                const response = await fetch(`/api/admin-payouts?ambassadorId=${ambassadorId}`);
+                const response = await fetch(`/api/admin-payouts?ambassadorId=${ambassadorId}&adminView=true`);
                 const data = await response.json();
 
                 if (!response.ok) {
