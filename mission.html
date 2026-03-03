@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Mission — Monturalearn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            color: #111827;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #f3f4f6;
+            z-index: 50;
+            height: 5rem;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            justify-content: space-between;
+        }
+
+        .nav-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .nav-logo-row img {
+            height: 40px;
+            width: auto;
+        }
+
+        .nav-brand {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .nav-back {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: #111827; }
+
+        /* HERO */
+        .page-hero {
+            padding: 10rem 2rem 5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .page-tag {
+            display: inline-block;
+            background: #eff6ff;
+            color: #1d7fe2;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0.375rem 1rem;
+            border-radius: 9999px;
+            margin-bottom: 1.5rem;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(2.25rem, 5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .page-hero p {
+            font-size: 1.125rem;
+            color: #6b7280;
+            line-height: 1.75;
+        }
+
+        /* CONTENT */
+        .page-content {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 2rem 8rem;
+        }
+
+        .content-block {
+            margin-bottom: 3.5rem;
+        }
+
+        .content-block h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .content-block p {
+            font-size: 1rem;
+            color: #4b5563;
+            line-height: 1.85;
+            margin-bottom: 1rem;
+        }
+
+        .content-block p:last-child { margin-bottom: 0; }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #f3f4f6;
+            margin: 3.5rem 0;
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .stat-box {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.75rem 1.25rem;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-box .num {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1d7fe2;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-box .lbl {
+            font-size: 0.8125rem;
+            color: #6b7280;
+            margin-top: 0.375rem;
+            line-height: 1.4;
+        }
+
+        /* FOOTER */
+        .page-footer {
+            background: #000;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .page-footer p {
+            color: #4b5563;
+            font-size: 0.8125rem;
+        }
+
+        @media (max-width: 640px) {
+            .stat-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo-row">
+        <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="Monturalearn Logo">
+        <span class="nav-brand">Monturalearn</span>
+    </a>
+    <a href="index.html" class="nav-back">← Back to home</a>
+</nav>
+
+<div class="page-hero">
+    <span class="page-tag">Our Mission</span>
+    <h1>Every student deserves to succeed at their GCSEs.</h1>
+    <p>We built Monturalearn because too many students were working hard and still falling short — not because they lacked ability, but because they lacked the right system.</p>
+</div>
+
+<div class="page-content">
+
+    <div class="stat-row">
+        <div class="stat-box">
+            <div class="num">1 in 3</div>
+            <div class="lbl">GCSE students don't achieve a grade 4 in Maths</div>
+        </div>
+        <div class="stat-box">
+            <div class="num">£40+</div>
+            <div class="lbl">Average hourly cost of a private tutor in the UK</div>
+        </div>
+        <div class="stat-box">
+            <div class="num">£0</div>
+            <div class="lbl">Cost to get started on Monturalearn</div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>Why we exist</h2>
+        <p>Private tutoring costs £40–£80 an hour. Revision guides are generic. School moves at the pace of the class, not the individual. The system was never designed for every student to thrive — it was designed for the average.</p>
+        <p>Monturalearn is built differently. We combine interactive lectures, spaced-repetition flashtiles, competitive quizzes, and real past-paper analytics into one platform — personalised to where you are and where you need to be.</p>
+    </div>
+
+    <div class="content-block">
+        <h2>What we believe</h2>
+        <p>We believe every student — regardless of background, school, or starting point — has the ability to master their GCSEs. What changes outcomes isn't raw talent. It's method, consistency, and confidence.</p>
+        <p>Our job is to give every student access to the method. The rest follows.</p>
+    </div>
+
+    <div class="content-block">
+        <h2>Our promise</h2>
+        <p>We don't believe in charging students more than we need to. We don't believe in locking core revision behind paywalls. And we don't believe in content that wastes your time.</p>
+        <p>Everything on Monturalearn is built to be efficient, effective, and honest. If it doesn't help you get a better grade, it doesn't belong on the platform.</p>
+    </div>
+
+    <div class="content-block">
+        <h2>Where we're going</h2>
+        <p>We launched with GCSE Maths. Over time, we're expanding to cover every major GCSE subject across all UK exam boards — building the most comprehensive and affordable GCSE platform in the country.</p>
+        <p>We're just getting started.</p>
+    </div>
+
+</div>
+
+<footer class="page-footer">
+    <p>© 2025 Monturalearn Ltd. All rights reserved. Registered in England &amp; Wales.</p>
+</footer>
+
+</body>
+</html>
