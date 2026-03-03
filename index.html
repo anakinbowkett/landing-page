@@ -2921,7 +2921,220 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+<style>
+/* =============================================
+   FOOTER
+   ============================================= */
+.site-footer {
+    background: #000000;
+    padding: 5rem 2rem 2rem;
+    font-family: 'Inter', sans-serif;
+}
 
+.footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 220px repeat(4, 1fr);
+    gap: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.footer-logo-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.footer-logo-img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+
+.footer-brand-name {
+    color: #ffffff;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.footer-tagline {
+    color: #6b7280;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+}
+
+.footer-col h4 {
+    color: #ffffff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1.25rem;
+}
+
+.footer-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.footer-col ul li a {
+    color: #9ca3af;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+    line-height: 1.4;
+}
+
+.footer-col ul li a:hover {
+    color: #ffffff;
+}
+
+.footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer-bottom-left {
+    color: #4b5563;
+    font-size: 0.8125rem;
+}
+
+.footer-bottom-right {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-bottom-right a {
+    color: #4b5563;
+    font-size: 0.8125rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-bottom-right a:hover {
+    color: #9ca3af;
+}
+
+@media (max-width: 1024px) {
+    .footer-top {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+    }
+    .footer-brand {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .site-footer {
+        padding: 3.5rem 1.25rem 1.5rem;
+    }
+    .footer-top {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 400px) {
+    .footer-top {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<footer class="site-footer">
+    <div class="footer-inner">
+
+        <div class="footer-top">
+
+            <div class="footer-brand">
+                <div class="footer-logo-row">
+                    <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="Monturalearn Logo" class="footer-logo-img">
+                    <span class="footer-brand-name">Monturalearn</span>
+                </div>
+                <p class="footer-tagline">The all-inclusive GCSE learning platform.<br>One mission: your success.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a href="signup.html">Get started free</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="syllabus.html">Syllabus tracker</a></li>
+                    <li><a href="leaderboard.html">Leaderboard</a></li>
+                    <li><a href="lectures/">Lectures</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="mission.html">Mission statement</a></li>
+                    <li><a href="media.html">Media &amp; press</a></li>
+                    <li><a href="ambassador-signup.html">Ambassador programme</a></li>
+                    <li><a href="procurement.html">Procurement</a></li>
+                    <li><a href="mailto:hello@monturalearn.com">Contact us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="safety.html">Safety &amp; wellbeing</a></li>
+                    <li><a href="accessibility.html">Accessibility</a></li>
+                    <li><a href="mailto:support@monturalearn.com">Help centre</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="terms.html">Terms &amp; conditions</a></li>
+                    <li><a href="privacy.html">Privacy policy</a></li>
+                    <li><a href="cookies.html">Cookie policy</a></li>
+                    <li><a href="refund.html">Refund policy</a></li>
+                    <li><a href="safeguarding.html">Safeguarding policy</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <span class="footer-bottom-left">© 2025 Monturalearn Ltd. All rights reserved. Registered in England &amp; Wales.</span>
+            <div class="footer-bottom-right">
+                <a href="terms.html">Terms</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="cookies.html">Cookies</a>
+                <a href="sitemap.html">Sitemap</a>
+            </div>
+        </div>
+
+    </div>
+</footer>
 
 
 
@@ -3369,6 +3582,7 @@ window.handleWaitlistSubmit = async function() {
       
 </body>
 </html>
+
 
 
 
