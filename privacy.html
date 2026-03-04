@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — Monturalearn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #e5e7eb;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: rgba(10,10,10,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #1f1f1f;
+            z-index: 50;
+            height: 5rem;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            justify-content: space-between;
+        }
+
+        .nav-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .nav-logo-row img { height: 40px; width: auto; }
+
+        .nav-brand {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .nav-back {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: #e5e7eb; }
+
+        .page-hero {
+            padding: 12rem 2rem 6rem;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .page-tag {
+            display: inline-block;
+            background: #1a1a1a;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.375rem 1rem;
+            border-radius: 9999px;
+            border: 1px solid #2a2a2a;
+            margin-bottom: 2rem;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            line-height: 1.08;
+            color: #ffffff;
+            margin-bottom: 1.75rem;
+            letter-spacing: -0.03em;
+        }
+
+        .page-hero p {
+            font-size: 1rem;
+            color: #6b7280;
+            line-height: 1.75;
+            max-width: 580px;
+        }
+
+        .page-content {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 2rem 10rem;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #1f1f1f;
+            margin: 3.5rem 0;
+        }
+
+        .content-block {
+            margin-bottom: 3.5rem;
+        }
+
+        .content-block h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .content-block p {
+            font-size: 0.9375rem;
+            color: #9ca3af;
+            line-height: 1.85;
+            margin-bottom: 1rem;
+        }
+
+        .content-block p:last-child { margin-bottom: 0; }
+
+        .content-block a {
+            color: #e5e7eb;
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color 0.2s;
+        }
+
+        .content-block a:hover { color: #ffffff; }
+
+        .content-block ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+            margin-top: 0.75rem;
+        }
+
+        .content-block ul li {
+            font-size: 0.9375rem;
+            color: #9ca3af;
+            line-height: 1.7;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .content-block ul li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: #3a3a3a;
+        }
+
+        .last-updated {
+            font-size: 0.8125rem;
+            color: #4b5563;
+            margin-bottom: 3rem;
+        }
+
+        .highlight-card {
+            background: #111111;
+            border: 1px solid #1f1f1f;
+            border-left: 3px solid #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .highlight-card p {
+            font-size: 0.9375rem;
+            color: #9ca3af;
+            line-height: 1.75;
+        }
+
+        .highlight-card a {
+            color: #e5e7eb;
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .page-footer {
+            background: #000;
+            border-top: 1px solid #1a1a1a;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .page-footer p {
+            color: #4b5563;
+            font-size: 0.8125rem;
+        }
+
+        @media (max-width: 640px) {
+            .page-hero { padding: 9rem 1.5rem 4rem; }
+            .page-content { padding: 0 1.5rem 6rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo-row">
+        <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="Monturalearn Logo">
+        <span class="nav-brand">Monturalearn</span>
+    </a>
+    <a href="index.html" class="nav-back">← Back to home</a>
+</nav>
+
+<div class="page-hero">
+    <span class="page-tag">Legal</span>
+    <h1>Privacy Policy</h1>
+    <p>We believe privacy is a right, not a feature. Here is exactly what data we collect, why we collect it, and how we protect it.</p>
+</div>
+
+<div class="page-content">
+
+    <p class="last-updated">Last updated: March 2025</p>
+
+    <div class="highlight-card">
+        <p>Monturalearn is used primarily by students under 18. We take the privacy of young people extremely seriously and comply fully with the UK GDPR, the Data Protection Act 2018, and the Children's Code (Age Appropriate Design Code).</p>
+    </div>
+
+    <div class="content-block">
+        <h2>1. Who controls your data</h2>
+        <p>Monturalearn Ltd is the data controller for all personal data collected through the platform. If you have any questions about how your data is used, contact us at <a href="mailto:privacy@monturalearn.com">privacy@monturalearn.com</a>.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>2. What data we collect</h2>
+        <p>We collect only what is necessary to provide the service:</p>
+        <ul>
+            <li>Name and email address when you register</li>
+            <li>Year group and exam board preference to personalise your experience</li>
+            <li>Performance data such as quiz scores, flashtile results, and past paper analytics</li>
+            <li>Usage data such as pages visited and time spent on the platform</li>
+            <li>Payment information processed securely via our payment provider — we never store card details directly</li>
+        </ul>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>3. How we use your data</h2>
+        <p>Your data is used to:</p>
+        <ul>
+            <li>Provide and personalise your learning experience</li>
+            <li>Track your progress and generate performance analytics</li>
+            <li>Send you important account and platform updates</li>
+            <li>Improve the platform based on aggregated, anonymised usage patterns</li>
+            <li>Process payments and manage subscriptions</li>
+        </ul>
+        <p>We do not use your data for advertising. We do not sell your data to third parties. Ever.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>4. Legal basis for processing</h2>
+        <p>We process your data under the following legal bases as defined by UK GDPR:</p>
+        <ul>
+            <li>Contract — to deliver the service you signed up for</li>
+            <li>Legitimate interests — to improve the platform and ensure security</li>
+            <li>Legal obligation — where required by law</li>
+            <li>Consent — for optional communications such as marketing emails, which you can withdraw at any time</li>
+        </ul>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>5. Data sharing</h2>
+        <p>We only share your data with third parties where strictly necessary to operate the platform — for example, our payment processor and hosting provider. All third-party processors are contractually required to handle your data securely and in compliance with UK GDPR.</p>
+        <p>We never share your data with advertisers, data brokers, or any party for commercial purposes.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>6. Data retention</h2>
+        <p>We retain your personal data for as long as your account is active. If you delete your account, we will remove your personal data within 30 days, except where we are required by law to retain certain records.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>7. Your rights</h2>
+        <p>Under UK GDPR you have the right to:</p>
+        <ul>
+            <li>Access the personal data we hold about you</li>
+            <li>Request correction of inaccurate data</li>
+            <li>Request deletion of your data</li>
+            <li>Object to or restrict certain processing</li>
+            <li>Data portability — receive your data in a machine-readable format</li>
+            <li>Withdraw consent at any time where processing is based on consent</li>
+        </ul>
+        <p>To exercise any of these rights, email <a href="mailto:privacy@monturalearn.com">privacy@monturalearn.com</a>. We will respond within 30 days.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>8. Cookies</h2>
+        <p>We use cookies to keep you logged in and to understand how the platform is used. For full details, see our <a href="cookies.html">Cookie Policy</a>.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>9. Children's privacy</h2>
+        <p>We take extra care with data belonging to users under 18. We do not use this data for profiling, behavioural advertising, or any purpose beyond delivering and improving the educational service. Parents and guardians may request access to or deletion of their child's data at any time by contacting <a href="mailto:privacy@monturalearn.com">privacy@monturalearn.com</a>.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>10. Changes to this policy</h2>
+        <p>We may update this policy from time to time. We will notify users of any significant changes by email or through the platform. The date at the top of this page reflects when it was last updated.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>11. Contact & complaints</h2>
+        <p>For privacy-related questions, contact <a href="mailto:privacy@monturalearn.com">privacy@monturalearn.com</a>. If you are unsatisfied with our response, you have the right to lodge a complaint with the Information Commissioner's Office (ICO) at <a href="https://ico.org.uk" target="_blank" rel="noopener">ico.org.uk</a>.</p>
+    </div>
+
+</div>
+
+<footer class="page-footer">
+    <p>© 2025 Monturalearn Ltd. All rights reserved. Registered in England &amp; Wales.</p>
+</footer>
+
+</body>
+</html>
