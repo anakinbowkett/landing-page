@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safeguarding Policy — Monturalearn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #e5e7eb;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: rgba(10,10,10,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #1f1f1f;
+            z-index: 50;
+            height: 5rem;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            justify-content: space-between;
+        }
+
+        .nav-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .nav-logo-row img { height: 40px; width: auto; }
+
+        .nav-brand {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .nav-back {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: #e5e7eb; }
+
+        .page-hero {
+            padding: 12rem 2rem 6rem;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .page-tag {
+            display: inline-block;
+            background: #1a1a1a;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.375rem 1rem;
+            border-radius: 9999px;
+            border: 1px solid #2a2a2a;
+            margin-bottom: 2rem;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            line-height: 1.08;
+            color: #ffffff;
+            margin-bottom: 1.75rem;
+            letter-spacing: -0.03em;
+        }
+
+        .page-hero p {
+            font-size: 1rem;
+            color: #6b7280;
+            line-height: 1.75;
+            max-width: 580px;
+        }
+
+        .page-content {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 2rem 10rem;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #1f1f1f;
+            margin: 3.5rem 0;
+        }
+
+        .content-block {
+            margin-bottom: 3.5rem;
+        }
+
+        .content-block h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .content-block p {
+            font-size: 0.9375rem;
+            color: #9ca3af;
+            line-height: 1.85;
+            margin-bottom: 1rem;
+        }
+
+        .content-block p:last-child { margin-bottom: 0; }
+
+        .content-block a {
+            color: #e5e7eb;
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color 0.2s;
+        }
+
+        .content-block a:hover { color: #ffffff; }
+
+        .content-block ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+            margin-top: 0.75rem;
+        }
+
+        .content-block ul li {
+            font-size: 0.9375rem;
+            color: #9ca3af;
+            line-height: 1.7;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .content-block ul li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: #3a3a3a;
+        }
+
+        .last-updated {
+            font-size: 0.8125rem;
+            color: #4b5563;
+            margin-bottom: 3rem;
+        }
+
+        .highlight-card {
+            background: #111111;
+            border: 1px solid #1f1f1f;
+            border-left: 3px solid #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .highlight-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .highlight-card p {
+            font-size: 0.9375rem;
+            color: #9ca3af;
+            line-height: 1.75;
+        }
+
+        .highlight-card a {
+            color: #e5e7eb;
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .page-footer {
+            background: #000;
+            border-top: 1px solid #1a1a1a;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .page-footer p {
+            color: #4b5563;
+            font-size: 0.8125rem;
+        }
+
+        @media (max-width: 640px) {
+            .page-hero { padding: 9rem 1.5rem 4rem; }
+            .page-content { padding: 0 1.5rem 6rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo-row">
+        <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="Monturalearn Logo">
+        <span class="nav-brand">Monturalearn</span>
+    </a>
+    <a href="index.html" class="nav-back">← Back to home</a>
+</nav>
+
+<div class="page-hero">
+    <span class="page-tag">Safeguarding</span>
+    <h1>Safeguarding Policy</h1>
+    <p>Monturalearn is committed to the safety and wellbeing of every young person who uses our platform. This policy sets out how we uphold that commitment.</p>
+</div>
+
+<div class="page-content">
+
+    <p class="last-updated">Last updated: March 2025</p>
+
+    <div class="highlight-card">
+        <h3>Report a concern immediately</h3>
+        <p>If you have an urgent safeguarding concern involving a young person, contact us at <a href="mailto:safety@monturalearn.com">safety@monturalearn.com</a>. In an emergency, always contact the police or emergency services first.</p>
+    </div>
+
+    <div class="content-block">
+        <h2>1. Our commitment</h2>
+        <p>Monturalearn takes the safeguarding of children and young people extremely seriously. We recognise that the welfare of every student using our platform is paramount. This policy applies to all staff, contractors, ambassadors, and anyone acting on behalf of Monturalearn.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>2. Scope</h2>
+        <p>This policy covers all individuals under the age of 18 who interact with Monturalearn's platform, content, or community. It applies across all digital touchpoints including the main platform, email communications, and any social media activity carried out under the Monturalearn brand.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>3. Principles</h2>
+        <p>Our safeguarding approach is built on the following principles:</p>
+        <ul>
+            <li>The welfare of the child is always the primary consideration</li>
+            <li>All young people have the right to be protected from harm regardless of background</li>
+            <li>Safeguarding is everyone's responsibility — not just designated staff</li>
+            <li>Concerns will always be taken seriously and acted upon promptly</li>
+            <li>Confidentiality will be maintained appropriately, but never at the expense of a child's safety</li>
+        </ul>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>4. Platform design safeguards</h2>
+        <p>Monturalearn is designed with young people's safety built in from the ground up:</p>
+        <ul>
+            <li>No open messaging or direct contact between users</li>
+            <li>No advertising or third-party tracking of minors</li>
+            <li>No collection of sensitive personal data beyond what is needed to deliver the service</li>
+            <li>Content is reviewed to ensure it is age-appropriate and educationally sound</li>
+            <li>Ambassador and content creator roles involving minors require parental consent</li>
+        </ul>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>5. Recognising concerns</h2>
+        <p>Anyone associated with Monturalearn who becomes aware of a safeguarding concern — including signs of abuse, exploitation, or a child being at risk — must report it immediately to our safeguarding lead via <a href="mailto:safety@monturalearn.com">safety@monturalearn.com</a>.</p>
+        <p>Concerns should never be ignored or handled informally. All reports are treated confidentially and investigated promptly.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>6. Ambassador and content creator safeguarding</h2>
+        <p>All ambassadors and content creators under the age of 18 must have a parent or guardian complete a consent form before participating. We do not ask minors to produce content that could identify their location, school, or personal details. Parental contact details are held on file for all under-18 participants.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>7. Data and privacy</h2>
+        <p>We handle all data relating to minors in accordance with the UK GDPR, the Data Protection Act 2018, and the ICO's Children's Code. For full details, see our <a href="privacy.html">Privacy Policy</a>.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>8. Policy review</h2>
+        <p>This policy is reviewed at least annually and updated whenever there are changes in legislation, platform features, or best practice guidance. The date at the top of this page reflects the most recent review.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>9. External support</h2>
+        <p>If you are a young person who needs support, please reach out to one of the following organisations:</p>
+        <ul>
+            <li><a href="https://www.childline.org.uk" target="_blank" rel="noopener">Childline</a> — 0800 1111 (free, 24/7)</li>
+            <li><a href="https://www.youngminds.org.uk" target="_blank" rel="noopener">Young Minds</a> — mental health support for young people</li>
+            <li><a href="https://www.nspcc.org.uk" target="_blank" rel="noopener">NSPCC</a> — 0808 800 5000</li>
+        </ul>
+    </div>
+
+    <hr class="divider">
+
+    <div class="content-block">
+        <h2>10. Contact</h2>
+        <p>For all safeguarding matters, contact our designated safeguarding lead at <a href="mailto:safety@monturalearn.com">safety@monturalearn.com</a>. We aim to acknowledge all reports within 24 hours.</p>
+    </div>
+
+</div>
+
+<footer class="page-footer">
+    <p>© 2025 Monturalearn Ltd. All rights reserved. Registered in England &amp; Wales.</p>
+</footer>
+
+</body>
+</html>
