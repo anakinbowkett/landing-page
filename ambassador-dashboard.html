@@ -529,6 +529,28 @@
       <button id="guideSubmit" disabled style="width:100%; padding:16px; background:#cbd5e1; color:#fff; border:none; border-radius:13px; font-size:16px; font-weight:700; cursor:not-allowed;">Complete Onboarding</button>
     </div>
 
+</div>
+
+<!-- Stage 3.5: Referral Link Quiz -->
+<div id="stageQuiz" style="display:none;">
+  <h2 style="color:#1d7fe2; margin-bottom:10px;">📝 Knowledge Check</h2>
+  <p style="color:#6b7280; margin-bottom:20px;">Answer these questions correctly to proceed. One wrong answer resets the quiz.</p>
+  
+  <!-- Progress Bar -->
+  <div style="background:#f3f4f6; height:8px; border-radius:4px; margin-bottom:30px; overflow:hidden;">
+    <div id="quizProgress" style="background:#10b981; height:100%; width:0%; transition:width 0.3s;"></div>
+  </div>
+  
+  <!-- Question Container -->
+  <div id="quizQuestion" style="margin-bottom:30px;">
+    <h3 id="questionText" style="font-size:18px; font-weight:600; margin-bottom:20px; color:#111827;"></h3>
+    <div id="quizOptions" style="display:flex; flex-direction:column; gap:12px;"></div>
+  </div>
+  
+  <div id="quizFeedback" style="padding:16px; border-radius:8px; margin-top:20px; display:none; font-weight:600;"></div>
+</div>
+
+      
     <!-- Stage 4: Welcome -->
     <div id="stage4" style="display:none; text-align:center;">
       <div style="max-width:600px; margin:0 auto;">
@@ -959,9 +981,10 @@ document.getElementById('guideSubmit').addEventListener('click', async function(
   });
   
   if (response.ok) {
-    document.getElementById('stage3').style.display = 'none';
-    document.getElementById('stage4').style.display = 'block';
-  }
+  document.getElementById('stage3').style.display = 'none';
+  document.getElementById('stageQuiz').style.display = 'block';
+  startQuiz();
+}
 });
 
 // Run on page load - AFTER DOM is ready
@@ -974,6 +997,145 @@ window.addEventListener('load', function() {
     setTimeout(checkOnboardingStatus, 1000);
 });
 </script>
+
+
+
+<script>
+// Quiz Data
+const quizQuestions = [
+  {
+    question: "What is the referral link and what does it do?",
+    options: [
+      "A regular link to the Monturalearn homepage that anyone can use",
+      "Your unique tracking link that records which viewers signed up through YOUR content so you can earn commissions",
+      "A link that only works once and then expires after the first click",
+      "A link you can share with friends and family but not on social media"
+    ],
+    correct: 1
+  },
+  {
+    question: "Why is the referral link important for you as a content creator?",
+    options: [
+      "It makes your videos look more professional and credible to viewers",
+      "It's required by law to include links in video descriptions",
+      "It's the ONLY way the system can track which signups came from you. Without it, you cannot earn any commission because there's no proof viewers came from your content.",
+      "It helps Monturalearn count total views across all creators"
+    ],
+    correct: 2
+  },
+  {
+    question: "Where can you find your unique referral link?",
+    options: [
+      "In your Content Creator Dashboard under 'Your Referral Link' section",
+      "In your Content Creator Dashboard under 'Your Referral Link' section",
+      "In your Content Creator Dashboard under 'Your Referral Link' section",
+      "In your Content Creator Dashboard under 'Your Referral Link' section"
+    ],
+    correct: 0 // All correct
+  },
+  {
+    question: "How should YOU use the referral link to ensure you get paid for your work?",
+    options: [
+      "Don't use the referral link, just post content and hope people find Monturalearn",
+      "Copy your referral link from the dashboard and place it ONLY in your video/post description",
+      "Copy your referral link from the dashboard and place it in: (1) EVERY video/post description, (2) your profile bio as a clickable link, AND (3) reply with it when viewers ask for the link in comments",
+      "Copy your referral link and only post it in the comments section, leaving it to hopefully be seen"
+    ],
+    correct: 2
+  },
+  {
+    question: "What happens if you create content about Monturalearn but do NOT include your referral link?",
+    options: [
+      "You can still track some metrics, just not all of them",
+      "Monturalearn will manually credit you with any signups from that video",
+      "You will NOT be able to track ANY metrics and you will NOT be paid because there is no way to verify which viewers clicked YOUR link versus someone else's. No referral link = No commission. Period.",
+      "You'll get 50% of the normal commission as a penalty"
+    ],
+    correct: 2
+  },
+  {
+    question: "Do you understand that if you have not carefully read every line of the Terms & Conditions, Consent Form, and Content Creator Guide, and you do something incorrectly because you didn't read the documents properly, you will not be paid for any related work?",
+    options: [
+      "Yes, I understand that I am responsible for reading all documents thoroughly. Failure to comply with the guidelines due to not reading will result in no payment.",
+      "No, I expect to be paid regardless of whether I read the documents",
+      "I skimmed the documents and that should be good enough",
+      "I'll read them later after I start posting content"
+    ],
+    correct: 0
+  }
+];
+
+let currentQuizQuestion = 0;
+
+function startQuiz() {
+  currentQuizQuestion = 0;
+  document.getElementById('quizProgress').style.width = '0%';
+  showQuizQuestion();
+}
+
+function showQuizQuestion() {
+  const question = quizQuestions[currentQuizQuestion];
+  document.getElementById('questionText').textContent = `Question ${currentQuizQuestion + 1} of ${quizQuestions.length}: ${question.question}`;
+  
+  const optionsContainer = document.getElementById('quizOptions');
+  optionsContainer.innerHTML = '';
+  
+  question.options.forEach((option, index) => {
+    const button = document.createElement('button');
+    button.textContent = option;
+    button.style.cssText = 'padding:16px; background:#f9fafb; border:2px solid #e5e7eb; border-radius:10px; text-align:left; cursor:pointer; font-size:15px; transition:all 0.2s; font-family:inherit;';
+    button.onmouseover = () => button.style.background = '#e0e7ff';
+    button.onmouseout = () => button.style.background = '#f9fafb';
+    button.onclick = () => checkQuizAnswer(index);
+    optionsContainer.appendChild(button);
+  });
+  
+  document.getElementById('quizFeedback').style.display = 'none';
+}
+
+function checkQuizAnswer(selected) {
+  const question = quizQuestions[currentQuizQuestion];
+  const feedback = document.getElementById('quizFeedback');
+  
+  if (selected === question.correct) {
+    // Correct answer
+    feedback.style.display = 'block';
+    feedback.style.background = '#d1fae5';
+    feedback.style.color = '#065f46';
+    feedback.textContent = '✓ Correct!';
+    
+    currentQuizQuestion++;
+    const progress = (currentQuizQuestion / quizQuestions.length) * 100;
+    document.getElementById('quizProgress').style.width = progress + '%';
+    
+    if (currentQuizQuestion >= quizQuestions.length) {
+      // Quiz complete!
+      setTimeout(() => {
+        document.getElementById('stageQuiz').style.display = 'none';
+        document.getElementById('stage4').style.display = 'block';
+      }, 1000);
+    } else {
+      setTimeout(showQuizQuestion, 1000);
+    }
+    
+  } else {
+    // Wrong answer - reset quiz
+    feedback.style.display = 'block';
+    feedback.style.background = '#fee2e2';
+    feedback.style.color = '#991b1b';
+    feedback.textContent = '✗ Incorrect. Quiz reset. Please read the documents carefully and try again.';
+    
+    setTimeout(() => {
+      startQuiz();
+    }, 2500);
+  }
+}
+</script>
+
+    
+
+
+
     
 </body>
 </html>
