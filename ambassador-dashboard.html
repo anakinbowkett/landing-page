@@ -533,21 +533,21 @@
 
 <!-- Stage 3.5: Referral Link Quiz -->
 <div id="stageQuiz" style="display:none;">
-  <h2 style="color:#1d7fe2; margin-bottom:10px;">📝 Knowledge Check</h2>
-  <p style="color:#6b7280; margin-bottom:20px;">Answer these questions correctly to proceed. One wrong answer resets the quiz.</p>
+  <h2 style="color:#1d7fe2; margin-bottom:10px; font-size:24px; font-weight:700;">📝 Knowledge Check</h2>
+  <p style="color:#6b7280; margin-bottom:30px; font-size:15px;">Answer these questions correctly to proceed. One wrong answer resets the quiz.</p>
   
   <!-- Progress Bar -->
-  <div style="background:#f3f4f6; height:8px; border-radius:4px; margin-bottom:30px; overflow:hidden;">
-    <div id="quizProgress" style="background:#10b981; height:100%; width:0%; transition:width 0.3s;"></div>
+  <div style="background:#e5e7eb; height:6px; border-radius:13px; margin-bottom:40px; overflow:hidden;">
+    <div id="quizProgress" style="background:#10b981; height:100%; width:0%; transition:width 0.3s; border-radius:13px;"></div>
   </div>
   
-  <!-- Question Container -->
-  <div id="quizQuestion" style="margin-bottom:30px;">
-    <h3 id="questionText" style="font-size:18px; font-weight:600; margin-bottom:20px; color:#111827;"></h3>
-    <div id="quizOptions" style="display:flex; flex-direction:column; gap:12px;"></div>
+  <!-- Question Card -->
+  <div style="background:#fff; border:2px solid #e5e7eb; border-radius:13px; padding:40px; margin-bottom:30px;">
+    <h3 id="questionText" style="font-size:20px; font-weight:700; margin-bottom:30px; color:#111827; line-height:1.5;"></h3>
+    <div id="quizOptions" style="display:flex; flex-direction:column; gap:16px;"></div>
   </div>
   
-  <div id="quizFeedback" style="padding:16px; border-radius:8px; margin-top:20px; display:none; font-weight:600;"></div>
+  <div id="quizFeedback" style="padding:20px; border-radius:13px; margin-top:20px; display:none; font-weight:600; font-size:16px; text-align:center;"></div>
 </div>
 
       
@@ -1024,15 +1024,15 @@ const quizQuestions = [
     correct: 2
   },
   {
-    question: "Where can you find your unique referral link?",
-    options: [
-      "In your Content Creator Dashboard under 'Your Referral Link' section",
-      "In your Content Creator Dashboard under 'Your Referral Link' section",
-      "In your Content Creator Dashboard under 'Your Referral Link' section",
-      "In your Content Creator Dashboard under 'Your Referral Link' section"
-    ],
-    correct: 0 // All correct
-  },
+  question: "Where can you find your unique referral link?",
+  options: [
+    "In your Content Creator Dashboard under the 'Your Referral Link' section",
+    "In the welcome email you received after signing up",
+    "On the Monturalearn homepage available to everyone",
+    "You have to email support to request your link each time"
+  ],
+  correct: 0
+},
   {
     question: "How should YOU use the referral link to ensure you get paid for your work?",
     options: [
@@ -1083,10 +1083,18 @@ function showQuizQuestion() {
   question.options.forEach((option, index) => {
     const button = document.createElement('button');
     button.textContent = option;
-    button.style.cssText = 'padding:16px; background:#f9fafb; border:2px solid #e5e7eb; border-radius:10px; text-align:left; cursor:pointer; font-size:15px; transition:all 0.2s; font-family:inherit;';
-    button.onmouseover = () => button.style.background = '#e0e7ff';
-    button.onmouseout = () => button.style.background = '#f9fafb';
-    button.onclick = () => checkQuizAnswer(index);
+
+button.style.cssText = 'padding:20px 24px; background:#fff; border:2px solid #e5e7eb; border-radius:13px; text-align:left; cursor:pointer; font-size:16px; transition:all 0.2s; font-family:inherit; font-weight:500; color:#374151; line-height:1.5;';
+button.onmouseover = () => {
+  button.style.background = '#f0f7ff';
+  button.style.borderColor = '#1d7fe2';
+};
+button.onmouseout = () => {
+  button.style.background = '#fff';
+  button.style.borderColor = '#e5e7eb';
+};
+button.onclick = () => checkQuizAnswer(index);
+      
     optionsContainer.appendChild(button);
   });
   
