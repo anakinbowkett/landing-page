@@ -533,43 +533,57 @@
 
 <!-- Stage 3.5: Referral Link Quiz -->
 <div id="stageQuiz" style="display:none;">
-  <h2 style="color:#1d7fe2; margin-bottom:10px; font-size:24px; font-weight:700;">📝 Knowledge Check</h2>
-  <p style="color:#6b7280; margin-bottom:30px; font-size:15px;">Answer these questions correctly to proceed. One wrong answer resets the quiz.</p>
-  
-  <!-- Progress Bar -->
-  <div style="background:#e5e7eb; height:6px; border-radius:13px; margin-bottom:40px; overflow:hidden;">
-    <div id="quizProgress" style="background:#10b981; height:100%; width:0%; transition:width 0.3s; border-radius:13px;"></div>
+  <div style="max-width:700px; margin:0 auto;">
+    <h2 style="color:#1d7fe2; margin-bottom:10px; font-size:24px; font-weight:700; text-align:center;">📝 Knowledge Check</h2>
+    <p style="color:#6b7280; margin-bottom:30px; font-size:15px; text-align:center;">Answer these questions correctly to proceed. One wrong answer resets the quiz.</p>
+    
+    <!-- Question Card with Progress Bar Inside -->
+    <div style="background:#fff; border:2px solid #e5e7eb; border-radius:13px; padding:40px; margin-bottom:30px;">
+      <!-- Progress Bar Inside Card -->
+      <div style="background:#e5e7eb; height:6px; border-radius:13px; margin-bottom:30px; overflow:hidden;">
+        <div id="quizProgress" style="background:#10b981; height:100%; width:0%; transition:width 0.3s; border-radius:13px;"></div>
+      </div>
+      
+      <h3 id="questionText" style="font-size:20px; font-weight:700; margin-bottom:30px; color:#111827; line-height:1.5;"></h3>
+      <div id="quizOptions" style="display:flex; flex-direction:column; gap:16px;"></div>
+    </div>
+    
+    <div id="quizFeedback" style="padding:20px; border-radius:13px; margin-top:20px; display:none; font-weight:600; font-size:16px; text-align:center;"></div>
   </div>
-  
-  <!-- Question Card -->
-  <div style="background:#fff; border:2px solid #e5e7eb; border-radius:13px; padding:40px; margin-bottom:30px;">
-    <h3 id="questionText" style="font-size:20px; font-weight:700; margin-bottom:30px; color:#111827; line-height:1.5;"></h3>
-    <div id="quizOptions" style="display:flex; flex-direction:column; gap:16px;"></div>
-  </div>
-  
-  <div id="quizFeedback" style="padding:20px; border-radius:13px; margin-top:20px; display:none; font-weight:600; font-size:16px; text-align:center;"></div>
 </div>
-
       
     <!-- Stage 4: Welcome -->
-    <div id="stage4" style="display:none; text-align:center;">
-      <div style="max-width:600px; margin:0 auto;">
-        <p style="font-size:17px; line-height:1.8; color:#1f2937; margin-bottom:30px;">
-          I built this for students who are done wasting time on methods that don't work.<br><br>
-          Same goes for those who work twice as hard and yet doesn't move the needle.<br><br>
-          Or for the ones who don't even know where to start because of all the 'revision' and 'homework'.<br><br>
-          The world is cluttered with overpriced, outdated noise.<br><br>
-          By joining us, you've committed to a future where high-end quality education isn't a luxury—it's a standard.<br><br>
-          We don't hope for success, it is the only option, and now that you are now an official partner of Monturalearn, you ensure your name is etched into the foundation of that shift in the efficient and affordable way of learning that's accessible for all.<br><br>
-          No fluff. No endless hours. Just results.
-        </p>
-        
-        <img src="https://i.postimg.cc/5N186cBw/Anakin.jpg" alt="Anakin" style="max-width:150px; margin:20px auto; display:block; border-radius:13px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-
-        <p style="font-size:16px; font-weight:700; color:#111827; margin-top:12px; line-height:1.4;">Anakin<br><span style="font-size:14px; font-weight:400; color:#6b7280;">Founder, Monturalearn</span></p>
-        
-        <a href="https://discord.gg/wsFPvEhsVj" target="_blank" style="display:inline-block; margin-top:30px; padding:16px 40px; background:#5865F2; color:#fff; text-decoration:none; border-radius:13px; font-size:16px; font-weight:700; margin-right:12px;">Join Discord</a>
-<button onclick="closeOnboarding()" style="margin-top:30px; padding:16px 40px; background:#1d7fe2; color:#fff; border:none; border-radius:13px; font-size:16px; font-weight:700; cursor:pointer;">Enter Dashboard</button>
+<div id="stage4" style="display:none;">
+  <div style="max-width:700px; margin:0 auto;">
+    
+    <!-- Welcome Card -->
+    <div style="background:#fff; border:2px solid #e5e7eb; border-radius:13px; padding:50px 40px; text-align:center;">
+      <h2 style="color:#1d7fe2; font-size:28px; font-weight:700; margin-bottom:30px;">🎉 Welcome to Monturalearn!</h2>
+      
+      <p style="font-size:16px; line-height:1.8; color:#374151; margin-bottom:30px; text-align:left;">
+        I built this for students who are done wasting time on methods that don't work.<br><br>
+        Same goes for those who work twice as hard and yet doesn't move the needle.<br><br>
+        Or for the ones who don't even know where to start because of all the 'revision' and 'homework'.<br><br>
+        The world is cluttered with overpriced, outdated noise.<br><br>
+        By joining us, you've committed to a future where high-end quality education isn't a luxury—it's a standard.<br><br>
+        We don't hope for success, it is the only option, and now that you are now an official partner of Monturalearn, you ensure your name is etched into the foundation of that shift in the efficient and affordable way of learning that's accessible for all.<br><br>
+        No fluff. No endless hours. Just results.
+      </p>
+      
+      <img src="https://i.postimg.cc/5N186cBw/Anakin.jpg" alt="Anakin" style="max-width:120px; margin:30px auto 20px; display:block; border-radius:13px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+      
+      <p style="font-size:16px; font-weight:700; color:#111827; margin-bottom:40px;">
+        Anakin<br>
+        <span style="font-size:14px; font-weight:400; color:#6b7280;">Founder, Monturalearn</span>
+      </p>
+      
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <a href="https://discord.gg/wsFPvEhsVj" target="_blank" style="display:inline-block; padding:16px 32px; background:#5865F2; color:#fff; text-decoration:none; border-radius:13px; font-size:16px; font-weight:700;">
+          Join Discord
+        </a>
+        <button onclick="closeOnboarding()" style="padding:16px 32px; background:#1d7fe2; color:#fff; border:none; border-radius:13px; font-size:16px; font-weight:700; cursor:pointer;">
+          Enter Dashboard
+        </button>
       </div>
     </div>
     
