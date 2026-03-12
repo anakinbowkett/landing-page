@@ -387,18 +387,18 @@ try {
 }
 
 function getNextPayoutDate() {
-const today = new Date();
-let payoutMonth = today.getMonth();
-let payoutYear = today.getFullYear();
+  const today = new Date();
+  let payoutMonth = today.getMonth();
+  let payoutYear = today.getFullYear();
 
-if (today.getDate() >= 15) {
-  payoutMonth += 1;
-  if (payoutMonth > 11) {
-    payoutMonth = 0;
-    payoutYear += 1;
+  if (today.getDate() >= 15) {
+    payoutMonth += 1;
+    if (payoutMonth > 11) {
+      payoutMonth = 0;
+      payoutYear += 1;
+    }
   }
-}
 
-const payout = new Date(payoutYear, payoutMonth, 15);
-return payout.toISOString().split('T')[0];
+  const payout = new Date(payoutYear, payoutMonth, 15);
+  return payout.toISOString().split('T')[0];
 }
