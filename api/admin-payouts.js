@@ -7,7 +7,7 @@ const supabase = createClient(
 
 module.exports = async function handler(req, res) {
   
-    // Admin view ambassador - NEW
+  // Admin view ambassador (no password needed)
   if (req.query.adminView === 'true' && req.query.ambassadorId) {
     const { ambassadorId } = req.query;
 
@@ -46,9 +46,9 @@ module.exports = async function handler(req, res) {
         lastName: ambassador.last_name,
         email: ambassador.email,
         referralCode: ambassador.referral_code,
-  adminNote1: ambassador.admin_note_1,
-  adminNote2: ambassador.admin_note_2,
-  totalPayout: totalPayout,
+        adminNote1: ambassador.admin_note_1,
+        adminNote2: ambassador.admin_note_2,
+        totalPayout: totalPayout,
         phase1: {
           totalSignups: waitlistCommissions?.length || 0,
           verifiedSignups: verifiedSignups,
@@ -66,40 +66,45 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: error.message });
     }
   }
-  
 
- // Handle POST requests (notes save + onboarding)
-if (req.method === 'POST') {
-  const { action, ambassadorId, stage, formData, note1, note2 } = req.body;
+  // Handle POST requests
+  if (req.method === 'POST') {
+    const { action, ambassadorId, note1, note2 } = req.body;
 
-  // Save admin notes
-  if (action === 'saveNotes' && ambassadorId) {
-    try {
-      await supabase
-        .from('ambassadors')
-        .update({
-          admin_note_1: note1,
-          admin_note_2: note2
-        })
-        .eq('id', ambassadorId);
+    // Save admin notes
+    if (action === 'saveNotes' && ambassadorId) {
+      try {
+        await supabase
+          .from('ambassadors')
+          .update({
+            admin_note_1: note1,
+            admin_note_2: note2
+          })
+          .eq('id', ambassadorId);
 
-      return res.status(200).json({ success: true });
-    } catch (error) {
-      return res.status(500).json({ error: error.message });
+        return res.status(200).json({ success: true });
+      } catch (error) {
+        return res.status(500).json({ error: error.message });
+      }
     }
+
+    return res.status(400).json({ error: 'Invalid action' });
   }
-}
 
-  // Generate and email receipt
-  if (action === 'generateAndEmailReceipt' && ambassadorId) {
-    const { ambassadorName, ambassadorEmail, paypalTxnId, password } = req.body;
-    
-    if (password !== process.env.ADMIN_PASSWORD) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-    
+  // Handle GET requests (admin payouts - requires password)
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const { password, action, ambassadorId } = req.query;
+
+  if (password !== process.env.ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  // Receipt generation
+  if (action === 'receipt' && ambassadorId) {
     try {
-      // Get ambassador data
       const { data: ambassador } = await supabase
         .from('ambassadors')
         .select('*')
@@ -110,281 +115,89 @@ if (req.method === 'POST') {
         return res.status(404).json({ error: 'Ambassador not found' });
       }
 
-      // Calculate payout amounts
+      const today = new Date();
+      const paymentDate = new Date(today.getFullYear(), today.getMonth(), 15);
+      const receiptNumber = 'REC-' + ambassador.referral_code + '-' + Date.now();
+      const amount = '0.50';
+
+      const receiptHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Payment Receipt</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;padding:60px;max-width:800px;margin:0 auto;background:#fff;color:#1f2937}.header{display:flex;justify-content:space-between;margin-bottom:40px;border-bottom:2px solid #e5e7eb;padding-bottom:30px}.logo h1{font-size:32px;color:#1d7fe2;margin-bottom:8px}.logo p{color:#6b7280;font-size:14px}.badge{background:#10b981;color:#fff;padding:8px 16px;border-radius:6px;font-weight:700;font-size:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:40px}.section h3{font-size:12px;color:#6b7280;margin-bottom:12px;font-weight:700}.section p{line-height:1.8;font-size:15px}.banner{background:linear-gradient(135deg,#1d7fe2,#1e88f5);color:#fff;padding:30px;border-radius:12px;text-align:center;margin-bottom:30px}.banner .label{font-size:14px;opacity:0.9;margin-bottom:8px}.banner .amount{font-size:48px;font-weight:800}table{width:100%;border-collapse:collapse;margin-bottom:30px}thead{background:#f9fafb}th{padding:16px;text-align:left;font-size:12px;color:#6b7280;border-bottom:2px solid #e5e7eb;font-weight:700}td{padding:16px;border-bottom:1px solid #f3f4f6;font-size:15px}.totals{text-align:right;margin-top:30px}.row{display:flex;justify-content:flex-end;gap:60px;padding:12px 0;font-size:15px}.row.final{font-size:20px;font-weight:700;border-top:2px solid #e5e7eb;padding-top:16px;margin-top:16px}.footer{margin-top:50px;padding-top:30px;border-top:1px solid #e5e7eb;text-align:center;color:#6b7280;font-size:13px}</style></head><body><div class="header"><div class="logo"><h1>Monturalearn</h1><p>monturalearn@gmail.com</p></div><div class="badge">PAYMENT RECEIPT</div></div><div class="grid"><div class="section"><h3>RECEIPT DETAILS</h3><p><strong>Receipt Number:</strong> ' + receiptNumber + '<br><strong>Invoice Number:</strong> ' + (ambassador.invoice_number || 'N/A') + '<br><strong>Date Paid:</strong> ' + paymentDate.toLocaleDateString('en-GB',{day:"numeric",month:"long",year:"numeric"}) + '<br><strong>Payment Method:</strong> PayPal</p></div><div class="section"><h3>PAY TO</h3><p><strong>' + ambassador.first_name + ' ' + ambassador.last_name + '</strong><br>' + (ambassador.email || '') + '</p></div></div><div class="banner"><div class="label">Amount Paid on ' + paymentDate.toLocaleDateString('en-GB',{day:"numeric",month:"long",year:"numeric"}) + '</div><div class="amount">£' + amount + '</div></div><table><thead><tr><th>Description</th><th style="text-align:right">To Pay</th></tr></thead><tbody><tr><td><strong>Monturalearn UGC Creator Commission</strong><br><span style="color:#6b7280;font-size:14px">Joined: ' + new Date(ambassador.joined_at).toLocaleDateString('en-GB',{day:"numeric",month:"long",year:"numeric"}) + '</span></td><td style="text-align:right;font-weight:600">£' + amount + '</td></tr></tbody></table><div class="totals"><div class="row"><span>Subtotal:</span><span>£' + amount + '</span></div><div class="row final"><span>Amount Paid:</span><span>£' + amount + '</span></div></div><div class="footer"><p>This receipt confirms payment has been made via PayPal.</p><p>For queries, contact: monturalearn@gmail.com</p></div></body></html>';
+
+      return res.status(200).json({ success: true, receiptHTML });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
+  // Get all ambassadors for payout dashboard
+  try {
+    const { data: ambassadors } = await supabase
+      .from('ambassadors')
+      .select('*')
+      .order('joined_at', { ascending: false });
+
+    if (!ambassadors || ambassadors.length === 0) {
+      return res.status(200).json({
+        totalAmbassadors: 0,
+        totalPayoutAmount: 0,
+        payouts: []
+      });
+    }
+
+    const payoutData = [];
+
+    for (const amb of ambassadors) {
       const { data: waitlistComms } = await supabase
         .from('waitlist_commissions')
         .select('*')
-        .eq('ambassador_id', ambassadorId)
+        .eq('ambassador_id', amb.id)
         .eq('status', 'payable');
 
-      const phase1Amount = (waitlistComms?.length || 0) * 0.50;
-      const totalAmount = phase1Amount;
+      const { data: subComms } = await supabase
+        .from('monthly_commissions')
+        .select('*')
+        .eq('ambassador_id', amb.id)
+        .eq('is_active', true);
 
-      // Generate receipt number
-      const receiptNumber = 'REC-' + ambassador.referral_code + '-' + Date.now();
-      const paymentDate = new Date(new Date().getFullYear(), new Date().getMonth(), 15);
+      const phase1Count = waitlistComms?.length || 0;
+      const phase2Count = subComms?.length || 0;
+      const phase1Total = phase1Count * 0.50;
+      const phase2Total = phase2Count * 2.00;
+      const totalPayout = phase1Total + phase2Total;
 
-      // Save to payment history
-      await supabase
-        .from('payment_history')
-        .insert({
-          ambassador_id: ambassadorId,
-          payment_date: paymentDate.toISOString().split('T')[0],
-          amount_paid: totalAmount,
-          paypal_transaction_id: paypalTxnId,
-          phase1_amount: phase1Amount,
-          phase2_amount: 0,
-          receipt_number: receiptNumber,
-          email_sent: false
+      if (totalPayout >= 0) {
+        payoutData.push({
+          ambassadorId: amb.id,
+          name: `${amb.first_name} ${amb.last_name}`,
+          email: amb.email,
+          referralCode: amb.referral_code,
+          phase1Signups: phase1Count,
+          phase1Total: phase1Total,
+          phase2Subscribers: phase2Count,
+          phase2Total: phase2Total,
+          totalPayout: totalPayout,
+          payoutMethod: 'PayPal',
+          paypalEmail: amb.email
         });
-
-      // Update ambassador
-      await supabase
-        .from('ambassadors')
-        .update({
-          last_payout_date: paymentDate.toISOString().split('T')[0],
-          last_payout_amount: totalAmount,
-          paypal_transaction_id: paypalTxnId
-        })
-        .eq('id', ambassadorId);
-
-      // Send email with Resend
-      const emailResponse = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          from: 'Monturalearn <payments@monturalearn.co.uk>',
-          to: ambassadorEmail,
-          subject: `Payment Receipt - £${totalAmount.toFixed(2)} - ${paymentDate.toLocaleDateString('en-GB', {month: 'long', year: 'numeric'})}`,
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h2 style="color: #1d7fe2;">Payment Received ✓</h2>
-              <p>Hi ${ambassador.first_name},</p>
-              <p>Your commission payment has been sent via PayPal!</p>
-              
-              <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <p style="margin: 5px 0;"><strong>Amount Paid:</strong> £${totalAmount.toFixed(2)}</p>
-                <p style="margin: 5px 0;"><strong>Payment Date:</strong> ${paymentDate.toLocaleDateString('en-GB')}</p>
-                <p style="margin: 5px 0;"><strong>Receipt Number:</strong> ${receiptNumber}</p>
-                <p style="margin: 5px 0;"><strong>PayPal Transaction ID:</strong> ${paypalTxnId}</p>
-              </div>
-              
-              <p style="font-size: 14px; color: #6b7280;">Keep this email as proof of payment for your records.</p>
-              
-              <p>Thanks,<br>Monturalearn Team</p>
-            </div>
-          `
-        })
-      });
-
-      const emailData = await emailResponse.json();
-
-      if (!emailResponse.ok) {
-        console.error('Email error:', emailData);
-        return res.status(500).json({ error: 'Failed to send email: ' + emailData.message });
       }
-
-      // Mark email as sent
-      await supabase
-        .from('payment_history')
-        .update({ email_sent: true })
-        .eq('receipt_number', receiptNumber);
-
-      return res.status(200).json({ 
-        success: true, 
-        receiptNumber: receiptNumber,
-        emailId: emailData.id
-      });
-
-    } catch (error) {
-      console.error('Receipt generation error:', error);
-      return res.status(500).json({ error: error.message });
-    }
-  }
-
-  // Onboarding saves (existing logic)
-
-
-  
-
-  // Onboarding saves (existing logic)
-  if (!ambassadorId || !stage) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-
-  try {
-    if (stage === 'terms') {
-      await supabase
-        .from('ambassadors')
-        .update({ 
-          accepted_terms: true,
-          terms_accepted_at: new Date().toISOString()
-        })
-        .eq('id', ambassadorId);
-
-      await supabase
-        .from('ambassador_documents')
-        .upsert({
-          ambassador_id: ambassadorId,
-          terms_full_name: formData.fullName,
-          terms_parent_guardian_name: formData.parentName,
-          terms_signature: formData.signature,
-          terms_date: formData.date,
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'ambassador_id' });
-
-    } else if (stage === 'consent') {
-      await supabase
-        .from('ambassadors')
-        .update({ 
-          accepted_consent: true,
-          consent_accepted_at: new Date().toISOString()
-        })
-        .eq('id', ambassadorId);
-
-      await supabase
-        .from('ambassador_documents')
-        .upsert({
-          ambassador_id: ambassadorId,
-          consent_parent_name: formData.parentName,
-          consent_relationship: formData.relationship,
-          consent_parent_email: formData.parentEmail,
-          consent_parent_phone: formData.parentPhone,
-          consent_participant_name: formData.participantName,
-          consent_participant_dob: formData.participantDob,
-          consent_signature: formData.signature,
-          consent_date: formData.date,
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'ambassador_id' });
-
-    } else if (stage === 'guide') {
-      await supabase
-        .from('ambassadors')
-        .update({ 
-          accepted_guide: true,
-          guide_accepted_at: new Date().toISOString(),
-          onboarding_completed: true
-        })
-        .eq('id', ambassadorId);
     }
 
-    return res.status(200).json({ success: true });
+    payoutData.sort((a, b) => b.totalPayout - a.totalPayout);
+
+    return res.status(200).json({
+      totalAmbassadors: payoutData.length,
+      totalPayoutAmount: payoutData.reduce((sum, p) => sum + p.totalPayout, 0),
+      phase1Total: payoutData.reduce((sum, p) => sum + p.phase1Total, 0),
+      phase2Total: payoutData.reduce((sum, p) => sum + p.phase2Total, 0),
+      generatedAt: new Date().toISOString(),
+      nextPayoutDate: getNextPayoutDate(),
+      payouts: payoutData
+    });
 
   } catch (error) {
-    console.error('Onboarding save error:', error);
-    return res.status(500).json({ error: 'Failed to save' });
+    console.error('Admin error:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
-}
-
-// Handle GET requests (admin payouts)
-if (req.method !== 'GET') {
-  return res.status(405).json({ error: 'Method not allowed' });
-}
-
-const { password, action, ambassadorId } = req.query;
-
-if (password !== process.env.ADMIN_PASSWORD) {
-  return res.status(401).json({ error: 'Unauthorized' });
-}
-
-// Receipt generation
-if (action === 'receipt' && ambassadorId) {
-  try {
-    const { data: ambassador } = await supabase
-      .from('ambassadors')
-      .select('*')
-      .eq('id', ambassadorId)
-      .single();
-
-    if (!ambassador) {
-      return res.status(404).json({ error: 'Ambassador not found' });
-    }
-
-    const today = new Date();
-    const paymentDate = new Date(today.getFullYear(), today.getMonth(), 15);
-    const receiptNumber = 'REC-' + ambassador.referral_code + '-' + Date.now();
-    const amount = '0.50';
-
-    const receiptHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Payment Receipt</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;padding:60px;max-width:800px;margin:0 auto;background:#fff;color:#1f2937}.header{display:flex;justify-content:space-between;margin-bottom:40px;border-bottom:2px solid #e5e7eb;padding-bottom:30px}.logo h1{font-size:32px;color:#1d7fe2;margin-bottom:8px}.logo p{color:#6b7280;font-size:14px}.badge{background:#10b981;color:#fff;padding:8px 16px;border-radius:6px;font-weight:700;font-size:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:40px}.section h3{font-size:12px;color:#6b7280;margin-bottom:12px;font-weight:700}.section p{line-height:1.8;font-size:15px}.banner{background:linear-gradient(135deg,#1d7fe2,#1e88f5);color:#fff;padding:30px;border-radius:12px;text-align:center;margin-bottom:30px}.banner .label{font-size:14px;opacity:0.9;margin-bottom:8px}.banner .amount{font-size:48px;font-weight:800}table{width:100%;border-collapse:collapse;margin-bottom:30px}thead{background:#f9fafb}th{padding:16px;text-align:left;font-size:12px;color:#6b7280;border-bottom:2px solid #e5e7eb;font-weight:700}td{padding:16px;border-bottom:1px solid #f3f4f6;font-size:15px}.totals{text-align:right;margin-top:30px}.row{display:flex;justify-content:flex-end;gap:60px;padding:12px 0;font-size:15px}.row.final{font-size:20px;font-weight:700;border-top:2px solid #e5e7eb;padding-top:16px;margin-top:16px}.footer{margin-top:50px;padding-top:30px;border-top:1px solid #e5e7eb;text-align:center;color:#6b7280;font-size:13px}</style></head><body><div class="header"><div class="logo"><h1>Monturalearn</h1><p>monturalearn@gmail.com</p></div><div class="badge">PAYMENT RECEIPT</div></div><div class="grid"><div class="section"><h3>RECEIPT DETAILS</h3><p><strong>Receipt Number:</strong> ' + receiptNumber + '<br><strong>Invoice Number:</strong> ' + (ambassador.invoice_number || 'N/A') + '<br><strong>Date Paid:</strong> ' + paymentDate.toLocaleDateString('en-GB',{day:"numeric",month:"long",year:"numeric"}) + '<br><strong>Payment Method:</strong> PayPal</p></div><div class="section"><h3>PAY TO</h3><p><strong>' + ambassador.first_name + ' ' + ambassador.last_name + '</strong><br>' + (ambassador.address_line1 || '') + '<br>' + (ambassador.address_line2 ? ambassador.address_line2 + '<br>' : '') + (ambassador.city || '') + ', ' + (ambassador.postcode || '') + '<br>United Kingdom<br>' + ambassador.email + '</p></div></div><div class="banner"><div class="label">Amount Paid on ' + paymentDate.toLocaleDateString('en-GB',{day:"numeric",month:"long",year:"numeric"}) + '</div><div class="amount">£' + amount + '</div></div><table><thead><tr><th>Description</th><th style="text-align:right">To Pay</th></tr></thead><tbody><tr><td><strong>Monturalearn Startup Circle UGC Creator</strong><br><span style="color:#6b7280;font-size:14px">Joined: ' + new Date(ambassador.joined_at).toLocaleDateString('en-GB',{day:"numeric",month:"long",year:"numeric"}) + '</span></td><td style="text-align:right;font-weight:600">£' + amount + '</td></tr></tbody></table><div class="totals"><div class="row"><span>Subtotal:</span><span>£' + amount + '</span></div><div class="row final"><span>Amount Paid:</span><span>£' + amount + '</span></div></div><div class="footer"><p>This receipt confirms payment has been made via PayPal.</p><p>For any queries, contact: monturalearn@gmail.com</p></div></body></html>';
-
-    return res.status(200).json({ success: true, receiptHTML });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-}
-
-// Get all ambassadors for payout dashboard
-try {
-  const { data: ambassadors } = await supabase
-    .from('ambassadors')
-    .select('*')
-    .order('joined_at', { ascending: false });
-
-  if (!ambassadors || ambassadors.length === 0) {
-    return res.status(200).json({
-      error: 'No ambassadors found',
-      ambassadorCount: 0
-    });
-  }
-
-  const payoutData = [];
-
-  for (const amb of ambassadors) {
-    const { data: waitlistComms } = await supabase
-      .from('waitlist_commissions')
-      .select('*')
-      .eq('ambassador_id', amb.id)
-      .eq('status', 'payable');
-
-    const { data: subComms } = await supabase
-      .from('monthly_commissions')
-      .select('*')
-      .eq('ambassador_id', amb.id)
-      .eq('is_active', true);
-
-    const phase1Count = waitlistComms?.length || 0;
-    const phase2Count = subComms?.length || 0;
-    const phase1Total = phase1Count * 0.50;
-    const phase2Total = phase2Count * 2.00;
-    const totalPayout = phase1Total + phase2Total;
-
-    if (totalPayout >= 0) {
-      payoutData.push({
-        ambassadorId: amb.id,
-        name: `${amb.first_name} ${amb.last_name}`,
-        email: amb.email,
-        referralCode: amb.referral_code,
-        phase1Signups: phase1Count,
-        phase1Total: phase1Total,
-        phase2Subscribers: phase2Count,
-        phase2Total: phase2Total,
-        totalPayout: totalPayout,
-        payoutMethod: 'PayPal',
-        paypalEmail: amb.email
-      });
-    }
-  }
-
-  payoutData.sort((a, b) => b.totalPayout - a.totalPayout);
-
-  return res.status(200).json({
-    totalAmbassadors: payoutData.length,
-    totalPayoutAmount: payoutData.reduce((sum, p) => sum + p.totalPayout, 0),
-    phase1Total: payoutData.reduce((sum, p) => sum + p.phase1Total, 0),
-    phase2Total: payoutData.reduce((sum, p) => sum + p.phase2Total, 0),
-    generatedAt: new Date().toISOString(),
-    nextPayoutDate: getNextPayoutDate(),
-    payouts: payoutData
-  });
-
-} catch (error) {
-  console.error('Admin error:', error);
-  return res.status(500).json({ error: 'Internal server error' });
-}
-}
+};
 
 function getNextPayoutDate() {
   const today = new Date();
