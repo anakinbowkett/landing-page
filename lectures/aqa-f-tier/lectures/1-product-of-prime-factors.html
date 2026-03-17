@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
 <style>
 :root{
   --bg:#ffffff;
@@ -792,7 +792,181 @@ html,body{
   color: white;
   font-size: 10px;
 }
-</style>
+  
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #f0f2f5; position: relative; padding: 32px; }
+#g-nav-launcher { position: fixed; top: 24px; left: 24px; z-index: 1000; width: 44px; height: 44px; background: white; border: 1.5px solid #e5e7eb; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.10); transition: box-shadow 0.2s, border-color 0.2s; }
+#g-nav-launcher:hover { border-color: #1d7fe2; box-shadow: 0 4px 24px rgba(29,127,226,0.18); }
+#g-nav-launcher svg { transition: transform 0.3s; }
+#g-nav-launcher.active svg { transform: rotate(20deg); }
+#g-navbar { position: fixed; top: 24px; left: 78px; z-index: 999; background: white; border: 1.5px solid #e5e7eb; border-radius: 20px; display: flex; align-items: center; gap: 4px; padding: 6px 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); transform: translateX(-20px); opacity: 0; pointer-events: none; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease; }
+#g-navbar.open { transform: translateX(0); opacity: 1; pointer-events: all; }
+.g-nav-btn { width: 40px; height: 40px; border-radius: 12px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s; position: relative; }
+.g-nav-btn:hover { background: #f3f4f6; }
+.g-nav-btn.active { background: #eff6ff; }
+.g-nav-divider { width: 1px; height: 24px; background: #e5e7eb; margin: 0 2px; }
+#guideContent { border: 2px solid #0b1526; border-radius: 13px; overflow: hidden; transition: background 4s ease, color 4s ease; }
+body.dark-mode { background: #111318; }
+body.dark-mode #guideContent { background: #111318; color: #e2e8f0; border-color: #374151; }
+body.dark-mode #guideContent .g-what-box { background: #1e2330; border-color: #1d7fe2; }
+body.dark-mode #guideContent .g-what-box p { color: #cbd5e1; }
+body.dark-mode #guideContent .g-term-card { background: #1e2330; border-color: #2d3748; }
+body.dark-mode #guideContent .g-term-def { color: #94a3b8; }
+body.dark-mode #guideContent .g-diff-note { background: #1e1a0e; border-color: #daa98a; color: #c9a56d; }
+body.dark-mode #guideContent .g-step { border-color: #1e2330; }
+body.dark-mode #guideContent .g-step-text { color: #94a3b8; }
+body.dark-mode #guideContent .g-step-title { color: #e2e8f0; }
+body.dark-mode #guideContent .g-step-eg { background: #1a2540; border-color: #2563eb; color: #93c5fd; }
+body.dark-mode #guideContent .g-paper { border-color: #374151; background: #1a1d27; }
+body.dark-mode #guideContent .g-paper-head { background: #111318; border-color: #374151; }
+body.dark-mode #guideContent .g-paper-qtext { color: #e2e8f0; }
+body.dark-mode #guideContent .g-paper-qnum { color: #e2e8f0; }
+body.dark-mode #guideContent .g-lined { background: repeating-linear-gradient(transparent, transparent 31px, #2d3748 31px, #2d3748 32px); border-color: rgba(220,50,50,0.3); }
+body.dark-mode #guideContent .g-hand { color: #e2e8f0; }
+body.dark-mode #guideContent .g-hand-dim { color: #64748b; }
+body.dark-mode #guideContent .g-hand-dim { color: #64748b; }
+body.dark-mode #guideContent .g-hand-ok   { color: #4ade80; }
+body.dark-mode #guideContent .g-hand-note { color: #a78bfa; }
+body.dark-mode #guideContent .g-hand-ok   { color: #4ade80; }
+body.dark-mode #guideContent .g-hand-note { color: #a78bfa; }
+body.dark-mode #guideContent .g-final { color: #e2e8f0; border-color: #e2e8f0; }
+body.dark-mode #guideContent .g-mark-wrap { border-color: #374151; }
+body.dark-mode #guideContent .g-mark-row { border-color: #2d3748; }
+body.dark-mode #guideContent .g-mark-type { color: #60a5fa; }
+body.dark-mode #guideContent .g-mark-desc { color: #cbd5e1; }
+body.dark-mode #guideContent .g-mark-legend { color: #64748b; }
+body.dark-mode #guideContent .g-error-paper { background: #1a1d27; }
+body.dark-mode #guideContent .g-error-head { background: #2d1520; }
+body.dark-mode #guideContent .g-correction { color: #94a3b8; background: #0d2218; border-color: #1a3d2b; border-left-color: #54d3ab; }
+body.dark-mode #guideContent .g-correction mark { background: #3d3000; color: #fde68a; }
+body.dark-mode #guideContent .g-ticket { background: #1e2330; border-color: #2d3748; }
+body.dark-mode #guideContent .g-ticket-text { color: #cbd5e1; }
+body.dark-mode #guideContent .g-check-box { background: #1e2330; border-color: #2d3748; }
+body.dark-mode #guideContent .g-check-text { color: #94a3b8; }
+body.dark-mode #guideContent .g-check-eg { background: #2d1520; border-color: #be185d; }
+body.dark-mode #guideContent .g-paper-foot { border-color: #374151; }
+body.dark-mode #guideContent .g-total-box { border-color: #374151; color: #e2e8f0; }
+body.dark-mode #guideContent .g-subtitle { color: #94a3b8; }
+body.dark-mode #guideContent .g-title { color: #f1f5f9; }
+body.dark-mode #guideContent .g-paper-head-aqa { color: #64748b; }
+body.dark-mode #guideContent .g-paper-marks { color: #64748b; }
+body.dark-mode #guideContent .g-check-mark-txt { color: #64748b; }
+body.dark-mode #guideContent .g-mark-legend span { color: #cbd5e1; }
+body.dark-mode #guideContent svg line[stroke="#1a1a2e"], body.dark-mode #guideContent svg line[stroke="#daa98a"] { stroke: #94a3b8 !important; }
+body.dark-mode #guideContent svg text[fill="#0b1526"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent svg text[fill="#1a1a2e"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent svg text[fill="#374151"] { fill: #cbd5e1 !important; }
+body.dark-mode #guideContent svg text[fill="#6b7280"] { fill: #94a3b8 !important; }
+body.dark-mode #guideContent svg text[fill="#9ca3af"] { fill: #64748b !important; }
+body.dark-mode #guideContent svg text[fill="#1e40af"] { fill: #93c5fd !important; }
+body.dark-mode #guideContent svg rect[fill="#ecfdf5"] { fill: #0f2a1a !important; }
+body.dark-mode #guideContent svg rect[fill="#f0f7ff"] { fill: #0f1e3a !important; }
+body.dark-mode #guideContent svg rect[stroke="#54d3ab"] { stroke: #54d3ab !important; }
+body.dark-mode #guideContent svg rect[stroke="#bfdbfe"] { stroke: #1e3a5f !important; }
+body.dark-mode #guideContent .g-step-diagram svg line { stroke: #64748b !important; }
+body.dark-mode #guideContent .g-step-diagram svg text { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-step-diagram svg circle { stroke: #60a5fa !important; }
+body.dark-mode #guideContent .g-lined svg line { stroke: #94a3b8 !important; }
+body.dark-mode #guideContent .g-lined svg text[fill="#1a1a2e"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-lined svg text[fill="#6b7280"] { fill: #94a3b8 !important; }
+body.dark-mode #guideContent .g-lined svg circle[stroke="#1d7fe2"] { stroke: #60a5fa !important; }
+body.dark-mode #guideContent .g-lined svg circle[stroke="#e16280"] { stroke: #e16280 !important; }
+body.dark-mode #guideContent .g-step-diagram svg circle { fill: #1a2035 !important; }
+body.dark-mode #guideContent .g-step-diagram svg circle[stroke="#1d7fe2"] { stroke: #60a5fa !important; }
+body.dark-mode #guideContent .g-step-diagram svg circle[stroke="#daa98a"] { stroke: #c4a882 !important; }
+body.dark-mode #guideContent .g-step-diagram svg text[fill] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-step-diagram svg text[fill="black"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-step-diagram svg text[fill="#000"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-step-diagram svg text[fill="#000000"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-step-diagram svg text[fill="#1a1a2e"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-step-diagram svg text[fill="#0b1526"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-step-diagram svg text[fill="#374151"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-lined svg circle { fill: #1a2035 !important; }
+body.dark-mode #guideContent .g-lined svg circle[fill="white"] { fill: #1a2035 !important; }
+body.dark-mode #guideContent .g-lined svg circle[fill="#ffffff"] { fill: #1a2035 !important; }
+body.dark-mode #guideContent .g-lined svg circle[fill="none"] { fill: #1a2035 !important; }
+body.dark-mode #guideContent .g-lined svg circle[stroke="#1a1a2e"] { stroke: #94a3b8 !important; }
+body.dark-mode #guideContent .g-lined svg circle[stroke="#e16280"] { stroke: #e16280 !important; fill: #3a1020 !important; }
+body.dark-mode #guideContent .g-lined svg text[fill] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-lined svg text[fill="black"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-lined svg text[fill="#000"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-lined svg text[fill="#000000"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-lined svg text[fill="#1a1a2e"] { fill: #e2e8f0 !important; }
+body.dark-mode #guideContent .g-lined svg text[fill="#0b1526"] { fill: #e2e8f0 !important; }
+body.dark-mode #g-navbar { background: #1e2330; border-color: #374151; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+body.dark-mode #g-nav-launcher { background: #1e2330; border-color: #374151; }
+body.dark-mode #g-nav-launcher svg path, body.dark-mode #g-nav-launcher svg rect, body.dark-mode #g-nav-launcher svg circle { stroke: #e2e8f0; }
+body.dark-mode .g-nav-btn:hover { background: #2d3748; }
+body.dark-mode .g-nav-btn.active { background: #1a2540; }
+body.dark-mode .g-nav-divider { background: #374151; }
+#g-draw-canvas { position: absolute; top: 0; left: 0; z-index: 500; pointer-events: none; cursor: default; display: block; }
+#g-draw-canvas.active { pointer-events: all; cursor: none; }
+#g-draw-panel { position: fixed; top: 80px; left: 80px; z-index: 1001; background: white; border: 1.5px solid #e5e7eb; border-radius: 16px; padding: 14px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); width: 220px; display: none; }
+#g-draw-panel.open { display: block; }
+body.dark-mode #g-draw-panel { background: #1e2330; border-color: #374151; }
+.g-draw-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9ca3af; margin-bottom: 8px; font-family: 'Inter', sans-serif; }
+.g-color-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 12px; }
+.g-color-swatch { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.15s, border-color 0.15s; }
+.g-color-swatch:hover { transform: scale(1.15); }
+.g-color-swatch.selected { border-color: #0b1526; transform: scale(1.15); }
+body.dark-mode .g-color-swatch.selected { border-color: white; }
+.g-thickness-row { margin-bottom: 12px; }
+.g-thickness-row input[type=range] { width: 100%; accent-color: #1d7fe2; }
+.g-draw-tools { display: flex; gap: 8px; }
+.g-draw-tool-btn { flex: 1; padding: 7px 0; border-radius: 8px; border: 1.5px solid #e5e7eb; background: white; font-size: 11px; font-weight: 700; font-family: 'Inter', sans-serif; color: #374151; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+.g-draw-tool-btn:hover { border-color: #1d7fe2; color: #1d7fe2; }
+.g-draw-tool-btn.active { background: #eff6ff; border-color: #1d7fe2; color: #1d7fe2; }
+body.dark-mode .g-draw-tool-btn { background: #2d3748; border-color: #374151; color: #cbd5e1; }
+body.dark-mode .g-draw-tool-btn.active { background: #1a2540; border-color: #3b82f6; color: #60a5fa; }
+#g-confidence-margin { position: absolute; left: 0; top: 0; width: 40px; height: 100%; z-index: 400; pointer-events: none; display: none; }
+#g-confidence-margin.open { display: block; pointer-events: all; }
+.g-conf-section-bar { position: absolute; left: 0; width: 6px; border-radius: 0 3px 3px 0; transition: background 0.3s; background: transparent; }
+.g-conf-widget { position: absolute; left: 10px; display: flex; flex-direction: column; gap: 5px; }
+.g-conf-dot { width: 22px; height: 22px; border-radius: 6px; border: 2.5px solid; cursor: pointer; transition: transform 0.15s, opacity 0.15s; background: white; }
+.g-conf-dot:hover { transform: scale(1.2); }
+.g-conf-dot.green { border-color: #22c55e; }
+.g-conf-dot.yellow { border-color: #eab308; }
+.g-conf-dot.red { border-color: #ef4444; }
+.g-conf-dot.green.selected { background: #22c55e; }
+.g-conf-dot.yellow.selected { background: #eab308; }
+.g-conf-dot.red.selected { background: #ef4444; }
+#g-report-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+#g-report-overlay.open { display: flex; }
+#g-report-modal { background: white; border-radius: 20px; padding: 32px; width: 480px; max-width: 94vw; box-shadow: 0 24px 64px rgba(0,0,0,0.18); font-family: 'Inter', sans-serif; }
+body.dark-mode #g-report-modal { background: #1e2330; color: #e2e8f0; }
+.g-report-title { font-size: 18px; font-weight: 800; color: #0b1526; margin-bottom: 4px; }
+body.dark-mode .g-report-title { color: #f1f5f9; }
+.g-report-sub { font-size: 13px; color: #6b7280; margin-bottom: 20px; }
+.g-stars { display: flex; gap: 8px; margin-bottom: 20px; }
+.g-star { font-size: 28px; cursor: pointer; color: #e5e7eb; transition: color 0.15s, transform 0.15s; line-height: 1; }
+.g-star:hover, .g-star.lit { color: #daa98a; transform: scale(1.15); }
+.g-tags-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9ca3af; margin-bottom: 10px; }
+.g-tags-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+.g-tag-cb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151; cursor: pointer; }
+body.dark-mode .g-tag-cb { color: #cbd5e1; }
+.g-tag-cb input[type=checkbox] { accent-color: #1d7fe2; width: 15px; height: 15px; cursor: pointer; }
+.g-report-textarea { width: 100%; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 12px 14px; font-size: 14px; font-family: 'Inter', sans-serif; color: #374151; resize: none; height: 80px; outline: none; transition: border-color 0.2s; margin-bottom: 6px; }
+.g-report-textarea:focus { border-color: #1d7fe2; }
+body.dark-mode .g-report-textarea { background: #111318; border-color: #374151; color: #e2e8f0; }
+.g-report-charcount { font-size: 11px; color: #9ca3af; text-align: right; margin-bottom: 18px; }
+.g-report-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.g-report-cancel { padding: 10px 20px; border-radius: 10px; border: 1.5px solid #e5e7eb; background: white; font-size: 14px; font-weight: 600; color: #374151; cursor: pointer; transition: border-color 0.2s; }
+.g-report-cancel:hover { border-color: #9ca3af; }
+body.dark-mode .g-report-cancel { background: #2d3748; border-color: #374151; color: #cbd5e1; }
+.g-report-submit { padding: 10px 24px; border-radius: 10px; border: none; background: #1d7fe2; font-size: 14px; font-weight: 700; color: white; cursor: pointer; transition: background 0.2s; }
+.g-report-submit:hover { background: #1668c2; }
+.g-report-submit:disabled { background: #93c5fd; cursor: not-allowed; }
+.g-report-success { text-align: center; padding: 16px 0 4px; display: none; }
+.g-report-success-icon { font-size: 40px; margin-bottom: 10px; }
+.g-report-success-text { font-size: 15px; color: #374151; font-weight: 600; }
+body.dark-mode .g-report-success-text { color: #cbd5e1; }
+  
+  
+  
+  
+  
+</style> 
 </head>
 <body>
 
@@ -846,7 +1020,8 @@ html,body{
 <div class="main-container">
   <div class="content-side" id="contentSide">
 
-<!-- QUESTION 1 --> 
+
+    <!-- QUESTION 1 -->
 <div class="question-box-1" id="question-box-1">
   <div class="question-number-label-1">Q1 of 6</div>
   <div class="mark-counter-1" id="mark-counter-1">0/1</div>
@@ -864,12 +1039,33 @@ html,body{
 <div class="question-box-2" id="question-box-2">
   <div class="question-number-label-2">Q2 of 6</div>
   <div class="mark-counter-2" id="mark-counter-2">0/1</div>
-  <div class="question-title-2">Express 18 as a product of its prime factors.</div>
+  <div class="question-title-2">Express 30 as a product of its prime factors.</div>
+  <div style="display:flex;justify-content:center;margin:12px auto 20px auto;">
+  <svg viewBox="0 0 320 214" xmlns="http://www.w3.org/2000/svg"
+       style="width:100%;max-width:320px;height:auto;display:block;">
+    <defs><style>
+      .geo-line{stroke:#1a1a1a;stroke-width:2;fill:none;}
+      .geo-label{font:14px Inter,system-ui,sans-serif;fill:#1a1a1a;text-anchor:middle;dominant-baseline:middle;}
+      .geo-label-x{font:bold 15px Inter,system-ui,sans-serif;fill:#1d7fe2;text-anchor:middle;dominant-baseline:middle;}
+    </style></defs>
+    <!-- Root: 30 -->
+    <text class="geo-label" x="160" y="22">30</text>
+    <line class="geo-line" x1="160" y1="30" x2="100" y2="65"/>
+    <line class="geo-line" x1="160" y1="30" x2="220" y2="65"/>
+    <text class="geo-label" x="100" y="78">2</text>
+    <text class="geo-label" x="220" y="78">15</text>
+    <line class="geo-line" x1="220" y1="86" x2="180" y2="121"/>
+    <line class="geo-line" x1="220" y1="86" x2="260" y2="121"/>
+    <text class="geo-label" x="180" y="134">3</text>
+    <text class="geo-label-x" x="260" y="134">?</text>
+    <text x="8" y="208" style="font:11px Inter,system-ui,sans-serif;fill:#9ca3af;text-anchor:start;">Not drawn accurately</text>
+  </svg>
+  </div>
   <div class="answer-container-2">
-    <button class="answer-option-2-1" onclick="toggleSingleAnswer2('option1', this)">2 × 3²</button>
-    <button class="answer-option-2-2" onclick="toggleSingleAnswer2('option2', this)">2 × 9</button>
-    <button class="answer-option-2-3" onclick="toggleSingleAnswer2('option3', this)">3 × 6</button>
-    <button class="answer-option-2-4" onclick="toggleSingleAnswer2('option4', this)">2 × 2 × 9</button>
+    <button class="answer-option-2-1" onclick="toggleSingleAnswer2('option1', this)">2 × 15</button>
+    <button class="answer-option-2-2" onclick="toggleSingleAnswer2('option2', this)">2 × 3 × 6</button>
+    <button class="answer-option-2-3" onclick="toggleSingleAnswer2('option3', this)">5</button>
+    <button class="answer-option-2-4" onclick="toggleSingleAnswer2('option4', this)">2 × 3 × 5</button>
   </div>
   <button class="submit-button-2" id="submit-button-2" onclick="submitAnswer2()">Submit</button>
 </div>
@@ -878,12 +1074,36 @@ html,body{
 <div class="question-box-3" id="question-box-3">
   <div class="question-number-label-3">Q3 of 6</div>
   <div class="mark-counter-3" id="mark-counter-3">0/1</div>
-  <div class="question-title-3">Write 24 as a product of prime factors in index form.</div>
+  <div class="question-title-3">Write 36 as a product of its prime factors. Give your answer in index form.</div>
+  <div style="display:flex;justify-content:center;margin:12px auto 20px auto;">
+  <svg viewBox="0 0 320 214" xmlns="http://www.w3.org/2000/svg"
+       style="width:100%;max-width:320px;height:auto;display:block;">
+    <defs><style>
+      .geo-line{stroke:#1a1a1a;stroke-width:2;fill:none;}
+      .geo-label{font:14px Inter,system-ui,sans-serif;fill:#1a1a1a;text-anchor:middle;dominant-baseline:middle;}
+      .geo-label-x{font:bold 15px Inter,system-ui,sans-serif;fill:#1d7fe2;text-anchor:middle;dominant-baseline:middle;}
+    </style></defs>
+    <text class="geo-label" x="160" y="22">36</text>
+    <line class="geo-line" x1="160" y1="30" x2="100" y2="65"/>
+    <line class="geo-line" x1="160" y1="30" x2="220" y2="65"/>
+    <text class="geo-label" x="100" y="78">2</text>
+    <text class="geo-label" x="220" y="78">18</text>
+    <line class="geo-line" x1="220" y1="86" x2="180" y2="121"/>
+    <line class="geo-line" x1="220" y1="86" x2="260" y2="121"/>
+    <text class="geo-label" x="180" y="134">2</text>
+    <text class="geo-label" x="260" y="134">9</text>
+    <line class="geo-line" x1="260" y1="142" x2="235" y2="177"/>
+    <line class="geo-line" x1="260" y1="142" x2="285" y2="177"/>
+    <text class="geo-label" x="235" y="186">3</text>
+    <text class="geo-label" x="285" y="186">3</text>
+    <text x="8" y="208" style="font:11px Inter,system-ui,sans-serif;fill:#9ca3af;text-anchor:start;">Not drawn accurately</text>
+  </svg>
+  </div>
   <div class="answer-container-3">
-    <button class="answer-option-3-1" onclick="toggleSingleAnswer3('option1', this)">2³ × 3</button>
-    <button class="answer-option-3-2" onclick="toggleSingleAnswer3('option2', this)">2 × 2 × 6</button>
-    <button class="answer-option-3-3" onclick="toggleSingleAnswer3('option3', this)">4 × 6</button>
-    <button class="answer-option-3-4" onclick="toggleSingleAnswer3('option4', this)">2 × 12</button>
+    <button class="answer-option-3-1" onclick="toggleSingleAnswer3('option1', this)">2 × 18</button>
+    <button class="answer-option-3-2" onclick="toggleSingleAnswer3('option2', this)">2² × 3²</button>
+    <button class="answer-option-3-3" onclick="toggleSingleAnswer3('option3', this)">4 × 9</button>
+    <button class="answer-option-3-4" onclick="toggleSingleAnswer3('option4', this)">2 × 2 × 9</button>
   </div>
   <button class="submit-button-3" id="submit-button-3" onclick="submitAnswer3()">Submit</button>
 </div>
@@ -892,12 +1112,12 @@ html,body{
 <div class="question-box-4" id="question-box-4">
   <div class="question-number-label-4">Q4 of 6</div>
   <div class="mark-counter-4" id="mark-counter-4">0/1</div>
-  <div class="question-title-4">Express 30 as a product of its prime factors.</div>
+  <div class="question-title-4">Write 60 as a product of its prime factors. Give your answer in index form.</div>
   <div class="answer-container-4">
-    <button class="answer-option-4-1" onclick="toggleSingleAnswer4('option1', this)">2 × 3 × 5</button>
-    <button class="answer-option-4-2" onclick="toggleSingleAnswer4('option2', this)">2 × 15</button>
-    <button class="answer-option-4-3" onclick="toggleSingleAnswer4('option3', this)">3 × 10</button>
-    <button class="answer-option-4-4" onclick="toggleSingleAnswer4('option4', this)">5 × 6</button>
+    <button class="answer-option-4-1" onclick="toggleSingleAnswer4('option1', this)">2² × 3 × 5</button>
+    <button class="answer-option-4-2" onclick="toggleSingleAnswer4('option2', this)">2 × 30</button>
+    <button class="answer-option-4-3" onclick="toggleSingleAnswer4('option3', this)">4 × 15</button>
+    <button class="answer-option-4-4" onclick="toggleSingleAnswer4('option4', this)">2 × 2 × 15</button>
   </div>
   <button class="submit-button-4" id="submit-button-4" onclick="submitAnswer4()">Submit</button>
 </div>
@@ -906,12 +1126,12 @@ html,body{
 <div class="question-box-5" id="question-box-5">
   <div class="question-number-label-5">Q5 of 6</div>
   <div class="mark-counter-5" id="mark-counter-5">0/1</div>
-  <div class="question-title-5">Write 36 as a product of prime factors in index form.</div>
+  <div class="question-title-5">Write 72 as a product of its prime factors. Give your answer in index form.</div>
   <div class="answer-container-5">
-    <button class="answer-option-5-1" onclick="toggleSingleAnswer5('option1', this)">2² × 3²</button>
-    <button class="answer-option-5-2" onclick="toggleSingleAnswer5('option2', this)">2 × 18</button>
-    <button class="answer-option-5-3" onclick="toggleSingleAnswer5('option3', this)">6 × 6</button>
-    <button class="answer-option-5-4" onclick="toggleSingleAnswer5('option4', this)">3 × 12</button>
+    <button class="answer-option-5-1" onclick="toggleSingleAnswer5('option1', this)">2 × 36</button>
+    <button class="answer-option-5-2" onclick="toggleSingleAnswer5('option2', this)">2³ × 3</button>
+    <button class="answer-option-5-3" onclick="toggleSingleAnswer5('option3', this)">2³ × 3²</button>
+    <button class="answer-option-5-4" onclick="toggleSingleAnswer5('option4', this)">8 × 9</button>
   </div>
   <button class="submit-button-5" id="submit-button-5" onclick="submitAnswer5()">Submit</button>
 </div>
@@ -920,16 +1140,21 @@ html,body{
 <div class="question-box-6" id="question-box-6">
   <div class="question-number-label-6">Q6 of 6</div>
   <div class="mark-counter-6" id="mark-counter-6">0/1</div>
-  <div class="question-title-6">Express 48 as a product of prime factors in index form.</div>
+  <div class="question-title-6">p = 2³ × 3 × 5². Write p as an ordinary number.</div>
   <div class="answer-container-6">
-    <button class="answer-option-6-1" onclick="toggleSingleAnswer6('option1', this)">2⁴ × 3</button>
-    <button class="answer-option-6-2" onclick="toggleSingleAnswer6('option2', this)">2³ × 3²</button>
-    <button class="answer-option-6-3" onclick="toggleSingleAnswer6('option3', this)">4 × 12</button>
-    <button class="answer-option-6-4" onclick="toggleSingleAnswer6('option4', this)">2 × 24</button>
+    <button class="answer-option-6-1" onclick="toggleSingleAnswer6('option1', this)">240</button>
+    <button class="answer-option-6-2" onclick="toggleSingleAnswer6('option2', this)">180</button>
+    <button class="answer-option-6-3" onclick="toggleSingleAnswer6('option3', this)">300</button>
+    <button class="answer-option-6-4" onclick="toggleSingleAnswer6('option4', this)">360</button>
   </div>
   <button class="submit-button-6" id="submit-button-6" onclick="submitAnswer6()">Submit</button>
 </div>
 
+
+    
+    
+    
+    
 
 
 
@@ -976,7 +1201,11 @@ html,body{
 
 
 <!-- Reference Guide Modal -->
-<div id="referenceModal" style="
+  
+  
+ 
+  
+  <div id="referenceModal" style="
   display: none;
   position: fixed;
   top: 0;
@@ -1225,6 +1454,92 @@ html,body{
     }
   </style>
   
+     <button id="g-nav-launcher" title="Toggle toolbar" onclick="toggleNav()">
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.5 2.5L9.17 10.83" stroke="#1d7fe2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M17.5 2.5L12.5 17.5L9.17 10.83L2.5 7.5L17.5 2.5Z" stroke="#1d7fe2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<div id="g-navbar">
+  <button class="g-nav-btn" id="btn-dark" title="Dark mode" onclick="toggleDark()">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="#374151" stroke-width="1.8"/><path d="M11 2 A9 9 0 0 1 11 20 Z" fill="#374151"/></svg>
+  </button>
+  <div class="g-nav-divider"></div>
+  <button class="g-nav-btn" id="btn-draw" title="Draw on screen" onclick="toggleDraw()">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 14.5L14.5 3L17 5.5L5.5 17L3 17.5L3 14.5Z" stroke="#374151" stroke-width="1.7" stroke-linejoin="round"/><path d="M12.5 4.5L15.5 7.5" stroke="#374151" stroke-width="1.7" stroke-linecap="round"/></svg>
+  </button>
+  <div class="g-nav-divider"></div>
+  <button class="g-nav-btn" id="btn-conf" title="Confidence tracker" onclick="toggleConfidence()">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="14" rx="2" stroke="#374151" stroke-width="1.7"/><path d="M6 8L9 11L14 6" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="g-nav-divider"></div>
+  <button class="g-nav-btn" id="btn-report" title="Report / feedback" onclick="openReport()">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3L18 17H2L10 3Z" stroke="#e16280" stroke-width="1.7" stroke-linejoin="round"/><line x1="10" y1="8" x2="10" y2="12" stroke="#e16280" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="14.5" r="0.8" fill="#e16280"/></svg>
+  </button>
+</div>
+
+<canvas id="g-draw-canvas"></canvas>
+
+<div id="g-draw-panel">
+  <div class="g-draw-label">Colour</div>
+  <div class="g-color-row" id="g-colors">
+    <div class="g-color-swatch selected" style="background:#1d7fe2" data-color="#1d7fe2"></div>
+    <div class="g-color-swatch" style="background:#e16280" data-color="#e16280"></div>
+    <div class="g-color-swatch" style="background:#22c55e" data-color="#22c55e"></div>
+    <div class="g-color-swatch" style="background:#daa98a" data-color="#daa98a"></div>
+    <div class="g-color-swatch" style="background:#0b1526" data-color="#0b1526"></div>
+    <div class="g-color-swatch" style="background:#8b5cf6" data-color="#8b5cf6"></div>
+    <div class="g-color-swatch" style="background:#f59e0b" data-color="#f59e0b"></div>
+    <div class="g-color-swatch" style="background:#ffffff;border:1.5px solid #e5e7eb;" data-color="#ffffff"></div>
+  </div>
+  <div class="g-draw-label">Thickness</div>
+  <div class="g-thickness-row"><input type="range" id="g-thickness" min="1" max="20" value="3"></div>
+  <div class="g-draw-tools">
+    <button class="g-draw-tool-btn active" id="tool-pen" onclick="setTool('pen')">✏️ Pen</button>
+    <button class="g-draw-tool-btn" id="tool-hl" onclick="setTool('highlighter')">🖊 Highlight</button>
+    <button class="g-draw-tool-btn" id="tool-er" onclick="setTool('eraser')">⬜ Erase</button>
+  </div>
+</div>
+
+<div id="g-confidence-margin"></div>
+
+<div id="g-report-overlay" onclick="closeReportIfBg(event)">
+  <div id="g-report-modal">
+    <div class="g-report-title">⚠️ Report &amp; Feedback</div>
+    <div class="g-report-sub">Help us improve this guide — takes 30 seconds.</div>
+    <div style="margin-bottom:16px;">
+      <div class="g-tags-label">How would you rate this guide?</div>
+      <div class="g-stars">
+        <span class="g-star" data-v="1">★</span><span class="g-star" data-v="2">★</span><span class="g-star" data-v="3">★</span><span class="g-star" data-v="4">★</span><span class="g-star" data-v="5">★</span>
+      </div>
+    </div>
+    <div class="g-tags-label">What best describes your feedback?</div>
+    <div class="g-tags-grid">
+      <label class="g-tag-cb"><input type="checkbox" value="Wrong content"> Wrong content</label>
+      <label class="g-tag-cb"><input type="checkbox" value="Diagram issue"> Diagram issue</label>
+      <label class="g-tag-cb"><input type="checkbox" value="Typo"> Typo</label>
+      <label class="g-tag-cb"><input type="checkbox" value="Missing step"> Missing step</label>
+      <label class="g-tag-cb"><input type="checkbox" value="Too hard"> Too hard</label>
+      <label class="g-tag-cb"><input type="checkbox" value="Too easy"> Too easy</label>
+      <label class="g-tag-cb"><input type="checkbox" value="Feature request"> Feature request</label>
+      <label class="g-tag-cb"><input type="checkbox" value="Other"> Other</label>
+    </div>
+    <div class="g-tags-label">Tell us more (optional)</div>
+    <textarea class="g-report-textarea" id="g-report-msg" maxlength="150" placeholder="What did you notice? What could be better?"></textarea>
+    <div class="g-report-charcount"><span id="g-char-count">0</span> / 150</div>
+    <div class="g-report-success" id="g-report-success">
+      <div class="g-report-success-icon">✅</div>
+      <div class="g-report-success-text">Thanks — we read every submission.</div>
+    </div>
+    <div class="g-report-actions" id="g-report-btns">
+      <button class="g-report-cancel" onclick="closeReport()">Cancel</button>
+      <button class="g-report-submit" id="g-submit-btn" onclick="submitReport()">Submit</button>
+    </div>
+  </div>
+</div> 
+    
+    
   <button id="closeModalBtn" style="
     position: fixed;
     top: 60px;
@@ -1246,228 +1561,764 @@ html,body{
 
 
 
+<div id="guideContent">
 
+<style>
+#guideContent * { box-sizing: border-box; }
+#guideContent { font-family: 'Inter', system-ui, sans-serif; color: #1a1a1a; background: #ffffff; line-height: 1.6; }
+#guideContent .g-container { max-width: 1440px; margin: 0 auto; padding: 56px 32px 32px; }
+#guideContent .g-title { font-family: 'Crimson Text', Georgia, serif; font-size: 54px; font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; color: #0b1526; margin: 0 0 10px; transition: color 4s ease; }
+#guideContent .g-subtitle { font-size: 18px; color: #6b7280; font-weight: 400; margin: 0 0 52px; letter-spacing: -0.01em; transition: color 4s ease; }
+#guideContent .g-section { margin-bottom: 64px; }
+#guideContent .g-section-label { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #daa98a; padding-bottom: 10px; border-bottom: 2px solid #daa98a; margin-bottom: 22px; }
+#guideContent .g-what-box { background: #f8f9fa; border-left: 3px solid #1d7fe2; border-radius: 0 12px 12px 0; padding: 32px; transition: background 4s ease; }
+#guideContent .g-what-box p { font-size: 17px; color: #374151; line-height: 1.75; margin: 0; transition: color 4s ease; }
+#guideContent .g-terms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+#guideContent .g-term-card { background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 10px; padding: 18px 20px; transition: border-color 0.2s, background 4s ease; }
+#guideContent .g-term-card:hover { border-color: #daa98a; }
+#guideContent .g-term-name { font-size: 14px; font-weight: 700; color: #1d7fe2; margin: 0 0 6px; }
+#guideContent .g-term-def { font-size: 14px; color: #374151; line-height: 1.55; margin: 0; transition: color 4s ease; }
+#guideContent .g-diff-note { background: #fffbf5; border: 1px solid #daa98a; border-radius: 8px; padding: 13px 20px; font-size: 14px; color: #7c5a3a; margin-bottom: 32px; line-height: 1.6; transition: background 4s ease; }
+#guideContent .g-diff-note strong { color: #9a6b40; }
+#guideContent .g-steps { display: flex; flex-direction: column; }
+#guideContent .g-step { display: grid; grid-template-columns: 52px 1fr auto; column-gap: 24px; padding: 32px 0; border-bottom: 1px solid #f0f0f0; align-items: start; transition: border-color 4s ease; }
+#guideContent .g-step:last-child { border-bottom: none; }
+#guideContent .g-step-num { width: 40px; height: 40px; background: #1d7fe2; color: white; font-weight: 800; font-size: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 3px; }
+#guideContent .g-step-body { min-width: 0; }
+#guideContent .g-step-title { font-size: 17px; font-weight: 700; color: #0b1526; margin: 0 0 9px; transition: color 4s ease; }
+#guideContent .g-step-text { font-size: 15px; color: #374151; line-height: 1.65; margin: 0 0 14px; transition: color 4s ease; }
+#guideContent .g-step-eg { display: inline-block; background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 9px 16px; font-family: 'Crimson Text', Georgia, serif; font-size: 18px; color: #1e40af; line-height: 1.4; transition: background 4s ease; }
+#guideContent .g-step-diagram { min-width: 280px; max-width: 50%; flex-shrink: 0; padding-top: 8px; padding-bottom: 20px; }
+#guideContent .g-step-diagram svg { width: 100%; max-width: 600px; height: auto; display: block; overflow: visible; }
+#guideContent .g-paper { border: 1.5px solid #1a1a1a; border-radius: 13px; background: white; overflow: visible; transition: background 4s ease, border-color 4s ease; }
+#guideContent .g-paper-head { background: #f5f5f5; border-bottom: 1px solid #d0d0d0; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; transition: background 4s ease; }
+#guideContent .g-paper-head-left { font-size: 12px; color: #6b7280; }
+#guideContent .g-paper-head-aqa { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: white; background: #1d7fe2; padding: 3px 8px; border-radius: 3px; }
+#guideContent .g-paper-q { padding: 18px 20px 6px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+#guideContent .g-paper-q-inner { display: flex; gap: 10px; align-items: baseline; position: relative; }
+#guideContent .g-paper-qnum { font-size: 15px; font-weight: 700; color: #1a1a1a; flex-shrink: 0; }
+#guideContent .g-paper-qtext { font-size: 15px; color: #1a1a1a; font-weight: 400; line-height: 1.6; }
+#guideContent .g-paper-marks { font-size: 13px; color: #6b7280; white-space: nowrap; flex-shrink: 0; padding-top: 2px; }
+#guideContent .g-q-variants { cursor: pointer; position: relative; transition: color 0.2s; }
+#guideContent .g-q-variants::after { content: '↻ hover to see other phrasings'; position: absolute; right: 0; top: -18px; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: #1d7fe2; opacity: 0; transition: opacity 0.2s; font-family: 'Inter', sans-serif; white-space: nowrap; }
+#guideContent .g-q-variants:hover::after { opacity: 1; }
+#guideContent .g-q-variants:hover { color: #1d7fe2; }
+#guideContent .g-lined { margin: 6px 16px 0; background: repeating-linear-gradient(transparent, transparent 31px, #e8e8e8 31px, #e8e8e8 32px); border-left: 2px solid rgba(220,50,50,0.25); padding: 12px 20px 48px 56px; overflow: visible; min-height: 200px; transition: background 4s ease; }
+#guideContent .g-row { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+#guideContent .g-hand { font-family: 'Caveat','Comic Sans MS',cursive; font-size: 26px; color: #1a1a2e; line-height: 1.3; transition: color 4s ease; }
+#guideContent .g-hand-dim { font-family: 'Caveat','Comic Sans MS',cursive; font-size: 26px; color: #6b7280; line-height: 1.3; }
+#guideContent .g-hand-err { font-family: 'Caveat','Comic Sans MS',cursive; font-size: 26px; color: #e16280; line-height: 1.3; }
+#guideContent .g-hand-ok   { font-family: 'Caveat','Comic Sans MS',cursive; font-size: 26px; color: #16a34a; line-height: 1.3; }
+#guideContent .g-hand-note { font-family: 'Caveat','Comic Sans MS',cursive; font-size: 26px; color: #7c3aed; line-height: 1.3; }
+#guideContent .g-hand-ok   { font-family: 'Caveat','Comic Sans MS',cursive; font-size: 26px; color: #16a34a; line-height: 1.3; }
+#guideContent .g-hand-note { font-family: 'Caveat','Comic Sans MS',cursive; font-size: 26px; color: #7c3aed; line-height: 1.3; }
+#guideContent .g-hand-ok   { font-family: 'Caveat','Comic Sans MS',cursive; font-size: 26px; color: #16a34a; line-height: 1.3; }
+#guideContent .g-hand-note { font-family: 'Caveat','Comic Sans MS',cursive; font-size: 26px; color: #7c3aed; line-height: 1.3; }
+#guideContent .g-final { font-family: 'Caveat','Comic Sans MS',cursive; font-size: 26px; font-weight: 700; color: #1a1a2e; border-bottom: 3px double #1a1a2e; padding-bottom: 2px; display: inline; }
+#guideContent .g-ann { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+#guideContent .g-tick { font-size: 26px; font-weight: 700; color: #16a34a; line-height: 1; }
+#guideContent .g-cross { font-size: 26px; font-weight: 700; color: #e16280; line-height: 1; }
+#guideContent .g-ml { font-size: 13px; font-weight: 600; color: #9ca3af; letter-spacing: 0.03em; }
+#guideContent .g-ml-lost { font-size: 13px; font-weight: 700; color: #e16280; letter-spacing: 0.03em; }
+#guideContent .g-examiner-note { font-family: 'Caveat','Comic Sans MS',cursive; font-size: 20px; font-weight: 600; font-style: italic; color: #e16280; line-height: 1.6; margin-top: 10px; padding: 4px 0 12px; }
+#guideContent .g-tree-row { display: flex; gap: 24px; align-items: flex-start; padding: 10px 0 4px; }
+#guideContent .g-tree-notes { flex: 1; padding-top: 56px; }
+#guideContent .g-paper-foot { border-top: 1px solid #e5e7eb; padding: 8px 16px; display: flex; justify-content: flex-end; margin-top: 6px; transition: border-color 4s ease; }
+#guideContent .g-total-box { border: 1.5px solid #1a1a1a; padding: 5px 14px; font-size: 13px; font-weight: 700; color: #1a1a1a; transition: border-color 4s ease, color 4s ease; }
+#guideContent .g-mark-wrap { border: 2px solid #1a1a1a; border-radius: 4px; overflow: hidden; margin-bottom: 20px; transition: border-color 4s ease; }
+#guideContent .g-mark-head { background: #1a1a1a; padding: 13px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+#guideContent .g-mark-head-cols { display: flex; align-items: center; flex: 1; }
+#guideContent .g-mh-mark { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: white; width: 90px; flex-shrink: 0; }
+#guideContent .g-mh-what { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: white; flex: 1; }
+#guideContent .g-mh-aqa { background: white; color: #1a1a1a; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 3px; flex-shrink: 0; }
+#guideContent .g-mark-row { display: flex; border-bottom: 1px solid #e5e7eb; transition: border-color 4s ease; }
+#guideContent .g-mark-row:last-child { border-bottom: none; }
+#guideContent .g-mark-type { width: 90px; flex-shrink: 0; padding: 14px 18px; font-size: 17px; font-weight: 700; color: #1d7fe2; border-right: 1px solid #e5e7eb; transition: border-color 4s ease; }
+#guideContent .g-mark-desc { flex: 1; padding: 14px 18px; font-size: 15px; color: #1a1a1a; line-height: 1.55; transition: color 4s ease; }
+#guideContent .g-mark-legend { margin-top: 16px; font-size: 13px; color: #6b7280; display: flex; flex-wrap: wrap; gap: 20px; line-height: 1.7; transition: color 4s ease; }
+#guideContent .g-mark-legend span { color: #374151; font-weight: 600; transition: color 4s ease; }
+#guideContent .g-error-wrap { margin-top: 40px; }
+#guideContent .g-error-paper { border: 1.5px solid #e16280; border-radius: 13px; background: white; overflow: hidden; transition: background 4s ease; }
+#guideContent .g-error-head { background: #fff5f5; border-bottom: 1px solid #fecaca; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; transition: background 4s ease; }
+#guideContent .g-error-head-left { font-size: 12px; font-weight: 600; color: #e16280; }
+#guideContent .g-error-aqa { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: white; background: #e16280; padding: 3px 8px; border-radius: 3px; }
+#guideContent .g-error-foot { border-top: 1px solid #fecaca; padding: 8px 16px; display: flex; justify-content: flex-end; margin-top: 6px; }
+#guideContent .g-error-total { border: 1.5px solid #e16280; padding: 5px 14px; font-size: 13px; font-weight: 700; color: #e16280; }
+#guideContent .g-correction { font-size: 14px; color: #374151; border: 1px solid #d1fae5; border-left: 3px solid #54d3ab; border-radius: 13px; background: #f0fdf9; padding: 14px 18px; margin-top: 12px; margin-bottom: 32px; line-height: 1.6; transition: color 4s ease; }
+#guideContent .g-correction mark { background: #fef9c3; color: inherit; border-radius: 3px; padding: 0 2px; }
+#guideContent .g-ticket { background: white; border: 1.5px solid #e5e7eb; border-radius: 12px; overflow: hidden; display: flex; align-items: stretch; margin-bottom: 10px; transition: border-color 0.2s, box-shadow 0.2s, background 4s ease; }
+#guideContent .g-ticket:hover { border-color: #daa98a; box-shadow: 0 2px 12px rgba(218,169,138,0.15); }
+#guideContent .g-ticket-stripe { width: 6px; background: #1d7fe2; flex-shrink: 0; }
+#guideContent .g-ticket-body { padding: 14px 20px; flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+#guideContent .g-ticket-text { font-size: 15px; color: #1a1a1a; font-style: italic; line-height: 1.5; transition: color 4s ease; }
+#guideContent .g-ticket-badges { display: flex; gap: 6px; flex-shrink: 0; }
+#guideContent .g-b-aqa { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; color: white; background: #1d7fe2; padding: 4px 8px; border-radius: 4px; }
+#guideContent .g-b-aqa { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; color: white; background: #1d7fe2; padding: 4px 8px; border-radius: 4px; }
+#guideContent .g-b-edx { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; color: white; background: #374151; padding: 4px 8px; border-radius: 4px; }
+#guideContent .g-b-ocr { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; color: #0b1526; background: #daa98a; padding: 4px 8px; border-radius: 4px; }
+#guideContent .g-check-box { background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 12px; padding: 28px 32px; transition: background 4s ease; }
+#guideContent .g-check-q { display: flex; align-items: flex-start; gap: 16px; padding: 18px 0; border-bottom: 1px solid #f0f0f0; }
+#guideContent .g-check-q:first-child { padding-top: 0; }
+#guideContent .g-check-q:last-child { border-bottom: none; padding-bottom: 0; }
+#guideContent .g-q-num { width: 28px; height: 28px; background: #1d7fe2; color: white; font-size: 13px; font-weight: 800; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+#guideContent .g-check-content { flex: 1; min-width: 0; }
+#guideContent .g-check-type { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #daa98a; margin-bottom: 5px; }
+#guideContent .g-check-text { font-size: 15px; color: #374151; font-weight: 400; line-height: 1.6; margin: 0; transition: color 4s ease; }
+#guideContent .g-check-eg { font-family: 'Crimson Text', Georgia, serif; font-size: 17px; color: #e16280; background: #fff5f5; border: 1px solid #fecaca; border-radius: 6px; padding: 8px 14px; display: inline-block; margin-top: 8px; line-height: 1.5; transition: background 4s ease; }
+#guideContent .g-check-marks { display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-top: 2px; }
+#guideContent .g-check-mark-txt { font-size: 13px; color: #6b7280; white-space: nowrap; }
+#guideContent .g-pill { font-size: 10px; font-weight: 700; color: white; background: #1d7fe2; padding: 3px 7px; border-radius: 10px; white-space: nowrap; }
+#guideContent .g-paper-head-right { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #9ca3af; }
+#guideContent .g-mark-cols { display: flex; align-items: center; flex: 1; }
+#guideContent .g-mark-cell-type { width: 90px; flex-shrink: 0; padding: 14px 18px; font-family: 'Crimson Text', Georgia, serif; font-size: 20px; font-weight: 700; color: #1d7fe2; border-right: 1px solid #e5e7eb; }
+#guideContent .g-mark-cell-desc { flex: 1; padding: 14px 18px; font-size: 15px; color: #1a1a1a; line-height: 1.55; }
+#guideContent .g-err-wrap { margin-top: 40px; }
+#guideContent .g-err-paper { border: 1.5px solid #e16280; border-radius: 13px; background: white; overflow: visible; }
+#guideContent .g-err-head { background: #fff5f5; border-bottom: 1px solid #fecaca; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; border-radius: 12px 12px 0 0; }
+#guideContent .g-err-head-left { font-size: 12px; font-weight: 600; color: #e16280; }
+#guideContent .g-err-head-badge { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: white; background: #e16280; padding: 3px 8px; border-radius: 3px; }
+#guideContent .g-err-foot { border-top: 1px solid #fecaca; padding: 8px 16px; display: flex; justify-content: flex-end; margin-top: 6px; }
+#guideContent .g-err-total { border: 1.5px solid #e16280; padding: 5px 14px; font-size: 13px; font-weight: 700; color: #e16280; }
+#guideContent .g-err-note { font-family: 'Caveat','Comic Sans MS',cursive; font-size: 20px; font-weight: 600; font-style: italic; color: #e16280; line-height: 1.6; margin-top: 10px; padding: 4px 0 12px; }
+#guideContent .g-ticket-left { width: 6px; background: #1d7fe2; flex-shrink: 0; }
+#guideContent .g-badge-aqa { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; color: white; background: #1d7fe2; padding: 4px 8px; border-radius: 4px; }
+#guideContent .g-badge-edx { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; color: white; background: #374151; padding: 4px 8px; border-radius: 4px; }
+#guideContent .g-badge-ocr { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; color: #1a1a1a; background: #daa98a; padding: 4px 8px; border-radius: 4px; }
+#guideContent .g-check-num { width: 28px; height: 28px; background: #1d7fe2; color: white; font-size: 13px; font-weight: 800; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+#guideContent .g-check-body { flex: 1; min-width: 0; }
+#guideContent .g-check-m { font-size: 13px; color: #6b7280; white-space: nowrap; }
+#guideContent .g-check-pill { font-size: 10px; font-weight: 800; letter-spacing: 0.06em; color: white; background: #1d7fe2; padding: 3px 7px; border-radius: 10px; }
+body.dark-mode #guideContent .g-mark-cell-type { color: #60a5fa; }
+body.dark-mode #guideContent .g-mark-cell-desc { color: #cbd5e1; }
+body.dark-mode #guideContent .g-err-paper { background: #1a1d27; }
+body.dark-mode #guideContent .g-err-head { background: #2d1520; }
+body.dark-mode #guideContent .g-paper-head-right { color: #64748b; }
+@media (max-width: 800px) {
+  #guideContent .g-container { padding: 32px 16px 16px; }
+  #guideContent .g-title { font-size: 36px; }
+  #guideContent .g-step { grid-template-columns: 48px 1fr; }
+  #guideContent .g-step-diagram { display: none; }
+  #guideContent .g-terms-grid { grid-template-columns: 1fr; }
+  #guideContent .g-mark-legend { flex-direction: column; gap: 8px; }
+  #guideContent .g-lined { padding-left: 28px; }
+  #guideContent .g-ticket-badges { display: none; }
+  #guideContent .g-tree-row { flex-direction: column; }
+  #guideContent .g-check-box { padding: 20px 16px; }
+}
+</style>
 
+<div class="g-container">
 
+<h1 class="g-title">Product of Prime Factors</h1>
+<p class="g-subtitle">Breaking any integer down into its prime building blocks — and writing the result in index notation</p>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  <div id="guideContent">
-   <div class="container">
-  <h1>Product of Prime Factors</h1>
-  
-  <div class="definition">
-    Writing a number as a multiplication of only prime numbers.
+<div class="g-section" data-section="0">
+  <div class="g-section-label">What This Is</div>
+  <div class="g-what-box">
+    <p>Every whole number greater than 1 can be broken down into a unique set of prime numbers multiplied together — this is called its prime factorisation. You use a factor tree to find those primes systematically, splitting each branch until every tip holds a prime number. The final answer is written in index notation, grouping any repeated primes as powers. This skill underpins HCF, LCM, and several number-theory questions across the GCSE paper.</p>
   </div>
-  
-  <div class="mark-scheme-container">
-    <div class="mark-scheme-header">Common Errors & Mark Deductions</div>
-    <div class="mark-scheme-content">
-      <div class="marks-column">
-        <div class="mark-item">-1</div>
-        <div class="mark-item">-1</div>
-        <div class="mark-item">-1</div>
-      </div>
-      <div class="mistakes-column">
-        <div class="mistake-row">
-          <span class="mistake-bold">Stopping too early</span> (e.g., writing 18 = 2 × 9). 9 is not prime. You must keep splitting until all numbers are prime.
-        </div>
-        <div class="mistake-row">
-          <span class="mistake-bold">Missing a factor</span> (e.g., 24 = 2 × 2 × 3). This only makes 12. You’ve lost a factor of 2.
-        </div>
-        <div class="mistake-row">
-          <span class="mistake-bold">Not using index form</span> (e.g., writing 2 × 2 × 2 × 3 instead of 2³ × 3). Foundation questions often ask for index form.
-        </div>
-      </div>
+</div>
+
+<div class="g-section" data-section="1">
+  <div class="g-section-label">Key Terms You Must Know</div>
+  <div class="g-terms-grid">
+    <div class="g-term-card">
+      <p class="g-term-name">Prime number</p>
+      <p class="g-term-def">A whole number greater than 1 that has exactly two factors: 1 and itself. Examples: 2, 3, 5, 7, 11, 13.</p>
     </div>
-  </div>
-  
-  <div class="question-variations">
-    <div class="variations-title">How Questions Ask This</div>
-    <div class="variation-item">Write 24 as a product of its prime factors.</div>
-    <div class="variation-item">Express 36 as a product of prime factors in index form.</div>
-    <div class="variation-item">Find the prime factorisation of 18.</div>
-    <div class="variation-item">Show that 40 = 2³ × 5.</div>
-    <div class="variation-item">Complete the prime factor tree for 60.</div>
-  </div>
-  
-  <div class="main-content">
-    <div class="question">Write 24 as a product of its prime factors.</div>
-    
-    <div class="method-title">The Method</div>
-    
-    <div class="steps-container">
-      <div class="step">
-        <div class="step-left">
-          <div class="step-number">Step One</div>
-          <div class="step-intro">Start a factor tree</div>
-          <div class="step-detail">
-            Write the number at the top. Split it into two factors. Pick easy ones like 2 if the number is even.
-          </div>
-        </div>
-        <div class="step-right">
-          <canvas class="step-canvas" id="canvas-step1"></canvas>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-left">
-          <div class="step-number">Step Two</div>
-          <div class="step-intro">Keep splitting</div>
-          <div class="step-detail">
-            If any number is not prime, split it again. Keep going until all the numbers at the bottom are prime.
-          </div>
-        </div>
-        <div class="step-right">
-          <canvas class="step-canvas" id="canvas-step2"></canvas>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-left">
-          <div class="step-number">Step Three</div>
-          <div class="step-intro">Write the answer</div>
-          <div class="step-detail">
-            Multiply all the prime numbers at the bottom. Use index form if the same prime appears more than once.
-          </div>
-        </div>
-        <div class="step-right">
-          <canvas class="step-canvas" id="canvas-step3"></canvas>
-        </div>
-      </div>
+    <div class="g-term-card">
+      <p class="g-term-name">Composite number</p>
+      <p class="g-term-def">A whole number greater than 1 that has more than two factors — it can be broken down further. Examples: 4, 6, 15, 21.</p>
     </div>
-
-    <div class="final-answer">
-      24 = 2 × 2 × 2 × 3 = <strong>2³ × 3</strong>
+    <div class="g-term-card">
+      <p class="g-term-name">Factor tree</p>
+      <p class="g-term-def">A branching diagram where you repeatedly split a number into two factors until every branch tip is a prime number.</p>
+    </div>
+    <div class="g-term-card">
+      <p class="g-term-name">Index notation</p>
+      <p class="g-term-def">A way of writing repeated multiplication as a power. For example, 2 × 2 × 2 is written as 2³. The small raised number is the index.</p>
+    </div>
+    <div class="g-term-card">
+      <p class="g-term-name">Product of prime factors</p>
+      <p class="g-term-def">The final expression showing the original number written as primes multiplied together in index notation, e.g. 60 = 2² × 3 × 5.</p>
     </div>
   </div>
 </div>
 
+<div class="g-section" data-section="2">
+  <div class="g-section-label">The Method — Step by Step</div>
+  <div class="g-diff-note"><strong>Grade 4–5 topic.</strong> A reliable 3-mark question at the start of the number section. Master the tree and the index notation line and you will pick these marks up every time.</div>
+  <div class="g-steps">
+
+    <div class="g-step">
+      <div class="g-step-num">1</div>
+      <div class="g-step-body">
+        <p class="g-step-title">Write your number at the top and draw two branches</p>
+        <p class="g-step-text">Start by writing the number you need to factorise at the top of your page. Draw two branches coming down from it. You are about to split it into any two factors — it does not matter which pair you choose because you will always reach exactly the same set of primes in the end. This is the foundation of the whole method, so write it clearly.</p>
+        <div class="g-step-eg">Write 60 at the top. Draw two branches below it.</div>
+      </div>
+      <div class="g-step-diagram">
+        <svg viewBox="0 0 300 160" style="width:300px;height:160px;flex-shrink:0;" xmlns="http://www.w3.org/2000/svg">
+          <line x1="150" y1="72" x2="105" y2="130" stroke="#daa98a" stroke-width="2"/>
+          <line x1="150" y1="72" x2="195" y2="130" stroke="#daa98a" stroke-width="2"/>
+          <circle cx="150" cy="50" r="22" stroke="#daa98a" stroke-width="2" fill="white"/>
+          <text x="150" y="50" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">60</text>
+          <text x="150" y="148" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#6b7280" font-family="'Crimson Text',Georgia,serif">Choose any factor pair</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="g-step">
+      <div class="g-step-num">2</div>
+      <div class="g-step-body">
+        <p class="g-step-title">Choose a factor pair and write one factor on each branch</p>
+        <p class="g-step-text">Choose any pair of factors that multiply to make your number. Most students use 2 and half the number when the number is even — that is a reliable starting point. Write one factor at the end of each branch. If a factor is prime, circle it and stop that branch. If it is not prime, draw two more branches from it and split it again.</p>
+        <div class="g-step-eg">Split 60 into 2 × 30. Circle 2 (prime). Draw branches from 30.</div>
+      </div>
+      <div class="g-step-diagram">
+        <svg viewBox="0 0 300 220" style="width:300px;height:220px;flex-shrink:0;" xmlns="http://www.w3.org/2000/svg">
+          <line x1="150" y1="72" x2="105" y2="130" stroke="#daa98a" stroke-width="2"/>
+          <line x1="150" y1="72" x2="195" y2="130" stroke="#daa98a" stroke-width="2"/>
+          <line x1="195" y1="152" x2="150" y2="210" stroke="#daa98a" stroke-width="2"/>
+          <line x1="195" y1="152" x2="240" y2="210" stroke="#daa98a" stroke-width="2"/>
+          <circle cx="150" cy="50" r="22" stroke="#daa98a" stroke-width="2" fill="white"/>
+          <text x="150" y="50" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">60</text>
+          <circle cx="105" cy="130" r="22" stroke="#1d7fe2" stroke-width="2" fill="white"/>
+          <text x="105" y="130" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">2</text>
+          <circle cx="195" cy="130" r="22" stroke="#daa98a" stroke-width="2" fill="white"/>
+          <text x="195" y="130" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">30</text>
+          <text x="195" y="195" text-anchor="middle" dominant-baseline="central" font-size="16" fill="#6b7280" font-family="'Crimson Text',Georgia,serif">split 30 next</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="g-step">
+      <div class="g-step-num">3</div>
+      <div class="g-step-body">
+        <p class="g-step-title">Keep splitting every composite until all tips are prime</p>
+        <p class="g-step-text">Continue splitting every composite number at the end of a branch. Each time you reach a prime — 2, 3, 5, 7, 11 — circle it and stop that branch. Keep going until every single branch tip is circled. The tree is only finished when there are no un-circled numbers left at any tip. This is what earns the method marks on the AQA mark scheme.</p>
+        <div class="g-step-eg">30 = 2 × 15, then 15 = 3 × 5. Circle 2, 3, and 5.</div>
+      </div>
+      <div class="g-step-diagram">
+        <svg viewBox="0 0 300 300" style="width:300px;height:300px;flex-shrink:0;" xmlns="http://www.w3.org/2000/svg">
+          <line x1="150" y1="72" x2="105" y2="130" stroke="#daa98a" stroke-width="2"/>
+          <line x1="150" y1="72" x2="195" y2="130" stroke="#daa98a" stroke-width="2"/>
+          <line x1="195" y1="152" x2="150" y2="210" stroke="#daa98a" stroke-width="2"/>
+          <line x1="195" y1="152" x2="240" y2="210" stroke="#daa98a" stroke-width="2"/>
+          <line x1="240" y1="232" x2="195" y2="280" stroke="#daa98a" stroke-width="2"/>
+          <line x1="240" y1="232" x2="285" y2="280" stroke="#daa98a" stroke-width="2"/>
+          <circle cx="150" cy="50" r="22" stroke="#daa98a" stroke-width="2" fill="white"/>
+          <text x="150" y="50" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">60</text>
+          <circle cx="105" cy="130" r="22" stroke="#1d7fe2" stroke-width="2" fill="white"/>
+          <text x="105" y="130" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">2</text>
+          <circle cx="195" cy="130" r="22" stroke="#daa98a" stroke-width="2" fill="white"/>
+          <text x="195" y="130" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">30</text>
+          <circle cx="150" cy="210" r="22" stroke="#1d7fe2" stroke-width="2" fill="white"/>
+          <text x="150" y="210" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">2</text>
+          <circle cx="240" cy="210" r="22" stroke="#daa98a" stroke-width="2" fill="white"/>
+          <text x="240" y="210" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">15</text>
+          <circle cx="195" cy="280" r="22" stroke="#1d7fe2" stroke-width="2" fill="white"/>
+          <text x="195" y="280" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">3</text>
+          <circle cx="285" cy="280" r="22" stroke="#1d7fe2" stroke-width="2" fill="white"/>
+          <text x="285" y="280" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">5</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="g-step">
+      <div class="g-step-num">4</div>
+      <div class="g-step-body">
+        <p class="g-step-title">Read off all the circled primes in order from smallest to largest</p>
+        <p class="g-step-text">Read off every circled prime from the bottom of your tree. Write them all down in order from smallest to largest. This list is your raw material for the final answer. Getting the full list correct — with every prime included and none repeated — is what unlocks the accuracy mark. Check against your tree: one circled number produces one entry in the list.</p>
+        <div class="g-step-eg">Circled primes from 60: 2, 2, 3, 5 — list all four.</div>
+      </div>
+      <div class="g-step-diagram">
+        <svg viewBox="0 0 300 160" style="width:300px;height:160px;flex-shrink:0;" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="60" cy="50" r="22" stroke="#1d7fe2" stroke-width="2" fill="white"/>
+          <text x="60" y="50" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">2</text>
+          <circle cx="150" cy="50" r="22" stroke="#1d7fe2" stroke-width="2" fill="white"/>
+          <text x="150" y="50" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">2</text>
+          <circle cx="210" cy="50" r="22" stroke="#1d7fe2" stroke-width="2" fill="white"/>
+          <text x="210" y="50" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">3</text>
+          <circle cx="270" cy="50" r="22" stroke="#1d7fe2" stroke-width="2" fill="white"/>
+          <text x="270" y="50" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#374151" font-family="'Crimson Text',Georgia,serif">5</text>
+          <text x="150" y="110" text-anchor="middle" dominant-baseline="central" font-size="18" fill="#6b7280" font-family="'Crimson Text',Georgia,serif">Primes collected in order</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="g-step">
+      <div class="g-step-num">5</div>
+      <div class="g-step-body">
+        <p class="g-step-title">Group repeated primes as powers and write the final answer in index notation</p>
+        <p class="g-step-text">Look at your list of primes and group any that repeat. Two 2s become 2², three 3s become 3³ — write the base number with the count as the index. Primes that appear once stay as they are. Write the final expression as the original number equals the product of all the prime powers. This final line — written correctly in index notation — is what the AQA mark scheme awards the A1 for.</p>
+        <div class="g-step-eg">Two 2s → 2²; one 3 → 3; one 5 → 5. Answer: 60 = 2² × 3 × 5.</div>
+      </div>
+      <div class="g-step-diagram">
+        <svg viewBox="0 0 300 160" style="width:300px;height:160px;flex-shrink:0;" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="20" width="260" height="60" rx="8" fill="none" stroke="#daa98a" stroke-width="2"/>
+          <text x="150" y="52" text-anchor="middle" dominant-baseline="central" font-size="20" fill="#374151" font-family="'Crimson Text',Georgia,serif">60 = 2² × 3 × 5</text>
+          <text x="150" y="115" text-anchor="middle" dominant-baseline="central" font-size="16" fill="#6b7280" font-family="'Crimson Text',Georgia,serif">Index notation — the A1 line</text>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="g-section" data-section="3">
+  <div class="g-section-label">Worked Example</div>
+  <div class="g-paper">
+    <div class="g-paper-head">
+      <span class="g-paper-head-left">Answer all questions in the spaces provided</span>
+      <span class="g-paper-head-right">AQA</span>
+    </div>
+    <div class="g-paper-q">
+      <div class="g-paper-q-inner">
+        <span class="g-paper-qnum">1.</span>
+        <span class="g-paper-qtext g-q-variants" id="g-qtext">Express 60 as a product of its prime factors. Give your answer in index notation.</span>
+      </div>
+      <span class="g-paper-marks">[3 marks]</span>
+    </div>
+    <div class="g-lined">
+
+      <div class="g-row">
+        <span class="g-hand">60 = 2 × 30</span>
+        <div class="g-ann"><span class="g-tick">✓</span><span class="g-ml">M1</span></div>
+      </div>
+
+      <div class="g-tree-row">
+        <svg viewBox="0 0 360 420" style="width:360px;height:420px;flex-shrink:0;" xmlns="http://www.w3.org/2000/svg">
+          <!-- Branch lines first -->
+          <line x1="180" y1="72" x2="135" y2="130" stroke="#1a1a2e" stroke-width="2"/>
+          <line x1="180" y1="72" x2="225" y2="130" stroke="#1a1a2e" stroke-width="2"/>
+          <line x1="225" y1="152" x2="180" y2="210" stroke="#1a1a2e" stroke-width="2"/>
+          <line x1="225" y1="152" x2="270" y2="210" stroke="#1a1a2e" stroke-width="2"/>
+          <line x1="270" y1="232" x2="225" y2="290" stroke="#1a1a2e" stroke-width="2"/>
+          <line x1="270" y1="232" x2="315" y2="290" stroke="#1a1a2e" stroke-width="2"/>
+          <!-- Circles -->
+          <circle cx="180" cy="50" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+          <text x="180" y="50" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">60</text>
+          <circle cx="135" cy="130" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+          <text x="135" y="130" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">2</text>
+          <circle cx="225" cy="130" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+          <text x="225" y="130" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">30</text>
+          <circle cx="180" cy="210" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+          <text x="180" y="210" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">2</text>
+          <circle cx="270" cy="210" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+          <text x="270" y="210" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">15</text>
+          <circle cx="225" cy="290" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+          <text x="225" y="290" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">3</text>
+          <circle cx="315" cy="290" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+          <text x="315" y="290" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">5</text>
+        </svg>
+
+        <div class="g-tree-notes">
+          <div class="g-row">
+            <span class="g-hand">30 = 2 × 15</span>
+          </div>
+          <div class="g-row">
+            <span class="g-hand">15 = 3 × 5</span>
+            <div class="g-ann"><span class="g-tick">✓</span><span class="g-ml">M1</span></div>
+          </div>
+          <div class="g-row">
+            <span class="g-hand-dim">Primes: 2, 2, 3, 5</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-row">
+        <span class="g-final">60 = 2² × 3 × 5</span>
+        <div class="g-ann"><span class="g-tick">✓</span><span class="g-ml">A1</span></div>
+      </div>
+
+    </div>
+    <div class="g-paper-foot">
+      <div class="g-total-box">3 marks</div>
+    </div>
+  </div>
+</div>
+
+<div class="g-section" data-section="4">
+  <div class="g-section-label">Mark Scheme &amp; Common Errors</div>
+
+  <div class="g-mark-wrap">
+    <div class="g-mark-head">
+      <div class="g-mark-cols">
+        <span class="g-mh-mark">Mark</span>
+        <span class="g-mh-what">What earns it — exactly as AQA describes it</span>
+      </div>
+      <span class="g-mh-aqa">AQA</span>
+    </div>
+    <div class="g-mark-row">
+      <div class="g-mark-cell-type">M1</div>
+      <div class="g-mark-cell-desc">A complete factor tree or repeated division process reaching at least two prime factors — evidence of a valid method, even if arithmetic contains a slip.</div>
+    </div>
+    <div class="g-mark-row">
+      <div class="g-mark-cell-type">M1</div>
+      <div class="g-mark-cell-desc">A factor tree (or division) that terminates with all prime leaves, producing the correct complete list of prime factors.</div>
+    </div>
+    <div class="g-mark-row">
+      <div class="g-mark-cell-type">A1</div>
+      <div class="g-mark-cell-desc">Correct final answer written as a product of prime factors in index notation: 60 = 2² × 3 × 5. Must use index form where primes repeat.</div>
+    </div>
+  </div>
+
+  <div class="g-mark-legend">
+    <div><span>M1</span> = Method mark — awarded for correct method even if arithmetic is wrong</div>
+    <div><span>A1</span> = Accuracy mark — only awarded when the answer is completely correct</div>
+    <div><span>B1</span> = Independent mark — awarded regardless of method shown</div>
+    <div><span>ft</span> = Follow-through — awarded if student correctly follows from a prior error</div>
+  </div>
+
+  <!-- ERROR BOX 1: Student stops tree at composite (15 left uncircled) -->
+  <div class="g-err-wrap">
+    <div class="g-err-paper">
+      <div class="g-err-head">
+        <span class="g-err-head-left">This mistake will cost you marks</span>
+        <span class="g-err-head-badge">AQA</span>
+      </div>
+      <div class="g-paper-q">
+        <div class="g-paper-q-inner">
+          <span class="g-paper-qnum">1.</span>
+          <span class="g-paper-qtext">Express 60 as a product of its prime factors. Give your answer in index notation.</span>
+        </div>
+        <span class="g-paper-marks">[3 marks]</span>
+      </div>
+      <div class="g-lined">
+        <div class="g-row">
+          <span class="g-hand">60 = 2 × 30</span>
+          <div class="g-ann"><span class="g-tick">✓</span><span class="g-ml">M1</span></div>
+        </div>
+        <div class="g-tree-row">
+          <svg viewBox="0 0 300 420" style="width:300px;height:420px;flex-shrink:0;" xmlns="http://www.w3.org/2000/svg">
+            <line x1="150" y1="72" x2="105" y2="130" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="150" y1="72" x2="195" y2="130" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="195" y1="152" x2="150" y2="210" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="195" y1="152" x2="240" y2="210" stroke="#1a1a2e" stroke-width="2"/>
+            <circle cx="150" cy="50" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="150" y="50" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">60</text>
+            <circle cx="105" cy="130" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="105" y="130" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">2</text>
+            <circle cx="195" cy="130" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="195" y="130" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">30</text>
+            <circle cx="150" cy="210" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="150" y="210" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">2</text>
+            <!-- Wrong leaf: 15 is composite, not prime -->
+            <circle cx="240" cy="210" r="22" stroke="#e16280" stroke-width="2" fill="#fff0f3"/>
+            <text x="240" y="210" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">15</text>
+          </svg>
+
+          <div class="g-tree-notes">
+            <div class="g-row"><span class="g-hand-ok">First split correct ✓</span></div>
+            <div class="g-row">
+              <span class="g-hand-err">60 = 2² × 15</span>
+              <div class="g-ann"><span class="g-cross">✗</span><span class="g-ml-lost">−A1</span></div>
+            </div>
+            <div class="g-row"><span class="g-hand-note">15 = 3 × 5 — must split further</span></div>
+            <p class="g-err-note">15 is not prime — the tree is unfinished!</p>
+          </div>
+        </div>
+      </div>
+      <div class="g-err-foot"><div class="g-err-total">2 / 3 marks</div></div>
+    </div>
+    <div class="g-correction">The tree must end with primes only. <mark>15 is not prime</mark> — you must split it into 3 × 5 before you stop. If you leave a composite at any leaf, your final product will not equal the original number and the A1 is gone. Prime factorisation only works when every factor in your final list is prime. A branch is only finished when the number at its tip <em>cannot be divided further</em>. Every leaf on your tree must be a prime number.</div>
+    <div class="g-row"><span class="g-hand-ok">✓ Split 15 → 3 × 5, then circle both</span></div>
+    <div class="g-row"><span class="g-hand-ok">✓ Tree now complete: primes are 2, 2, 3, 5</span></div>
+    <div class="g-row"><span class="g-hand-ok">✓ Write 60 = 2² × 3 × 5 for the A1</span></div>
+  </div>
+
+  <!-- ERROR BOX 2: Student forgets index notation, writes 60 = 2 × 2 × 3 × 5 -->
+  <div class="g-err-wrap">
+    <div class="g-err-paper">
+      <div class="g-err-head">
+        <span class="g-err-head-left">This mistake will cost you marks</span>
+        <span class="g-err-head-badge">AQA</span>
+      </div>
+      <div class="g-paper-q">
+        <div class="g-paper-q-inner">
+          <span class="g-paper-qnum">1.</span>
+          <span class="g-paper-qtext">Express 60 as a product of its prime factors. Give your answer in index notation.</span>
+        </div>
+        <span class="g-paper-marks">[3 marks]</span>
+      </div>
+      <div class="g-lined">
+        <div class="g-row">
+          <span class="g-hand">60 = 2 × 30</span>
+          <div class="g-ann"><span class="g-tick">✓</span><span class="g-ml">M1</span></div>
+        </div>
+        <div class="g-tree-row">
+          <svg viewBox="0 0 360 420" style="width:360px;height:420px;flex-shrink:0;" xmlns="http://www.w3.org/2000/svg">
+            <line x1="180" y1="72" x2="135" y2="130" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="180" y1="72" x2="225" y2="130" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="225" y1="152" x2="180" y2="210" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="225" y1="152" x2="270" y2="210" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="270" y1="232" x2="225" y2="290" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="270" y1="232" x2="315" y2="290" stroke="#1a1a2e" stroke-width="2"/>
+            <circle cx="180" cy="50" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="180" y="50" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">60</text>
+            <circle cx="135" cy="130" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="135" y="130" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">2</text>
+            <circle cx="225" cy="130" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="225" y="130" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">30</text>
+            <circle cx="180" cy="210" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="180" y="210" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">2</text>
+            <circle cx="270" cy="210" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="270" y="210" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">15</text>
+            <circle cx="225" cy="290" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="225" y="290" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">3</text>
+            <circle cx="315" cy="290" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="315" y="290" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">5</text>
+          </svg>
+
+          <div class="g-tree-notes">
+            <div class="g-row"><span class="g-hand-ok">Tree complete and correct ✓</span></div>
+            <div class="g-row">
+              <span class="g-hand-err">60 = 2 × 2 × 3 × 5</span>
+              <div class="g-ann"><span class="g-cross">✗</span><span class="g-ml-lost">−A1</span></div>
+            </div>
+            <div class="g-row"><span class="g-hand-note">Two 2s must be written as 2²</span></div>
+            <p class="g-err-note">The question says index notation — that means powers, not a list!</p>
+          </div>
+        </div>
+      </div>
+      <div class="g-err-foot"><div class="g-err-total">2 / 3 marks</div></div>
+    </div>
+    <div class="g-correction">Writing the primes without applying index notation loses the A1. The question instructs you to give <mark>your answer in index notation</mark> — that is an instruction, not a suggestion. Both 2 × 2 and 2² represent the same value, but only one answers the question as set. Collect <em>repeated primes into powers</em> before writing your final line. Never leave repeated factors uncombined when the question asks for index form.</div>
+    <div class="g-row"><span class="g-hand-ok">✓ Count how many times each prime appears in your list</span></div>
+    <div class="g-row"><span class="g-hand-ok">✓ Two 2s → write 2²; one 3 stays 3; one 5 stays 5</span></div>
+    <div class="g-row"><span class="g-hand-ok">✓ Final answer: 60 = 2² × 3 × 5</span></div>
+  </div>
+
+  <!-- ERROR BOX 3: Student uses 1 as a factor, writing 60 = 1 × 2² × 3 × 5 -->
+  <div class="g-err-wrap">
+    <div class="g-err-paper">
+      <div class="g-err-head">
+        <span class="g-err-head-left">This mistake will cost you marks</span>
+        <span class="g-err-head-badge">AQA</span>
+      </div>
+      <div class="g-paper-q">
+        <div class="g-paper-q-inner">
+          <span class="g-paper-qnum">1.</span>
+          <span class="g-paper-qtext">Express 60 as a product of its prime factors. Give your answer in index notation.</span>
+        </div>
+        <span class="g-paper-marks">[3 marks]</span>
+      </div>
+      <div class="g-lined">
+        <div class="g-row">
+          <span class="g-hand">60 = 1 × 60</span>
+          <div class="g-ann"><span class="g-tick">✓</span><span class="g-ml">M1</span></div>
+        </div>
+        <div class="g-tree-row">
+          <svg viewBox="0 0 360 420" style="width:360px;height:420px;flex-shrink:0;" xmlns="http://www.w3.org/2000/svg">
+            <line x1="180" y1="72" x2="135" y2="130" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="180" y1="72" x2="225" y2="130" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="225" y1="152" x2="180" y2="210" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="225" y1="152" x2="270" y2="210" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="270" y1="232" x2="225" y2="290" stroke="#1a1a2e" stroke-width="2"/>
+            <line x1="270" y1="232" x2="315" y2="290" stroke="#1a1a2e" stroke-width="2"/>
+            <circle cx="180" cy="50" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="180" y="50" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">60</text>
+            <!-- 1 is not prime — marked as wrong leaf -->
+            <circle cx="135" cy="130" r="22" stroke="#e16280" stroke-width="2" fill="#fff0f3"/>
+            <text x="135" y="130" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">1</text>
+            <circle cx="225" cy="130" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="225" y="130" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">60</text>
+            <circle cx="180" cy="210" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="180" y="210" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">4</text>
+            <circle cx="270" cy="210" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="270" y="210" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">15</text>
+            <circle cx="225" cy="290" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="225" y="290" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">3</text>
+            <circle cx="315" cy="290" r="22" stroke="#1a1a2e" stroke-width="2" fill="white"/>
+            <text x="315" y="290" text-anchor="middle" dominant-baseline="central" font-size="22" fill="#1a1a2e" font-family="'Caveat','Comic Sans MS',cursive">5</text>
+          </svg>
+
+          <div class="g-tree-notes">
+            <div class="g-row"><span class="g-hand-ok">Rest of tree method correct ✓</span></div>
+            <div class="g-row">
+              <span class="g-hand-err">60 = 1 × 2² × 3 × 5</span>
+              <div class="g-ann"><span class="g-cross">✗</span><span class="g-ml-lost">−A1</span></div>
+            </div>
+            <div class="g-row"><span class="g-hand-note">1 is not a prime — never include it</span></div>
+            <p class="g-err-note">1 has only one factor — it is neither prime nor composite!</p>
+          </div>
+        </div>
+      </div>
+      <div class="g-err-foot"><div class="g-err-total">2 / 3 marks</div></div>
+    </div>
+    <div class="g-correction">Including 1 in the final answer is wrong because <mark>1 is not a prime number</mark>. A prime must have exactly two factors; 1 has only one. Writing 1 × 2² × 3 × 5 looks like a valid product but the A1 mark requires <em>prime</em> factors only. Never start a factor tree branch with 1 × something — it produces no useful split. Start every branch with a factor greater than 1, and drop 1 from your answer entirely.</div>
+    <div class="g-row"><span class="g-hand-ok">✓ Start your first split with a factor ≥ 2 (e.g. 2 × 30)</span></div>
+    <div class="g-row"><span class="g-hand-ok">✓ Remove 1 from your final list of primes</span></div>
+    <div class="g-row"><span class="g-hand-ok">✓ Correct answer: 60 = 2² × 3 × 5 — no 1 included</span></div>
+  </div>
+
+</div>
+
+<div class="g-section" data-section="5">
+  <div class="g-section-label">How Exam Questions Ask This</div>
+
+  <div class="g-ticket">
+    <div class="g-ticket-left"></div>
+    <div class="g-ticket-body">
+      <span class="g-ticket-text">Express 84 as a product of its prime factors. Give your answer in index notation.</span>
+      <div class="g-ticket-badges">
+        <span class="g-badge-aqa">AQA</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g-ticket">
+    <div class="g-ticket-left"></div>
+    <div class="g-ticket-body">
+      <span class="g-ticket-text">Write 180 as a product of its prime factors.</span>
+      <div class="g-ticket-badges">
+        <span class="g-badge-edx">Edexcel</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g-ticket">
+    <div class="g-ticket-left"></div>
+    <div class="g-ticket-body">
+      <span class="g-ticket-text">Find the prime factor decomposition of 120. Write your answer using index notation.</span>
+      <div class="g-ticket-badges">
+        <span class="g-badge-ocr">OCR</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g-ticket">
+    <div class="g-ticket-left"></div>
+    <div class="g-ticket-body">
+      <span class="g-ticket-text">Write 252 in the form 2<sup>a</sup> × 3<sup>b</sup> × 7<sup>c</sup>, where a, b and c are integers.</span>
+      <div class="g-ticket-badges">
+        <span class="g-badge-aqa">AQA</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g-ticket">
+    <div class="g-ticket-left"></div>
+    <div class="g-ticket-body">
+      <span class="g-ticket-text">Show that 360 = 2³ × 3² × 5.</span>
+      <div class="g-ticket-badges">
+        <span class="g-badge-edx">Edexcel</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="g-ticket">
+    <div class="g-ticket-left"></div>
+    <div class="g-ticket-body">
+      <span class="g-ticket-text">Express 48 as a product of prime factors in index form.</span>
+      <div class="g-ticket-badges">
+        <span class="g-badge-ocr">OCR</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="g-section" data-section="6">
+  <div class="g-section-label">Check Yourself Before You Close This</div>
+  <div class="g-check-box">
+
+    <div class="g-check-q">
+      <div class="g-check-num">1</div>
+      <div class="g-check-body">
+        <div class="g-check-type">Draw It</div>
+        <p class="g-check-text">Sketch a complete factor tree for 72 on paper — without looking at any examples. Make sure every branch ends in a circled prime and write the final answer in index notation.</p>
+      </div>
+      <div class="g-check-marks">
+        <span class="g-check-m">[1 mark]</span>
+        <span class="g-check-pill">M1</span>
+      </div>
+    </div>
+
+    <div class="g-check-q">
+      <div class="g-check-num">2</div>
+      <div class="g-check-body">
+        <div class="g-check-type">Write the Steps</div>
+        <p class="g-check-text">Without looking at this guide, write down the five steps for expressing a number as a product of prime factors. Can you name the exact form the final answer must be in — and explain why a branch only stops when it does?</p>
+      </div>
+      <div class="g-check-marks">
+        <span class="g-check-m">[1 mark]</span>
+        <span class="g-check-pill">M1</span>
+      </div>
+    </div>
+
+    <div class="g-check-q">
+      <div class="g-check-num">3</div>
+      <div class="g-check-body">
+        <div class="g-check-type">Spot the Error</div>
+        <p class="g-check-text">A student writes the following as the product of prime factors of 60. What is wrong with their answer?</p>
+        <div class="g-check-eg">60 = 2 × 2 × 3 × 5 × 1</div>
+      </div>
+      <div class="g-check-marks">
+        <span class="g-check-m">[1 mark]</span>
+        <span class="g-check-pill">A1</span>
+      </div>
+    </div>
+
+    <div class="g-check-q">
+      <div class="g-check-num">4</div>
+      <div class="g-check-body">
+        <div class="g-check-type">Answer This</div>
+        <p class="g-check-text">Express 90 as a product of its prime factors. Give your answer in index notation. [3 marks]</p>
+      </div>
+      <div class="g-check-marks">
+        <span class="g-check-m">[3 marks]</span>
+        <span class="g-check-pill">M1</span>
+        <span class="g-check-pill" style="background:#54d3ab;">A1</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script>
-  function setupCanvas(canvas) {
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    const ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
-    ctx.lineWidth = Math.max(1.5, rect.width * 0.005);
-    ctx.strokeStyle = '#daa98a';
-    ctx.fillStyle = '#1a1a1a';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    return ctx;
-  }
-
-  function circle(ctx, x, y, r) {
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-
-  function line(ctx, x1, y1, x2, y2) {
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-  }
-
-  function drawStep1() {
-    const canvas = document.getElementById('canvas-step1');
-    if (!canvas) return;
-    const ctx = setupCanvas(canvas);
-    const w = canvas.getBoundingClientRect().width;
-    const h = canvas.getBoundingClientRect().height;
-
-    ctx.font = `bold ${w * 0.06}px Crimson Text`;
-    ctx.fillText('24', w * 0.5, h * 0.15);
-
-    line(ctx, w * 0.5, h * 0.2, w * 0.3, h * 0.4);
-    line(ctx, w * 0.5, h * 0.2, w * 0.7, h * 0.4);
-
-    ctx.font = `${w * 0.05}px Crimson Text`;
-    ctx.fillText('2', w * 0.3, h * 0.45);
-    ctx.fillText('12', w * 0.7, h * 0.45);
-  }
-
-  function drawStep2() {
-    const canvas = document.getElementById('canvas-step2');
-    if (!canvas) return;
-    const ctx = setupCanvas(canvas);
-    const w = canvas.getBoundingClientRect().width;
-    const h = canvas.getBoundingClientRect().height;
-
-    ctx.font = `bold ${w * 0.06}px Crimson Text`;
-    ctx.fillText('24', w * 0.5, h * 0.1);
-
-    line(ctx, w * 0.5, h * 0.15, w * 0.3, h * 0.3);
-    line(ctx, w * 0.5, h * 0.15, w * 0.7, h * 0.3);
-
-    ctx.fillText('2', w * 0.3, h * 0.35);
-    ctx.fillText('12', w * 0.7, h * 0.35);
-
-    line(ctx, w * 0.7, h * 0.38, w * 0.55, h * 0.55);
-    line(ctx, w * 0.7, h * 0.38, w * 0.85, h * 0.55);
-
-    ctx.fillText('2', w * 0.55, h * 0.6);
-    ctx.fillText('6', w * 0.85, h * 0.6);
-  }
-
-  function drawStep3() {
-    const canvas = document.getElementById('canvas-step3');
-    if (!canvas) return;
-    const ctx = setupCanvas(canvas);
-    const w = canvas.getBoundingClientRect().width;
-    const h = canvas.getBoundingClientRect().height;
-
-    ctx.font = `bold ${w * 0.06}px Crimson Text`;
-    ctx.fillText('24', w * 0.5, h * 0.08);
-
-    line(ctx, w * 0.5, h * 0.13, w * 0.3, h * 0.25);
-    line(ctx, w * 0.5, h * 0.13, w * 0.7, h * 0.25);
-
-    ctx.fillText('2', w * 0.3, h * 0.3);
-    ctx.fillText('12', w * 0.7, h * 0.3);
-
-    line(ctx, w * 0.7, h * 0.33, w * 0.55, h * 0.48);
-    line(ctx, w * 0.7, h * 0.33, w * 0.85, h * 0.48);
-
-    ctx.fillText('2', w * 0.55, h * 0.53);
-    ctx.fillText('6', w * 0.85, h * 0.53);
-
-    line(ctx, w * 0.85, h * 0.56, w * 0.75, h * 0.7);
-    line(ctx, w * 0.85, h * 0.56, w * 0.95, h * 0.7);
-
-    ctx.fillStyle = '#daa98a';
-    ctx.fillText('2', w * 0.75, h * 0.75);
-    ctx.fillText('3', w * 0.95, h * 0.75);
-
-    circle(ctx, w * 0.3, h * 0.3, w * 0.04);
-    circle(ctx, w * 0.55, h * 0.53, w * 0.04);
-    circle(ctx, w * 0.75, h * 0.75, w * 0.04);
-    circle(ctx, w * 0.95, h * 0.75, w * 0.04);
-  }
-
-  window.drawLCMCanvases = function() {
-    drawStep1();
-    drawStep2();
-    drawStep3();
-  };
+(function(){
+  var phrasings = [
+    "Express 60 as a product of its prime factors. Give your answer in index notation.",
+    "Write 60 as a product of prime factors in index form.",
+    "Find the prime factor decomposition of 60. Write your answer using index notation.",
+    "Write 60 in the form 2\u1d43 \u00d7 3\u1d47 \u00d7 5\u1d9c, where a, b and c are integers.",
+    "Show, using a factor tree, that 60 = 2\u00b2 \u00d7 3 \u00d7 5."
+  ];
+  var idx = 0;
+  var el = document.getElementById('g-qtext');
+  if(el){ el.addEventListener('mouseenter', function(){
+    idx = (idx + 1) % phrasings.length;
+    el.textContent = phrasings[idx];
+  }); }
+})();
 </script>
+<script>
+var CONF_KEY = 'montura_conf_1-product-of-prime-factors';
+var topicSlug = '1-product-of-prime-factors';
+</script>
+  
+</div><!-- end #guideContent -->
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+  
+  
+  
 
 
   </div>
@@ -1488,17 +2339,15 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeModalBtn = document.getElementById('closeModalBtn');
   const referenceModal = document.getElementById('referenceModal');
   
- if (referenceBtn) {
+if (referenceBtn) {
   referenceBtn.addEventListener('click', function() {
-    referenceModal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    
-    // Draw canvases after modal opens
-    setTimeout(function() {
-      if (typeof window.drawLCMCanvases === 'function') {
-        window.drawLCMCanvases();
-      }
-    }, 100);
+    if (referenceModal.style.display === 'block') {
+      referenceModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    } else {
+      referenceModal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
   });
 }
   
@@ -1599,7 +2448,7 @@ function toggleSingleAnswer2(answer, button) {
 }
 
 function submitAnswer2() {
-  const correctAnswer = '2 × 3²';
+  const correctAnswer = '2 × 3 × 5';
   const questionBox = document.getElementById('question-box-2');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-2"].selected');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-2"]');
@@ -1660,7 +2509,7 @@ function toggleSingleAnswer3(answer, button) {
 }
 
 function submitAnswer3() {
-  const correctAnswer = '2³ × 3';
+  const correctAnswer = '2² × 3²';
   const questionBox = document.getElementById('question-box-3');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-3"].selected');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-3"]');
@@ -1721,7 +2570,7 @@ function toggleSingleAnswer4(answer, button) {
 }
 
 function submitAnswer4() {
-  const correctAnswer = '2 × 3 × 5';
+  const correctAnswer = '2² × 3 × 5';
   const questionBox = document.getElementById('question-box-4');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-4"].selected');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-4"]');
@@ -1782,7 +2631,7 @@ function toggleSingleAnswer5(answer, button) {
 }
 
 function submitAnswer5() {
-  const correctAnswer = '2² × 3²';
+  const correctAnswer = '2³ × 3²';
   const questionBox = document.getElementById('question-box-5');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-5"].selected');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-5"]');
@@ -1843,7 +2692,7 @@ function toggleSingleAnswer6(answer, button) {
 }
 
 function submitAnswer6() {
-  const correctAnswer = '2³ × 3²';
+  const correctAnswer = '600';
   const questionBox = document.getElementById('question-box-6');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-6"].selected');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-6"]');
@@ -2064,6 +2913,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   window.conversationHistory = [];
   window.currentQuestionId = null;
+  
   window.QUESTION_BANK = {
   'Mathematics_Foundation_Number_L1_Q1': {
     question: 'Express 12 as a product of its prime factors.',
@@ -2071,31 +2921,33 @@ document.addEventListener('DOMContentLoaded', function() {
     topic: 'Product of Prime Factors'
   },
   'Mathematics_Foundation_Number_L1_Q2': {
-    question: 'Express 18 as a product of its prime factors.',
-    correctAnswer: '2 × 3²',
-    topic: 'Product of Prime Factors'
-  },
-  'Mathematics_Foundation_Number_L1_Q3': {
-    question: 'Write 24 as a product of prime factors in index form.',
-    correctAnswer: '2³ × 3',
-    topic: 'Product of Prime Factors'
-  },
-  'Mathematics_Foundation_Number_L1_Q4': {
     question: 'Express 30 as a product of its prime factors.',
     correctAnswer: '2 × 3 × 5',
     topic: 'Product of Prime Factors'
   },
-  'Mathematics_Foundation_Number_L1_Q5': {
-    question: 'Write 36 as a product of prime factors in index form.',
+  'Mathematics_Foundation_Number_L1_Q3': {
+    question: 'Write 36 as a product of its prime factors. Give your answer in index form.',
     correctAnswer: '2² × 3²',
     topic: 'Product of Prime Factors'
   },
-  'Mathematics_Foundation_Number_L1_Q6': {
-    question: 'Express 48 as a product of prime factors in index form.',
+  'Mathematics_Foundation_Number_L1_Q4': {
+    question: 'Write 60 as a product of its prime factors. Give your answer in index form.',
+    correctAnswer: '2² × 3 × 5',
+    topic: 'Product of Prime Factors'
+  },
+  'Mathematics_Foundation_Number_L1_Q5': {
+    question: 'Write 72 as a product of its prime factors. Give your answer in index form.',
     correctAnswer: '2³ × 3²',
+    topic: 'Product of Prime Factors'
+  },
+  'Mathematics_Foundation_Number_L1_Q6': {
+    question: 'p = 2³ × 3 × 5². Write p as an ordinary number.',
+    correctAnswer: '600',
     topic: 'Product of Prime Factors'
   }
 };
+
+
 
 
 
@@ -2260,5 +3112,200 @@ alert('Formula Sheet feature');
 }
 });
 </script>
+
+<script>
+var navOpen = false;
+function toggleNav() {
+  navOpen = !navOpen;
+  document.getElementById('g-navbar').classList.toggle('open', navOpen);
+  document.getElementById('g-nav-launcher').classList.toggle('active', navOpen);
+}
+var darkMode = false;
+function toggleDark() {
+  darkMode = !darkMode;
+  document.body.classList.toggle('dark-mode', darkMode);
+  document.getElementById('btn-dark').classList.toggle('active', darkMode);
+}
+var drawActive = false;
+var drawTool = 'pen';
+var drawColor = '#1d7fe2';
+var drawThickness = 3;
+var isDrawing = false;
+var lastX = 0, lastY = 0;
+var canvas = document.getElementById('g-draw-canvas');
+var ctx = canvas.getContext('2d');
+function resizeCanvas() {
+  var modal = document.getElementById('referenceModal');
+  canvas.width = modal.scrollWidth;
+  canvas.height = modal.scrollHeight;
+  canvas.style.width = canvas.width + 'px';
+  canvas.style.height = canvas.height + 'px';
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+function toggleDraw() {
+  drawActive = !drawActive;
+  canvas.classList.toggle('active', drawActive);
+  document.getElementById('btn-draw').classList.toggle('active', drawActive);
+  document.getElementById('g-draw-panel').classList.toggle('open', drawActive);
+  if (drawActive) { resizeCanvas(); applyDrawCursor(); }
+  else { canvas.style.cursor = 'default'; }
+}
+var cursors = {
+  pen: (function() {
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="0" cy="31" r="1.5" fill="rgba(0,0,0,0.3)"/><circle cx="0" cy="31" r="1" fill="white"/><polygon points="0,31 6,22 10,26" fill="#374151"/><rect x="5" y="6" width="9" height="17" rx="1.5" fill="#1a1a2e" stroke="rgba(255,255,255,0.5)" stroke-width="0.8" transform="rotate(-38 9 14)"/><rect x="13" y="0" width="7" height="4" rx="1.5" fill="#9ca3af" transform="rotate(-38 16 2)"/></svg>';
+    return 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '") 0 31, crosshair';
+  })(),
+  highlighter: (function() {
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="0" cy="31" r="1.5" fill="rgba(0,0,0,0.3)"/><circle cx="0" cy="31" r="1" fill="#daa98a"/><line x1="0" y1="31" x2="5" y2="23" stroke="#daa98a" stroke-width="4" stroke-linecap="round"/><rect x="3" y="15" width="11" height="9" rx="1" fill="#fef9c3" stroke="#daa98a" stroke-width="0.8" transform="rotate(-38 8 19)"/><rect x="6" y="4" width="11" height="13" rx="1.5" fill="#daa98a" stroke="rgba(255,255,255,0.4)" stroke-width="0.8" transform="rotate(-38 11 10)"/><rect x="11" y="0" width="9" height="5" rx="2" fill="#92400e" transform="rotate(-38 15 2)"/></svg>';
+    return 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '") 0 31, crosshair';
+  })(),
+  eraser: (function() {
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect x="1" y="10" width="30" height="16" rx="3" fill="#e16280" stroke="white" stroke-width="1.2"/><rect x="1" y="10" width="14" height="16" rx="3" fill="#b03060" stroke="white" stroke-width="1.2"/><line x1="1" y1="20" x2="31" y2="20" stroke="white" stroke-width="1" opacity="0.4"/><line x1="16" y1="23" x2="16" y2="27" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="25" x2="18" y2="25" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>';
+    return 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '") 16 26, crosshair';
+  })()
+};
+function applyDrawCursor() {
+  var key = drawTool === 'highlighter' ? 'highlighter' : drawTool === 'eraser' ? 'eraser' : 'pen';
+  canvas.style.cursor = cursors[key];
+}
+function setTool(t) {
+  drawTool = t;
+  ['tool-pen','tool-hl','tool-er'].forEach(function(id){ document.getElementById(id).classList.remove('active'); });
+  document.getElementById(t === 'pen' ? 'tool-pen' : t === 'highlighter' ? 'tool-hl' : 'tool-er').classList.add('active');
+  if (drawActive) applyDrawCursor();
+}
+document.querySelectorAll('.g-color-swatch').forEach(function(sw) {
+  sw.addEventListener('click', function() {
+    document.querySelectorAll('.g-color-swatch').forEach(function(s){ s.classList.remove('selected'); });
+    sw.classList.add('selected');
+    drawColor = sw.dataset.color;
+  });
+});
+document.getElementById('g-thickness').addEventListener('input', function() { drawThickness = parseInt(this.value); });
+function getPos(e) {
+  var modal = document.getElementById('referenceModal');
+  var sx = modal.scrollLeft || 0;
+  var sy = modal.scrollTop || 0;
+  if (e.touches) { return { x: e.touches[0].clientX + sx, y: e.touches[0].clientY + sy }; }
+  return { x: e.clientX + sx, y: e.clientY + sy };
+}
+canvas.addEventListener('mousedown', function(e) {
+  if (!drawActive) return;
+  isDrawing = true;
+  var p = getPos(e); lastX = p.x; lastY = p.y;
+  ctx.beginPath(); ctx.arc(lastX, lastY, (drawTool === 'eraser' ? drawThickness * 3 : drawThickness) / 2, 0, Math.PI * 2);
+  ctx.fillStyle = drawTool === 'eraser' ? 'rgba(0,0,0,1)' : drawColor;
+  if (drawTool !== 'eraser') ctx.fill();
+});
+canvas.addEventListener('mousemove', function(e) {
+  if (!isDrawing || !drawActive) return;
+  var p = getPos(e);
+  ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y);
+  if (drawTool === 'eraser') { ctx.globalCompositeOperation = 'destination-out'; ctx.lineWidth = drawThickness * 4; ctx.strokeStyle = 'rgba(0,0,0,1)'; }
+  else if (drawTool === 'highlighter') {
+    ctx.globalCompositeOperation = 'source-over';
+    var hex = drawColor.replace('#','');
+    var r = parseInt(hex.substring(0,2),16), g = parseInt(hex.substring(2,4),16), b = parseInt(hex.substring(4,6),16);
+    ctx.strokeStyle = 'rgba('+r+','+g+','+b+',0.35)'; ctx.lineWidth = drawThickness * 5;
+  } else { ctx.globalCompositeOperation = 'source-over'; ctx.lineWidth = drawThickness; ctx.strokeStyle = drawColor; }
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke();
+  lastX = p.x; lastY = p.y;
+});
+canvas.addEventListener('mouseup', function() { isDrawing = false; ctx.globalCompositeOperation = 'source-over'; });
+canvas.addEventListener('mouseleave', function() { isDrawing = false; ctx.globalCompositeOperation = 'source-over'; });
+canvas.addEventListener('touchstart', function(e) { if (!drawActive) return; e.preventDefault(); isDrawing = true; var p = getPos(e); lastX = p.x; lastY = p.y; }, { passive: false });
+canvas.addEventListener('touchmove', function(e) {
+  if (!drawActive) return; e.preventDefault();
+  var p = getPos(e); ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y);
+  ctx.globalCompositeOperation = drawTool === 'eraser' ? 'destination-out' : 'source-over';
+  ctx.lineWidth = drawTool === 'eraser' ? drawThickness * 4 : drawThickness;
+  ctx.strokeStyle = drawTool === 'eraser' ? 'rgba(0,0,0,1)' : drawColor;
+  ctx.lineCap = 'round'; ctx.stroke(); lastX = p.x; lastY = p.y;
+}, { passive: false });
+canvas.addEventListener('touchend', function() { isDrawing = false; ctx.globalCompositeOperation = 'source-over'; });
+
+var confOpen = false;
+var CONF_KEY = 'montura_conf_product-of-prime-factors';
+var confRatings = JSON.parse(localStorage.getItem(CONF_KEY) || '{}');
+var sectionLabels = ['What This Is','Key Terms','The Method','Worked Example','Mark Scheme','Exam Phrasings','Check Yourself'];
+var colorMap = { green: '#22c55e', yellow: '#eab308', red: '#ef4444' };
+function toggleConfidence() {
+  confOpen = !confOpen;
+  document.getElementById('btn-conf').classList.toggle('active', confOpen);
+  var margin = document.getElementById('g-confidence-margin');
+  if (confOpen) { margin.classList.add('open'); buildConfidenceMargin(); }
+  else { margin.classList.remove('open'); margin.innerHTML = ''; }
+}
+function buildConfidenceMargin() {
+  var margin = document.getElementById('g-confidence-margin');
+  margin.innerHTML = '';
+  var sections = document.querySelectorAll('[data-section]');
+  sections.forEach(function(sec, i) {
+    var el = sec, offsetTop = 0;
+    while (el) { offsetTop += el.offsetTop; el = el.offsetParent; }
+    var height = sec.offsetHeight;
+    var rating = confRatings[i] || null;
+    var bar = document.createElement('div');
+    bar.className = 'g-conf-section-bar'; bar.id = 'g-conf-bar-' + i;
+    bar.style.top = offsetTop + 'px'; bar.style.height = height + 'px';
+    bar.style.background = rating ? colorMap[rating] + '88' : '#e5e7eb44';
+    margin.appendChild(bar);
+    var widget = document.createElement('div');
+    widget.className = 'g-conf-widget';
+    widget.style.top = (offsetTop + Math.max(0, height / 2 - 38)) + 'px';
+    widget.style.left = '10px';
+    ['green','yellow','red'].forEach(function(color) {
+      var dot = document.createElement('div');
+      dot.className = 'g-conf-dot ' + color + (rating === color ? ' selected' : '');
+      dot.title = sectionLabels[i] + ' — ' + (color === 'green' ? 'Got it' : color === 'yellow' ? 'Not sure' : 'Need help');
+      dot.addEventListener('click', function() {
+        confRatings[i] = color;
+        localStorage.setItem(CONF_KEY, JSON.stringify(confRatings));
+        document.getElementById('g-conf-bar-' + i).style.background = colorMap[color] + '88';
+        widget.querySelectorAll('.g-conf-dot').forEach(function(d){ d.classList.remove('selected'); });
+        dot.classList.add('selected');
+      });
+      widget.appendChild(dot);
+    });
+    margin.appendChild(widget);
+  });
+}
+
+var SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+var starRating = 0;
+function openReport() {
+  document.getElementById('g-report-overlay').classList.add('open');
+  document.getElementById('btn-report').classList.add('active');
+  starRating = 0;
+  document.querySelectorAll('.g-star').forEach(function(s){ s.classList.remove('lit'); });
+  document.getElementById('g-report-msg').value = '';
+  document.getElementById('g-char-count').textContent = '0';
+  document.querySelectorAll('.g-tags-grid input').forEach(function(cb){ cb.checked = false; });
+  document.getElementById('g-report-success').style.display = 'none';
+  document.getElementById('g-report-btns').style.display = 'flex';
+  document.getElementById('g-submit-btn').disabled = false;
+}
+function closeReport() { document.getElementById('g-report-overlay').classList.remove('open'); document.getElementById('btn-report').classList.remove('active'); }
+function closeReportIfBg(e) { if (e.target === document.getElementById('g-report-overlay')) closeReport(); }
+document.querySelectorAll('.g-star').forEach(function(star) {
+  star.addEventListener('click', function() { starRating = parseInt(star.dataset.v); document.querySelectorAll('.g-star').forEach(function(s){ s.classList.toggle('lit', parseInt(s.dataset.v) <= starRating); }); });
+  star.addEventListener('mouseenter', function() { var v = parseInt(star.dataset.v); document.querySelectorAll('.g-star').forEach(function(s){ s.classList.toggle('lit', parseInt(s.dataset.v) <= v); }); });
+  star.addEventListener('mouseleave', function() { document.querySelectorAll('.g-star').forEach(function(s){ s.classList.toggle('lit', parseInt(s.dataset.v) <= starRating); }); });
+});
+document.getElementById('g-report-msg').addEventListener('input', function() { document.getElementById('g-char-count').textContent = this.value.length; });
+async function submitReport() {
+  var btn = document.getElementById('g-submit-btn'); btn.disabled = true; btn.textContent = 'Sending...';
+  var tags = []; document.querySelectorAll('.g-tags-grid input:checked').forEach(function(cb){ tags.push(cb.value); });
+  var payload = { topic_name: 'product-of-prime-factors', star_rating: starRating || null, tags: tags, message: document.getElementById('g-report-msg').value.trim() || null };
+  try {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/guide_feedback', { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'return=minimal' }, body: JSON.stringify(payload) });
+    if (res.ok || res.status === 201) { document.getElementById('g-report-btns').style.display = 'none'; document.getElementById('g-report-success').style.display = 'block'; setTimeout(closeReport, 2500); }
+    else { btn.textContent = 'Error — try again'; btn.disabled = false; }
+  } catch(err) { btn.textContent = 'Error — try again'; btn.disabled = false; }
+}
+</script>
+
 </body>
 </html>
