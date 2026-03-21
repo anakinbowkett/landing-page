@@ -82,7 +82,7 @@ body.launch-mode .cta-button {
         }
 
         .logo-gmm {
-    height: 50px;
+    height: 36px;
     width: auto;
     object-fit: contain;
     flex-shrink: 0;
@@ -156,20 +156,30 @@ body.launch-mode .cta-button {
     margin-top: -1px;
 }
 
-        .banner-content {
-            display: inline-block;
-            padding-left: 100%;
-            animation: scroll-left 25s linear infinite;
-        }
+        .banner-track {
+    display: inline-flex;
+    white-space: nowrap;
+    animation: scroll-left 25s linear infinite;
+}
 
-        @keyframes scroll-left {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
+.banner-content {
+    display: inline-block;
+    padding-right: 180px;
+}
+
+.banner-content--mid {
+    padding-right: 180px;
+    opacity: 0.85;
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
 
         .nav-cta {
             background: #1d7fe2;
@@ -614,19 +624,62 @@ body.launch-mode .cta-button {
             display: none;
         }
 
-        @keyframes slotSpinUp {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-30px); opacity: 0; }
-        }
+        .slot-container {
+    position: relative;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: visible;
+    padding-top: 1.5rem;
+}
 
-        @keyframes slotSpinDown {
-            0% { transform: translateY(30px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
+#carousel {
+    font-size: 1.875rem;
+    font-weight: 600;
+    color: #374151;
+    will-change: transform, opacity;
+}
 
-        .slot-spinning {
-            animation: slotSpinUp 0.15s ease-out forwards, slotSpinDown 0.15s ease-in 0.15s forwards;
-        }
+.slot-exit {
+    animation: slotExit 0.08s ease-in forwards;
+}
+
+.slot-enter {
+    animation: slotEnter 0.08s ease-out forwards;
+}
+
+@keyframes slotExit {
+    0%   { transform: translateY(0);    opacity: 1; }
+    100% { transform: translateY(-28px); opacity: 0; }
+}
+
+@keyframes slotEnter {
+    0%   { transform: translateY(28px);  opacity: 0; }
+    100% { transform: translateY(0);     opacity: 1; }
+}
+
+/* Mobile overrides */
+@media (max-width: 430px) {
+    .slot-container {
+    min-height: 48px;
+    justify-content: center;
+}
+    #carousel {
+        font-size: 1.125rem;
+        line-height: 1.5rem;
+        text-align: center;
+        width: 100%;
+    }
+    @keyframes slotExit {
+        0%   { transform: translateY(0);    opacity: 1; }
+        100% { transform: translateY(-20px); opacity: 0; }
+    }
+    @keyframes slotEnter {
+        0%   { transform: translateY(20px);  opacity: 0; }
+        100% { transform: translateY(0);     opacity: 1; }
+    }
+}
 
         /* Dashboard */
         
@@ -1857,9 +1910,457 @@ body.launch-mode .cta-button {
 }     
       
       
+/* =============================================
+   FOMO PROGRESS BAR
+   ============================================= */
+.fomo-bar-wrapper {
+    margin-bottom: 20px;
+    margin-top: 4px;
+}
+
+.fomo-bar-track {
+    position: relative;
+    width: 85%;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    margin-bottom: 12px;
+    margin-top: 44px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.fomo-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #54D3AB 0%, #54D3AB 74%, #E16280 100%);
+    transition: width 1s ease;
+    position: relative;
+}
+
+.fomo-bar-fill::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    background: #E16280;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 3px rgba(225,98,128,0.25);
+    animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(225,98,128,0.25); }
+    50%       { box-shadow: 0 0 0 6px rgba(225,98,128,0.1); }
+}
+
+.fomo-milestone {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fomo-milestone-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #d1d5db;
+    border: 2px solid white;
+    z-index: 2;
+    position: relative;
+}
+
+.fomo-milestone.reached .fomo-milestone-dot {
+    background: #10b981;
+}
+
+.fomo-milestone-label {
+    position: absolute;
+    bottom: 14px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #6b7280;
+    white-space: nowrap;
+    line-height: 1.3;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.fomo-milestone:first-child .fomo-milestone-label {
+    left: 0;
+    transform: translateX(0);
+    text-align: left;
+}
+
+.fomo-milestone:last-child .fomo-milestone-label {
+    left: auto;
+    right: -28px;
+    transform: translateX(0);
+    text-align: right;
+}
+
+.fomo-milestone.reached .fomo-milestone-label {
+    color: #111827;
+}
+
+.fomo-milestone-label span {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #9ca3af;
+}
+
+.fomo-milestone.reached .fomo-milestone-label span {
+    color: #6b7280;
+}
+
+.fomo-bar-status {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #ef4444;
+    margin-top: 6px;
+    letter-spacing: 0.01em;
+}      
+      
+
+      /* =============================================
+   SOCIAL PROOF MARQUEE
+   ============================================= */
+.social-marquee-section {
+    width: 100%;
+    background: #eff6ff;
+    padding: 2rem 0;
+    overflow: hidden;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+    position: relative;
+}
+
+.social-marquee-section::before,
+.social-marquee-section::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 40px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.social-marquee-section::before {
+    top: 0;
+    background: linear-gradient(180deg, #ffffff 0%, transparent 100%);
+}
+
+.social-marquee-section::after {
+    bottom: 0;
+    background: linear-gradient(0deg, #ffffff 0%, transparent 100%);
+}
+
+.social-marquee-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.social-marquee-row {
+    overflow: hidden;
+    width: 100%;
+}
+
+.social-marquee-track {
+    display: flex;
+    gap: 1rem;
+    width: max-content;
+}
+
+.track-ltr {
+    animation: marquee-ltr 35s linear infinite;
+}
+
+.track-rtl {
+    animation: marquee-rtl 35s linear infinite;
+}
+
+@keyframes marquee-ltr {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-rtl {
+    0%   { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+}
+
+.social-marquee-card {
+    flex-shrink: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: transparent;
+    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.12);
+    font-size: 0;
+    line-height: 0;
+}
+
+.social-marquee-card img {
+    display: block;
+    height: 90px;
+    width: auto;
+    max-width: none;
+}
+
+/* Pause on hover */
+.social-marquee-row:hover .social-marquee-track {
+    animation-play-state: paused;
+}
+
+@media (max-width: 768px) {
+    .social-marquee-card {
+        width: 220px;
+    }
+}
+
+@media (max-width: 430px) {
+    .social-marquee-card {
+        width: 180px;
+    }
+}
+      
+
+/* =============================================
+   SUBJECTS TIMELINE SECTION
+   ============================================= */
+.subjects-timeline-section {
+    padding: 8rem 1rem 8rem;
+    background: white;
+    margin-top: 4rem;
+}
+
+.subjects-timeline-inner {
+    max-width: 620px;
+    margin: 0 auto;
+}
+
+.subjects-timeline-header {
+    margin-bottom: 3.5rem;
+}
+
+.subjects-timeline-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.subjects-timeline-subtitle {
+    font-size: 0.9375rem;
+    color: #6b7280;
+    font-weight: 400;
+}
+
+.subjects-timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    counter-reset: timeline-counter;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 11px;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+    background: #d1d5db;
+    z-index: 0;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding-bottom: 1.25rem;
+    position: relative;
+    z-index: 1;
+}
+
+.timeline-dot {
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: #262624;
+    flex-shrink: 0;
+    margin-top: 10px;
+    border: 1.5px solid #3a3a38;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    counter-increment: timeline-counter;
+}
+
+.timeline-dot--suggest {
+    background: #1d7fe2;
+    border-color: #1d7fe2;
+}
+
+.timeline-dot--announce {
+    background: #54D3AB;
+    border-color: #54D3AB;
+}
       
       
-      
+.timeline-dot::after {
+    content: counter(timeline-counter);
+}
+
+.timeline-card {
+    background: #262624;
+    border-radius: 8px;
+    padding: 11px 18px;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex: 1;
+    border: 1px solid #2e2e2c;
+    transition: border-color 0.2s;
+}
+
+.timeline-card:hover {
+    border-color: #3a3a38;
+}
+
+.timeline-date {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: #ffffff;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.timeline-label {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #f9fafb;
+    letter-spacing: -0.01em;
+}
+
+.timeline-card--suggest {
+    background: #1e1e1c;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.875rem;
+    border-color: #2e2e2c;
+}
+
+.timeline-suggest-label {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #d1d5db;
+    line-height: 1.5;
+}
+
+.timeline-suggest-row {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.timeline-suggest-input {
+    flex: 1;
+    background: #111110;
+    border: 1px solid #374151;
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: #f9fafb;
+    font-size: 0.8125rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.timeline-suggest-input::placeholder {
+    color: #4b5563;
+}
+
+.timeline-suggest-input:focus {
+    border-color: #1d7fe2;
+}
+
+.timeline-suggest-btn {
+    background: #1d7fe2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.2s;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+}
+
+.timeline-suggest-btn:hover {
+    background: #1565c0;
+}
+
+.timeline-suggest-confirm {
+    font-size: 0.75rem;
+    color: #54D3AB;
+    font-weight: 500;
+    margin: 0;
+    min-height: 16px;
+}
+
+.timeline-card--announce {
+    background: #1a1a18;
+    border-color: #2e2e2c;
+}
+
+.timeline-card--announce .timeline-label {
+    color: #9ca3af;
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+
+@media (max-width: 430px) {
+    .subjects-timeline-title {
+        font-size: 1.625rem;
+    }
+
+    .timeline-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+        padding: 10px 14px;
+    }
+
+    .timeline-suggest-row {
+        flex-direction: column;
+    }
+
+    .timeline-suggest-btn {
+        width: 100%;
+    }
+}      
       
       
       
@@ -1874,8 +2375,8 @@ body.launch-mode .cta-button {
         <div class="nav-flex">
             <div class="logo-container">
                 <img 
-    src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" 
-    alt="GMM Logo"
+    src="https://i.postimg.cc/kDrBZ2z5/Monturalearn-logo.jpg" 
+    alt="Monturalearn Logo"
     class="logo-gmm"
 >
              
@@ -1891,8 +2392,11 @@ body.launch-mode .cta-button {
 
 <!-- Announcement Banner -->
 <div class="announcement-banner">
-    <div class="banner-content">
-        ⚡ Waitlist Closing in 1 Day — Secure Your Early-Bird price Spot Before Launch!     
+    <div class="banner-track">
+        <div class="banner-content">⚡ ONLY 3000 SPACES FOR EARLY BIRD PRICING, 🚨 LOCK YOUR PLACE IN NOW! 🚨</div>
+        <div class="banner-content banner-content--mid">🚨 SIGNUP NOW!! 🚨</div>
+        <div class="banner-content">⚡ ONLY 3000 SPACES FOR EARLY BIRD PRICING, 🚨 LOCK YOUR PLACE IN NOW! 🚨</div>
+        <div class="banner-content banner-content--mid">🚨 SIGNUP NOW!! 🚨</div>
     </div>
 </div>
 
@@ -1900,7 +2404,7 @@ body.launch-mode .cta-button {
 <section class="hero">
     <div class="hero-container">
         <div class="hero-content">
-            <h1 class="hero-title">One mission: Get you GCSE success or your money back.</h1>
+            <h1 class="hero-title">Failing GCSEs? We've got 8 weeks to fix this.</h1>
             <p class="hero-subtitle">The all-inclusive GCSE learning platform.</p>
 
             <a href="signup.html" class="hero-cta">
@@ -1925,10 +2429,30 @@ body.launch-mode .cta-button {
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
-                    <span>Launches 28 Feb — spots filling fast</span>
+                    <span>Launches April 25th — spots filling fast</span>
                 </div>
 
-                <h4>Be first to master your GCSEs.</h4>
+                <!-- FOMO Progress Bar -->
+<div class="fomo-bar-wrapper">
+    <div class="fomo-bar-track">
+        <div class="fomo-bar-fill" id="fomoBarFill"></div>
+        <div class="fomo-milestone" id="milestone1" style="left: 0%">
+            <div class="fomo-milestone-dot"></div>
+            <div class="fomo-milestone-label">Mar 22<span>Opening</span></div>
+        </div>
+        <div class="fomo-milestone fomo-milestone--mid" id="milestone2" style="left: 75%">
+    <div class="fomo-milestone-dot"></div>
+    <div class="fomo-milestone-label">Apr 25<span>Platform goes live</span></div>
+</div>
+<div class="fomo-milestone fomo-milestone--end" id="milestone3" style="left: 100%; transform: translate(-50%, -50%)">
+    <div class="fomo-milestone-dot"></div>
+    <div class="fomo-milestone-label">May 4<span>First exams</span></div>
+</div>
+    </div>
+    <p class="fomo-bar-status" id="fomoBarStatus"></p>
+</div>
+
+<h4>Be first to master your GCSEs.</h4>
                 <p>Join the waitlist — get early access, exclusive tips, and be notified the moment we go live.</p>
 
                 <input class="wl-field" id="wlEmail" type="email" placeholder="your@email.com" autocomplete="email">
@@ -1995,6 +2519,45 @@ body.launch-mode .cta-button {
         </div>
     </div>
 
+    <!-- SOCIAL PROOF MARQUEE SECTION -->
+    <div class="social-marquee-section">
+        <div class="social-marquee-wrapper">
+
+            <!-- Row 1: left to right -->
+            <div class="social-marquee-row">
+                <div class="social-marquee-track track-ltr">
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/9Ms8xh7v/IMG-7993.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/C1xmMKjr/IMG-7995.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/hPQzWq79/unnamed.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/tT8SrjxB/IMG-8001.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/wxXn8jqr/IMG-8338.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/9Ms8xh7v/IMG-7993.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/C1xmMKjr/IMG-7995.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/hPQzWq79/unnamed.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/tT8SrjxB/IMG-8001.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/wxXn8jqr/IMG-8338.jpg" alt="Student comment"></div>
+                </div>
+            </div>
+
+            <!-- Row 2: right to left -->
+            <div class="social-marquee-row">
+                <div class="social-marquee-track track-rtl">
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/446jkxfS/IMG-8339.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/RC725ZSj/IMG-8340.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/v8rCFZYJ/IMG-8341.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/gcV1F2z5/IMG-8342.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/NG6ZqjsS/IMG-8343.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/446jkxfS/IMG-8339.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/RC725ZSj/IMG-8340.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/v8rCFZYJ/IMG-8341.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/gcV1F2z5/IMG-8342.jpg" alt="Student comment"></div>
+                    <div class="social-marquee-card"><img src="https://i.postimg.cc/NG6ZqjsS/IMG-8343.jpg" alt="Student comment"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <!-- Demo Window Section (BELOW the 2-column grid) -->
     <div class="demo-window-section">
         <div class="demo-window-container">
@@ -2021,6 +2584,10 @@ body.launch-mode .cta-button {
             </div>
         </div>
     </div>
+  
+  
+
+  
   
   <!-- Personalised Learning Section -->
     <div class="personalised-section">
@@ -2079,7 +2646,102 @@ body.launch-mode .cta-button {
   
   
   
- <!-- Testimonials Section with Parallax -->
+<!-- SUBJECTS TIMELINE SECTION -->
+<div class="subjects-timeline-section">
+    <div class="subjects-timeline-inner">
+
+        <div class="subjects-timeline-header">
+            <h2 class="subjects-timeline-title">Newest subjects to launch</h2>
+            <p class="subjects-timeline-subtitle">Follow the roadmap — more subjects dropping every few weeks.</p>
+        </div>
+
+        <div class="subjects-timeline">
+            <div class="timeline-line"></div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <span class="timeline-date">Apr 25, 2026</span>
+                    <span class="timeline-label">Platform Launch</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <span class="timeline-date">May 16, 2026</span>
+                    <span class="timeline-label">English Literature</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <span class="timeline-date">May 26, 2026</span>
+                    <span class="timeline-label">English Language</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <span class="timeline-date">Jun 5, 2026</span>
+                    <span class="timeline-label">Biology</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <span class="timeline-date">Jun 15, 2026</span>
+                    <span class="timeline-label">Chemistry</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <span class="timeline-date">Jun 25, 2026</span>
+                    <span class="timeline-label">Physics</span>
+                </div>
+            </div>
+
+            <div class="timeline-item timeline-item--suggest">
+                <div class="timeline-dot timeline-dot--suggest"></div>
+                <div class="timeline-card timeline-card--suggest">
+                    <span class="timeline-suggest-label">What subject should be made next? Tell us — we read every suggestion.</span>
+                    <div class="timeline-suggest-row">
+                        <input class="timeline-suggest-input" id="suggestion1" type="text" placeholder="Type a subject..." maxlength="40">
+                        <button class="timeline-suggest-btn" onclick="submitSuggestion('suggestion1', this)">Send →</button>
+                    </div>
+                    <p class="timeline-suggest-confirm" id="confirm1"></p>
+                </div>
+            </div>
+
+            <div class="timeline-item timeline-item--suggest">
+                <div class="timeline-dot timeline-dot--suggest"></div>
+                <div class="timeline-card timeline-card--suggest">
+                    <span class="timeline-suggest-label">Yes, tell us another — we'll get that one made too.</span>
+                    <div class="timeline-suggest-row">
+                        <input class="timeline-suggest-input" id="suggestion2" type="text" placeholder="Type a subject..." maxlength="40">
+                        <button class="timeline-suggest-btn" onclick="submitSuggestion('suggestion2', this)">Send →</button>
+                    </div>
+                    <p class="timeline-suggest-confirm" id="confirm2"></p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot timeline-dot--announce"></div>
+                <div class="timeline-card timeline-card--announce">
+                    <span class="timeline-label">We'll release the dates of suggested subjects on April 25th.</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Testimonials Section with Parallax -->
     <div class="testimonials-section">
         <!-- Decorative gradient orbs -->
         <div class="accent-orb accent-orb-1"></div>
@@ -2229,8 +2891,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
     
 <!-- Features Section -->
-  
-  
   
   
   
@@ -2686,7 +3346,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         <div class="faq-header">
             <h2>Frequently Asked Questions</h2>
-            <p>Everything you need to know about GCSE Maths Mastery</p>
+            <p>Everything you need to know about Monturalearn</p>
         </div>
 
         <div class="faq-list">
@@ -2712,7 +3372,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Monturalearn is the Uk's first low-cost educational learning platform. Monturalearn offers affordable pricing plans to make quality GCSE preparation accessible to everyone without the high cost barrier or up-front payment packages. Sign up for free to get started, and explore our premium features at a fraction of the cost and quadruple the features of traditional tutoring.</p>
+                    <p>Monturalearn is the Uk's first low-cost educational learning platform. Monturalearn offers affordable pricing plans to make quality GCSE preparation accessible to everyone without the high cost barrier or up-front payment packages. Sign up for free to get started, and explore our premium features at a fraction of the cost and quadruple the features of traditional tutoring and other major online learning providers.</p>
                 </div>
             </div>
 
@@ -2727,7 +3387,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>GCSE Maths Mastery covers all major UK exam boards including AQA, Edexcel, OCR, and WJEC. Our content is aligned with the national curriculum and includes exam-specific practice materials to ensure you're fully prepared for your specific examination.</p>
+                    <p>Monturalearn covers all major UK exam boards including AQA, Edexcel and OCR. Our content is aligned with the national curriculum and includes exam-specific practice materials to ensure you're fully prepared for your specific examination so you only ever study what's actually in your exam.</p>
                 </div>
             </div>
 
@@ -2740,7 +3400,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Yes! Our platform caters to both Foundation and Higher tier students. Our adaptive difficulty levels ensure that content is tailored to your specific tier, and you can switch between them as your confidence and ability grow.</p>
+                    <p>Yes! Our platform caters to both Foundation and Higher tier students. You can switch between exam tiers at any time.</p>
                 </div>
             </div>
 
@@ -2753,7 +3413,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Our interactive lectures combine short, focused video lessons with instant multiple-choice quizzes. Each concept is broken down into simple, digestible steps with real-time progress tracking so you can see your improvement as you learn. The format familiarizes you with exam structure while building understanding.</p>
+                    <p>Our interactive lectures break each topic down into short, focused lessons — no textbook walls of text, just clear steps that actually make sense.
+Every lecture comes with instant multiple-choice questions using diagrams and answer formats built to mirror the real exam, so you're practising the right way from day one.
+An interactive guide walks you through each concept from zero to fully confident, with real-time progress tracking so you can see exactly how far you've come.
+And if you ever get stuck, our built-in AI tutor has you covered. It'll break down any concept in a way that clicks for you, teach the lesson step by step at your own pace, or answer any question you throw at it — no judgement, no rushing, just clear explanations whenever you need them.
+By the time your exam comes around, the format won't feel unfamiliar. You'll have seen it all before.</p>
                 </div>
             </div>
 
@@ -2766,7 +3430,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Flashtiles are our unique exam-style practice questions that cover all syllabus difficulties. Each flashtile comes with a clear, worked answer just a tap away. You can create custom revision decks, rate your confidence on each topic, and focus your practice where you need it most.</p>
+                    <p>Flashtiles are our unique exam-style practice cards that cover every topic, every difficulty level, and every question type you'll face in your GCSE.
+Each flashtile shows you the question first — then reveals a full, clearly worked answer with just one tap. No guessing whether you got it right. No vague explanations. Just clean, step-by-step solutions every time.
+You can build custom revision decks around the topics you find hardest, then rate your confidence after each card — red, amber, or green. Any card you mark red gets pushed straight back into your deck and reappears sooner, so the topics you struggle with automatically get more practice without you having to think about it.
+The more you practice, the smarter your revision gets.
+Less time on what you already know. More time on what will win you the marks.</p>
                 </div>
             </div>
 
@@ -2779,7 +3447,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Live quizzes let you compete against other students in real-time! Earn 1000 Mastery Miles for each correct answer, then use strategic power-ups to steal miles from opponents, freeze them, or knock them down the leaderboard. It's a fun, competitive way to reinforce your learning.</p>
+                    <p>Our Live quizzes allow you to test your knowledge and weakpoints to ensure that no mark is left out. Live sessions let you compete against other students in real-time to earn Mastery Miles for each correct answer, with the option to use strategic power-ups to steal miles from opponents, freeze them, or knock them down the live leaderboard. It's a fun, competitive way to lock in what you've learned — and find out exactly where your weak spots are before exam day does.</p>
                 </div>
             </div>
 
@@ -2792,7 +3460,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Yes! We provide access to real GCSE exam questions from past papers. After completing each paper, you'll receive instant analytics showing your strengths and weaknesses, plus a predicted grade calculator to track your progress toward your target grade.</p>
+                    <p>Yes! Monturalearn gives you access to both mock past papers with customisable questions, and real GCSE exam questions pulled directly from past papers.
+
+The moment you finish, you get a full breakdown. Instant analytics show you exactly which topics you nailed and which ones are costing you marks — so you always know where to focus next.
+
+No more guessing whether you're ready. Just a clear picture of where you stand and exactly what to do about it.</p>
                 </div>
             </div>
 
@@ -2805,7 +3477,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Absolutely! Our platform includes comprehensive performance dashboards that track your progress across all topics. You'll see detailed analytics on your strengths and weaknesses, completion rates, average scores, and study streaks to keep you motivated and focused on areas that need improvement.</p>
+                    <p>Absolutely! Our platform includes comprehensive performance dashboards that tracks, monitors and saves your progress for every lecture across all topics. You'll see updated progress tracking on your strengths and weaknesses in your dashboard as well as analytics and study streaks to keep you motivated and focused on areas that need improvement.</p>
                 </div>
             </div>
 
@@ -2818,7 +3490,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Yes! GCSE Maths Mastery is perfect for home learners, homeschooling families, and students who prefer self-directed study. Our platform provides everything you need to master GCSE Maths independently, with instant feedback and clear explanations for every question.</p>
+                    <p>Yes! Monturalearn is perfect for home learners, students resitting their GCSEs, homeschooling families, and students who prefer self-directed study. Our platform provides everything you need to master your GCSEs independently, with instant feedback and clear explanations for every question regardless of the students learning abilities.</p>
                 </div>
             </div>
 
@@ -2831,7 +3503,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Getting started is easy! Simply click the "Sign up for free" button at the top of this page, create your account with your name, email, and password, and you'll have immediate access to your personalized dashboard. From there, you can start exploring our interactive lectures, flashtiles, quizzes, and past papers right away.</p>
+                    <p>Getting started is easy! Simply enter your email in the waitlist box at the top of the page, and before you know it, Monturalearn will be ready to use.
                 </div>
             </div>
         </div>
@@ -3041,7 +3713,7 @@ document.addEventListener('DOMContentLoaded', function() {
 (function() {
 
     // ── Countdown: target 28 Feb 2026 1:00 PM GMT ──
-    var targetDate = new Date('February 28, 2026 13:00:00 GMT+0000');
+    var targetDate = new Date('April 25, 2026 13:00:00 GMT+0000');
     var LAUNCH_TARGET = targetDate.getTime();
 
     function pad(n) { 
@@ -3582,24 +4254,230 @@ window.handleWaitlistSubmit = async function() {
     </div>
 </footer>
 
+<script>
+// =============================================
+// SLOT MACHINE CAROUSEL — iPhone compatible
+// =============================================
+(function () {
+    var phrases = [
+    "For the ones revising at 11pm",
+    "To the ones who still believe they can turn it around",
+    "To all the ones who blank in exams",
+    "To the ones who don't want to pay a fortune to get good grades",
+    "For all the ones rewriting notes and still failing",
+    "To the ones who still believe they can turn it around",
+    "To the ones whose teacher moves too fast",
+    "Shoutout to the ones stuck on YouTube tutorials",
+    "For all the ones scrolling on tiktok (for now)",
+    "For the ones hiding their grade from their parents",
+    "To all the ones who know they can do better",
+    "For all the ones who just need it explained differently",
+    "For all the ones textbooks aren't working for",
+    "Shoutout to the ones working hard but going nowhere",
+    "To the ones who still believe they can turn it around",
+    "To you lot doing it alone at home",
+    "For the ones who freeze when the paper lands",
+    "To the ones who don't want to pay a fortune to get good grades",  
+    "To all the ones who understand it, then forget it",
+    "To the ones who still believe they can turn it around",
+    "For the ones who hate asking for help in class",
+    "To the ones who don't want to pay a fortune to get good grades",
+    "Shoutout to the ones pulling late nights every week",
+    "To the ones dreading results day",
+    "For all the ones who've fallen behind and know it",
+    "To the ones who still believe they can turn it around",
+    "To the ones who've given up on maths",
+    "Shoutout to the ones who need a 4 to pass",
+    "For the ones whose parents can't afford a tutor",
+    "To all the ones retaking this year",
+    "For the ones who study for hours and feel nothing",
+    "To the ones who need this grade for college",
+    "Shoutout to the ones everyone else has written off",
+    "For all the ones who just need it explained differently",
+];
 
+    var currentIndex = 0;
+    var isAnimating = false;
+    var carousel = document.getElementById('carouselText');
 
+    // Spin through 6–8 random phrases rapidly, then land on the next real one
+    function spinAndLand() {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        var spins = 0;
+        var totalSpins = 7; // how many rapid flickers before landing
+        var spinSpeed = 80; // ms per flicker (fast casino feel)
+
+        function doSpin() {
+            if (spins < totalSpins) {
+                // Show a random phrase during spin
+                var randomIndex = Math.floor(Math.random() * phrases.length);
+                swapText(phrases[randomIndex], true);
+                spins++;
+                setTimeout(doSpin, spinSpeed);
+            } else {
+                // Land on the actual next phrase
+                currentIndex = (currentIndex + 1) % phrases.length;
+                swapText(phrases[currentIndex], false);
+                // Wait 1.5s then spin again
+                setTimeout(function () {
+                    isAnimating = false;
+                    spinAndLand();
+                }, 1800);
+            }
+        }
+
+        doSpin();
+    }
+
+    function swapText(newText, fast) {
+        var el = document.getElementById('carouselText');
+        if (!el) return;
+
+        // Remove any existing animation classes (force reflow for iPhone)
+        el.classList.remove('slot-exit', 'slot-enter');
+        void el.offsetWidth; // reflow — critical for Safari/iOS
+
+        el.classList.add('slot-exit');
+
+        var duration = fast ? 60 : 80;
+
+        setTimeout(function () {
+            el.textContent = newText;
+            el.classList.remove('slot-exit');
+            void el.offsetWidth; // reflow again
+            el.classList.add('slot-enter');
+
+            setTimeout(function () {
+                el.classList.remove('slot-enter');
+            }, duration);
+        }, duration);
+    }
+
+    // Kick off after 1.5s on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        var el = document.getElementById('carouselText');
+        if (el) {
+            el.textContent = phrases[0];
+        }
+        setTimeout(spinAndLand, 1500);
+    });
+})();
+</script>
+
+  
+  
+  <script>
+// =============================================
+// FOMO PROGRESS BAR — real-time, date-driven
+// =============================================
+(function () {
+    var start   = new Date('2026-03-22T06:00:00').getTime();
+    var midPoint = new Date('2026-04-25T00:00:00').getTime();
+    var end     = new Date('2026-05-04T00:00:00').getTime();
+
+    // Exaggerate: compress the visual scale so bar looks more full than it is
+    // Real progress mapped to a boosted visual range of 18%–96%
+    var VISUAL_MIN = 18;
+    var VISUAL_MAX = 96;
+
+    function getProgress() {
+        var now = Date.now();
+        if (now <= start) return 0;
+        if (now >= end)   return 100;
+        var raw = (now - start) / (end - start);
+        return VISUAL_MIN + raw * (VISUAL_MAX - VISUAL_MIN);
+    }
+
+    function getDaysLeft() {
+        var now = Date.now();
+        if (now >= end) return 0;
+        return Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+    }
+
+    function getStatusText(pct, daysLeft) {
+    if (pct >= 90) return "🚨 Almost gone — early bird pricing closes in " + daysLeft + " days";
+    return "";
+}
+
+    function isMilestoneReached(dateStr) {
+        return Date.now() >= new Date(dateStr).getTime();
+    }
+
+    function update() {
+        var pct      = getProgress();
+        var daysLeft = getDaysLeft();
+
+        var fill   = document.getElementById('fomoBarFill');
+        var status = document.getElementById('fomoBarStatus');
+        var m1     = document.getElementById('milestone1');
+        var m2     = document.getElementById('milestone2');
+        var m3     = document.getElementById('milestone3');
+
+        if (fill)   fill.style.width = pct + '%';
+        if (status) status.textContent = getStatusText(pct, daysLeft);
+
+        if (m1 && isMilestoneReached('2025-03-22')) m1.classList.add('reached');
+        if (m2 && isMilestoneReached('2026-04-25')) m2.classList.add('reached');
+        if (m3 && isMilestoneReached('2026-05-04')) m3.classList.add('reached');
+    }
+
+    document.addEventListener('DOMContentLoaded', update);
+
+    // Update once per hour — no need for per-second ticking on a date bar
+    setInterval(update, 1000 * 60 * 60);
+})();
+</script>
+  
+
+  
+  
+<script>
+// =============================================
+// SUBJECT SUGGESTIONS — saves to Supabase
+// =============================================
+window.submitSuggestion = async function(inputId, btn) {
+    var input = document.getElementById(inputId);
+    var confirmEl = document.getElementById(inputId.replace('suggestion', 'confirm'));
+    var suggestion = input.value.trim();
+
+    if (!suggestion) {
+        input.style.borderColor = '#ef4444';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    try {
+        var res = await fetch('/api/subject-suggestions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ suggestion: suggestion })
+        });
+
+        if (res.ok) {
+            btn.textContent = 'Sent ✓';
+            btn.style.background = '#54D3AB';
+            input.style.display = 'none';
+            if (confirmEl) confirmEl.textContent = '✓ Got it — we\'ll consider this for the next release.';
+        } else {
+            btn.disabled = false;
+            btn.textContent = 'Send →';
+            if (confirmEl) confirmEl.textContent = 'Something went wrong. Try again.';
+            confirmEl.style.color = '#ef4444';
+        }
+    } catch (e) {
+        btn.disabled = false;
+        btn.textContent = 'Send →';
+        if (confirmEl) confirmEl.textContent = 'Network error. Try again.';
+        confirmEl.style.color = '#ef4444';
+    }
+};
+</script>  
+  
+  
+  
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
