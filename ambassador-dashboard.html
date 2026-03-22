@@ -8,412 +8,564 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            background: #f9fafb;
-            min-height: 100vh;
-        }
+body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background: #f9fafb;
+    min-height: 100vh;
+}
 
-        /* Nav */
-        .top-nav {
-            background: white;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 1.25rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+.top-nav {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
 
-        .logo-img { height: 45px; width: auto; }
+.logo-img { height: 45px; width: auto; }
 
-        .nav-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #9f7261;
-        }
+.nav-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #9f7261;
+}
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
 
-        .ambassador-name {
-            font-size: 0.9375rem;
-            font-weight: 600;
-            color: #374151;
-        }
+.ambassador-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #374151;
+}
 
-        .logout-btn {
-            background: #f3f4f6;
-            color: #374151;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
-        }
+.logout-btn {
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
 
-        .logout-btn:hover { background: #e5e7eb; }
+.logout-btn:hover { background: #e5e7eb; }
 
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2.5rem 2rem;
-        }
+.container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+}
 
-        /* Welcome */
-        .welcome-section { margin-bottom: 2.5rem; }
+.welcome-section { margin-bottom: 2rem; }
 
-        .welcome-title {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 0.375rem;
-        }
+.welcome-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.375rem;
+}
 
-        .welcome-subtitle {
-            font-size: 1rem;
-            color: #6b7280;
-        }
+.welcome-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+}
 
-        /* Phase Labels */
-        .phase-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+/* Main dashboard grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 357px 1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+    margin-bottom: 1.5rem;
+}
 
-        .phase-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e5e7eb;
-        }
+/* LEFT COLUMN */
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
 
-        .phase-1-label { color: #f59e0b; }
-        .phase-2-label { color: #1d7fe2; }
+/* iPhone TikTok Player */
+.tiktok-player-wrapper {
+    background: white;
+    border-radius: 14px;
+    border: 2px solid #e5e7eb;
+    overflow: hidden;
+    padding: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
 
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.25rem;
-            margin-bottom: 1rem;
-        }
+.tiktok-player-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.75rem;
+}
 
-        .stat-card {
-            background: white;
-            border-radius: 14px;
-            padding: 1.75rem;
-            border: 2px solid #e5e7eb;
-            transition: all 0.3s;
-        }
+.iphone-frame {
+    width: 325px;
+    margin: 0 auto;
+}
 
-        .stat-card:hover {
-            border-color: #1d7fe2;
-            box-shadow: 0 4px 16px rgba(29, 127, 226, 0.1);
-        }
+.iphone-screen {
+    width: 325px;
+    height: 575px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background: #000;
+}
 
-        .stat-card.highlight {
-            border-color: #1d7fe2;
-            background: linear-gradient(135deg, #f0f7ff, #ffffff);
-        }
+.iphone-screen iframe {
+    width: 325px;
+    height: 575px;
+    border: none;
+    display: block;
+}
+      
+.tiktok-placeholder-slide {
+    width: 100%;
+    height: 100%;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4b5563;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 1rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
 
-        .stat-label {
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.625rem;
-        }
+/* Arrow controls */
+.player-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f3f4f6;
+}
 
-        .stat-value {
-            font-size: 2.25rem;
-            font-weight: 800;
-            color: #111827;
-            line-height: 1;
-        }
+.arrow-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 1rem;
+    color: #374151;
+}
 
-        .stat-currency { color: #1d7fe2; }
+.arrow-btn:hover {
+    background: #1d7fe2;
+    color: white;
+}
 
-        .stat-sub {
-            font-size: 0.75rem;
-            color: #9ca3af;
-            margin-top: 0.5rem;
-        }
+.arrow-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
 
-        .stat-sub span {
-            color: #10b981;
-            font-weight: 600;
-        }
+.player-counter {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #6b7280;
+}
 
-        /* Progress Bar */
-        .progress-section {
-            background: white;
-            border-radius: 14px;
-            padding: 1.75rem;
-            border: 2px solid #e5e7eb;
-            margin-bottom: 2.5rem;
-        }
+/* RIGHT COLUMN */
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 0;
+    height: 100%;
+}
 
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
+.left-column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 357px;
+    flex-shrink: 0;
+}
 
-        .progress-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #111827;
-        }
+      
+/* Total Payout Card */
+.total-card {
+    background: linear-gradient(135deg, #0a1e3d 0%, #1d7fe2 100%);
+    border-radius: 14px;
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
 
-        .progress-count {
-            font-size: 0.9375rem;
-            font-weight: 600;
-            color: #6b7280;
-        }
+.total-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.375rem;
+}
 
-        .progress-bar-bg {
-            width: 100%;
-            height: 12px;
-            background: #f3f4f6;
-            border-radius: 9999px;
-            overflow: hidden;
-        }
+.total-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+}
 
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(135deg, #f59e0b, #f97316);
-            border-radius: 9999px;
-            transition: width 1s ease;
-        }
+.total-note {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    margin-top: 0.375rem;
+}
 
-        .progress-footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 0.625rem;
-            font-size: 0.75rem;
-            color: #9ca3af;
-        }
+.payout-info { text-align: right; }
 
-        /* Referral Section */
-        .referral-section {
-            background: white;
-            border-radius: 14px;
-            padding: 1.75rem;
-            border: 2px solid #e5e7eb;
-            margin-bottom: 2.5rem;
-        }
+.payout-date {
+    font-size: 1rem;
+    font-weight: 700;
+}
 
-        .referral-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 1.25rem;
-        }
+.payout-note {
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
 
-        .referral-link-box {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+/* PDF Viewer */
+.pdf-viewer-wrapper {
+    background: white;
+    border-radius: 14px;
+    border: 2px solid #e5e7eb;
+    overflow: hidden;
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+}
 
-        .referral-link-display {
-            flex: 1;
-            min-width: 200px;
-            background: #f9fafb;
-            border: 2px solid #1d7fe2;
-            border-radius: 10px;
-            padding: 1rem 1.25rem;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #1d7fe2;
-            font-family: 'Inter', sans-serif;
-        }
+.pdf-viewer-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.75rem;
+}
 
-        .copy-btn {
-            background: #1d7fe2;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 1rem 1.5rem;
-            font-size: 0.9375rem;
-            font-weight: 700;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
+.pdf-frame-wrapper {
+    flex: 1;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    height: 0;
+}
 
-        .copy-btn:hover {
-            background: #1565c0;
-            transform: translateY(-2px);
-        }
+.pdf-frame-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
 
-        .referral-hint {
-            font-size: 0.8125rem;
-            color: #6b7280;
-            margin-top: 0.75rem;
-        }
+.pdf-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
 
-        /* Table Section */
-        .table-section {
-            background: white;
-            border-radius: 14px;
-            padding: 1.75rem;
-            border: 2px solid #e5e7eb;
-            margin-bottom: 2.5rem;
-        }
+/* Stats grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.875rem;
+}
 
-        .table-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 1.25rem;
-        }
+.stats-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 0.875rem;
+}
 
-        .table-wrapper { overflow-x: auto; }
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s;
+}
 
-        table { width: 100%; border-collapse: collapse; }
+.stat-card:hover {
+    border-color: #1d7fe2;
+    box-shadow: 0 4px 16px rgba(29, 127, 226, 0.1);
+}
 
-        thead { background: #f9fafb; }
+.stat-card.highlight {
+    border-color: #1d7fe2;
+    background: linear-gradient(135deg, #f0f7ff, #ffffff);
+}
 
-        th {
-            padding: 0.875rem 1rem;
-            text-align: left;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 2px solid #e5e7eb;
-        }
+.stat-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
 
-        td {
-            padding: 0.875rem 1rem;
-            border-bottom: 1px solid #f3f4f6;
-            color: #374151;
-            font-size: 0.9375rem;
-        }
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #111827;
+    line-height: 1;
+}
 
-        tbody tr:hover { background: #f9fafb; }
+.stat-currency { color: #1d7fe2; }
 
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.625rem;
-            border-radius: 9999px;
-            font-size: 0.6875rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+.stat-sub {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-top: 0.375rem;
+}
 
-        .badge-verified { background: #d1fae5; color: #065f46; }
-        .badge-pending { background: #fef3c7; color: #92400e; }
-        .badge-payable { background: #dbeafe; color: #1e40af; }
-        .badge-paid { background: #f3f4f6; color: #6b7280; }
+.stat-sub span {
+    color: #10b981;
+    font-weight: 600;
+}
 
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #9ca3af;
-        }
+/* Referral Section */
+.referral-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+    border: 2px solid #e5e7eb;
+}
 
-        .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.referral-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+}
 
-        /* Total Payout Card */
-        .total-card {
-            background: linear-gradient(135deg, #0a1e3d 0%, #1d7fe2 100%);
-            border-radius: 14px;
-            padding: 2rem;
-            color: white;
-            margin-bottom: 2.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
+.referral-link-box {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
 
-        .total-label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
-        }
+.referral-link-display {
+    flex: 1;
+    background: #f9fafb;
+    border: 2px solid #1d7fe2;
+    border-radius: 8px;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1d7fe2;
+    font-family: 'Inter', sans-serif;
+}
 
-        .total-value {
-            font-size: 3rem;
-            font-weight: 800;
-            line-height: 1;
-        }
+.copy-btn {
+    background: #1d7fe2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
 
-        .total-note {
-            font-size: 0.8125rem;
-            opacity: 0.7;
-            margin-top: 0.5rem;
-        }
+.copy-btn:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+}
 
-        .payout-info {
-            text-align: right;
-        }
+.referral-hint {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
 
-        .payout-date {
-            font-size: 1.125rem;
-            font-weight: 700;
-        }
+/* Table */
+.table-section {
+    background: white;
+    border-radius: 14px;
+    padding: 1.5rem;
+    border: 2px solid #e5e7eb;
+    margin-bottom: 2rem;
+}
 
-        .payout-note {
-            font-size: 0.8125rem;
-            opacity: 0.7;
-        }
+.table-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.25rem;
+}
 
-        /* Mobile */
-        @media (max-width: 768px) {
-            .top-nav { padding: 1rem; }
-            .container { padding: 1.5rem 1rem; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            .ambassador-name { display: none; }
-            .total-card { flex-direction: column; }
-            .payout-info { text-align: left; }
-            .referral-link-box { flex-direction: column; }
-            .referral-link-display { width: 100%; }
-            .copy-btn { width: 100%; }
-        }
+.table-wrapper { overflow-x: auto; }
 
-        @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .welcome-title { font-size: 1.5rem; }
-            .total-value { font-size: 2.25rem; }
-        }
+table { width: 100%; border-collapse: collapse; }
+thead { background: #f9fafb; }
+
+th {
+    padding: 0.875rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+    font-size: 0.9375rem;
+}
+
+tbody tr:hover { background: #f9fafb; }
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-verified { background: #d1fae5; color: #065f46; }
+.badge-pending { background: #fef3c7; color: #92400e; }
+.badge-payable { background: #dbeafe; color: #1e40af; }
+.badge-paid { background: #f3f4f6; color: #6b7280; }
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #9ca3af;
+}
+
+.empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+.phase-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.phase-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.phase-1-label { color: #f59e0b; }
+
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .iphone-frame {
+        max-width: 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-nav { padding: 1rem; }
+    .container { padding: 1.5rem 1rem; }
+    .ambassador-name { display: none; }
+    .total-card { flex-direction: column; }
+    .payout-info { text-align: left; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .stats-grid-2 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .welcome-title { font-size: 1.5rem; }
+    .total-value { font-size: 2rem; }
+}
+      
+      
+      
+.tiktok-support-note {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    line-height: 1.6;
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0 0.5rem;
+}      
+      
+      
+      
     </style>
 </head>
 
@@ -607,102 +759,214 @@
     </div>
 </nav>
 
-    <!-- Main -->
-    <div class="container">
+ <div class="container">
 
-        <!-- Welcome -->
-        <div class="welcome-section">
-            <h1 class="welcome-title">Welcome back, <span id="welcomeName">Ambassador</span>! 👋</h1>
-            <p class="welcome-subtitle">Here's your live performance overview</p>
-        </div>
-
-        <!-- Total Payout Card -->
-        <div class="total-card">
-            <div>
-                <div class="total-label">Total Payout Value</div>
-                <div class="total-value">£<span id="totalPayout">0.00</span></div>
-                <div class="total-note">Phase 1 waitlist + Phase 2 subscriptions combined</div>
-            </div>
-            <div class="payout-info">
-                <div class="payout-note">Next payout date</div>
-                <div class="payout-date" id="nextPayoutDate">-</div>
-                <div class="payout-note">Net-15 rolling commission</div>
-            </div>
-        </div>
-
-        <!-- Phase 1 -->
-        <div class="phase-label phase-1-label">⚡ Phase 1 — Waitlist Growth (ends 28 Feb)</div>
-
-        <div class="stats-grid" style="margin-bottom: 1.25rem;">
-            <div class="stat-card">
-                <div class="stat-label">Total Signups</div>
-                <div class="stat-value" id="totalSignups">0</div>
-                <div class="stat-sub">All referral clicks</div>
-            </div>
-            <div class="stat-card highlight">
-                <div class="stat-label">Verified Signups</div>
-                <div class="stat-value" id="verifiedSignups">0</div>
-                <div class="stat-sub"><span id="remainingCap">100</span> remaining before cap</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Phase 1 Earnings</div>
-                <div class="stat-value"><span class="stat-currency">£</span><span id="phase1Earnings">0.00</span></div>
-                <div class="stat-sub">50p per verified signup</div>
-            </div>
-        </div>
-
-        <!-- Progress Bar -->
-        <div class="progress-section" style="margin-bottom: 2.5rem;">
-            <div class="progress-header">
-                <span class="progress-title">Signup Cap Progress</span>
-                <span class="progress-count"><span id="capCount">0</span> / 100 signups</span>
-            </div>
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
-            </div>
-            <div class="progress-footer">
-                <span>0</span>
-                <span>Max £50 earnings</span>
-                <span>100</span>
-            </div>
-        </div>
-
-        <!-- Phase 2 -->
-        <div class="phase-label phase-2-label">🚀 Phase 2 — Subscription Commissions (post launch)</div>
-
-        <div class="stats-grid" style="margin-bottom: 2.5rem;">
-            <div class="stat-card">
-                <div class="stat-label">Active Subscribers</div>
-                <div class="stat-value" id="activeSubscriptions">0</div>
-                <div class="stat-sub">Currently paying monthly</div>
-            </div>
-            <div class="stat-card highlight">
-                <div class="stat-label">Phase 2 Earnings</div>
-                <div class="stat-value"><span class="stat-currency">£</span><span id="phase2Earnings">0.00</span></div>
-                <div class="stat-sub">£2 per active subscriber/month</div>
-            </div>
-        </div>
-
-        <!-- Referral Link -->
-        <div class="referral-section">
-            <h2 class="referral-title">Your Referral Link</h2>
-            <div class="referral-link-box">
-                <input class="referral-link-display" id="referralLinkDisplay" readonly value="Loading...">
-                <button class="copy-btn" onclick="copyReferralLink()">Copy Link</button>
-            </div>
-            <p class="referral-hint">Share this link. Anyone who signs up through it will be tracked automatically.</p>
-        </div>
-
-        <!-- Waitlist Signups Table -->
-        <div class="table-section">
-            <h2 class="table-title">Waitlist Signups (Phase 1)</h2>
-            <div class="table-wrapper" id="waitlistTable">
-                <div class="loading" style="text-align:center; padding: 2rem; color: #9ca3af;">Loading...</div>
-            </div>
-        </div>
-
+    <!-- Welcome -->
+    <div class="welcome-section">
+        <h1 class="welcome-title">Welcome back, <span id="welcomeName">Ambassador</span>! 👋</h1>
+        <p class="welcome-subtitle">Here's your live performance overview</p>
     </div>
 
+    <!-- Main Dashboard Grid -->
+    <div class="dashboard-grid">
+
+        <!-- LEFT: TikTok iPhone Player -->
+        <div class="left-column">
+            <div class="tiktok-player-wrapper">
+                <div class="tiktok-player-label">Content Preview</div>
+                <div class="iphone-frame">
+    <div class="iphone-screen" id="tiktokScreen">
+                        <!-- Videos injected by JS -->
+                    </div>
+                </div>
+                <div class="player-controls">
+                    <button class="arrow-btn" id="tiktokPrev" onclick="changeTiktok(-1)">&#8592;</button>
+                    <span class="player-counter" id="tiktokCounter">1 / 10</span>
+                    <button class="arrow-btn" id="tiktokNext" onclick="changeTiktok(1)">&#8594;</button>
+                </div>
+                <p class="tiktok-support-note">If you need any support with anything, talk to the founder at Monturalearn on TikTok.</p>
+            </div>
+        </div>
+
+        <!-- RIGHT: Stats & Controls -->
+        <div class="right-column">
+
+            <!-- Total Payout -->
+            <div class="total-card">
+                <div>
+                    <div class="total-label">Total Payout Value</div>
+                    <div class="total-value">£<span id="totalPayout">0.00</span></div>
+                    <div class="total-note">Waitlist + subscriptions combined</div>
+                </div>
+                <div class="payout-info">
+                    <div class="payout-note">Next payout date</div>
+                    <div class="payout-date" id="nextPayoutDate">-</div>
+                    <div class="payout-note">Net-15 rolling commission</div>
+                </div>
+            </div>
+
+            <!-- PDF Viewer -->
+            <div class="pdf-viewer-wrapper">
+                <div class="pdf-viewer-label">Resources & Guides</div>
+                <div class="pdf-frame-wrapper">
+                    <div class="pdf-placeholder" id="pdfFrame">
+                        PDF slot 1 — add URL in JS
+                    </div>
+                </div>
+                <div class="player-controls">
+                    <button class="arrow-btn" id="pdfPrev" onclick="changePdf(-1)">&#8592;</button>
+                    <span class="player-counter" id="pdfCounter">1 / 10</span>
+                    <button class="arrow-btn" id="pdfNext" onclick="changePdf(1)">&#8594;</button>
+                </div>
+            </div>
+
+            <!-- Row 1: Stats -->
+            <div class="phase-label phase-1-label">⚡ Performance Overview</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Signups</div>
+                    <div class="stat-value" id="totalSignups">0</div>
+                    <div class="stat-sub">All referral clicks</div>
+                </div>
+                <div class="stat-card highlight">
+                    <div class="stat-label">Verified Signups</div>
+                    <div class="stat-value" id="verifiedSignups">0</div>
+                    <div class="stat-sub">Confirmed leads</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Subscribers</div>
+                    <div class="stat-value" id="activeSubscriptions">0</div>
+                    <div class="stat-sub">Currently paying monthly</div>
+                </div>
+            </div>
+
+            <!-- Row 2: Earnings + Referral -->
+            <div class="stats-grid-2">
+                <div class="stat-card highlight">
+                    <div class="stat-label">Total Earnings</div>
+                    <div class="stat-value"><span class="stat-currency">£</span><span id="phase2Earnings">0.00</span></div>
+                    <div class="stat-sub">£2 per active subscriber/month</div>
+                </div>
+                <div class="referral-section">
+                    <div class="referral-title">Your Referral Link</div>
+                    <div class="referral-link-box">
+                        <input class="referral-link-display" id="referralLinkDisplay" readonly value="Loading...">
+                        <button class="copy-btn" onclick="copyReferralLink()">Copy</button>
+                    </div>
+                    <p class="referral-hint">Share this link to track your signups.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Full Width: Waitlist Table -->
+    <div class="table-section">
+        <h2 class="table-title">Waitlist Signups</h2>
+        <div class="table-wrapper" id="waitlistTable">
+            <div class="loading" style="text-align:center; padding: 2rem; color: #9ca3af;">Loading...</div>
+        </div>
+    </div>
+
+</div>   
+
+      
+      
+<script async src="https://www.tiktok.com/embed.js"></script>
+<script>
+// =============================================
+// TIKTOK PLAYER
+// =============================================
+const tiktokVideos = [
+    '7599470147459566851',
+    '7592515657841790230',
+    'TIKTOK_ID_3',
+    'TIKTOK_ID_4',
+    'TIKTOK_ID_5',
+    'TIKTOK_ID_6',
+    'TIKTOK_ID_7',
+    'TIKTOK_ID_8',
+    'TIKTOK_ID_9',
+    'TIKTOK_ID_10'
+];
+
+let currentTiktok = 0;
+
+function renderTiktok() {
+    const screen = document.getElementById('tiktokScreen');
+    const id = tiktokVideos[currentTiktok];
+    const counter = document.getElementById('tiktokCounter');
+    counter.textContent = (currentTiktok + 1) + ' / ' + tiktokVideos.length;
+
+    if (!id || id.startsWith('TIKTOK_ID')) {
+        screen.innerHTML = `<div class="tiktok-placeholder-slide">Video slot ${currentTiktok + 1}<br>Add TikTok ID in JS</div>`;
+        return;
+    }
+
+    screen.innerHTML = `<iframe src="https://www.tiktok.com/embed/v2/${id}" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"></iframe>`;
+
+    document.getElementById('tiktokPrev').disabled = currentTiktok === 0;
+    document.getElementById('tiktokNext').disabled = currentTiktok === tiktokVideos.length - 1;
+}
+
+function changeTiktok(dir) {
+    const next = currentTiktok + dir;
+    if (next < 0 || next >= tiktokVideos.length) return;
+    currentTiktok = next;
+    renderTiktok();
+}
+
+// =============================================
+// PDF VIEWER
+// =============================================
+const pdfSlides = [
+    '',  // Add PDF URL here
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    ''
+];
+
+let currentPdf = 0;
+
+function renderPdf() {
+    const frame = document.getElementById('pdfFrame');
+    const counter = document.getElementById('pdfCounter');
+    const url = pdfSlides[currentPdf];
+    counter.textContent = (currentPdf + 1) + ' / ' + pdfSlides.length;
+
+    if (!url) {
+        frame.innerHTML = `<div class="pdf-placeholder">PDF slot ${currentPdf + 1} — add URL in JS</div>`;
+        return;
+    }
+
+    frame.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+
+    document.getElementById('pdfPrev').disabled = currentPdf === 0;
+    document.getElementById('pdfNext').disabled = currentPdf === pdfSlides.length - 1;
+}
+
+function changePdf(dir) {
+    const next = currentPdf + dir;
+    if (next < 0 || next >= pdfSlides.length) return;
+    currentPdf = next;
+    renderPdf();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    renderTiktok();
+    renderPdf();
+});
+</script>
+      
+      
+      
+      
     <script>
 let currentReferralCode = null;
 
@@ -1158,7 +1422,36 @@ function checkQuizAnswer(selected) {
 </script>
 
     
+<script>
+function matchPdfToTiktok() {
+    const tiktokWrapper = document.querySelector('.tiktok-player-wrapper');
+    const pdfWrapper = document.querySelector('.pdf-viewer-wrapper');
+    const totalCard = document.querySelector('.total-card');
+    const playerControls = pdfWrapper.querySelector('.player-controls');
+    const label = pdfWrapper.querySelector('.pdf-viewer-label');
 
+    if (!tiktokWrapper || !pdfWrapper || !totalCard) return;
+
+    const tiktokHeight = tiktokWrapper.offsetHeight;
+    const totalCardHeight = totalCard.offsetHeight;
+    const gap = 16; // 1rem gap
+    const labelHeight = label ? label.offsetHeight : 0;
+    const controlsHeight = playerControls ? playerControls.offsetHeight : 0;
+    const padding = 32; // 1rem top + 1rem bottom padding
+
+    const pdfFrameHeight = tiktokHeight - totalCardHeight - gap - padding - labelHeight - controlsHeight - 16;
+
+    const pdfFrame = pdfWrapper.querySelector('.pdf-frame-wrapper');
+    if (pdfFrame && pdfFrameHeight > 0) {
+        pdfFrame.style.height = pdfFrameHeight + 'px';
+        pdfFrame.style.flex = 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', matchPdfToTiktok);
+window.addEventListener('resize', matchPdfToTiktok);
+setTimeout(matchPdfToTiktok, 500);
+</script>
 
 
     
