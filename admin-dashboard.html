@@ -612,7 +612,6 @@
             }
 
             // Load paid status from localStorage
-            const paidStatus = JSON.parse(localStorage.getItem('paid_ambassadors') || '{}');
 
             container.innerHTML = `
                 <table>
@@ -636,7 +635,10 @@
                         ${payouts.map(p => {
                             const phase = p.phase1Total > 0 && p.phase2Total > 0 ? 'both' : 
                                         p.phase1Total > 0 ? '1' : '2';
-                            const isPaid = paidStatus[p.ambassadorId] || false;
+                            const isPaid = p.paid_status || false;
+
+                            const checkbox = row ? row.querySelector('.paid-checkbox') : null;
+if (isPaid && checkbox) checkbox.disabled = true;
                             
                             return `
                                 <tr class="${isPaid ? 'paid' : ''}" data-id="${p.ambassadorId}">
@@ -714,6 +716,54 @@ Generate Receipt
                 row.querySelector('.paid-label').textContent = 'Pending';
             }
         }
+
+       async function togglePaid(ambassadorId) {
+
+    const txnInput = document.getElementById('txn_' + ambassadorId);
+    const paypalTxnId = txnInput ? txnInput.value.trim() : '';
+
+    if (!paypalTxnId) {
+        alert('Please enter the PayPal Transaction ID first.');
+        txnInput.focus();
+        return;
+    }
+
+    const checkbox = document.querySelector(`tr[data-id="${ambassadorId}"] .paid-checkbox`);
+    checkbox.disabled = true;  // disable immediately to prevent double clicks
+
+    try {
+        const response = await fetch('/api/admin-payouts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'markPaid',
+                ambassadorId: ambassadorId,
+                paypalTxnId: paypalTxnId
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.error || 'Failed to mark as paid');
+            checkbox.disabled = false;
+            return;
+        }
+
+        const row = document.querySelector(`tr[data-id="${ambassadorId}"]`);
+        row.classList.add('paid');
+        row.querySelector('.paid-label').textContent = 'Paid';
+
+        // Clear PayPal input so you don’t accidentally reuse it
+        if (txnInput) txnInput.value = '';
+
+        alert('Payout saved successfully');
+
+    } catch (error) {
+        alert('Network error');
+        checkbox.disabled = false;
+    }
+}
 
         function exportToCSV() {
             if (!payoutsData || !payoutsData.payouts) return;
