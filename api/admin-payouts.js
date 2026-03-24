@@ -91,6 +91,26 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid action' });
   }
 
+  if (action === 'markPaid' && ambassadorId) {
+  try {
+    const { paypalTxnId } = req.body;
+
+    await supabase
+      .from('ambassadors')
+      .update({
+        paid_status: true,
+        paypal_txn_id: paypalTxnId,
+        paid_at: new Date().toISOString()
+      })
+      .eq('id', ambassadorId);
+
+    return res.status(200).json({ success: true });
+
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
+
   // Handle GET requests (admin payouts - requires password)
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -166,18 +186,22 @@ module.exports = async function handler(req, res) {
 
       if (totalPayout >= 0) {
         payoutData.push({
-          ambassadorId: amb.id,
-          name: `${amb.first_name} ${amb.last_name}`,
-          email: amb.email,
-          referralCode: amb.referral_code,
-          phase1Signups: phase1Count,
-          phase1Total: phase1Total,
-          phase2Subscribers: phase2Count,
-          phase2Total: phase2Total,
-          totalPayout: totalPayout,
-          payoutMethod: 'PayPal',
-          paypalEmail: amb.email
-        });
+  ambassadorId: amb.id,
+  name: `${amb.first_name} ${amb.last_name}`,
+  email: amb.email,
+  referralCode: amb.referral_code,
+  phase1Signups: phase1Count,
+  phase1Total: phase1Total,
+  phase2Subscribers: phase2Count,
+  phase2Total: phase2Total,
+  totalPayout: totalPayout,
+  payoutMethod: 'PayPal',
+  paypalEmail: amb.email,
+
+  paid_status: amb.paid_status,
+  paypal_txn_id: amb.paypal_txn_id,
+  paid_at: amb.paid_at
+});
       }
     }
 
