@@ -1,14 +1,13 @@
 const { createClient } = require('@supabase/supabase-js');
-const fetch = require('node-fetch');
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY;
-const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
+
 
 // Get real IP from request
 function getIP(req) {
@@ -22,39 +21,36 @@ function generateToken() {
     return crypto.randomBytes(32).toString('hex');
 }
 
+const nodemailer = require('nodemailer');
+
 async function sendVerificationEmail(email, token, referralCode) {
     const verifyUrl = `https://www.monturalearn.co.uk/api/verify-waitlist?token=${token}&email=${encodeURIComponent(email)}`;
-    
-    try {
-        // Create or update profile in Klaviyo with verification link
-        const profileResponse = await fetch('https://a.klaviyo.com/api/profiles/', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-                'revision': '2024-02-15',
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                data: {
-                    type: 'profile',
-                    attributes: {
-                        email: email,
-                        properties: {
-                            verification_url: verifyUrl,
-                            referral_code: referralCode || '',
-                            needs_verification: true
-                        }
-                    }
-                }
-            })
-        });
 
-        const profileResult = await profileResponse.json();
-        const profileId = profileResult.data?.id;
-
-        if (!profileId) {
-            throw new Error('No profile ID returned');
+    const transporter = nodemailer.createTransport({
+        host: "smtp.ionos.co.uk",
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.IONOS_EMAIL,
+            pass: process.env.IONOS_PASSWORD
         }
+    });
+
+    const mailOptions = {
+        from: `"Montura Learn" <${process.env.IONOS_EMAIL}>`,
+        to: email,
+        subject: "Verify your email",
+        html: `
+            <h2>Welcome to Montura Learn 🚀</h2>
+            <p>Click below to verify your email:</p>
+            <a href="${verifyUrl}" style="padding:10px 20px;background:black;color:white;text-decoration:none;">
+                Verify Email
+            </a>
+        `
+    };
+
+    await transporter.sendMail(mailOptions);
+}
 
         // Add to verification list in Klaviyo
         // This triggers your verification email flow in Klaviyo
