@@ -6,6 +6,7 @@
   "dependencies": {
     "stripe": "^14.10.0",
     "@supabase/supabase-js": "^2.39.0",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.7",
+    "nodemailer": "^6.9.0"
   }
 }
