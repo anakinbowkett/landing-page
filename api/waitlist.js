@@ -158,7 +158,8 @@ if (existing) {
         verified: false,
         verification_token: token,
         ip_address: ip
-    });
+    })
+    .select();
 
 console.log('INSERT RESULT:', insertedData, insertError);
 
