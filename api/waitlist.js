@@ -21,7 +21,6 @@ function generateToken() {
     return crypto.randomBytes(32).toString('hex');
 }
 
-const nodemailer = require('nodemailer');
 
 async function sendVerificationEmail(email, token, referralCode) {
     const verifyUrl = `https://www.monturalearn.co.uk/api/verify-waitlist?token=${token}&email=${encodeURIComponent(email)}`;
@@ -52,28 +51,7 @@ async function sendVerificationEmail(email, token, referralCode) {
     await transporter.sendMail(mailOptions);
 }
 
-        // Add to verification list in Klaviyo
-        // This triggers your verification email flow in Klaviyo
-        if (KLAVIYO_LIST_ID) {
-            await fetch(`https://a.klaviyo.com/api/lists/${KLAVIYO_LIST_ID}/relationships/profiles/`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-                    'revision': '2024-02-15',
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    data: [{ type: 'profile', id: profileId }]
-                })
-            });
-        }
-
-        return { success: true };
-    } catch (err) {
-        console.error('Email error:', err.message);
-        throw err;
-    }
-}
+    
 
 module.exports = async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -199,7 +177,7 @@ module.exports = async function handler(req, res) {
                     });
             }
 
-            // Send verification email via Klaviyo
+            // Send verification email via IONOS
             try {
                 await sendVerificationEmail(
                     email.toLowerCase().trim(), 
