@@ -89,15 +89,17 @@ module.exports = async function handler(req, res) {
 
         try {
             // Check if email already exists
-            const { data: existing } = await supabase
+const { data: existing, error: existingError } = await supabase
     .from('waitlist')
     .select('email, verified')
     .eq('email', email.toLowerCase().trim())
     .maybeSingle();
 
-            if (existing) {
-                return res.status(409).json({ message: 'Already on waitlist' });
-            }
+console.log('EXISTING USER CHECK:', existing, existingError);
+
+if (existing) {
+    return res.status(409).json({ message: 'Already on waitlist' });
+}
 
             // FRAUD CHECK: Max 1 verified signup per IP per 24 hours
             if (ip !== 'unknown') {
@@ -146,17 +148,19 @@ module.exports = async function handler(req, res) {
             const token = generateToken();
 
             // Insert to Supabase
-            const { error: insertError } = await supabase
-                .from('waitlist')
-                .insert({ 
-                    email: email.toLowerCase().trim(),
-                    tiktok_username: tiktok_username || null,
-                    referral_code: cleanReferralCode,
-                    ambassador_id: ambassadorId,
-                    verified: false,
-                    verification_token: token,
-                    ip_address: ip
-                });
+            const { data: insertedData, error: insertError } = await supabase
+    .from('waitlist')
+    .insert({ 
+        email: email.toLowerCase().trim(),
+        tiktok_username: tiktok_username || null,
+        referral_code: cleanReferralCode,
+        ambassador_id: ambassadorId,
+        verified: false,
+        verification_token: token,
+        ip_address: ip
+    });
+
+console.log('INSERT RESULT:', insertedData, insertError);
 
             if (insertError) {
                 console.error('Supabase error:', insertError);
