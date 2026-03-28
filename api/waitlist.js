@@ -90,10 +90,10 @@ module.exports = async function handler(req, res) {
         try {
             // Check if email already exists
             const { data: existing } = await supabase
-                .from('waitlist')
-                .select('email, verified')
-                .eq('email', email.toLowerCase().trim())
-                .single();
+    .from('waitlist')
+    .select('email, verified')
+    .eq('email', email.toLowerCase().trim())
+    .maybeSingle();
 
             if (existing) {
                 return res.status(409).json({ message: 'Already on waitlist' });
