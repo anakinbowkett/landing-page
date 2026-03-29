@@ -191,26 +191,27 @@ try {
     );
 
     // Send to Zapier (for IONOS list automation)
-    await fetch("https://hooks.zapier.com/hooks/catch/21849635/un5f3ru/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            email: email.toLowerCase().trim()
-        })
-    });
+    try {
+        console.log("SENDING TO ZAPIER");
+
+        const zapRes = await fetch("https://hooks.zapier.com/hooks/catch/21849635/un5f3ru/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email.toLowerCase().trim()
+            })
+        });
+
+        console.log("ZAPIER RESPONSE STATUS:", zapRes.status);
+
+    } catch (zapErr) {
+        console.error("ZAPIER ERROR:", zapErr);
+    }
 
 } catch (emailErr) {
     console.error('Email failed but continuing:', emailErr.message);
 }
-            return res.status(200).json({ message: 'Success' });
 
-        } catch (err) {
-            console.error('Server error:', err);
-            return res.status(500).json({ error: 'Something went wrong' });
-        }
-    }
-
-    return res.status(405).json({ error: 'Method not allowed' });
-};
+return res.status(200).json({ message: 'Success' });
