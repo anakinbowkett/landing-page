@@ -183,16 +183,27 @@ console.log('INSERT RESULT:', insertedData, insertError);
             }
 
             // Send verification email via IONOS
-            try {
-                await sendVerificationEmail(
-                    email.toLowerCase().trim(), 
-                    token, 
-                    cleanReferralCode
-                );
-            } catch (emailErr) {
-                console.error('Email failed but continuing:', emailErr.message);
-            }
+try {
+    await sendVerificationEmail(
+        email.toLowerCase().trim(), 
+        token, 
+        cleanReferralCode
+    );
 
+    // Send to Zapier (for IONOS list automation)
+    await fetch("https://hooks.zapier.com/hooks/catch/21849635/un5f3ru/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: email.toLowerCase().trim()
+        })
+    });
+
+} catch (emailErr) {
+    console.error('Email failed but continuing:', emailErr.message);
+}
             return res.status(200).json({ message: 'Success' });
 
         } catch (err) {
