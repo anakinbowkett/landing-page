@@ -1,6 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const fetch = require('node-fetch');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -206,12 +207,11 @@ try {
 
         console.log("ZAPIER RESPONSE STATUS:", zapRes.status);
 
-    } catch (zapErr) {
-        console.error("ZAPIER ERROR:", zapErr);
+            } catch (err) {
+            console.error('Server error:', err);
+            return res.status(500).json({ error: 'Something went wrong' });
+        }
     }
 
-} catch (emailErr) {
-    console.error('Email failed but continuing:', emailErr.message);
-}
-
-return res.status(200).json({ message: 'Success' });
+    return res.status(405).json({ error: 'Method not allowed' });
+};
