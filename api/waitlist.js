@@ -183,31 +183,41 @@ console.log('INSERT RESULT:', insertedData, insertError);
                     });
             }
 
-            // Send verification email via IONOS
-try {
-    await sendVerificationEmail(
-        email.toLowerCase().trim(), 
-        token, 
-        cleanReferralCode
-    );
+                        // Send verification email via IONOS
+            try {
+                await sendVerificationEmail(
+                    email.toLowerCase().trim(), 
+                    token, 
+                    cleanReferralCode
+                );
 
-    // Send to Zapier (for IONOS list automation)
-    try {
-        console.log("SENDING TO ZAPIER");
+                // Send to Zapier (for IONOS list automation)
+                try {
+                    console.log("SENDING TO ZAPIER");
 
-        const zapRes = await fetch("https://hooks.zapier.com/hooks/catch/21849635/un5f3ru/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: email.toLowerCase().trim()
-            })
-        });
+                    const zapRes = await fetch("https://hooks.zapier.com/hooks/catch/21849635/un5f3ru/", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: email.toLowerCase().trim()
+                        })
+                    });
 
-        console.log("ZAPIER RESPONSE STATUS:", zapRes.status);
+                    console.log("ZAPIER RESPONSE STATUS:", zapRes.status);
 
-            } catch (err) {
+                } catch (zapErr) {
+                    console.error("ZAPIER ERROR:", zapErr);
+                }
+
+            } catch (emailErr) {
+                console.error('Email failed but continuing:', emailErr.message);
+            }
+
+            return res.status(200).json({ message: 'Success' });
+
+        } catch (err) {
             console.error('Server error:', err);
             return res.status(500).json({ error: 'Something went wrong' });
         }
