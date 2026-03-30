@@ -1,6 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
 const fetch = require('node-fetch');
 
 const supabase = createClient(
@@ -23,34 +22,7 @@ function generateToken() {
 }
 
 
-async function sendVerificationEmail(email, token, referralCode) {
-    const verifyUrl = `https://www.monturalearn.co.uk/api/verify-waitlist?token=${token}&email=${encodeURIComponent(email)}`;
 
-    const transporter = nodemailer.createTransport({
-        host: "smtp.ionos.co.uk",
-        port: 587,
-        secure: false,
-        auth: {
-            user: process.env.IONOS_EMAIL,
-            pass: process.env.IONOS_PASSWORD
-        }
-    });
-
-    const mailOptions = {
-        from: `"Montura Learn" <${process.env.IONOS_EMAIL}>`,
-        to: email,
-        subject: "Verify your email",
-        html: `
-            <h2>Welcome to Montura Learn 🚀</h2>
-            <p>Click below to verify your email:</p>
-            <a href="${verifyUrl}" style="padding:10px 20px;background:black;color:white;text-decoration:none;">
-                Verify Email
-            </a>
-        `
-    };
-
-    await transporter.sendMail(mailOptions);
-}
 
     
 
@@ -183,38 +155,59 @@ console.log('INSERT RESULT:', insertedData, insertError);
                     });
             }
 
-                        // Send verification email via IONOS
-            try {
-                await sendVerificationEmail(
-                    email.toLowerCase().trim(), 
-                    token, 
-                    cleanReferralCode
-                );
+// Send to Klaviyo
+try {
+    console.log("SENDING TO KLAVIYO");
 
-                // Send to Zapier (for IONOS list automation)
-                try {
-                    console.log("SENDING TO ZAPIER");
-
-                    const zapRes = await fetch("https://hooks.zapier.com/hooks/catch/21849635/un5f3ru/", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            email: email.toLowerCase().trim()
-                        })
-                    });
-
-                    console.log("ZAPIER RESPONSE STATUS:", zapRes.status);
-
-                } catch (zapErr) {
-                    console.error("ZAPIER ERROR:", zapErr);
+    // Create / update profile
+    const profileRes = await fetch("https://a.klaviyo.com/api/profiles/", {
+        method: "POST",
+        headers: {
+            "Authorization": `Klaviyo-API-Key ${process.env.KLAVIYO_PRIVATE_API_KEY}`,
+            "revision": "2024-02-15",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            data: {
+                type: "profile",
+                attributes: {
+                    email: email.toLowerCase().trim(),
+                    properties: {
+                        referral_code: cleanReferralCode || "",
+                        source: "waitlist"
+                    }
                 }
-
-            } catch (emailErr) {
-                console.error('Email failed but continuing:', emailErr.message);
             }
+        })
+    });
 
+    console.log("PROFILE STATUS:", profileRes.status);
+
+    // Add profile to list
+    const listRes = await fetch(`https://a.klaviyo.com/api/lists/${process.env.KLAVIYO_LIST_ID}/relationships/profiles/`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Klaviyo-API-Key ${process.env.KLAVIYO_PRIVATE_API_KEY}`,
+            "revision": "2024-02-15",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            data: [{
+                type: "profile",
+                attributes: {
+                    email: email.toLowerCase().trim()
+                }
+            }]
+        })
+    });
+
+    console.log("LIST STATUS:", listRes.status);
+    console.log("KLAVIYO SUCCESS");
+
+} catch (err) {
+    console.error("Klaviyo error:", err.message);
+}
+            
             return res.status(200).json({ message: 'Success' });
 
         } catch (err) {
