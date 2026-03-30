@@ -156,6 +156,14 @@ body.launch-mode .cta-button {
     margin-top: -1px;
 }
 
+@media (max-width: 430px) {
+    .announcement-banner {
+        top: 3.5rem;
+        padding: 0.3rem 0.75rem;
+        font-size: 0.7rem;
+    }
+}
+
         .banner-track {
     display: inline-flex;
     white-space: nowrap;
@@ -1266,29 +1274,27 @@ body.launch-mode .cta-button {
         }
 
         @media (max-width: 430px) {
-            .nav-container {
-                padding-right: 0.75rem;
-                padding-left: 0.75rem;
-                height: 3.5rem;
-                overflow: visible;
-                position: relative;
-            }
+    .nav-container {
+        padding-right: 0.75rem;
+        padding-left: 0.75rem;
+        height: 3.5rem;
+        overflow: visible;
+        position: relative;
+    }
 
-            .logo-container {
-                position: absolute;
-                left: -3rem;
-                top: 50%;
-                transform: translateY(-50%);
-                z-index: 100;
-                overflow: visible;
-            }
+    .logo-container {
+        position: static;
+        transform: none;
+        z-index: 100;
+        overflow: visible;
+        margin-left: 0;
+    }
 
-            .logo-gmm {
-    height: 38px;
-    margin-left: 60px;
-    margin-right: -60px;
-}
-
+    .logo-gmm {
+        height: 28px;
+        margin-left: 0;
+        margin-right: 0;
+    }
             .brand-text {
                 display: none;
             }
@@ -1315,8 +1321,8 @@ body.launch-mode .cta-button {
             }
 
             .hero {
-                padding: 5rem 1rem 2.5rem;
-            }
+    padding: 6.5rem 1rem 2.5rem;
+}
 
             .hero-title {
                 font-size: 1.875rem;
