@@ -37,19 +37,18 @@ module.exports = async function handler(req, res) {
 
     // GET count - only count verified signups
     if (req.method === 'GET' && req.query.count === 'true') {
-        try {
-            const { count, error } = await supabase
-                .from('waitlist')
-                .select('*', { count: 'exact', head: true })
-                .eq('verified', true);
-            
-            if (error) throw error;
-            return res.status(200).json({ count: count || 0 });
-        } catch (err) {
-            console.error('Count error:', err);
-            return res.status(500).json({ error: 'Failed to fetch count' });
-        }
+    try {
+        const { count, error } = await supabase
+            .from('waitlist')
+            .select('*', { count: 'exact', head: true });
+        
+        if (error) throw error;
+        return res.status(200).json({ count: count || 0 });
+    } catch (err) {
+        console.error('Count error:', err);
+        return res.status(500).json({ error: 'Failed to fetch count' });
     }
+}
 
     // POST signup
     if (req.method === 'POST') {
