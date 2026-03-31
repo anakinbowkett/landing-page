@@ -72,6 +72,7 @@ export default async function handler(req, res) {
         }
         
         // Update user in Supabase
+        // Update user in Supabase
         const { data, error } = await supabase
             .from('user_profiles')
             .update({
@@ -92,6 +93,31 @@ export default async function handler(req, res) {
                 error: 'Failed to update subscription status' 
             });
         }
+
+        // --- REFERRAL TRACKING: link payment to ambassador ---
+        const userEmail = session.customer_details?.email || null;
+        if (userEmail) {
+            // Look up waitlist entry for this email
+            const { data: waitlistEntry } = await supabase
+                .from('waitlist')
+                .select('ambassador_id')
+                .eq('email', userEmail.toLowerCase().trim())
+                .maybeSingle();
+
+            const ambassadorId = waitlistEntry?.ambassador_id || null;
+
+            // Insert payment record (triggers auto-increment on ambassadors table)
+            await supabase
+                .from('payments')
+                .insert({
+                    email: userEmail.toLowerCase().trim(),
+                    ambassador_id: ambassadorId,
+                    amount: (session.amount_total || 0) / 100, // Stripe uses pence
+                    status: 'paid',
+                    stripe_session_id: sessionId
+                });
+        }
+        // --- END REFERRAL TRACKING ---
         
         return res.status(200).json({ 
             success: true, 
