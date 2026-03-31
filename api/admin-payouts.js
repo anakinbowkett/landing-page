@@ -73,12 +73,16 @@ module.exports = async function handler(req, res) {
       });
 
       return res.status(200).json({
-        ambassador,
+        ambassador: {
+          ...ambassador,
+          name: `${ambassador.first_name} ${ambassador.last_name}`
+        },
         referredUsers: referredUsers || [],
         payments: payments || [],
         monthlyBreakdown: Object.values(monthlyBreakdown).sort((a, b) => b.month.localeCompare(a.month))
       });
 
+      
     } catch (err) {
       return res.status(500).json({ error: 'Failed to fetch ambassador details' });
     }
