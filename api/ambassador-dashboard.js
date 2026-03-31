@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     try {
       const { data: ambassador, error: ambError } = await supabase
         .from('ambassadors')
-        .select('id, name, email, referral_code, total_signups, total_conversions, total_revenue')
+        .select('id, first_name, last_name, email, referral_code, total_signups, total_conversions, total_revenue')
         .eq('id', ambassadorId)
         .single();
 
@@ -50,7 +50,7 @@ export default async function handler(req, res) {
 
       return res.status(200).json({
         ambassadorId: ambassador.id,
-        name: ambassador.name,
+        name: `${ambassador.first_name} ${ambassador.last_name}`,
         email: ambassador.email,
         referralCode: ambassador.referral_code,
         totalSignups: ambassador.total_signups,
