@@ -6,6 +6,69 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
+
+// NEW: GET /api/ambassador-dashboard?action=me&ambassadorId=UUID
+  if (req.method === 'GET' && req.query.action === 'me') {
+    const { ambassadorId } = req.query;
+    if (!ambassadorId) return res.status(400).json({ error: 'ambassadorId required' });
+
+    try {
+      const { data: ambassador, error: ambError } = await supabase
+        .from('ambassadors')
+        .select('id, name, email, referral_code, total_signups, total_conversions, total_revenue')
+        .eq('id', ambassadorId)
+        .single();
+
+      if (ambError || !ambassador) {
+        return res.status(404).json({ error: 'Ambassador not found' });
+      }
+
+      // Referred users from waitlist
+      const { data: referredUsers } = await supabase
+        .from('waitlist')
+        .select('email, verified, created_at')
+        .eq('ambassador_id', ambassadorId)
+        .order('created_at', { ascending: false });
+
+      // Monthly revenue breakdown from payments
+      const { data: payments } = await supabase
+        .from('payments')
+        .select('amount, status, created_at')
+        .eq('ambassador_id', ambassadorId)
+        .eq('status', 'paid')
+        .order('created_at', { ascending: false });
+
+      const monthlyBreakdown = {};
+      (payments || []).forEach(p => {
+        const month = p.created_at.substring(0, 7);
+        if (!monthlyBreakdown[month]) {
+          monthlyBreakdown[month] = { month, revenue: 0, conversions: 0 };
+        }
+        monthlyBreakdown[month].revenue += parseFloat(p.amount);
+        monthlyBreakdown[month].conversions += 1;
+      });
+
+      return res.status(200).json({
+        ambassadorId: ambassador.id,
+        name: ambassador.name,
+        email: ambassador.email,
+        referralCode: ambassador.referral_code,
+        totalSignups: ambassador.total_signups,
+        totalConversions: ambassador.total_conversions,
+        totalRevenue: ambassador.total_revenue,
+        referredUsers: referredUsers || [],
+        monthlyBreakdown: Object.values(monthlyBreakdown).sort((a, b) => b.month.localeCompare(a.month))
+      });
+
+    } catch (err) {
+      console.error('Ambassador me error:', err);
+      return res.status(500).json({ error: 'Failed to fetch ambassador data' });
+    }
+  }
+
+
+
+  
   // Handle POST for onboarding saves
   if (req.method === 'POST') {
     const { ambassadorId, stage, formData } = req.body;
