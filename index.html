@@ -3842,10 +3842,10 @@ window.handleWaitlistSubmit = async function() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
-                email: email, 
-                tiktok_username: tiktok || null,
-                referral_code: referralCode
-            })
+    email: email, 
+    tiktok_username: tiktok || null,
+    referral_code: document.getElementById('wlReferralCode').value.trim() || referralCode || null
+})
         });
 
         // Try to parse response
