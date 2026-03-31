@@ -152,9 +152,8 @@ module.exports = async function handler(req, res) {
 
   // Handle POST requests
   if (req.method === 'POST') {
-    const { action, ambassadorId, note1, note2 } = req.body;
+    const { action, ambassadorId, note1, note2, paypalTxnId } = req.body;
 
-    // Save admin notes
     if (action === 'saveNotes' && ambassadorId) {
       try {
         await supabase
@@ -164,11 +163,30 @@ module.exports = async function handler(req, res) {
             admin_note_2: note2
           })
           .eq('id', ambassadorId);
-
         return res.status(200).json({ success: true });
       } catch (error) {
         return res.status(500).json({ error: error.message });
       }
+    }
+
+    if (action === 'markPaid' && ambassadorId) {
+      try {
+        await supabase
+          .from('ambassadors')
+          .update({
+            paid_status: true,
+            paypal_txn_id: paypalTxnId,
+            paid_at: new Date().toISOString()
+          })
+          .eq('id', ambassadorId);
+        return res.status(200).json({ success: true });
+      } catch (error) {
+        return res.status(500).json({ error: error.message });
+      }
+    }
+
+    if (action === 'generateAndEmailReceipt' && ambassadorId) {
+      return res.status(200).json({ success: true });
     }
 
     return res.status(400).json({ error: 'Invalid action' });
