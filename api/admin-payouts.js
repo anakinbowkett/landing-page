@@ -15,9 +15,9 @@ module.exports = async function handler(req, res) {
     try {
       const { data: ambassadors, error } = await supabase
         .from('ambassadors')
-        .select('id, first_name, last_name, email, referral_code, total_signups, total_conversions, total_revenue, created_at')
+        .select('id, first_name, last_name, email, referral_code, total_signups, total_conversions, total_revenue, joined_at')
         .order('total_revenue', { ascending: false });
-
+      
       if (error) throw error;
       return res.status(200).json({ ambassadors });
     } catch (err) {
@@ -36,7 +36,7 @@ module.exports = async function handler(req, res) {
     try {
       const { data: ambassador, error: ambError } = await supabase
         .from('ambassadors')
-        .select('id, first_name, last_name, email, referral_code, total_signups, total_conversions, total_revenue, created_at')
+        .select('id, first_name, last_name, email, referral_code, total_signups, total_conversions, total_revenue, joined_at')
         .eq('id', id)
         .single();
 
