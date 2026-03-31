@@ -6,6 +6,85 @@ const supabase = createClient(
 );
 
 module.exports = async function handler(req, res) {
+
+// NEW: GET all ambassadors with metrics
+  if (req.method === 'GET' && req.query.action === 'list-ambassadors') {
+    if (req.query.password !== process.env.ADMIN_PASSWORD) {
+      return res.status(401).json({ error: 'Unauthorised' });
+    }
+    try {
+      const { data: ambassadors, error } = await supabase
+        .from('ambassadors')
+        .select('id, name, email, referral_code, total_signups, total_conversions, total_revenue, created_at')
+        .order('total_revenue', { ascending: false });
+
+      if (error) throw error;
+      return res.status(200).json({ ambassadors });
+    } catch (err) {
+      return res.status(500).json({ error: 'Failed to fetch ambassadors' });
+    }
+  }
+
+  // NEW: GET single ambassador detail + referred users + payments + monthly breakdown
+  if (req.method === 'GET' && req.query.action === 'ambassador-detail') {
+    if (req.query.password !== process.env.ADMIN_PASSWORD) {
+      return res.status(401).json({ error: 'Unauthorised' });
+    }
+    const { id } = req.query;
+    if (!id) return res.status(400).json({ error: 'Ambassador ID required' });
+
+    try {
+      const { data: ambassador, error: ambError } = await supabase
+        .from('ambassadors')
+        .select('id, name, email, referral_code, total_signups, total_conversions, total_revenue, created_at')
+        .eq('id', id)
+        .single();
+
+      if (ambError || !ambassador) {
+        return res.status(404).json({ error: 'Ambassador not found' });
+      }
+
+      const { data: referredUsers, error: usersError } = await supabase
+        .from('waitlist')
+        .select('email, referral_code, verified, created_at')
+        .eq('ambassador_id', id)
+        .order('created_at', { ascending: false });
+
+      if (usersError) throw usersError;
+
+      const { data: payments, error: paymentsError } = await supabase
+        .from('payments')
+        .select('id, email, amount, status, created_at')
+        .eq('ambassador_id', id)
+        .order('created_at', { ascending: false });
+
+      if (paymentsError) throw paymentsError;
+
+      // Monthly breakdown
+      const monthlyBreakdown = {};
+      (payments || []).forEach(p => {
+        if (p.status !== 'paid') return;
+        const month = p.created_at.substring(0, 7);
+        if (!monthlyBreakdown[month]) {
+          monthlyBreakdown[month] = { month, revenue: 0, conversions: 0 };
+        }
+        monthlyBreakdown[month].revenue += parseFloat(p.amount);
+        monthlyBreakdown[month].conversions += 1;
+      });
+
+      return res.status(200).json({
+        ambassador,
+        referredUsers: referredUsers || [],
+        payments: payments || [],
+        monthlyBreakdown: Object.values(monthlyBreakdown).sort((a, b) => b.month.localeCompare(a.month))
+      });
+
+    } catch (err) {
+      return res.status(500).json({ error: 'Failed to fetch ambassador details' });
+    }
+  }
+
+  
   
   // Admin view ambassador (no password needed)
   if (req.query.adminView === 'true' && req.query.ambassadorId) {
