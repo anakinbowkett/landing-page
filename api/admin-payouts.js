@@ -216,7 +216,7 @@ module.exports = async function handler(req, res) {
   try {
     const { data: ambassadors } = await supabase
       .from('ambassadors')
-      .select('*')
+      .select('id, first_name, last_name, email, referral_code, paid_status, paypal_txn_id, paid_at, joined_at')
       .order('joined_at', { ascending: false });
 
     if (!ambassadors || ambassadors.length === 0) {
@@ -230,43 +230,28 @@ module.exports = async function handler(req, res) {
     const payoutData = [];
 
     for (const amb of ambassadors) {
-      const { data: waitlistComms } = await supabase
-        .from('waitlist_commissions')
-        .select('*')
-        .eq('ambassador_id', amb.id)
-        .eq('status', 'payable');
-
-      const { data: subComms } = await supabase
-        .from('monthly_commissions')
-        .select('*')
-        .eq('ambassador_id', amb.id)
-        .eq('is_active', true);
-
-      const phase1Count = waitlistComms?.length || 0;
-      const phase2Count = subComms?.length || 0;
+      const phase1Count = 0;
+      const phase2Count = 0;
       const phase1Total = phase1Count * 0.50;
       const phase2Total = phase2Count * 2.00;
       const totalPayout = phase1Total + phase2Total;
 
-      if (totalPayout >= 0) {
-        payoutData.push({
-  ambassadorId: amb.id,
-  name: `${amb.first_name} ${amb.last_name}`,
-  email: amb.email,
-  referralCode: amb.referral_code,
-  phase1Signups: phase1Count,
-  phase1Total: phase1Total,
-  phase2Subscribers: phase2Count,
-  phase2Total: phase2Total,
-  totalPayout: totalPayout,
-  payoutMethod: 'PayPal',
-  paypalEmail: amb.email,
-
-  paid_status: amb.paid_status,
-  paypal_txn_id: amb.paypal_txn_id,
-  paid_at: amb.paid_at
-});
-      }
+      payoutData.push({
+        ambassadorId: amb.id,
+        name: `${amb.first_name} ${amb.last_name}`,
+        email: amb.email,
+        referralCode: amb.referral_code,
+        phase1Signups: phase1Count,
+        phase1Total: phase1Total,
+        phase2Subscribers: phase2Count,
+        phase2Total: phase2Total,
+        totalPayout: totalPayout,
+        payoutMethod: 'PayPal',
+        paypalEmail: amb.email,
+        paid_status: amb.paid_status,
+        paypal_txn_id: amb.paypal_txn_id,
+        paid_at: amb.paid_at
+      });
     }
 
     payoutData.sort((a, b) => b.totalPayout - a.totalPayout);
