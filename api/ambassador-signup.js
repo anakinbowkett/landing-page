@@ -5,13 +5,17 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-function generateReferralCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = 'amb_';
-  for (let i = 0; i < 6; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
+function generateReferralCode(tiktokUsername) {
+  // Extract first part of TikTok username, uppercase, max 8 chars, letters/numbers only
+  const base = tiktokUsername
+    .replace(/^@/, '')           // remove leading @
+    .replace(/[^a-zA-Z0-9]/g, '') // remove special chars
+    .toUpperCase()
+    .substring(0, 8);
+
+  // Add 2 random digits to avoid collisions
+  const suffix = Math.floor(10 + Math.random() * 90);
+  return base + suffix;
 }
 
 export default async function handler(req, res) {
@@ -23,18 +27,17 @@ const {
   firstName, 
   lastName, 
   email, 
-  tiktokUsername, 
-  discordUsername 
+  tiktokUsername
 } = req.body;
 
   // Validate required fields
-if (!firstName || !lastName || !email || !tiktokUsername || !discordUsername) {
+if (!firstName || !lastName || !email || !tiktokUsername) {
     return res.status(400).json({ error: 'All required fields must be filled' });
   }
 
   try {
     // Generate unique referral code
-    let referralCode = generateReferralCode();
+    let referralCode = generateReferralCode(tiktokUsername);
     let isUnique = false;
     let attempts = 0;
 
@@ -49,7 +52,7 @@ if (!firstName || !lastName || !email || !tiktokUsername || !discordUsername) {
       if (!existing) {
         isUnique = true;
       } else {
-        referralCode = generateReferralCode();
+        referralCode = generateReferralCode(tiktokUsername);
         attempts++;
       }
     }
@@ -66,7 +69,6 @@ if (!firstName || !lastName || !email || !tiktokUsername || !discordUsername) {
     last_name: lastName,
     email: email,
     tiktok_username: tiktokUsername,
-    discord_username: discordUsername,
     referral_code: referralCode,
     invoice_number: `INV-${referralCode}`,
     receipt_number_prefix: `REC-${referralCode}`,
