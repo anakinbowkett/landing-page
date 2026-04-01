@@ -594,7 +594,7 @@ tbody tr:hover { background: #f9fafb; }
         </div>
         
         <div style="margin-bottom:16px;">
-          <label style="display:block; font-weight:600; margin-bottom:8px;">Parent/Guardian Name (if under 18) *</label>
+          <label style="display:block; font-weight:600; margin-bottom:8px;">Parent/Guardian Name (if under 18 — required to receive payment) *</label>
           <input type="text" name="parentName" required style="width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:8px; font-size:15px;">
         </div>
         
@@ -1160,12 +1160,12 @@ async function checkOnboardingStatus() {
 function showOnboarding(data) {
   document.getElementById('onboardingModal').style.display = 'block';
   
-  if (!data.accepted_terms) {
+  if (!data.accepted_guide) {
+    document.getElementById('stage3').style.display = 'block';
+  } else if (!data.accepted_terms) {
     document.getElementById('stage1').style.display = 'block';
   } else if (!data.accepted_consent) {
     document.getElementById('stage2').style.display = 'block';
-  } else if (!data.accepted_guide) {
-    document.getElementById('stage3').style.display = 'block';
   } else {
     document.getElementById('stage4').style.display = 'block';
   }
@@ -1203,8 +1203,8 @@ document.getElementById('termsForm').addEventListener('submit', async function(e
   });
   
   if (response.ok) {
-    document.getElementById('stage1').style.display = 'none';
-    document.getElementById('stage2').style.display = 'block';
+    document.getElementById('stage3').style.display = 'none';
+    document.getElementById('stage1').style.display = 'block';
   }
 });
 
@@ -1240,7 +1240,8 @@ document.getElementById('consentForm').addEventListener('submit', async function
   
   if (response.ok) {
     document.getElementById('stage2').style.display = 'none';
-    document.getElementById('stage3').style.display = 'block';
+    document.getElementById('stageQuiz').style.display = 'block';
+    startQuiz();
   }
 });
 
@@ -1285,64 +1286,44 @@ window.addEventListener('load', function() {
 // Quiz Data
 const quizQuestions = [
   {
-    question: "What is the referral link and what does it do?",
+    question: "Under the Terms & Conditions, what happens if fraud or fake signups are detected?",
     options: [
-      "A regular link to the Monturalearn homepage that anyone can use",
-      "Your unique tracking link that records which viewers signed up through YOUR content so you can earn commissions",
-      "A link that only works once and then expires after the first click",
-      "A link you can share with friends and family but not on social media"
+      "You get a warning first and a second chance before any action is taken",
+      "You may be removed immediately, unpaid commissions forfeited, and access permanently revoked",
+      "Your commission is reduced by 50% as a penalty",
+      "Nothing happens as long as the signups eventually become real"
     ],
     correct: 1
   },
   {
-    question: "Why is the referral link important for you as a content creator?",
+    question: "According to the Terms & Conditions, when do you stop earning commission for a subscriber?",
     options: [
-      "It makes your videos look more professional and credible to viewers",
-      "It's required by law to include links in video descriptions",
-      "It's the ONLY way the system can track which signups came from you. Without it, you cannot earn any commission because there's no proof viewers came from your content.",
-      "It helps Monturalearn count total views across all creators"
+      "After 12 months regardless of their subscription status",
+      "Only if they request a refund",
+      "If they cancel, their payment fails, they get a refund, or their payment is disputed",
+      "You never stop earning once a subscriber signs up through your link"
     ],
     correct: 2
   },
   {
-  question: "Where can you find your unique referral link?",
-  options: [
-    "In your Content Creator Dashboard under the 'Your Referral Link' section",
-    "In the welcome email you received after signing up",
-    "On the Monturalearn homepage available to everyone",
-    "You have to email support to request your link each time"
-  ],
-  correct: 0
-},
-  {
-    question: "How should YOU use the referral link to ensure you get paid for your work?",
+    question: "According to the Creator Guide, where must your promo code ALWAYS be placed to track signups?",
     options: [
-      "Don't use the referral link, just post content and hope people find Monturalearn",
-      "Copy your referral link from the dashboard and place it ONLY in your video/post description",
-      "Copy your referral link from the dashboard and place it in: (1) EVERY video/post description, (2) your profile bio as a clickable link, AND (3) reply with it when viewers ask for the link in comments",
-      "Copy your referral link and only post it in the comments section, leaving it to hopefully be seen"
+      "Only in the comments section of each video",
+      "In your TikTok bio as a clickable link — this is the ONLY way signups are tracked to you",
+      "You can send it directly to followers via DMs instead",
+      "In the video caption only, not the bio"
     ],
-    correct: 2
+    correct: 1
   },
   {
-    question: "What happens if you create content about Monturalearn but do NOT include your referral link?",
+    question: "What happens if you post content about Monturalearn but do NOT include your promo code in your bio?",
     options: [
-      "You can still track some metrics, just not all of them",
-      "Monturalearn will manually credit you with any signups from that video",
-      "You will NOT be able to track ANY metrics and you will NOT be paid because there is no way to verify which viewers clicked YOUR link versus someone else's. No referral link = No commission. Period.",
-      "You'll get 50% of the normal commission as a penalty"
+      "Monturalearn will manually credit you for any signups from that video",
+      "You still get 50% commission as a goodwill gesture",
+      "You will NOT be tracked and will NOT be paid — no promo code in bio means no commission, period",
+      "You can claim signups later by emailing support with proof"
     ],
     correct: 2
-  },
-  {
-    question: "Do you understand that if you have not carefully read every line of the Terms & Conditions, Consent Form, and Content Creator Guide, and you do something incorrectly because you didn't read the documents properly, you will not be paid for any related work?",
-    options: [
-      "Yes, I understand that I am responsible for reading all documents thoroughly. Failure to comply with the guidelines due to not reading will result in no payment.",
-      "No, I expect to be paid regardless of whether I read the documents",
-      "I skimmed the documents and that should be good enough",
-      "I'll read them later after I start posting content"
-    ],
-    correct: 0
   }
 ];
 
