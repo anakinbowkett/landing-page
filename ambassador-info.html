@@ -224,17 +224,34 @@
     <div class="main-content">
         <div class="content-wrapper">
             <h1 class="welcome-title">Welcome, Ambassador! 🎉</h1>
-            <p class="welcome-subtitle">You're now part of the Montura ambassador programme. Here's your unique referral code to start earning.</p>
+            <p class="welcome-subtitle">You're now part of the Montura ambassador programme. Here's your unique promo code — you need to put this in your TikTok bio right now before continuing.</p>
 
             <!-- Referral Code Section -->
             <div class="info-section">
-                <h2 class="info-title">Your Referral Code</h2>
+                <h2 class="info-title">Your Promo Code</h2>
                 <div class="referral-code" id="referralCode">Loading...</div>
                 <button class="copy-btn" onclick="copyReferralCode()">Copy Code</button>
+
+                <div style="background:#fef9c3; border:2px solid #fbbf24; border-radius:12px; padding:1.25rem; margin-top:1.25rem; text-align:left;">
+                    <p style="font-weight:700; font-size:1rem; color:#92400e; margin-bottom:0.5rem;">⚠️ Do this right now before continuing:</p>
+                    <ol style="padding-left:1.25rem; color:#92400e; font-size:0.9375rem; line-height:1.8;">
+                        <li>Copy your promo code above</li>
+                        <li>Open TikTok → Edit Profile → Bio</li>
+                        <li>Paste your promo code into your bio</li>
+                        <li>Save your profile</li>
+                    </ol>
+                    <p style="font-weight:700; font-size:0.875rem; color:#92400e; margin-top:0.75rem;">Without this in your bio, signups cannot be tracked and you will not be paid.</p>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:12px; margin-top:1.25rem; background:#f0fdf4; border:2px solid #86efac; border-radius:12px; padding:1rem; cursor:pointer;" onclick="toggleBioConfirm(this)">
+                    <div id="bioConfirmBox" style="width:24px; height:24px; border:2px solid #d1d5db; border-radius:6px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.2s; background:white;">
+                    </div>
+                    <span style="font-weight:600; font-size:0.9375rem; color:#166534;">I have added my promo code to my TikTok bio</span>
+                </div>
             </div>
 
     <!-- Continue Button -->
-<button onclick="startOnboarding()" style="width:100%; max-width:400px; margin:0 auto; padding:18px 32px; background:#10b981; color:#fff; border:none; border-radius:13px; font-size:18px; font-weight:700; cursor:pointer; display:block; transition: all 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+<button id="continueBtn" onclick="startOnboarding()" disabled style="width:100%; max-width:400px; margin:0 auto; padding:18px 32px; background:#cbd5e1; color:#fff; border:none; border-radius:13px; font-size:18px; font-weight:700; cursor:not-allowed; display:block; transition: all 0.2s;">
   Continue to Onboarding →
 </button>
             
@@ -269,7 +286,31 @@ function copyReferralCode() {
     });
 }
 
+let bioConfirmed = false;
+
+function toggleBioConfirm(wrapper) {
+    bioConfirmed = !bioConfirmed;
+    const box = document.getElementById('bioConfirmBox');
+    const btn = document.getElementById('continueBtn');
+    if (bioConfirmed) {
+        box.style.background = '#1d7fe2';
+        box.style.borderColor = '#1d7fe2';
+        box.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 3.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        btn.disabled = false;
+        btn.style.background = '#10b981';
+        btn.style.cursor = 'pointer';
+    } else {
+        box.style.background = 'white';
+        box.style.borderColor = '#d1d5db';
+        box.innerHTML = '';
+        btn.disabled = true;
+        btn.style.background = '#cbd5e1';
+        btn.style.cursor = 'not-allowed';
+    }
+}
+
 function startOnboarding() {
+    if (!bioConfirmed) return;
     window.location.href = '/ambassador-dashboard.html';
 }
     </script>
