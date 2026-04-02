@@ -166,47 +166,27 @@ export default async function handler(req, res) {
     }
 
     // PHASE 1: Fetch waitlist commissions
-    const { data: waitlistCommissions } = await supabase
-      .from('waitlist_commissions')
-      .select('*')
+    // PHASE 1: Fetch from new waitlist table
+    const { data: waitlistSignups } = await supabase
+      .from('waitlist')
+      .select('email, verified, created_at, referral_code')
       .eq('ambassador_id', ambassador.id)
       .order('created_at', { ascending: false });
 
-    // Phase 1 stats
-    const totalWaitlistSignups = waitlistCommissions?.length || 0;
-    const verifiedSignups = waitlistCommissions?.filter(c => c.verified).length || 0;
-    const phase1Earnings = verifiedSignups * 0.50;
-    const phase1Cap = Math.min(verifiedSignups, 100);
+    const totalWaitlistSignups = ambassador.total_signups || 0;
+    const verifiedSignups = waitlistSignups?.filter(w => w.verified).length || 0;
 
-    // PHASE 2: Fetch subscription commissions
-    const { data: subCommissions } = await supabase
-      .from('monthly_commissions')
-      .select('*')
+    // PHASE 2: Fetch from new payments table
+    const { data: payments } = await supabase
+      .from('payments')
+      .select('email, amount, status, created_at')
       .eq('ambassador_id', ambassador.id)
-      .eq('is_active', true)
+      .eq('status', 'paid')
       .order('created_at', { ascending: false });
 
-    const activeSubscriptions = subCommissions?.length || 0;
-    const phase2Earnings = activeSubscriptions * 2.00;
-
-    // Total payout
-    const totalPayout = phase1Earnings + phase2Earnings;
-
-    // PHASE 2: Fetch referrals
-    const { data: referrals } = await supabase
-      .from('referrals')
-      .select('*')
-      .eq('ambassador_id', ambassador.id)
-      .order('signup_date', { ascending: false });
-
-    // Update ambassador totals
-    await supabase
-      .from('ambassadors')
-      .update({ 
-        total_payout: totalPayout,
-        leads_acquired: verifiedSignups
-      })
-      .eq('id', ambassador.id);
+    const activeSubscriptions = ambassador.total_conversions || 0;
+    const phase2Earnings = parseFloat(ambassador.total_revenue) || 0;
+    const totalPayout = phase2Earnings;
 
     return res.status(200).json({
       id: ambassador.id,
@@ -217,13 +197,13 @@ export default async function handler(req, res) {
       accepted_consent: ambassador.accepted_consent || false,
       accepted_guide: ambassador.accepted_guide || false,
       onboarding_completed: ambassador.onboarding_completed || false,
-      
+
       // Phase 1 data
       phase1: {
         totalSignups: totalWaitlistSignups,
         verifiedSignups: verifiedSignups,
-        cappedSignups: phase1Cap,
-        earnings: phase1Earnings,
+        cappedSignups: Math.min(verifiedSignups, 100),
+        earnings: 0,
         cap: 100,
         remainingCap: Math.max(0, 100 - verifiedSignups)
       },
@@ -236,8 +216,14 @@ export default async function handler(req, res) {
 
       // Combined
       totalPayout: totalPayout,
-      referrals: referrals || [],
-      waitlistCommissions: waitlistCommissions || []
+      referrals: [],
+      waitlistCommissions: (waitlistSignups || []).map(w => ({
+        waitlist_email: w.email,
+        created_at: w.created_at,
+        status: w.verified ? 'verified' : 'pending',
+        commission_amount: 0,
+        payable_date: null
+      }))
     });
 
   } catch (error) {
