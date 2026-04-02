@@ -3833,19 +3833,20 @@ window.handleWaitlistSubmit = async function() {
     btn.disabled = true;
     btn.textContent = 'Joining...';
 
-    // 🆕 Get referral code from URL or localStorage
+    // Get referral code from typed field, URL param, or localStorage
+    var typedCode = document.getElementById('wlReferralCode') ? document.getElementById('wlReferralCode').value.trim() : '';
     var urlParams = new URLSearchParams(window.location.search);
-    var referralCode = urlParams.get('ref') || localStorage.getItem('referral_code') || null;
+    var referralCode = typedCode || urlParams.get('ref') || localStorage.getItem('referral_code') || null;
 
     try {
         var res = await fetch('/api/waitlist', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
-    email: email, 
-    tiktok_username: tiktok || null,
-    referral_code: document.getElementById('wlReferralCode').value.trim() || referralCode || null
-})
+                email: email, 
+                tiktok_username: tiktok || null,
+                referral_code: referralCode || null
+            })
         });
 
         // Try to parse response
