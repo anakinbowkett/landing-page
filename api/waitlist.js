@@ -1,5 +1,4 @@
 const { createClient } = require('@supabase/supabase-js');
-const crypto = require('crypto');
 const fetch = require('node-fetch');
 
 const supabase = createClient(
@@ -16,10 +15,6 @@ function getIP(req) {
     return ip || 'unknown';
 }
 
-// Generate verification token
-function generateToken() {
-    return crypto.randomBytes(32).toString('hex');
-}
 
 
 
@@ -73,7 +68,7 @@ if (existing) {
     return res.status(409).json({ message: 'Already on waitlist' });
 }
 
-            // FRAUD CHECK: Max 1 verified signup per IP per 24 hours
+            // FRAUD CHECK: Max 1 signup per IP per 24 hours
             if (ip !== 'unknown') {
                 const yesterday = new Date();
                 yesterday.setHours(yesterday.getHours() - 24);
@@ -82,13 +77,10 @@ if (existing) {
                     .from('waitlist')
                     .select('id')
                     .eq('ip_address', ip)
-                    .eq('verified', true)
                     .gte('created_at', yesterday.toISOString());
 
                 if (ipSignups && ipSignups.length >= 1) {
                     console.log('IP fraud check failed:', ip);
-                    // Still return success to not reveal fraud detection
-                    // But don't actually save or count it
                     return res.status(200).json({ message: 'Success' });
                 }
             }
@@ -116,8 +108,7 @@ if (existing) {
                 }
             }
 
-            // Generate verification token
-            const token = generateToken();
+
 
             // Insert to Supabase
             const { data: insertedData, error: insertError } = await supabase
@@ -127,8 +118,7 @@ if (existing) {
         tiktok_username: tiktok_username || null,
         referral_code: cleanReferralCode,
         ambassador_id: ambassadorId,
-        verified: false,
-        verification_token: token,
+        verified: true,
         ip_address: ip
     })
     .select();
@@ -140,19 +130,7 @@ console.log('INSERT RESULT:', insertedData, insertError);
                 return res.status(500).json({ error: 'Database error' });
             }
 
-            // If referred, create pending commission record
-            if (ambassadorId) {
-                await supabase
-                    .from('waitlist_commissions')
-                    .insert({
-                        ambassador_id: ambassadorId,
-                        waitlist_email: email.toLowerCase().trim(),
-                        referral_code: cleanReferralCode,
-                        verified: false,
-                        status: 'pending',
-                        commission_amount: 0.50
-                    });
-            }
+
 
 // Send to Klaviyo
 try {
