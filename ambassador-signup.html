@@ -239,10 +239,7 @@
                             <input type="email" id="email" class="form-field" placeholder="Email address" required>
                         
                             
-                            <div class="form-row">
-                                <input type="text" id="tiktokUsername" class="form-field" placeholder="TikTok username" required>
-                                <input type="text" id="discordUsername" class="form-field" placeholder="Discord username" required>
-                            </div>
+                            <input type="text" id="tiktokUsername" class="form-field" placeholder="TikTok username (e.g. @yourname)" required>
                         </div>
 
                         <div class="payout-info">
@@ -268,7 +265,6 @@ document.getElementById('ambassadorForm').addEventListener('submit', async funct
     const lastName = document.getElementById('lastName').value.trim();
     const email = document.getElementById('email').value.trim();
     const tiktok = document.getElementById('tiktokUsername').value.trim();
-    const discord = document.getElementById('discordUsername').value.trim();
     
     const btn = document.getElementById('submitBtn');
 
@@ -278,12 +274,11 @@ document.getElementById('ambassadorForm').addEventListener('submit', async funct
     });
 
     // Validate
-    if (!firstName || !lastName || !email || !tiktok || !discord) {
+    if (!firstName || !lastName || !email || !tiktok) {
         if (!firstName) document.getElementById('firstName').classList.add('error');
         if (!lastName) document.getElementById('lastName').classList.add('error');
         if (!email) document.getElementById('email').classList.add('error');
         if (!tiktok) document.getElementById('tiktokUsername').classList.add('error');
-        if (!discord) document.getElementById('discordUsername').classList.add('error');
         return;
     }
 
@@ -299,8 +294,7 @@ document.getElementById('ambassadorForm').addEventListener('submit', async funct
                 firstName,
                 lastName,
                 email,
-                tiktokUsername: tiktok.startsWith('@') ? tiktok : '@' + tiktok,
-                discordUsername: discord
+                tiktokUsername: tiktok.startsWith('@') ? tiktok : '@' + tiktok
             })
         });
 
