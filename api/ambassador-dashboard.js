@@ -211,7 +211,8 @@ export default async function handler(req, res) {
       // Phase 2 data
       phase2: {
         activeSubscriptions: activeSubscriptions,
-        earnings: phase2Earnings
+        earnings: phase2Earnings,
+        payments: payments || []
       },
 
       // Combined
