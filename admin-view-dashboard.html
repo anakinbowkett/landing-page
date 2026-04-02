@@ -153,6 +153,7 @@
         async function loadAmbassadorData() {
             const ambassadorId = sessionStorage.getItem('admin_view_ambassador_id');
             const ambassadorName = sessionStorage.getItem('admin_view_ambassador_name');
+            const adminPassword = sessionStorage.getItem('admin_password');
 
             if (!ambassadorId) {
                 alert('No ambassador selected');
@@ -163,7 +164,7 @@
             document.getElementById('ambassadorNameHeader').textContent = ambassadorName;
 
             try {
-                const response = await fetch(`/api/admin-payouts?ambassadorId=${ambassadorId}&adminView=true`);
+                const response = await fetch(`/api/admin-payouts?action=ambassador-detail&id=${ambassadorId}&password=${encodeURIComponent(adminPassword)}`);
                 const data = await response.json();
 
                 if (!response.ok) {
@@ -172,21 +173,16 @@
                 }
 
                 // Fill info cards
-                document.getElementById('fullName').textContent = data.firstName + ' ' + data.lastName;
-                document.getElementById('email').textContent = data.email;
-                document.getElementById('referralCode').textContent = data.referralCode;
-                document.getElementById('totalPayout').textContent = data.totalPayout.toFixed(2);
-                document.getElementById('verifiedSignups').textContent = data.phase1.verifiedSignups;
-                document.getElementById('activeSubscribers').textContent = data.phase2.activeSubscriptions;
-                // Load admin notes
-document.getElementById('adminNote1').value = data.adminNote1 || '';
-document.getElementById('adminNote2').value = data.adminNote2 || '';
+                document.getElementById('fullName').textContent = data.ambassador.name;
+                document.getElementById('email').textContent = data.ambassador.email;
+                document.getElementById('referralCode').textContent = data.ambassador.referral_code;
+                document.getElementById('totalPayout').textContent = parseFloat(data.ambassador.total_revenue).toFixed(2);
+                document.getElementById('verifiedSignups').textContent = data.ambassador.total_signups;
+                document.getElementById('activeSubscribers').textContent = data.ambassador.total_conversions;
 
-                // Render waitlist table
-                renderWaitlistTable(data.waitlistCommissions);
-                
-                // Render subscriptions table
-                renderSubscriptionsTable(data.subscriptions);
+                // Render tables
+                renderWaitlistTable(data.referredUsers);
+                renderSubscriptionsTable(data.payments);
 
             } catch (error) {
                 console.error('Error:', error);
@@ -194,10 +190,10 @@ document.getElementById('adminNote2').value = data.adminNote2 || '';
             }
         }
 
-        function renderWaitlistTable(commissions) {
+        function renderWaitlistTable(users) {
             const container = document.getElementById('waitlistTable');
             
-            if (!commissions || commissions.length === 0) {
+            if (!users || users.length === 0) {
                 container.innerHTML = '<p style="text-align:center; color:#9ca3af; padding:2rem;">No waitlist signups yet</p>';
                 return;
             }
@@ -209,20 +205,16 @@ document.getElementById('adminNote2').value = data.adminNote2 || '';
                             <th>Email</th>
                             <th>Signed Up</th>
                             <th>Verified</th>
-                            <th>Status</th>
-                            <th>Payable Date</th>
-                            <th>Commission</th>
+                            <th>Promo Code Used</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${commissions.map(c => `
+                        ${users.map(u => `
                             <tr>
-                                <td>${c.waitlist_email}</td>
-                                <td>${new Date(c.created_at).toLocaleString('en-GB')}</td>
-                                <td>${c.verified ? '✅' : '❌'}</td>
-                                <td><span class="badge badge-${c.status}">${c.status}</span></td>
-                                <td>${c.payable_date ? new Date(c.payable_date).toLocaleDateString('en-GB') : '—'}</td>
-                                <td>£${parseFloat(c.commission_amount).toFixed(2)}</td>
+                                <td>${u.email}</td>
+                                <td>${new Date(u.created_at).toLocaleDateString('en-GB')}</td>
+                                <td>${u.verified ? '✅' : '❌'}</td>
+                                <td>${u.referral_code || '—'}</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -230,11 +222,11 @@ document.getElementById('adminNote2').value = data.adminNote2 || '';
             `;
         }
 
-        function renderSubscriptionsTable(subscriptions) {
+        function renderSubscriptionsTable(payments) {
             const container = document.getElementById('subscriptionsTable');
             
-            if (!subscriptions || subscriptions.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#9ca3af; padding:2rem;">No active subscriptions yet</p>';
+            if (!payments || payments.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#9ca3af; padding:2rem;">No payments yet</p>';
                 return;
             }
 
@@ -243,18 +235,18 @@ document.getElementById('adminNote2').value = data.adminNote2 || '';
                     <thead>
                         <tr>
                             <th>Customer Email</th>
-                            <th>Started</th>
-                            <th>Monthly Commission</th>
+                            <th>Date</th>
+                            <th>Amount</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${subscriptions.map(s => `
+                        ${payments.map(p => `
                             <tr>
-                                <td>${s.customer_email}</td>
-                                <td>${new Date(s.created_at).toLocaleDateString('en-GB')}</td>
-                                <td>£${parseFloat(s.commission_amount).toFixed(2)}</td>
-                                <td><span class="badge badge-${s.is_active ? 'verified' : 'paid'}">${s.is_active ? 'Active' : 'Inactive'}</span></td>
+                                <td>${p.email}</td>
+                                <td>${new Date(p.created_at).toLocaleDateString('en-GB')}</td>
+                                <td>£${parseFloat(p.amount).toFixed(2)}</td>
+                                <td><span class="badge badge-${p.status === 'paid' ? 'verified' : 'pending'}">${p.status}</span></td>
                             </tr>
                         `).join('')}
                     </tbody>
