@@ -823,11 +823,7 @@ tbody tr:hover { background: #f9fafb; }
             <!-- Row 1: Stats -->
             <div class="phase-label phase-1-label">⚡ Performance Overview</div>
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Total Signups</div>
-                    <div class="stat-value" id="totalSignups">0</div>
-                    <div class="stat-sub">All referral clicks</div>
-                </div>
+                
                 <div class="stat-card highlight">
                     <div class="stat-label">Verified Signups</div>
                     <div class="stat-value" id="verifiedSignups">0</div>
@@ -860,10 +856,18 @@ tbody tr:hover { background: #f9fafb; }
         </div>
     </div>
 
-    <!-- Full Width: Waitlist Table -->
+    <!-- Verified Signups Table -->
     <div class="table-section">
-        <h2 class="table-title">Waitlist Signups</h2>
-        <div class="table-wrapper" id="waitlistTable">
+        <h2 class="table-title">Verified Signups</h2>
+        <div class="table-wrapper" id="verifiedSignupsTable">
+            <div class="loading" style="text-align:center; padding: 2rem; color: #9ca3af;">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Active Subscribers Table -->
+    <div class="table-section">
+        <h2 class="table-title">Active Subscribers</h2>
+        <div class="table-wrapper" id="activeSubscribersTable">
             <div class="loading" style="text-align:center; padding: 2rem; color: #9ca3af;">Loading...</div>
         </div>
     </div>
@@ -1035,22 +1039,24 @@ window.addEventListener('load', function() {
         document.getElementById('activeSubscriptions').textContent = data.phase2.activeSubscriptions;
         document.getElementById('phase2Earnings').textContent = data.phase2.earnings.toFixed(2);
 
-        // Waitlist table
-        renderWaitlistTable(data.waitlistCommissions);
+       // Tables
+        renderVerifiedSignupsTable(data.waitlistCommissions);
+        renderActiveSubscribersTable(data.phase2.payments || []);
 
     } catch (err) {
         console.error('Network error:', err);
     }
 }
 
-        function renderWaitlistTable(commissions) {
-            const container = document.getElementById('waitlistTable');
+        function renderVerifiedSignupsTable(signups) {
+            const container = document.getElementById('verifiedSignupsTable');
+            const verified = (signups || []).filter(s => s.status === 'verified');
 
-            if (!commissions || commissions.length === 0) {
+            if (verified.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📭</div>
-                        <p>No waitlist signups yet. Share your referral link to start earning!</p>
+                        <p>No verified signups yet. Share your promo code link to start earning!</p>
                     </div>`;
                 return;
             }
@@ -1062,18 +1068,49 @@ window.addEventListener('load', function() {
                             <th>Email</th>
                             <th>Signed Up</th>
                             <th>Status</th>
-                            <th>Payable Date</th>
-                            <th>Commission</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${commissions.map(c => `
+                        ${verified.map(s => `
                             <tr>
-                                <td>${maskEmail(c.waitlist_email)}</td>
-                                <td>${new Date(c.created_at).toLocaleDateString('en-GB')}</td>
-                                <td><span class="badge badge-${c.status}">${c.status}</span></td>
-                                <td>${c.payable_date ? new Date(c.payable_date).toLocaleDateString('en-GB') : '—'}</td>
-                                <td>£${parseFloat(c.commission_amount).toFixed(2)}</td>
+                                <td>${maskEmail(s.waitlist_email)}</td>
+                                <td>${new Date(s.created_at).toLocaleDateString('en-GB')}</td>
+                                <td><span class="badge badge-verified">Verified</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>`;
+        }
+
+        function renderActiveSubscribersTable(payments) {
+            const container = document.getElementById('activeSubscribersTable');
+
+            if (!payments || payments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">💳</div>
+                        <p>No active subscribers yet. Keep sharing your promo code!</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${payments.map(p => `
+                            <tr>
+                                <td>${maskEmail(p.email)}</td>
+                                <td>${new Date(p.created_at).toLocaleDateString('en-GB')}</td>
+                                <td>£${parseFloat(p.amount).toFixed(2)}</td>
+                                <td><span class="badge badge-verified">Active</span></td>
                             </tr>
                         `).join('')}
                     </tbody>
