@@ -50,12 +50,12 @@
             flex: 1;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             padding: 3rem 2rem;
         }
 
         .content-wrapper {
-            max-width: 600px;
+            max-width: 860px;
             width: 100%;
             text-align: center;
         }
@@ -70,19 +70,21 @@
         .welcome-subtitle {
             font-size: 1.125rem;
             color: #6b7280;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             line-height: 1.6;
         }
 
-        .info-section {
+        /* ── Promo Code Box ── */
+        .promo-box {
             background: #f9fafb;
             border: 2px solid #e5e7eb;
             border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.25rem;
+            text-align: center;
         }
 
-        .info-title {
+        .promo-box .info-title {
             font-size: 1.25rem;
             font-weight: 700;
             color: #111827;
@@ -118,102 +120,189 @@
             background: #1565c0;
         }
 
-        .discord-cta {
-            background: linear-gradient(135deg, #0a1e3d 0%, #1d7fe2 100%);
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.5rem 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(10, 30, 61, 0.2);
-            transition: all 0.3s;
-        }
-
-        .discord-cta:hover {
-            box-shadow: 0 6px 24px rgba(10, 30, 61, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .cta-content {
-            display: flex;
-            align-items: center;
+        /* ── Two-column row ── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 1.25rem;
-        }
-
-        .logo-circle {
-            width: 56px;
-            height: 56px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .logo-circle img {
-            width: 44px;
-            height: 44px;
-            object-fit: contain;
-        }
-
-        .cta-text {
-            font-size: 1.125rem;
-            font-weight: 700;
+            margin-bottom: 1.25rem;
             text-align: left;
         }
 
-        .arrow-btn {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
+        .col-box {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        /* Warning box */
+        .warning-box {
+            background: #fef9c3;
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .warning-box .warn-title {
             font-weight: 700;
+            font-size: 1rem;
+            color: #92400e;
+            margin-bottom: 0.6rem;
+        }
+
+        .warning-box ol {
+            padding-left: 1.25rem;
+            color: #92400e;
             font-size: 0.9375rem;
-            white-space: nowrap;
+            line-height: 1.9;
+        }
+
+        .warning-box .warn-footer {
+            font-weight: 700;
+            font-size: 0.875rem;
+            color: #92400e;
+            margin-top: 0.75rem;
+        }
+
+        /* Right info box */
+        .right-box-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            height: 100%;
+        }
+
+        .promo-example {
+            background: white;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            font-size: 0.875rem;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .promo-label {
+            font-size: 0.8125rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.5rem;
+        }
+
+        .promo-username {
+            background: white;
+            border: 1.5px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: #1d7fe2;
+            letter-spacing: 0.02em;
+        }
+
+        .creative-note {
+            border-left: 3px solid #1d7fe2;
+            padding-left: 0.85rem;
+            color: #374151;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .creative-note strong {
+            color: #1d7fe2;
+        }
+
+        .tracking-note {
+            font-size: 0.875rem;
+            color: #374151;
+            line-height: 1.55;
+        }
+
+        .rule-box {
+            background: #eff6ff;
+            border: 1.5px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            font-size: 0.875rem;
+            color: #1e40af;
+            line-height: 1.5;
+        }
+
+        .rule-box strong {
+            color: #1d4ed8;
+        }
+
+        .dashboard-note {
+            background: #f0fdf4;
+            border: 1.5px solid #86efac;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            font-size: 0.875rem;
+            color: #166534;
+            line-height: 1.5;
+        }
+
+        /* Confirm checkbox */
+        .confirm-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+
+        #bioConfirmBox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        /* Continue Button */
+        #continueBtn {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 18px 32px;
+            background: #cbd5e1;
+            color: #fff;
+            border: none;
+            border-radius: 13px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: not-allowed;
+            display: block;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
 
         /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .top-nav {
-                padding: 1rem 1.5rem;
-            }
-
-            .logo-img {
-                height: 40px;
-            }
-
-            .nav-title {
-                font-size: 1rem;
-            }
-
-            .welcome-title {
-                font-size: 2rem;
-            }
-
-            .welcome-subtitle {
-                font-size: 1rem;
-            }
-
-            .discord-cta {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-            }
-
-            .cta-content {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-
-            .cta-text {
-                text-align: center;
-            }
+        @media (max-width: 700px) {
+            .top-nav { padding: 1rem 1.5rem; }
+            .logo-img { height: 40px; }
+            .nav-title { font-size: 1rem; }
+            .welcome-title { font-size: 2rem; }
+            .welcome-subtitle { font-size: 1rem; }
+            .two-col { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+
     <!-- Top Navigation -->
     <nav class="top-nav">
         <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="GMM Logo" class="logo-img">
@@ -226,93 +315,120 @@
             <h1 class="welcome-title">Welcome, Ambassador! 🎉</h1>
             <p class="welcome-subtitle">You're now part of the Montura ambassador programme. Here's your unique promo code — you need to put this in your TikTok bio right now before continuing.</p>
 
-            <!-- Referral Code Section -->
-            <div class="info-section">
+            <!-- ── Single promo code box ── -->
+            <div class="promo-box">
                 <h2 class="info-title">Your Promo Code</h2>
-                <div class="referral-code" id="referralCode">Loading...</div>
+                <div class="referral-code" id="referralCode">STUDIES14</div>
                 <button class="copy-btn" onclick="copyReferralCode()">Copy Code</button>
-
-                <div style="background:#fef9c3; border:2px solid #fbbf24; border-radius:12px; padding:1.25rem; margin-top:1.25rem; text-align:left;">
-                    <p style="font-weight:700; font-size:1rem; color:#92400e; margin-bottom:0.5rem;">⚠️ Do this right now before continuing:</p>
-                    <ol style="padding-left:1.25rem; color:#92400e; font-size:0.9375rem; line-height:1.8;">
-                        <li>Copy your promo code above</li>
-                        <li>Open TikTok → Edit Profile → Bio</li>
-                        <li>Paste your promo code into your bio</li>
-                        <li>Save your profile</li>
-                    </ol>
-                    <p style="font-weight:700; font-size:0.875rem; color:#92400e; margin-top:0.75rem;">Without this in your bio, signups cannot be tracked and you will not be paid.</p>
-                </div>
-
-                <div style="display:flex; align-items:center; gap:12px; margin-top:1.25rem; background:#f0fdf4; border:2px solid #86efac; border-radius:12px; padding:1rem; cursor:pointer;" onclick="toggleBioConfirm(this)">
-                    <div id="bioConfirmBox" style="width:24px; height:24px; border:2px solid #d1d5db; border-radius:6px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.2s; background:white;">
-                    </div>
-                    <span style="font-weight:600; font-size:0.9375rem; color:#166534;">I have added my promo code to my TikTok bio</span>
-                </div>
             </div>
 
-    <!-- Continue Button -->
-<button id="continueBtn" onclick="startOnboarding()" disabled style="width:100%; max-width:400px; margin:0 auto; padding:18px 32px; background:#cbd5e1; color:#fff; border:none; border-radius:13px; font-size:18px; font-weight:700; cursor:not-allowed; display:block; transition: all 0.2s;">
-  Continue to Onboarding →
-</button>
-            
+            <!-- ── Two-column row ── -->
+            <div class="two-col">
+
+                <!-- Left: Warning steps -->
+                <div class="col-box">
+                    <div class="warning-box">
+                        <p class="warn-title">⚠️ Do this right now before continuing:</p>
+                        <ol>
+                            <li>Copy your promo code above</li>
+                            <li>Open TikTok → Edit Profile → Bio</li>
+                            <li>Paste your promo code into your bio</li>
+                            <li>Save your profile</li>
+                        </ol>
+                        <p class="warn-footer">Without this in your bio, signups cannot be tracked and you will not be paid.</p>
+                    </div>
+                </div>
+
+                <!-- Right: Promo info from screenshots -->
+                <div class="col-box">
+                    <div class="right-box-inner">
+
+                        <div>
+                            <p class="promo-label">Your promo code would look like:</p>
+                            <div class="promo-username">*part of your tiktok username*PROMO CODE</div>
+                        </div>
+
+                        <p style="font-size:0.875rem; color:#374151; font-weight:600;">Make sure you add a comment to the promo code too. It could be:</p>
+
+                        <div class="promo-example">"The best revision resources and revision platform @monturalearn — use code <strong>*your promo code*</strong>"</div>
+                        <div class="promo-example">"Best revision resources and revision platform @monturalearn use code <strong>*your promo code*</strong>"</div>
+                        <div class="promo-example">"Revision platform and guides to fix your GCSEs @monturalearn use code <strong>*your promo code*</strong>"</div>
+
+                        <div class="creative-note"><strong>Or get creative with it</strong> — as long as it creates urgency and interest, it's up to you.</div>
+
+                        <p class="tracking-note">When someone sees that promo code and clicks the website link @Monturalearn — it's tracked to you. Automatically. You don't touch anything.</p>
+
+                        <div class="rule-box"><strong>The only rule:</strong> Promo code and comment stays in your bio at all times. No link in bio = no tracking = no money. It's that simple.</div>
+
+                        <div class="dashboard-note">📊 Check your Creator Dashboard anytime to see your signups in real time.</div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Confirm checkbox -->
+            <div class="confirm-row" onclick="toggleBioConfirm(this)">
+                <div id="bioConfirmBox"></div>
+                <span style="font-weight:600; font-size:0.9375rem; color:#166534;">I have added my promo code and comment to my TikTok bio</span>
+            </div>
+
+            <!-- Continue Button -->
+            <button id="continueBtn" onclick="startOnboarding()" disabled>
+                Continue to Onboarding →
+            </button>
         </div>
     </div>
 
     <script>
-        // Load referral code from session storage
-document.addEventListener('DOMContentLoaded', function() {
-    const referralCode = sessionStorage.getItem('referral_code');
+        document.addEventListener('DOMContentLoaded', function() {
+            const referralCode = sessionStorage.getItem('referral_code');
+            if (referralCode) {
+                document.getElementById('referralCode').textContent = referralCode;
+            }
+        });
 
-    if (referralCode) {
-        document.getElementById('referralCode').textContent = referralCode;
-    } else {
-        // If no code in session, redirect back to signup
-        window.location.href = 'ambassador-signup.html';
-    }
-});
+        function copyReferralCode() {
+            const code = document.getElementById('referralCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied! ✓';
+                btn.style.background = '#10b981';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#1d7fe2';
+                }, 2000);
+            });
+        }
 
-function copyReferralCode() {
-    const code = document.getElementById('referralCode').textContent;
-    navigator.clipboard.writeText(code).then(() => {
-        const btn = event.target;
-        const originalText = btn.textContent;
-        btn.textContent = 'Copied! ✓';
-        btn.style.background = '#10b981';
-        
-        setTimeout(() => {
-            btn.textContent = originalText;
-            btn.style.background = '#1d7fe2';
-        }, 2000);
-    });
-}
+        let bioConfirmed = false;
 
-let bioConfirmed = false;
+        function toggleBioConfirm(wrapper) {
+            bioConfirmed = !bioConfirmed;
+            const box = document.getElementById('bioConfirmBox');
+            const btn = document.getElementById('continueBtn');
+            if (bioConfirmed) {
+                box.style.background = '#1d7fe2';
+                box.style.borderColor = '#1d7fe2';
+                box.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 3.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                btn.disabled = false;
+                btn.style.background = '#10b981';
+                btn.style.cursor = 'pointer';
+            } else {
+                box.style.background = 'white';
+                box.style.borderColor = '#d1d5db';
+                box.innerHTML = '';
+                btn.disabled = true;
+                btn.style.background = '#cbd5e1';
+                btn.style.cursor = 'not-allowed';
+            }
+        }
 
-function toggleBioConfirm(wrapper) {
-    bioConfirmed = !bioConfirmed;
-    const box = document.getElementById('bioConfirmBox');
-    const btn = document.getElementById('continueBtn');
-    if (bioConfirmed) {
-        box.style.background = '#1d7fe2';
-        box.style.borderColor = '#1d7fe2';
-        box.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 3.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-        btn.disabled = false;
-        btn.style.background = '#10b981';
-        btn.style.cursor = 'pointer';
-    } else {
-        box.style.background = 'white';
-        box.style.borderColor = '#d1d5db';
-        box.innerHTML = '';
-        btn.disabled = true;
-        btn.style.background = '#cbd5e1';
-        btn.style.cursor = 'not-allowed';
-    }
-}
-
-function startOnboarding() {
-    if (!bioConfirmed) return;
-    window.location.href = '/ambassador-dashboard.html';
-}
+        function startOnboarding() {
+            if (!bioConfirmed) return;
+            window.location.href = '/ambassador-dashboard.html';
+        }
     </script>
 </body>
 </html>
