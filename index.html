@@ -2376,7 +2376,31 @@ body.launch-mode .cta-button {
         width: 100%;
     }
 }      
-      
+
+
+.content-creators-btn {
+    background: linear-gradient(135deg, #0a1e3d 0%, #1d7fe2 100%);
+    color: white !important;
+    padding: 0.5rem 1.1rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: opacity 0.2s, transform 0.2s;
+}
+.content-creators-btn:hover {
+    opacity: 0.9;
+    transform: scale(1.04);
+    color: white !important;
+}
+@media (max-width: 430px) {
+    .content-creators-btn {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.7rem;
+    }
+}
+
+
+        
       
       
       
@@ -2399,6 +2423,7 @@ body.launch-mode .cta-button {
 
             <div class="nav-links">
     <a href="#faq" class="nav-link">FAQ</a>
+    <a href="#ambassador" class="nav-link content-creators-btn">Content Creators</a>
     <a href="signin.html" class="nav-cta" style="text-decoration: none;">Sign in</a>
 </div>
         </div>
@@ -3527,7 +3552,7 @@ No more guessing whether you're ready. Just a clear picture of where you stand a
 </section>
 
 
-<section class="ambassador-section">
+<section class="ambassador-section" id="ambassador">
     <div class="ambassador-container">
         <div class="ambassador-header">
             <h2 class="ambassador-title">Join the startup circle 🚀</h2>
@@ -4496,5 +4521,21 @@ window.submitSuggestion = async function(inputId, btn) {
   
   
   
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var ccLink = document.querySelector('a[href="#ambassador"].content-creators-btn');
+    if (ccLink) {
+        ccLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            var target = document.getElementById('ambassador');
+            if (target) {
+                var navHeight = document.querySelector('nav') ? document.querySelector('nav').offsetHeight : 80;
+                var top = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 16;
+                window.scrollTo({ top: top, behavior: 'smooth' });
+            }
+        });
+    }
+});
+</script>
 </body>
 </html>
