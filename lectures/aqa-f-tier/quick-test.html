@@ -7,25 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #ffffff; display: flex; min-height: 100vh; }
 
-    body {
-        font-family: 'Inter', sans-serif;
-        background: #ffffff;
-        display: flex;
-        min-height: 100vh;
-    }
-
-    /* ── Sidebar ── */
     .sidebar {
-        width: 280px;
-        background: transparent;
-        padding: 2rem 1.5rem;
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        height: calc(100vh - 40px);
-        overflow-y: auto;
-        margin: 20px;
+        width: 280px; background: transparent; padding: 2rem 1.5rem;
+        display: flex; flex-direction: column; position: fixed;
+        height: calc(100vh - 40px); overflow-y: auto; margin: 20px;
     }
     .logo { font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 2.5rem; letter-spacing: -0.02em; }
     .nav-item {
@@ -45,141 +32,121 @@
     }
     .live-study-btn:hover { background: #1a1a1a; transform: translateY(-1px); }
 
-    /* ── Main ── */
     .main-content {
         flex: 1; margin-left: 320px; margin-right: 20px;
         margin-top: 20px; margin-bottom: 20px; background: #ffffff;
         border-radius: 10px; overflow: hidden;
         border: 1px solid #e0e4e9; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
-    .content-wrapper { background: #97b6e5; padding: 8rem 0 0 0; }
-    .subject-header { display: flex; align-items: center; margin-bottom: 4rem; position: relative; }
+    .content-wrapper { background: #97b6e5; padding: 6rem 0 0 0; }
+    .subject-header { display: flex; align-items: center; margin-bottom: 3rem; position: relative; }
     .subject-line-left  { height: 1px; background: #d1d5db; flex: 0 0 60px; }
     .subject-line-right { height: 1px; background: #d1d5db; flex: 1; }
     .subject-name { font-size: 2.5rem; font-weight: 600; color: #111827; padding: 0 2rem; letter-spacing: -0.03em; }
 
-    /* ── Topics section ── */
-    .topics-section { background: transparent; padding: 0 3rem 2.5rem 3rem; }
+    .quiz-builder { padding: 0 2rem 2rem; }
 
-    /* ── Top-level paper accordions ── */
-    .papers-list { display: flex; flex-direction: column; gap: 0; margin-top: 40px; width: 100%; max-width: 900px; }
+    .mode-tabs { display: flex; gap: 0; background: #f3f4f6; border-radius: 8px; padding: 3px; margin-bottom: 20px; max-width: 340px; }
+    .mode-tab { flex: 1; padding: 8px 14px; font-size: 13px; font-weight: 500; color: #6b7280; background: transparent; border: none; border-radius: 6px; cursor: pointer; text-align: center; transition: all 0.2s; }
+    .mode-tab.active { background: #fff; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-    .paper-item {
-        border: 1px solid #e0e0e0;
-        border-radius: 12px;
-        margin-bottom: 12px;
-        overflow: hidden;
-        background: #ffffff;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    }
-    .paper-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 22px 28px; cursor: pointer; background: #ffffff;
-        transition: background 0.15s; user-select: none; border: none; width: 100%;
-    }
-    .paper-header:hover { background: #fafafa; }
-    .paper-header-left { display: flex; align-items: center; gap: 16px; }
-    .paper-tag {
-        font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-        color: #fff; background: #111; padding: 4px 9px; border-radius: 6px;
-        font-family: 'Inter', sans-serif; white-space: nowrap; flex-shrink: 0;
-    }
-    .paper-title { font-size: 16px; font-weight: 600; color: #111; letter-spacing: -0.02em; font-family: 'Inter', sans-serif; }
-    .paper-chevron { font-size: 18px; color: #bbb; display: inline-block; transition: transform 0.22s; flex-shrink: 0; }
-    .paper-item.open .paper-chevron { transform: rotate(90deg); }
+    .builder-layout { display: grid; grid-template-columns: 1fr 320px; gap: 16px; align-items: start; }
 
-    .paper-body {
-        max-height: 0; overflow: hidden;
-        transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1);
-        border-top: 0px solid #f0f0f0;
-    }
-    .paper-item.open .paper-body { max-height: 6000px; border-top-width: 1px; }
+    .topic-panel { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: #fff; }
+    .grade-notice { display: flex; align-items: center; gap: 8px; padding: 10px 18px; background: #f0f9ff; border-bottom: 1px solid #e0f2fe; }
+    .grade-dot { width: 6px; height: 6px; border-radius: 50%; background: #0ea5e9; flex-shrink: 0; }
+    .grade-text { font-size: 11px; color: #0369a1; }
+    .grade-text span { font-weight: 600; }
 
-    /* ── Pillar panel (inside paper body) ── */
-    .lec-panel { display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #fff; border: none; border-radius: 0; }
+    .topic-section { border-bottom: 0.5px solid #f0f0f0; }
+    .topic-section:last-child { border-bottom: none; }
+    .section-hdr { display: flex; align-items: center; justify-content: space-between; padding: 13px 18px; cursor: pointer; transition: background 0.12s; user-select: none; }
+    .section-hdr:hover { background: #fafafa; }
+    .section-hdr-left { display: flex; align-items: center; gap: 10px; }
+    .section-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: #111; padding: 3px 8px; border-radius: 5px; }
+    .section-title { font-size: 13px; font-weight: 600; color: #111827; }
+    .section-hdr-right { display: flex; align-items: center; gap: 8px; }
+    .section-count { font-size: 11px; color: #9ca3af; }
+    .section-chev { font-size: 14px; color: #d1d5db; transition: transform 0.22s; }
+    .topic-section.open .section-chev { transform: rotate(90deg); }
 
-    /* Pillars */
-    .lec-pillars { display: flex; flex-direction: column; gap: 10px; }
-    .lec-pillar-box { border: 1px solid #e5e5e5; border-radius: 13px; overflow: hidden; }
-    .lec-pillar-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 15px 20px; cursor: pointer; background: #fff;
-        transition: background 0.15s; user-select: none;
-    }
-    .lec-pillar-header:hover { background: #fafafa; }
-    .lec-pillar-header-left  { display: flex; align-items: center; gap: 12px; }
-    .lec-pillar-header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-    .lec-pillar-tag {
-        font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-        color: #fff; background: #111; padding: 3px 8px; border-radius: 5px;
-        font-family: 'Inter', sans-serif; white-space: nowrap; flex-shrink: 0;
-    }
-    .lec-pillar-name { font-size: 13.5px; font-weight: 600; color: #111; letter-spacing: -0.01em; font-family: 'Inter', sans-serif; }
-    .lec-aggregate-blocks { display: flex; gap: 3px; flex-wrap: wrap; max-width: 220px; align-items: center; }
-    .lec-agg-block { width: 9px; height: 9px; border-radius: 2px; background: #efefef; flex-shrink: 0; }
-    .lec-agg-block.correct { background: #54D3AB; }
-    .lec-agg-block.wrong   { background: #E16280; }
-    .lec-pillar-chevron { font-size: 14px; color: #bbb; display: inline-block; transition: transform 0.22s; flex-shrink: 0; }
-    .lec-pillar-box.open .lec-pillar-chevron { transform: rotate(90deg); }
-    .lec-pillar-body { max-height: 0; overflow: hidden; transition: max-height 0.32s cubic-bezier(0.4,0,0.2,1); }
-    .lec-pillar-box.open .lec-pillar-body { max-height: 4000px; border-top: 1px solid #f0f0f0; }
+    .topic-rows { display: none; border-top: 0.5px solid #f5f5f5; }
+    .topic-section.open .topic-rows { display: block; }
 
-    /* Lecture rows */
-    .lec-sub-row {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 11px 20px; border-bottom: 1px solid #f5f5f5;
-        cursor: pointer; transition: background 0.12s; background: #fff;
-    }
-    .lec-sub-row:last-child { border-bottom: none; }
-    .lec-sub-row:hover { background: #f9f9f9; }
-    .lec-sub-row:hover .lec-sub-arrow { opacity: 1; transform: translateX(3px); }
-    .lec-sub-left  { display: flex; align-items: center; gap: 12px; }
-    .lec-sub-num   { font-size: 11px; font-weight: 600; color: #d0d0d0; min-width: 22px; font-family: 'Inter', sans-serif; }
-    .lec-sub-name  { font-size: 13px; font-weight: 400; color: #333; letter-spacing: -0.01em; font-family: 'Inter', sans-serif; }
-    .lec-sub-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-    .lec-blocks    { display: flex; gap: 4px; align-items: center; }
-    .lec-block { width: 13px; height: 13px; border-radius: 3px; background: #efefef; flex-shrink: 0; transition: background 0.2s; }
-    .lec-block.correct { background: #54D3AB; }
-    .lec-block.wrong   { background: #E16280; }
-    .lec-sub-arrow { font-size: 12px; color: #ccc; opacity: 0.4; transition: all 0.15s; }
-</style>
+    .topic-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 18px 9px 38px; border-bottom: 0.5px solid #f9f9f9; cursor: default; transition: background 0.1s; }
+    .topic-row:last-child { border-bottom: none; }
+    .topic-row:hover { background: #fafafa; }
+    .topic-row-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .topic-num-label { font-size: 11px; color: #d1d5db; min-width: 22px; flex-shrink: 0; }
+    .topic-title { font-size: 12px; color: #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .topic-row-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .exp-blocks { display: flex; gap: 2px; }
+    .exp-block { width: 9px; height: 9px; border-radius: 2px; background: #efefef; }
+    .exp-block.correct { background: #54d3ab; }
+    .exp-block.wrong { background: #e16280; }
+    .add-btn { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #e5e7eb; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #9ca3af; cursor: pointer; flex-shrink: 0; transition: all 0.15s; line-height: 1; }
+    .add-btn:hover { border-color: #111827; color: #111827; }
+    .add-btn.added { background: #111827; border-color: #111827; color: #fff; font-size: 10px; }
+
+    .pool-panel { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: #fff; position: sticky; top: 20px; }
+    .pool-header { padding: 14px 16px; border-bottom: 0.5px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
+    .pool-title { font-size: 13px; font-weight: 600; color: #111827; }
+    .pool-count { font-size: 11px; color: #9ca3af; }
+
+    .pool-empty { padding: 28px 20px; text-align: center; }
+    .pool-empty-icon { width: 36px; height: 36px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 16px; }
+    .pool-empty-text { font-size: 12px; color: #9ca3af; line-height: 1.5; }
+
+    .pool-list { max-height: 240px; overflow-y: auto; }
+    .pool-topic-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 0.5px solid #f5f5f5; }
+    .pool-topic-row:last-child { border-bottom: none; }
+    .pool-topic-name { font-size: 12px; color: #111827; }
+    .pool-topic-meta { font-size: 11px; color: #9ca3af; margin-top: 1px; }
+    .pool-topic-meta.weak { color: #e16280; }
+    .remove-btn { font-size: 16px; color: #d1d5db; cursor: pointer; padding: 0 4px; border-radius: 4px; background: none; border: none; line-height: 1; }
+    .remove-btn:hover { color: #e16280; background: #fff1f2; }
+
+    .count-section { padding: 14px 16px; border-top: 0.5px solid #f0f0f0; }
+    .count-label { font-size: 11px; color: #6b7280; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .count-value { font-size: 15px; font-weight: 600; color: #111827; }
+    input[type=range].q-slider { width: 100%; accent-color: #111827; height: 4px; }
+
+    .start-btn { margin: 12px 16px 16px; width: calc(100% - 32px); padding: 13px; background: #111827; color: #fff; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
+    .start-btn:hover { background: #1f2937; }
+    .start-btn.disabled { background: #f3f4f6; color: #9ca3af; cursor: default; pointer-events: none; }
+    .q-badge { background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+    .start-btn.disabled .q-badge { background: #e5e7eb; color: #9ca3af; }
+
+    .suggested-panel { margin-top: 16px; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: #fff; }
+    .suggested-header { padding: 12px 16px; border-bottom: 0.5px solid #f0f0f0; }
+    .suggested-title { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.08em; }
+    .suggested-sub { font-size: 12px; color: #374151; margin-top: 2px; }
+    .weak-topic-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 16px; border-bottom: 0.5px solid #f5f5f5; cursor: pointer; transition: background 0.1s; }
+    .weak-topic-row:last-child { border-bottom: none; }
+    .weak-topic-row:hover { background: #fffbf5; }
+    .weak-name { font-size: 12px; color: #374151; }
+    .weak-pct { font-size: 11px; font-weight: 500; color: #f97316; }
+    .weak-pct.zero { color: #e16280; }
+    .suggested-start { margin: 12px 16px 16px; width: calc(100% - 32px); padding: 11px; background: #fff7ed; color: #92400e; border: 1px solid #fed7aa; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.15s; }
+    .suggested-start:hover { background: #ffedd5; }
+    .suggested-empty { padding: 20px 16px; font-size: 12px; color: #9ca3af; text-align: center; }
+
+    .build-mode { display: block; }
+    .suggest-mode { display: none; }
+    </style>
 </head>
 <body>
-    <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <div class="logo">GCSE Mastery</div>
-        
-       <a href="../../dashboard.html" class="nav-item">
-    <span class="nav-icon">🏠</span>
-    <span>Dashboard</span>
-</a>
-
-<a href="lectures.html" class="nav-item">
-    <span class="nav-icon">∞</span>
-    <span>Lectures</span>
-</a>
-
-<a href="flashtiles.html" class="nav-item">
-    <span class="nav-icon">⚡</span>
-    <span>Flashtiles</span>
-</a>
-
-<a href="quick-test.html" class="nav-item active">
-    <span class="nav-icon">🕐</span>
-    <span>Quiz / Quick Test</span>
-</a>
-
-<a href="past-papers.html" class="nav-item">
-    <span class="nav-icon">📄</span>
-    <span>Past Papers</span>
-</a>
-
+        <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
+        <a href="lectures.html" class="nav-item"><span class="nav-icon">∞</span><span>Lectures</span></a>
+        <a href="flashtiles.html" class="nav-item"><span class="nav-icon">⚡</span><span>Flashtiles</span></a>
+        <a href="quick-test.html" class="nav-item active"><span class="nav-icon">🕐</span><span>Quiz / Quick Test</span></a>
+        <a href="past-papers.html" class="nav-item"><span class="nav-icon">📄</span><span>Past Papers</span></a>
         <div class="nav-spacer"></div>
-
         <button class="live-study-btn">Allow Live Study</button>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
         <div class="content-wrapper">
             <div class="subject-header">
@@ -189,293 +156,515 @@
             </div>
         </div>
 
-        <section class="topics-section">
-            <div class="papers-list" id="papersList"></div>
+        <section class="quiz-builder">
+            <div class="mode-tabs">
+                <button class="mode-tab active" id="tabBuild" onclick="switchMode('build')">Build your own</button>
+                <button class="mode-tab" id="tabSuggest" onclick="switchMode('suggest')">Suggested for you</button>
+            </div>
+
+            <div class="builder-layout">
+                <div>
+                    <div class="topic-panel" id="topicPanel">
+                        <div class="grade-notice">
+                            <div class="grade-dot"></div>
+                            <div class="grade-text">Questions matched to your level — <span id="gradeLabel">loading...</span></div>
+                        </div>
+                        <div id="topicSections"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="pool-panel" id="poolPanel">
+                        <div class="pool-header">
+                            <span class="pool-title">Quiz pool</span>
+                            <span class="pool-count" id="poolCount">0 topics</span>
+                        </div>
+                        <div id="poolList">
+                            <div class="pool-empty">
+                                <div class="pool-empty-icon">+</div>
+                                <div class="pool-empty-text">Add topics from the left<br>to build your quiz</div>
+                            </div>
+                        </div>
+                        <div class="count-section" id="countSection" style="display:none;">
+                            <div class="count-label">
+                                Total questions
+                                <span class="count-value" id="countDisplay">20</span>
+                            </div>
+                            <input type="range" class="q-slider" id="qSlider" min="5" max="40" step="1" value="20">
+                        </div>
+                        <button class="start-btn disabled" id="startBtn" onclick="startQuiz()">
+                            Start quiz <span class="q-badge" id="startBadge">0 Qs</span>
+                        </button>
+                    </div>
+
+                    <div class="suggested-panel" id="suggestedPanel">
+                        <div class="suggested-header">
+                            <div class="suggested-title">Suggested for you</div>
+                            <div class="suggested-sub" id="suggestedSub">Loading weak topics...</div>
+                        </div>
+                        <div id="suggestedList"></div>
+                        <button class="suggested-start" id="suggestedStartBtn" onclick="startSuggestedQuiz()" style="display:none;">
+                            Start suggested quiz <span id="suggestedBadge"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
+
 <script>
-const papersData = [
+const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+
+let currentUser = null;
+let currentProfile = null;
+let selectedTopics = [];
+let weakTopics = [];
+let currentMode = 'build';
+
+const topicsData = [
     {
-        tag: "Topic 1",
-        title: "Number",
-        sections: [
-            { number: "1",  title: "Place Value & Ordering Numbers",                 url: "quick-tests/1-place-value-and-ordering-numbers.html" },
-{ number: "2",  title: "Negative Numbers - Ordering & Calculations",     url: "quick-tests/2-negative-numbers-ordering-and-calculations.html" },
-{ number: "3",  title: "Rounding Decimals",                              url: "quick-tests/3-rounding-decimals.html" },
-{ number: "4",  title: "Rounding to Significant Figures",                url: "quick-tests/4-rounding-to-significant-figures.html" },
-{ number: "5",  title: "Estimation & Checking Answers",                  url: "quick-tests/5-estimation-and-checking-answers.html" },
-{ number: "6",  title: "Order of Operations (BODMAS)",                   url: "quick-tests/6-order-of-operations-bodmas.html" },
-{ number: "7",  title: "Factors & Multiples",                            url: "quick-tests/7-factors-and-multiples.html" },
-{ number: "8",  title: "Prime Numbers",                                  url: "quick-tests/8-prime-numbers.html" },
-{ number: "9",  title: "Product of Prime Factors",                       url: "quick-tests/9-product-of-prime-factors.html" },
-{ number: "10", title: "HCF & LCM",                                      url: "quick-tests/10-hcf-and-lcm.html" },
-{ number: "11", title: "Squares, Cubes & Roots",                         url: "quick-tests/11-squares-cubes-and-roots.html" },
-{ number: "12", title: "Powers & Indices",                               url: "quick-tests/12-powers-and-indices.html" },
-{ number: "13", title: "Standard Form",                                  url: "quick-tests/13-standard-form.html" },
-{ number: "14", title: "Simplifying Fractions",                          url: "quick-tests/14-simplifying-fractions.html" },
-{ number: "15", title: "Adding & Subtracting Fractions",                 url: "quick-tests/15-adding-and-subtracting-fractions.html" },
-{ number: "16", title: "Multiplying Fractions",                          url: "quick-tests/16-multiplying-fractions.html" },
-{ number: "17", title: "Dividing Fractions",                             url: "quick-tests/17-dividing-fractions.html" },
-{ number: "18", title: "Mixed & Improper Fractions",                     url: "quick-tests/18-mixed-and-improper-fractions.html" },
-{ number: "19", title: "Fractions of an Amount",                         url: "quick-tests/19-fractions-of-an-amount.html" },
-{ number: "20", title: "Expressing One Number as a Fraction of Another", url: "quick-tests/20-expressing-one-number-as-a-fraction-of-another.html" },
-{ number: "21", title: "Decimal Calculations",                           url: "quick-tests/21-decimal-calculations.html" },
-{ number: "22", title: "Converting Between Fractions, Decimals & Percentages", url: "quick-tests/22-converting-between-fractions-decimals-and-percentages.html" },
-{ number: "23", title: "Ordering Fractions, Decimals & Percentages",     url: "quick-tests/23-ordering-fractions-decimals-and-percentages.html" },
-{ number: "24", title: "Percentages of an Amount",                      url: "quick-tests/24-percentages-of-an-amount.html" },
-{ number: "25", title: "Percentage Increase & Decrease",                 url: "quick-tests/25-percentage-increase-and-decrease.html" },
-{ number: "26", title: "Expressing One Number as a Percentage of Another", url: "quick-tests/26-expressing-one-number-as-a-percentage-of-another.html" },
-{ number: "27", title: "Reverse Percentages",                            url: "quick-tests/27-reverse-percentages.html" },
-{ number: "28", title: "Simple Interest",                                url: "quick-tests/28-simple-interest.html" },
-{ number: "29", title: "Metric Unit Conversions",                        url: "quick-tests/29-metric-unit-conversions.html" },
-{ number: "30", title: "Metric & Imperial Conversions",                  url: "quick-tests/30-metric-and-imperial-conversions.html" },
-{ number: "31", title: "Time Calculations",                              url: "quick-tests/31-time-calculations.html" },
-{ number: "32", title: "Reading Scales",              url: "quick-tests/32-reading-scales.html" },
-{ number: "33", title: "Upper & Lower Bounds",        url: "quick-tests/33-upper-and-lower-bounds.html" }
-        ]
-    },
-    {
-        tag: "Topic 2",
-        title: "Algebra",
-        sections: [
-            { number: "32", title: "Index Laws",                                    url: "quick-tests/32-index-laws.html" },
-{ number: "33", title: "Expression vs Equation",                        url: "quick-tests/33-expression-vs-equation.html" },
-{ number: "34", title: "Algebraic Notation",                            url: "quick-tests/34-algebraic-notation.html" },
-{ number: "35", title: "Collecting Like Terms",                         url: "quick-tests/35-collecting-like-terms.html" },
-{ number: "36", title: "Multiplying & Dividing Algebraic Terms",         url: "quick-tests/36-multiplying-and-dividing-algebraic-terms.html" },
-{ number: "37", title: "Expanding Brackets",                            url: "quick-tests/37-expanding-brackets.html" },
-{ number: "38", title: "Expanding Double Brackets",                     url: "quick-tests/38-expanding-double-brackets.html" },
-{ number: "39", title: "Factorising Expressions",                       url: "quick-tests/39-factorising-expressions.html" },
-{ number: "40", title: "Factorising Quadratics",                        url: "quick-tests/40-factorising-quadratics.html" },
-{ number: "41", title: "Using Formulae",                                url: "quick-tests/41-using-formulae.html" },
-{ number: "42", title: "Substitution",                                  url: "quick-tests/42-substitution.html" },
-{ number: "43", title: "Rearranging Formulae",                          url: "quick-tests/43-rearranging-formulae.html" },
-{ number: "44", title: "Solving Linear Equations",                      url: "quick-tests/44-solving-linear-equations.html" },
-{ number: "45", title: "Solving Equations with Unknowns on Both Sides", url: "quick-tests/45-solving-equations-with-unknowns-on-both-sides.html" },
-{ number: "46", title: "Solving Equations with Brackets",               url: "quick-tests/46-solving-equations-with-brackets.html" },
-{ number: "47", title: "Solving Linear Inequalities",                   url: "quick-tests/47-solving-linear-inequalities.html" },
-{ number: "48", title: "Representing Inequalities on Number Lines",     url: "quick-tests/48-representing-inequalities-on-number-lines.html" },
-{ number: "49", title: "Integer Solutions to Inequalities",             url: "quick-tests/49-integer-solutions-to-inequalities.html" },
-{ number: "50", title: "Sequences - Term-to-Term Rules",                url: "quick-tests/50-sequences-term-to-term-rules.html" },
-{ number: "51", title: "Sequences - Position-to-Term Rules",            url: "quick-tests/51-sequences-position-to-term-rules.html" },
-{ number: "52", title: "Finding the nth Term",                         url: "quick-tests/52-finding-the-nth-term.html" },
-{ number: "53", title: "Using the nth Term",                            url: "quick-tests/53-using-the-nth-term.html" },
-{ number: "54", title: "Special Sequences",                             url: "quick-tests/54-special-sequences.html" }
-        ]
-    },
-        {
-        tag: "Topic 3",
-        title: "Graphs",
-        sections: [
-            { number: "55", title: "Plotting Coordinates",                url: "quick-tests/55-plotting-coordinates.html" },
-            { number: "56", title: "Drawing Linear Graphs",               url: "quick-tests/56-drawing-linear-graphs.html" },
-            { number: "57", title: "Gradient of a Straight Line",          url: "quick-tests/57-gradient-of-a-straight-line.html" },
-            { number: "58", title: "Straight Line Graphs (y = mx + c)",    url: "quick-tests/58-straight-line-graphs-y-mx-c.html" },
-            { number: "59", title: "Horizontal & Vertical Lines",          url: "quick-tests/59-horizontal-and-vertical-lines.html" },
-            { number: "60", title: "Distance-Time Graphs",                url: "quick-tests/60-distance-time-graphs.html" },
-            { number: "61", title: "Speed-Time Graphs",                   url: "quick-tests/61-speed-time-graphs.html" },
-            { number: "62", title: "Real-Life Graphs",                    url: "quick-tests/62-real-life-graphs.html" },
-            { number: "63", title: "Quadratic Graphs",                    url: "quick-tests/63-quadratic-graphs.html" },
-            { number: "64", title: "Cubic Graphs",                        url: "quick-tests/64-cubic-graphs.html" },
-            { number: "65", title: "Reciprocal Graphs",                   url: "quick-tests/65-reciprocal-graphs.html" }
+        tag: 'Topic 1', title: 'Number',
+        topics: [
+            { n: '1',  t: 'Place Value & Ordering Numbers',                 url: 'quick-tests/1-place-value-and-ordering-numbers.html' },
+            { n: '2',  t: 'Negative Numbers - Ordering & Calculations',     url: 'quick-tests/2-negative-numbers-ordering-and-calculations.html' },
+            { n: '3',  t: 'Rounding Decimals',                              url: 'quick-tests/3-rounding-decimals.html' },
+            { n: '4',  t: 'Rounding to Significant Figures',                url: 'quick-tests/4-rounding-to-significant-figures.html' },
+            { n: '5',  t: 'Estimation & Checking Answers',                  url: 'quick-tests/5-estimation-and-checking-answers.html' },
+            { n: '6',  t: 'Order of Operations (BODMAS)',                   url: 'quick-tests/6-order-of-operations-bodmas.html' },
+            { n: '7',  t: 'Factors & Multiples',                            url: 'quick-tests/7-factors-and-multiples.html' },
+            { n: '8',  t: 'Prime Numbers',                                  url: 'quick-tests/8-prime-numbers.html' },
+            { n: '9',  t: 'Product of Prime Factors',                       url: 'quick-tests/9-product-of-prime-factors.html' },
+            { n: '10', t: 'HCF & LCM',                                      url: 'quick-tests/10-hcf-and-lcm.html' },
+            { n: '11', t: 'Squares, Cubes & Roots',                         url: 'quick-tests/11-squares-cubes-and-roots.html' },
+            { n: '12', t: 'Powers & Indices',                               url: 'quick-tests/12-powers-and-indices.html' },
+            { n: '13', t: 'Standard Form',                                  url: 'quick-tests/13-standard-form.html' },
+            { n: '14', t: 'Simplifying Fractions',                          url: 'quick-tests/14-simplifying-fractions.html' },
+            { n: '15', t: 'Adding & Subtracting Fractions',                 url: 'quick-tests/15-adding-and-subtracting-fractions.html' },
+            { n: '16', t: 'Multiplying Fractions',                          url: 'quick-tests/16-multiplying-fractions.html' },
+            { n: '17', t: 'Dividing Fractions',                             url: 'quick-tests/17-dividing-fractions.html' },
+            { n: '18', t: 'Mixed & Improper Fractions',                     url: 'quick-tests/18-mixed-and-improper-fractions.html' },
+            { n: '19', t: 'Fractions of an Amount',                         url: 'quick-tests/19-fractions-of-an-amount.html' },
+            { n: '20', t: 'Expressing One Number as a Fraction of Another', url: 'quick-tests/20-expressing-one-number-as-a-fraction-of-another.html' },
+            { n: '21', t: 'Decimal Calculations',                           url: 'quick-tests/21-decimal-calculations.html' },
+            { n: '22', t: 'Converting Between Fractions, Decimals & Percentages', url: 'quick-tests/22-converting-between-fractions-decimals-and-percentages.html' },
+            { n: '23', t: 'Ordering Fractions, Decimals & Percentages',     url: 'quick-tests/23-ordering-fractions-decimals-and-percentages.html' },
+            { n: '24', t: 'Percentages of an Amount',                       url: 'quick-tests/24-percentages-of-an-amount.html' },
+            { n: '25', t: 'Percentage Increase & Decrease',                 url: 'quick-tests/25-percentage-increase-and-decrease.html' },
+            { n: '26', t: 'Expressing One Number as a Percentage of Another', url: 'quick-tests/26-expressing-one-number-as-a-percentage-of-another.html' },
+            { n: '27', t: 'Reverse Percentages',                            url: 'quick-tests/27-reverse-percentages.html' },
+            { n: '28', t: 'Simple Interest',                                url: 'quick-tests/28-simple-interest.html' },
+            { n: '29', t: 'Metric Unit Conversions',                        url: 'quick-tests/29-metric-unit-conversions.html' },
+            { n: '30', t: 'Metric & Imperial Conversions',                  url: 'quick-tests/30-metric-and-imperial-conversions.html' },
+            { n: '31', t: 'Time Calculations',                              url: 'quick-tests/31-time-calculations.html' },
+            { n: '32', t: 'Reading Scales',                                 url: 'quick-tests/32-reading-scales.html' },
+            { n: '33', t: 'Upper & Lower Bounds',                           url: 'quick-tests/33-upper-and-lower-bounds.html' }
         ]
     },
     {
-        tag: "Topic 4",
-        title: "Ratio, Proportion & Rates of Change",
-        sections: [
-            { number: "66", title: "Simplifying Ratios",                  url: "quick-tests/66-simplifying-ratios.html" },
-            { number: "67", title: "Sharing in a Ratio",                  url: "quick-tests/67-sharing-in-a-ratio.html" },
-            { number: "68", title: "Scale Drawings",                      url: "quick-tests/68-scale-drawings.html" },
-            { number: "69", title: "Comparing Using Ratios",              url: "quick-tests/69-comparing-using-ratios.html" },
-            { number: "70", title: "Direct Proportion",                   url: "quick-tests/70-direct-proportion.html" },
-            { number: "71", title: "Best Buys",                           url: "quick-tests/71-best-buys.html" },
-            { number: "72", title: "Currency Conversion",                 url: "quick-tests/72-currency-conversion.html" },
-            { number: "73", title: "Speed, Distance & Time",              url: "quick-tests/73-speed-distance-and-time.html" },
-            { number: "74", title: "Density",                             url: "quick-tests/74-density.html" },
-            { number: "75", title: "Pressure",                            url: "quick-tests/75-pressure.html" }
+        tag: 'Topic 2', title: 'Algebra',
+        topics: [
+            { n: '34', t: 'Algebraic Notation',                            url: 'quick-tests/34-algebraic-notation.html' },
+            { n: '35', t: 'Collecting Like Terms',                         url: 'quick-tests/35-collecting-like-terms.html' },
+            { n: '36', t: 'Multiplying & Dividing Algebraic Terms',        url: 'quick-tests/36-multiplying-and-dividing-algebraic-terms.html' },
+            { n: '37', t: 'Expanding Brackets',                            url: 'quick-tests/37-expanding-brackets.html' },
+            { n: '38', t: 'Expanding Double Brackets',                     url: 'quick-tests/38-expanding-double-brackets.html' },
+            { n: '39', t: 'Factorising Expressions',                       url: 'quick-tests/39-factorising-expressions.html' },
+            { n: '40', t: 'Factorising Quadratics',                        url: 'quick-tests/40-factorising-quadratics.html' },
+            { n: '41', t: 'Using Formulae',                                url: 'quick-tests/41-using-formulae.html' },
+            { n: '42', t: 'Substitution',                                  url: 'quick-tests/42-substitution.html' },
+            { n: '43', t: 'Rearranging Formulae',                          url: 'quick-tests/43-rearranging-formulae.html' },
+            { n: '44', t: 'Solving Linear Equations',                      url: 'quick-tests/44-solving-linear-equations.html' },
+            { n: '45', t: 'Solving Equations with Unknowns on Both Sides', url: 'quick-tests/45-solving-equations-with-unknowns-on-both-sides.html' },
+            { n: '46', t: 'Solving Equations with Brackets',               url: 'quick-tests/46-solving-equations-with-brackets.html' },
+            { n: '47', t: 'Solving Linear Inequalities',                   url: 'quick-tests/47-solving-linear-inequalities.html' },
+            { n: '48', t: 'Representing Inequalities on Number Lines',     url: 'quick-tests/48-representing-inequalities-on-number-lines.html' },
+            { n: '49', t: 'Integer Solutions to Inequalities',             url: 'quick-tests/49-integer-solutions-to-inequalities.html' },
+            { n: '50', t: 'Sequences - Term-to-Term Rules',                url: 'quick-tests/50-sequences-term-to-term-rules.html' },
+            { n: '51', t: 'Sequences - Position-to-Term Rules',            url: 'quick-tests/51-sequences-position-to-term-rules.html' },
+            { n: '52', t: 'Finding the nth Term',                          url: 'quick-tests/52-finding-the-nth-term.html' },
+            { n: '53', t: 'Using the nth Term',                            url: 'quick-tests/53-using-the-nth-term.html' },
+            { n: '54', t: 'Special Sequences',                             url: 'quick-tests/54-special-sequences.html' }
         ]
     },
     {
-        tag: "Topic 5",
-        title: "Geometry & Measures",
-        sections: [
-            { number: "76", title: "Angle Facts",                         url: "quick-tests/76-angle-facts.html" },
-            { number: "77", title: "Angles in Parallel Lines",            url: "quick-tests/77-angles-in-parallel-lines.html" },
-            { number: "78", title: "Alternate, Corresponding & Co-Interior Angles", url: "quick-tests/78-alternate-corresponding-and-co-interior-angles.html" },
-            { number: "79", title: "Properties of Triangles & Quadrilaterals", url: "quick-tests/79-properties-of-triangles-and-quadrilaterals.html" },
-            { number: "80", title: "Properties of Polygons",              url: "quick-tests/80-properties-of-polygons.html" },
-            { number: "81", title: "Angles in Polygons",                  url: "quick-tests/81-angles-in-polygons.html" },
-            { number: "82", title: "Constructing Triangles",              url: "quick-tests/82-constructing-triangles.html" },
-            { number: "83", title: "Perpendicular Bisectors",             url: "quick-tests/83-perpendicular-bisectors.html" },
-            { number: "84", title: "Angle Bisectors",                     url: "quick-tests/84-angle-bisectors.html" },
-            { number: "85", title: "Loci",                                url: "quick-tests/85-loci.html" },
-            { number: "86", title: "Bearings",                            url: "quick-tests/86-bearings.html" },
-            { number: "87", title: "Scale Drawings",                      url: "quick-tests/87-scale-drawings.html" },
-            { number: "88", title: "Perimeter",                           url: "quick-tests/88-perimeter.html" },
-            { number: "89", title: "Area of Rectangles & Triangles",      url: "quick-tests/89-area-of-rectangles-and-triangles.html" },
-            { number: "90", title: "Area of Parallelograms & Trapezia",   url: "quick-tests/90-area-of-parallelograms-and-trapezia.html" },
-            { number: "91", title: "Circumference & Area of Circles",     url: "quick-tests/91-circumference-and-area-of-circles.html" },
-            { number: "92", title: "Area of Compound Shapes",             url: "quick-tests/92-area-of-compound-shapes.html" },
-            { number: "93", title: "Volume of Prisms",                    url: "quick-tests/93-volume-of-prisms.html" },
-            { number: "94", title: "Volume of Cylinders",                 url: "quick-tests/94-volume-of-cylinders.html" },
-            { number: "95", title: "Surface Area of Cuboids",             url: "quick-tests/95-surface-area-of-cuboids.html" },
-            { number: "96", title: "Unit Conversions (Area & Volume)",    url: "quick-tests/96-unit-conversions-area-and-volume.html" },
-            { number: "97", title: "Pythagoras' Theorem",                 url: "quick-tests/97-pythagoras-theorem.html" },
-            { number: "98", title: "3D Shapes",                           url: "quick-tests/98-3d-shapes.html" },
-            { number: "99", title: "Nets of 3D Shapes",                   url: "quick-tests/99-nets-of-3d-shapes.html" },
-            { number: "100", title: "Transformations - Translation",      url: "quick-tests/100-transformations-translation.html" },
-            { number: "101", title: "Transformations - Reflection",       url: "quick-tests/101-transformations-reflection.html" },
-            { number: "102", title: "Transformations - Rotation",         url: "quick-tests/102-transformations-rotation.html" },
-            { number: "103", title: "Transformations - Enlargement",      url: "quick-tests/103-transformations-enlargement.html" },
-            { number: "104", title: "Congruence",                         url: "quick-tests/104-congruence.html" },
-            { number: "105", title: "Similarity",                         url: "quick-tests/105-similarity.html" },
-            { number: "106", title: "Vectors",                            url: "quick-tests/106-vectors.html" },
-            { number: "107", title: "Vector Addition & Subtraction",       url: "quick-tests/107-vector-addition-and-subtraction.html" },
-            { number: "108", title: "Scalar Multiplication",              url: "quick-tests/108-scalar-multiplication.html" }
+        tag: 'Topic 3', title: 'Graphs',
+        topics: [
+            { n: '55', t: 'Plotting Coordinates',               url: 'quick-tests/55-plotting-coordinates.html' },
+            { n: '56', t: 'Drawing Linear Graphs',              url: 'quick-tests/56-drawing-linear-graphs.html' },
+            { n: '57', t: 'Gradient of a Straight Line',        url: 'quick-tests/57-gradient-of-a-straight-line.html' },
+            { n: '58', t: 'Straight Line Graphs (y = mx + c)',  url: 'quick-tests/58-straight-line-graphs-y-mx-c.html' },
+            { n: '59', t: 'Horizontal & Vertical Lines',        url: 'quick-tests/59-horizontal-and-vertical-lines.html' },
+            { n: '60', t: 'Distance-Time Graphs',               url: 'quick-tests/60-distance-time-graphs.html' },
+            { n: '61', t: 'Speed-Time Graphs',                  url: 'quick-tests/61-speed-time-graphs.html' },
+            { n: '62', t: 'Real-Life Graphs',                   url: 'quick-tests/62-real-life-graphs.html' },
+            { n: '63', t: 'Quadratic Graphs',                   url: 'quick-tests/63-quadratic-graphs.html' },
+            { n: '64', t: 'Cubic Graphs',                       url: 'quick-tests/64-cubic-graphs.html' },
+            { n: '65', t: 'Reciprocal Graphs',                  url: 'quick-tests/65-reciprocal-graphs.html' }
         ]
     },
-            {
-        tag: "Topic 6",
-        title: "Statistics",
-        sections: [
-            { number: "109", title: "Types of Data",                      url: "quick-tests/109-types-of-data.html" },
-            { number: "110", title: "Data Collection",                    url: "quick-tests/110-data-collection.html" },
-            { number: "111", title: "Frequency Tables",                   url: "quick-tests/111-frequency-tables.html" },
-            { number: "112", title: "Two-Way Tables",                     url: "quick-tests/112-two-way-tables.html" },
-            { number: "113", title: "Pictograms",                         url: "quick-tests/113-pictograms.html" },
-            { number: "114", title: "Bar Charts",                         url: "quick-tests/114-bar-charts.html" },
-            { number: "115", title: "Pie Charts",                         url: "quick-tests/115-pie-charts.html" },
-            { number: "116", title: "Line Graphs",                        url: "quick-tests/116-line-graphs.html" },
-            { number: "117", title: "Frequency Polygons",                 url: "quick-tests/117-frequency-polygons.html" },
-            { number: "118", title: "Stem & Leaf Diagrams",               url: "quick-tests/118-stem-and-leaf-diagrams.html" },
-            { number: "119", title: "Time Series",                        url: "quick-tests/119-time-series.html" },
-            { number: "120", title: "Misleading Graphs",                  url: "quick-tests/120-misleading-graphs.html" },
-            { number: "121", title: "Averages from a List",               url: "quick-tests/121-averages-from-a-list.html" },
-            { number: "122", title: "Averages from Tables",               url: "quick-tests/122-averages-from-tables.html" },
-            { number: "123", title: "Comparing Distributions",             url: "quick-tests/123-comparing-distributions.html" }
+    {
+        tag: 'Topic 4', title: 'Ratio, Proportion & Rates of Change',
+        topics: [
+            { n: '66', t: 'Simplifying Ratios',      url: 'quick-tests/66-simplifying-ratios.html' },
+            { n: '67', t: 'Sharing in a Ratio',      url: 'quick-tests/67-sharing-in-a-ratio.html' },
+            { n: '68', t: 'Scale Drawings',           url: 'quick-tests/68-scale-drawings.html' },
+            { n: '69', t: 'Comparing Using Ratios',  url: 'quick-tests/69-comparing-using-ratios.html' },
+            { n: '70', t: 'Direct Proportion',        url: 'quick-tests/70-direct-proportion.html' },
+            { n: '71', t: 'Best Buys',                url: 'quick-tests/71-best-buys.html' },
+            { n: '72', t: 'Currency Conversion',      url: 'quick-tests/72-currency-conversion.html' },
+            { n: '73', t: 'Speed, Distance & Time',  url: 'quick-tests/73-speed-distance-and-time.html' },
+            { n: '74', t: 'Density',                  url: 'quick-tests/74-density.html' },
+            { n: '75', t: 'Pressure',                 url: 'quick-tests/75-pressure.html' }
         ]
     },
-             {
-        tag: "Topic 7",
-        title: "Probability",
-        sections: [
-            { number: "124", title: "Probability Scale",                  url: "quick-tests/124-probability-scale.html" },
-            { number: "125", title: "Listing Outcomes",                   url: "quick-tests/125-listing-outcomes.html" },
-            { number: "126", title: "Theoretical Probability",             url: "quick-tests/126-theoretical-probability.html" },
-            { number: "127", title: "Experimental Probability",            url: "quick-tests/127-experimental-probability.html" },
-            { number: "128", title: "Expected Frequency",                 url: "quick-tests/128-expected-frequency.html" },
-            { number: "129", title: "Two-Way Tables",                     url: "quick-tests/129-two-way-tables.html" },
-            { number: "130", title: "Sample Space Diagrams",              url: "quick-tests/130-sample-space-diagrams.html" },
-            { number: "131", title: "Tree Diagrams",                      url: "quick-tests/131-tree-diagrams.html" },
-            { number: "132", title: "Combined Events (AND/OR)",           url: "quick-tests/132-combined-events-and-or.html" },
-            { number: "133", title: "Venn Diagrams",                      url: "quick-tests/133-venn-diagrams.html" } 
+    {
+        tag: 'Topic 5', title: 'Geometry & Measures',
+        topics: [
+            { n: '76',  t: 'Angle Facts',                                         url: 'quick-tests/76-angle-facts.html' },
+            { n: '77',  t: 'Angles in Parallel Lines',                            url: 'quick-tests/77-angles-in-parallel-lines.html' },
+            { n: '78',  t: 'Alternate, Corresponding & Co-Interior Angles',       url: 'quick-tests/78-alternate-corresponding-and-co-interior-angles.html' },
+            { n: '79',  t: 'Properties of Triangles & Quadrilaterals',            url: 'quick-tests/79-properties-of-triangles-and-quadrilaterals.html' },
+            { n: '80',  t: 'Properties of Polygons',                              url: 'quick-tests/80-properties-of-polygons.html' },
+            { n: '81',  t: 'Angles in Polygons',                                  url: 'quick-tests/81-angles-in-polygons.html' },
+            { n: '82',  t: 'Constructing Triangles',                              url: 'quick-tests/82-constructing-triangles.html' },
+            { n: '83',  t: 'Perpendicular Bisectors',                             url: 'quick-tests/83-perpendicular-bisectors.html' },
+            { n: '84',  t: 'Angle Bisectors',                                     url: 'quick-tests/84-angle-bisectors.html' },
+            { n: '85',  t: 'Loci',                                                url: 'quick-tests/85-loci.html' },
+            { n: '86',  t: 'Bearings',                                            url: 'quick-tests/86-bearings.html' },
+            { n: '87',  t: 'Scale Drawings',                                      url: 'quick-tests/87-scale-drawings.html' },
+            { n: '88',  t: 'Perimeter',                                           url: 'quick-tests/88-perimeter.html' },
+            { n: '89',  t: 'Area of Rectangles & Triangles',                      url: 'quick-tests/89-area-of-rectangles-and-triangles.html' },
+            { n: '90',  t: 'Area of Parallelograms & Trapezia',                   url: 'quick-tests/90-area-of-parallelograms-and-trapezia.html' },
+            { n: '91',  t: 'Circumference & Area of Circles',                     url: 'quick-tests/91-circumference-and-area-of-circles.html' },
+            { n: '92',  t: 'Area of Compound Shapes',                             url: 'quick-tests/92-area-of-compound-shapes.html' },
+            { n: '93',  t: 'Volume of Prisms',                                    url: 'quick-tests/93-volume-of-prisms.html' },
+            { n: '94',  t: 'Volume of Cylinders',                                 url: 'quick-tests/94-volume-of-cylinders.html' },
+            { n: '95',  t: 'Surface Area of Cuboids',                             url: 'quick-tests/95-surface-area-of-cuboids.html' },
+            { n: '96',  t: 'Unit Conversions (Area & Volume)',                    url: 'quick-tests/96-unit-conversions-area-and-volume.html' },
+            { n: '97',  t: "Pythagoras' Theorem",                                 url: 'quick-tests/97-pythagoras-theorem.html' },
+            { n: '98',  t: '3D Shapes',                                           url: 'quick-tests/98-3d-shapes.html' },
+            { n: '99',  t: 'Nets of 3D Shapes',                                   url: 'quick-tests/99-nets-of-3d-shapes.html' },
+            { n: '100', t: 'Transformations - Translation',                       url: 'quick-tests/100-transformations-translation.html' },
+            { n: '101', t: 'Transformations - Reflection',                        url: 'quick-tests/101-transformations-reflection.html' },
+            { n: '102', t: 'Transformations - Rotation',                          url: 'quick-tests/102-transformations-rotation.html' },
+            { n: '103', t: 'Transformations - Enlargement',                       url: 'quick-tests/103-transformations-enlargement.html' },
+            { n: '104', t: 'Congruence',                                          url: 'quick-tests/104-congruence.html' },
+            { n: '105', t: 'Similarity',                                          url: 'quick-tests/105-similarity.html' },
+            { n: '106', t: 'Vectors',                                             url: 'quick-tests/106-vectors.html' },
+            { n: '107', t: 'Vector Addition & Subtraction',                       url: 'quick-tests/107-vector-addition-and-subtraction.html' },
+            { n: '108', t: 'Scalar Multiplication',                               url: 'quick-tests/108-scalar-multiplication.html' }
+        ]
+    },
+    {
+        tag: 'Topic 6', title: 'Statistics',
+        topics: [
+            { n: '109', t: 'Types of Data',          url: 'quick-tests/109-types-of-data.html' },
+            { n: '110', t: 'Data Collection',         url: 'quick-tests/110-data-collection.html' },
+            { n: '111', t: 'Frequency Tables',        url: 'quick-tests/111-frequency-tables.html' },
+            { n: '112', t: 'Two-Way Tables',          url: 'quick-tests/112-two-way-tables.html' },
+            { n: '113', t: 'Pictograms',              url: 'quick-tests/113-pictograms.html' },
+            { n: '114', t: 'Bar Charts',              url: 'quick-tests/114-bar-charts.html' },
+            { n: '115', t: 'Pie Charts',              url: 'quick-tests/115-pie-charts.html' },
+            { n: '116', t: 'Line Graphs',             url: 'quick-tests/116-line-graphs.html' },
+            { n: '117', t: 'Frequency Polygons',      url: 'quick-tests/117-frequency-polygons.html' },
+            { n: '118', t: 'Stem & Leaf Diagrams',    url: 'quick-tests/118-stem-and-leaf-diagrams.html' },
+            { n: '119', t: 'Time Series',             url: 'quick-tests/119-time-series.html' },
+            { n: '120', t: 'Misleading Graphs',       url: 'quick-tests/120-misleading-graphs.html' },
+            { n: '121', t: 'Averages from a List',    url: 'quick-tests/121-averages-from-a-list.html' },
+            { n: '122', t: 'Averages from Tables',    url: 'quick-tests/122-averages-from-tables.html' },
+            { n: '123', t: 'Comparing Distributions', url: 'quick-tests/123-comparing-distributions.html' }
+        ]
+    },
+    {
+        tag: 'Topic 7', title: 'Probability',
+        topics: [
+            { n: '124', t: 'Probability Scale',          url: 'quick-tests/124-probability-scale.html' },
+            { n: '125', t: 'Listing Outcomes',           url: 'quick-tests/125-listing-outcomes.html' },
+            { n: '126', t: 'Theoretical Probability',    url: 'quick-tests/126-theoretical-probability.html' },
+            { n: '127', t: 'Experimental Probability',   url: 'quick-tests/127-experimental-probability.html' },
+            { n: '128', t: 'Expected Frequency',         url: 'quick-tests/128-expected-frequency.html' },
+            { n: '129', t: 'Two-Way Tables',             url: 'quick-tests/129-two-way-tables.html' },
+            { n: '130', t: 'Sample Space Diagrams',      url: 'quick-tests/130-sample-space-diagrams.html' },
+            { n: '131', t: 'Tree Diagrams',              url: 'quick-tests/131-tree-diagrams.html' },
+            { n: '132', t: 'Combined Events (AND/OR)',   url: 'quick-tests/132-combined-events-and-or.html' },
+            { n: '133', t: 'Venn Diagrams',              url: 'quick-tests/133-venn-diagrams.html' }
         ]
     }
 ];
 
-function chunkIntoPillars(sections, chunkSize = 8) {
-    const pillars = [];
-    for (let i = 0; i < sections.length; i += chunkSize) {
-        pillars.push(sections.slice(i, i + chunkSize));
-    }
-    return pillars;
-}
+let topicPerformance = {};
 
-function aggBlocksHTML(count) {
-    return Array.from({ length: count }, () => `<div class="lec-agg-block"></div>`).join('');
-}
-
-function buildRow(section) {
-    const blocks = Array.from({ length: 6 }, () => `<div class="lec-block"></div>`).join('');
-    const row = document.createElement('div');
-    row.className = 'lec-sub-row';
-    row.innerHTML = `
-        <div class="lec-sub-left">
-            <span class="lec-sub-num">${section.number}</span>
-            <span class="lec-sub-name">${section.title}</span>
-        </div>
-        <div class="lec-sub-right">
-            <div class="lec-blocks">${blocks}</div>
-            <span class="lec-sub-arrow">→</span>
-        </div>`;
-    row.addEventListener('click', () => { window.location.href = section.url; });
-    return row;
-}
-
-function buildPillarBox(pillarSections) {
-    const first = pillarSections[0].number;
-    const last  = pillarSections[pillarSections.length - 1].number;
-    const label = pillarSections.length === 1 ? `${first}` : `${first}–${last}`;
-
-    const box = document.createElement('div');
-    box.className = 'lec-pillar-box';
-
-    const hdr = document.createElement('div');
-    hdr.className = 'lec-pillar-header';
-    hdr.innerHTML = `
-        <div class="lec-pillar-header-left">
-            <span class="lec-pillar-tag">Topics ${label}</span>
-            <span class="lec-pillar-name">${pillarSections.map(s => s.title.split(' ').slice(0,3).join(' ')).slice(0,2).join(', ')}${pillarSections.length > 2 ? '…' : ''}</span>
-        </div>
-        <div class="lec-pillar-header-right">
-            <div class="lec-aggregate-blocks">${aggBlocksHTML(pillarSections.length)}</div>
-            <span class="lec-pillar-chevron">›</span>
-        </div>`;
-
-    const body = document.createElement('div');
-    body.className = 'lec-pillar-body';
-    pillarSections.forEach(section => body.appendChild(buildRow(section)));
-
-    hdr.addEventListener('click', e => { e.stopPropagation(); box.classList.toggle('open'); });
-    box.appendChild(hdr);
-    box.appendChild(body);
-    return box;
-}
-
-const list = document.getElementById('papersList');
-
-papersData.forEach(paper => {
-    const item = document.createElement('div');
-    item.className = 'paper-item';
-
-    const header = document.createElement('button');
-    header.className = 'paper-header';
-    header.innerHTML = `
-        <div class="paper-header-left">
-            <span class="paper-tag">${paper.tag}</span>
-            <span class="paper-title">${paper.title}</span>
-        </div>
-        <span class="paper-chevron">›</span>`;
-
-    const body = document.createElement('div');
-    body.className = 'paper-body';
-
-    const panel = document.createElement('div');
-    panel.className = 'lec-panel';
-
-    const pillarsDiv = document.createElement('div');
-    pillarsDiv.className = 'lec-pillars';
-
-    const pillars = chunkIntoPillars(paper.sections, 8);
-    pillars.forEach((pillarSections, pi) => {
-        const pillarBox = buildPillarBox(pillarSections);
-        if (pi === 0) {
-            item.addEventListener('click', function openFirst() {
-                if (item.classList.contains('open')) pillarBox.classList.add('open');
-                item.removeEventListener('click', openFirst);
+async function init() {
+    try {
+        const res = await fetch(SUPABASE_URL + '/auth/v1/user', {
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+        });
+        const data = await res.json();
+        if (data && data.id) {
+            currentUser = data;
+            const pRes = await fetch(SUPABASE_URL + '/rest/v1/user_profiles?id=eq.' + data.id + '&select=first_name,current_grade,current_grade_tier', {
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
             });
+            const profiles = await pRes.json();
+            if (profiles && profiles[0]) {
+                currentProfile = profiles[0];
+                const grade = currentProfile.current_grade || 3;
+                const tier = currentProfile.current_grade_tier || 'Foundation';
+                document.getElementById('gradeLabel').textContent = 'Grade ' + grade + ' ' + tier;
+            }
+            await loadPerformanceData();
         }
-        pillarsDiv.appendChild(pillarBox);
-    });
+    } catch(e) {
+        document.getElementById('gradeLabel').textContent = 'Foundation';
+    }
+    buildTopicSections();
+    loadSuggestedTopics();
+}
 
-    panel.appendChild(pillarsDiv);
-    body.appendChild(panel);
-    header.addEventListener('click', () => item.classList.toggle('open'));
-    item.appendChild(header);
-    item.appendChild(body);
-    list.appendChild(item);
+async function loadPerformanceData() {
+    if (!currentUser) return;
+    try {
+        const res = await fetch(
+            SUPABASE_URL + '/rest/v1/quiz_question_results?user_id=eq.' + currentUser.id + '&select=topic_name,result',
+            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
+        );
+        const rows = await res.json();
+        if (!rows || !rows.length) return;
+        const grouped = {};
+        rows.forEach(r => {
+            if (!grouped[r.topic_name]) grouped[r.topic_name] = { correct: 0, total: 0 };
+            grouped[r.topic_name].total++;
+            if (r.result === 'correct') grouped[r.topic_name].correct++;
+        });
+        Object.keys(grouped).forEach(k => {
+            grouped[k].pct = Math.round(grouped[k].correct / grouped[k].total * 100);
+        });
+        topicPerformance = grouped;
+    } catch(e) {}
+}
+
+function buildTopicSections() {
+    const container = document.getElementById('topicSections');
+    container.innerHTML = '';
+    topicsData.forEach(section => {
+        const sec = document.createElement('div');
+        sec.className = 'topic-section';
+        const hdr = document.createElement('div');
+        hdr.className = 'section-hdr';
+        hdr.innerHTML = `
+            <div class="section-hdr-left">
+                <span class="section-tag">${section.tag}</span>
+                <span class="section-title">${section.title}</span>
+            </div>
+            <div class="section-hdr-right">
+                <span class="section-count">${section.topics.length} topics</span>
+                <span class="section-chev">›</span>
+            </div>`;
+        hdr.addEventListener('click', () => sec.classList.toggle('open'));
+        const rows = document.createElement('div');
+        rows.className = 'topic-rows';
+        section.topics.forEach(topic => {
+            const perf = topicPerformance[topic.t];
+            const blocks = Array.from({length: 6}, (_, i) => {
+                if (!perf) return '<div class="exp-block"></div>';
+                const filled = Math.round(perf.pct / 100 * 6);
+                const isCorrect = i < filled;
+                const isWrong = !isCorrect && perf.total > 0 && i < Math.min(6, Math.round((1 - perf.pct/100) * 3 + filled));
+                return `<div class="exp-block${isCorrect ? ' correct' : (isWrong ? ' wrong' : '')}"></div>`;
+            }).join('');
+            const isAdded = selectedTopics.some(s => s.url === topic.url);
+            const row = document.createElement('div');
+            row.className = 'topic-row';
+            row.innerHTML = `
+                <div class="topic-row-left">
+                    <span class="topic-num-label">${topic.n}</span>
+                    <span class="topic-title">${topic.t}</span>
+                </div>
+                <div class="topic-row-right">
+                    <div class="exp-blocks">${blocks}</div>
+                    <div class="add-btn${isAdded ? ' added' : ''}" data-url="${topic.url}" data-title="${topic.t}">${isAdded ? '✓' : '+'}</div>
+                </div>`;
+            row.querySelector('.add-btn').addEventListener('click', e => {
+                e.stopPropagation();
+                toggleTopic(topic, e.target);
+            });
+            rows.appendChild(row);
+        });
+        sec.appendChild(hdr);
+        sec.appendChild(rows);
+        container.appendChild(sec);
+    });
+}
+
+function toggleTopic(topic, btn) {
+    const idx = selectedTopics.findIndex(s => s.url === topic.url);
+    if (idx > -1) {
+        selectedTopics.splice(idx, 1);
+        btn.classList.remove('added');
+        btn.textContent = '+';
+    } else {
+        selectedTopics.push(topic);
+        btn.classList.add('added');
+        btn.textContent = '✓';
+    }
+    updatePool();
+}
+
+function updatePool() {
+    const poolList = document.getElementById('poolList');
+    const poolCount = document.getElementById('poolCount');
+    const countSection = document.getElementById('countSection');
+    const startBtn = document.getElementById('startBtn');
+    const startBadge = document.getElementById('startBadge');
+    const slider = document.getElementById('qSlider');
+
+    poolCount.textContent = selectedTopics.length + (selectedTopics.length === 1 ? ' topic' : ' topics');
+
+    if (selectedTopics.length === 0) {
+        poolList.innerHTML = '<div class="pool-empty"><div class="pool-empty-icon">+</div><div class="pool-empty-text">Add topics from the left<br>to build your quiz</div></div>';
+        countSection.style.display = 'none';
+        startBtn.className = 'start-btn disabled';
+        startBadge.textContent = '0 Qs';
+        return;
+    }
+
+    const qCount = parseInt(slider.value) || 20;
+    const perTopic = Math.max(1, Math.round(qCount / selectedTopics.length));
+
+    poolList.innerHTML = '';
+    const listDiv = document.createElement('div');
+    listDiv.className = 'pool-list';
+    selectedTopics.forEach(topic => {
+        const perf = topicPerformance[topic.t];
+        const isWeak = perf && perf.pct < 60;
+        const row = document.createElement('div');
+        row.className = 'pool-topic-row';
+        row.innerHTML = `
+            <div>
+                <div class="pool-topic-name">${topic.t}</div>
+                <div class="pool-topic-meta${isWeak ? ' weak' : ''}">${isWeak ? 'needs work · ' : ''}${perTopic} question${perTopic !== 1 ? 's' : ''}</div>
+            </div>
+            <button class="remove-btn" data-url="${topic.url}">×</button>`;
+        row.querySelector('.remove-btn').addEventListener('click', () => {
+            const idx = selectedTopics.findIndex(s => s.url === topic.url);
+            if (idx > -1) selectedTopics.splice(idx, 1);
+            const addBtn = document.querySelector(`.add-btn[data-url="${topic.url}"]`);
+            if (addBtn) { addBtn.classList.remove('added'); addBtn.textContent = '+'; }
+            updatePool();
+        });
+        listDiv.appendChild(row);
+    });
+    poolList.appendChild(listDiv);
+    countSection.style.display = 'block';
+    startBtn.className = 'start-btn';
+    startBadge.textContent = qCount + ' Qs';
+}
+
+document.getElementById('qSlider').addEventListener('input', function() {
+    document.getElementById('countDisplay').textContent = this.value;
+    updatePool();
 });
+
+async function loadSuggestedTopics() {
+    const listEl = document.getElementById('suggestedList');
+    const subEl = document.getElementById('suggestedSub');
+    const startBtn = document.getElementById('suggestedStartBtn');
+
+    if (!currentUser) {
+        subEl.textContent = 'Sign in to see suggested topics';
+        listEl.innerHTML = '<div class="suggested-empty">No data yet</div>';
+        return;
+    }
+
+    try {
+        const res = await fetch(
+            SUPABASE_URL + '/rest/v1/quiz_question_results?user_id=eq.' + currentUser.id +
+            '&needs_retest=eq.true&select=topic_name,result&limit=50',
+            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
+        );
+        const rows = await res.json();
+
+        if (!rows || !rows.length) {
+            subEl.textContent = 'Complete some quizzes to get suggestions';
+            listEl.innerHTML = '<div class="suggested-empty">No weak topics yet — keep going!</div>';
+            return;
+        }
+
+        const grouped = {};
+        rows.forEach(r => {
+            if (!grouped[r.topic_name]) grouped[r.topic_name] = { correct: 0, total: 0 };
+            grouped[r.topic_name].total++;
+            if (r.result === 'correct') grouped[r.topic_name].correct++;
+        });
+
+        weakTopics = Object.entries(grouped)
+            .map(([name, d]) => ({ name, pct: Math.round(d.correct / d.total * 100), total: d.total }))
+            .sort((a, b) => a.pct - b.pct)
+            .slice(0, 5);
+
+        subEl.textContent = weakTopics.length + ' topic' + (weakTopics.length !== 1 ? 's' : '') + ' where you need more practice';
+        listEl.innerHTML = '';
+
+        weakTopics.forEach(wt => {
+            const row = document.createElement('div');
+            row.className = 'weak-topic-row';
+            row.innerHTML = `
+                <span class="weak-name">${wt.name}</span>
+                <span class="weak-pct${wt.pct === 0 ? ' zero' : ''}">${wt.pct}% correct</span>`;
+            listEl.appendChild(row);
+        });
+
+        const totalQ = Math.min(40, weakTopics.length * 6);
+        startBtn.style.display = 'flex';
+        startBtn.querySelector('span') && (startBtn.querySelector('span').textContent = totalQ + ' Qs');
+        document.getElementById('suggestedBadge').textContent = totalQ + ' Qs';
+
+    } catch(e) {
+        subEl.textContent = 'Could not load suggestions';
+        listEl.innerHTML = '<div class="suggested-empty">Try again later</div>';
+    }
+}
+
+function switchMode(mode) {
+    currentMode = mode;
+    document.getElementById('tabBuild').className = 'mode-tab' + (mode === 'build' ? ' active' : '');
+    document.getElementById('tabSuggest').className = 'mode-tab' + (mode === 'suggest' ? ' active' : '');
+}
+
+function startQuiz() {
+    if (selectedTopics.length === 0) return;
+    const qCount = parseInt(document.getElementById('qSlider').value) || 20;
+    const urls = selectedTopics.map(t => t.url);
+    sessionStorage.setItem('quizTopics', JSON.stringify(urls));
+    sessionStorage.setItem('quizCount', qCount);
+    sessionStorage.setItem('quizMode', 'custom');
+    if (selectedTopics.length === 1) {
+        window.location.href = selectedTopics[0].url + '?count=' + qCount;
+    } else {
+        window.location.href = 'quick-tests/multi-topic-quiz.html';
+    }
+}
+
+function startSuggestedQuiz() {
+    if (!weakTopics.length) return;
+    const allTopics = topicsData.flatMap(s => s.topics);
+    const urls = weakTopics.map(wt => {
+        const match = allTopics.find(t => t.t === wt.name);
+        return match ? match.url : null;
+    }).filter(Boolean);
+    if (!urls.length) return;
+    sessionStorage.setItem('quizTopics', JSON.stringify(urls));
+    sessionStorage.setItem('quizCount', Math.min(40, urls.length * 6));
+    sessionStorage.setItem('quizMode', 'suggested');
+    if (urls.length === 1) {
+        window.location.href = urls[0];
+    } else {
+        window.location.href = 'quick-tests/multi-topic-quiz.html';
+    }
+}
+
+init();
 </script>
 </body>
 </html>
