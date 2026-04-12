@@ -8,11 +8,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -37,18 +33,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.75rem;
             margin-bottom: 2rem;
         }
 
         .logo img {
-            height: 32px;
-        }
-
-        .logo-text {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #111827;
+            height: 44px;
+            object-fit: contain;
         }
 
         .progress-bar {
@@ -57,16 +47,8 @@
             margin-bottom: 2rem;
         }
 
-        .progress-step {
-            flex: 1;
-            height: 4px;
-            background: #e5e7eb;
-            border-radius: 2px;
-        }
-
-        .progress-step.active {
-            background: #3b82f6;
-        }
+        .progress-step { flex: 1; height: 4px; background: #e5e7eb; border-radius: 2px; }
+        .progress-step.active { background: #3b82f6; }
 
         h1 {
             font-size: 1.75rem;
@@ -102,15 +84,8 @@
             font-weight: 500;
         }
 
-        .option-card:hover {
-            border-color: #3b82f6;
-            background: #eff6ff;
-        }
-
-        .option-card.selected {
-            border-color: #3b82f6;
-            background: #eff6ff;
-        }
+        .option-card:hover { border-color: #3b82f6; background: #eff6ff; }
+        .option-card.selected { border-color: #3b82f6; background: #eff6ff; }
 
         .continue-btn {
             width: 100%;
@@ -126,14 +101,8 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .continue-btn:hover {
-            background: #2563eb;
-        }
-
-        .continue-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
+        .continue-btn:hover { background: #2563eb; }
+        .continue-btn:disabled { background: #9ca3af; cursor: not-allowed; }
 
         .back-btn {
             width: 100%;
@@ -149,26 +118,18 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .back-btn:hover {
-            background: #f9fafb;
-        }
+        .back-btn:hover { background: #f9fafb; }
 
         @media (max-width: 640px) {
-            .container {
-                padding: 2rem 1.5rem;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
+            .container { padding: 2rem 1.5rem; }
+            h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="logo">
-            <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="Logo">
-            <span class="logo-text">GCSE Mastery</span>
+            <img src="https://i.postimg.cc/nVYDqvGr/Monturalearn-logo.jpg" alt="Monturalearn">
         </div>
 
         <div class="progress-bar">
@@ -176,10 +137,11 @@
             <div class="progress-step active"></div>
             <div class="progress-step active"></div>
             <div class="progress-step"></div>
+            <div class="progress-step"></div>
         </div>
 
         <h1>How did you hear about us?</h1>
-        <p class="subtitle">Help us understand how students find GCSE Mastery</p>
+        <p class="subtitle">Help us understand how students find Monturalearn</p>
 
         <div class="options-list">
             <div class="option-card" data-source="friend">Friend or family recommendation</div>
@@ -201,7 +163,6 @@
         const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let selectedSource = null;
-
         const options = document.querySelectorAll('.option-card');
         const continueBtn = document.getElementById('continueBtn');
 
@@ -216,7 +177,6 @@
 
         continueBtn.addEventListener('click', () => {
             if (!selectedSource) return;
-
             localStorage.setItem('onboarding_referral', selectedSource);
             window.location.href = 'onboarding-step4.html';
         });
