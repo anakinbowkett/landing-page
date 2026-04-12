@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Target Grade - Monturalearn</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        /* ─── GRADE PICKER SCREEN ─── */
+        #gradeScreen {
+            max-width: 620px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: opacity 0.6s ease;
+        }
+
+        #gradeScreen.fade-out { opacity: 0; pointer-events: none; }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo img { height: 44px; object-fit: contain; }
+
+        .progress-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-step { flex: 1; height: 4px; background: #e5e7eb; border-radius: 2px; }
+        .progress-step.active { background: #3b82f6; }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Two-column layout for current / target */
+        .grade-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .grade-column h3 {
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6b7280;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        /* Tier toggle */
+        .tier-toggle {
+            display: flex;
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 3px;
+            margin-bottom: 1rem;
+        }
+
+        .tier-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .tier-btn.active {
+            background: white;
+            color: #111827;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Grade buttons */
+        .grade-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .grade-btn {
+            border: 2px solid #e5e7eb;
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 0.75rem 0.25rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+        }
+
+        .grade-btn:hover { border-color: #3b82f6; background: #eff6ff; }
+        .grade-btn.selected { border-color: #3b82f6; background: #3b82f6; color: white; }
+        .grade-btn.disabled-grade { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+
+        /* Target grades below current grade — greyed out, unclickable */
+        .grade-btn.unavailable {
+            opacity: 0.22;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Target tier toggle is locked — no pointer interaction */
+        #targetTierToggle .tier-btn {
+            cursor: default;
+            pointer-events: none;
+            opacity: 0.45;
+        }
+        /* Once a current grade is picked, show active target tier clearly */
+        #targetTierToggle.unlocked .tier-btn { opacity: 1; }
+        #targetTierToggle.unlocked .tier-btn.active {
+            background: white;
+            color: #111827;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+
+        .start-btn {
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .start-btn:hover { background: #2563eb; }
+        .start-btn:disabled { background: #9ca3af; cursor: not-allowed; }
+
+        .back-btn {
+            width: 100%;
+            background: transparent;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .back-btn:hover { background: #f9fafb; }
+
+        .grade-hint {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        /* ─── MOTIVATION SCREENS ─── */
+        #motivationOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.7s ease;
+        }
+
+        #motivationOverlay.visible {
+            display: flex;
+            opacity: 1;
+        }
+
+        #motivationOverlay.fade-out-overlay {
+            opacity: 0;
+        }
+
+        .motivation-text {
+            font-family: 'Crimson Text', serif;
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            font-weight: 400;
+            color: #111827;
+            max-width: 700px;
+            line-height: 1.65;
+            text-align: center;
+            letter-spacing: -0.01em;
+        }
+
+        /* Typewriter cursor blink */
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.1em;
+            background: #111827;
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .grade-columns { grid-template-columns: 1fr; }
+            .grade-hint { font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── GRADE PICKER ── -->
+    <div id="gradeScreen">
+        <div class="logo">
+            <img src="https://i.postimg.cc/nVYDqvGr/Monturalearn-logo.jpg" alt="Monturalearn">
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-step active"></div>
+            <div class="progress-step active"></div>
+            <div class="progress-step active"></div>
+            <div class="progress-step active"></div>
+            <div class="progress-step active"></div>
+        </div>
+
+        <h1>Set your grade goals</h1>
+        <p class="subtitle">Where are you now — and where do you want to be?</p>
+
+        <div class="grade-columns">
+            <!-- Current grade -->
+            <div class="grade-column">
+                <h3>Current grade</h3>
+                <div class="tier-toggle" id="currentTierToggle">
+                    <button class="tier-btn active" data-tier="foundation">Foundation</button>
+                    <button class="tier-btn" data-tier="higher">Higher</button>
+                </div>
+                <div class="grade-grid" id="currentGradeGrid"></div>
+                <p class="grade-hint">Foundation: 1–5 &nbsp;|&nbsp; Higher: 1–9</p>
+            </div>
+
+            <!-- Target grade -->
+            <div class="grade-column">
+                <h3>Target grade</h3>
+                <div class="tier-toggle" id="targetTierToggle">
+                    <button class="tier-btn active" data-tier="foundation" disabled>Foundation</button>
+                    <button class="tier-btn" data-tier="higher" disabled>Higher</button>
+                </div>
+                <div class="grade-grid" id="targetGradeGrid"></div>
+                <p class="grade-hint" id="targetGradeHint">Select your current grade first</p>
+            </div>
+        </div>
+
+        <button class="back-btn" onclick="window.location.href='onboarding-step4.html'">Back</button>
+        <button class="start-btn" id="startBtn" disabled>Start</button>
+    </div>
+
+    <!-- ── MOTIVATION OVERLAY ── -->
+    <div id="motivationOverlay">
+        <div class="motivation-text" id="motivationText"></div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ── State ──
+        const state = {
+            current: { tier: 'foundation', grade: null },
+            target:  { tier: 'foundation', grade: null }
+        };
+
+        const foundationGrades = [1,2,3,4,5];
+        const higherGrades     = [1,2,3,4,5,6,7,8,9];
+
+        function gradesForTier(tier) {
+            return tier === 'foundation' ? foundationGrades : higherGrades;
+        }
+
+        // Render current grade grid — straightforward, all grades selectable
+        function renderCurrentGrid() {
+            const grid = document.getElementById('currentGradeGrid');
+            const grades = gradesForTier(state.current.tier);
+            grid.innerHTML = '';
+            grades.forEach(g => {
+                const btn = document.createElement('button');
+                btn.className = 'grade-btn' + (state.current.grade === g ? ' selected' : '');
+                btn.textContent = g;
+                btn.addEventListener('click', () => selectCurrentGrade(g));
+                grid.appendChild(btn);
+            });
+        }
+
+        // Render target grade grid — grades below current grade are unavailable
+        function renderTargetGrid() {
+            const grid = document.getElementById('targetGradeGrid');
+            const grades = gradesForTier(state.target.tier);
+            const minGrade = state.current.grade; // null means nothing selected yet
+            grid.innerHTML = '';
+
+            if (minGrade === null) {
+                // No current grade chosen yet — show placeholder message, no buttons
+                grid.innerHTML = '<p style="font-size:0.8rem;color:#9ca3af;text-align:center;padding:1rem 0;grid-column:1/-1;">Pick your current grade first</p>';
+                return;
+            }
+
+            grades.forEach(g => {
+                const btn = document.createElement('button');
+                const isUnavailable = g < minGrade; // below current grade — blocked
+                btn.className = 'grade-btn'
+                    + (state.target.grade === g ? ' selected' : '')
+                    + (isUnavailable ? ' unavailable' : '');
+                btn.textContent = g;
+                if (!isUnavailable) {
+                    btn.addEventListener('click', () => selectTargetGrade(g));
+                }
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectCurrentGrade(grade) {
+            state.current.grade = grade;
+
+            // Mirror tier to target and lock it
+            state.target.tier = state.current.tier;
+            syncTargetTierToggle();
+
+            // If existing target grade is now below the new current grade, reset it
+            if (state.target.grade !== null && state.target.grade < grade) {
+                state.target.grade = null;
+            }
+
+            renderCurrentGrid();
+            renderTargetGrid();
+            checkReady();
+        }
+
+        function selectTargetGrade(grade) {
+            state.target.grade = grade;
+            renderTargetGrid();
+            checkReady();
+        }
+
+        // When current tier changes, mirror to target and reset both grades
+        function setCurrentTier(tier, el) {
+            const toggle = document.getElementById('currentTierToggle');
+            toggle.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+
+            state.current.tier = tier;
+            state.current.grade = null;
+
+            // Mirror to target
+            state.target.tier = tier;
+            state.target.grade = null;
+            syncTargetTierToggle();
+
+            renderCurrentGrid();
+            renderTargetGrid();
+            checkReady();
+        }
+
+        // Update target tier toggle UI to reflect current tier (locked)
+        function syncTargetTierToggle() {
+            const toggle = document.getElementById('targetTierToggle');
+            toggle.querySelectorAll('.tier-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.tier === state.target.tier) btn.classList.add('active');
+            });
+
+            // Show hint and unlock visuals only once current grade is picked
+            const hint = document.getElementById('targetGradeHint');
+            if (state.current.grade !== null) {
+                toggle.classList.add('unlocked');
+                hint.textContent = state.target.tier === 'foundation' ? 'Foundation: 1–5' : 'Higher: 1–9';
+            } else {
+                toggle.classList.remove('unlocked');
+                hint.textContent = 'Select your current grade first';
+            }
+        }
+
+        function checkReady() {
+            const ready = state.current.grade !== null && state.target.grade !== null;
+            document.getElementById('startBtn').disabled = !ready;
+        }
+
+        // Wire up current tier toggle buttons
+        document.querySelectorAll('#currentTierToggle .tier-btn').forEach(btn => {
+            btn.addEventListener('click', () => setCurrentTier(btn.dataset.tier, btn));
+        });
+
+        // Init grids
+        renderCurrentGrid();
+        renderTargetGrid();
+
+        // ── Start button ──
+        document.getElementById('startBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('startBtn');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                const { data: { session } } = await sbClient.auth.getSession();
+                if (!session) throw new Error('Not authenticated');
+
+                const userId = session.user.id;
+
+                // Save grade data to Supabase user_profiles
+                const { error } = await sbClient
+                    .from('user_profiles')
+                    .update({
+                        current_grade: state.current.grade,
+                        current_grade_tier: state.current.tier,
+                        target_grade: state.target.grade,
+                        target_grade_tier: state.target.tier,
+                        onboarding_completed: true,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', userId);
+
+                if (error) throw error;
+
+                // Clear localStorage
+                localStorage.removeItem('onboarding_year');
+                localStorage.removeItem('onboarding_subjects');
+                localStorage.removeItem('onboarding_referral');
+                localStorage.removeItem('onboarding_join_reasons');
+
+                // Fade out grade screen, then start motivational sequence
+                const gradeScreen = document.getElementById('gradeScreen');
+                gradeScreen.classList.add('fade-out');
+                setTimeout(() => {
+                    gradeScreen.style.display = 'none';
+                    document.body.style.background = 'white';
+                    startMotivation();
+                }, 650);
+
+            } catch (err) {
+                console.error(err);
+                btn.disabled = false;
+                btn.textContent = 'Start';
+            }
+        });
+
+        // ── Motivational typewriter sequence ──
+
+        /*
+          Screens structure:
+          Each screen: { segments: [ { text, pauseAfter? } ], holdMs }
+          pauseAfter = extra pause mid-typing before continuing
+          holdMs = how long to stay visible after typing finishes before fading
+        */
+        const screens = [
+            {
+                segments: [
+                    { text: 'One day, you\'ll make it to yourself to say that you\'ll succeed in these exams' }
+                ],
+                holdMs: 3500
+            },
+            {
+                segments: [
+                    { text: 'Monturalearn is designed to ensure your weaknesses and strengths are brought up to the surface with clarity' }
+                ],
+                holdMs: 3500
+            },
+            {
+                segments: [
+                    { text: 'So you can walk into the exam with confidence, knowing that you\'ll walk out with an unbeatable set of grades', pauseAfter: 2000 },
+                    { text: ' and most importantly a future that you said yes to because you chose the route to success' }
+                ],
+                holdMs: 3000
+            },
+            {
+                segments: [
+                    { text: 'Your saying yes to your career, a yes to your friends, a yes to your parents who smile knowing that you walked away with success, a can-do attitude, and a yes to your dreams', pauseAfter: 3500 },
+                    { text: '\n\nThey know you\'re capable of success', pauseAfter: 2000 },
+                    { text: ' are you?' }
+                ],
+                holdMs: 1000
+            }
+        ];
+
+        const CHAR_DELAY = 28; // ms per character
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        async function typeText(container, text) {
+            // Handles \n as line break
+            for (let i = 0; i < text.length; i++) {
+                const ch = text[i];
+                if (ch === '\n') {
+                    container.appendChild(document.createElement('br'));
+                    if (text[i+1] === '\n') {
+                        container.appendChild(document.createElement('br'));
+                        i++; // skip second \n
+                    }
+                } else {
+                    container.appendChild(document.createTextNode(ch));
+                }
+                await sleep(CHAR_DELAY);
+            }
+        }
+
+        async function showScreen(screen) {
+            const overlay = document.getElementById('motivationOverlay');
+            const textEl  = document.getElementById('motivationText');
+
+            // Reset text content
+            textEl.innerHTML = '';
+
+            // Add cursor
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+            textEl.appendChild(cursor);
+
+            // Fade in
+            overlay.style.display = 'flex';
+            await sleep(50); // allow display to register
+            overlay.classList.add('visible');
+            overlay.classList.remove('fade-out-overlay');
+
+            await sleep(400); // brief pause before typing starts
+
+            // Type each segment
+            for (const seg of screen.segments) {
+                // Insert text before cursor
+                const textNode = document.createElement('span');
+                textEl.insertBefore(textNode, cursor);
+                await typeText(textNode, seg.text);
+                if (seg.pauseAfter) {
+                    await sleep(seg.pauseAfter);
+                }
+            }
+
+            // Hold
+            await sleep(screen.holdMs);
+
+            // Remove cursor before fade
+            cursor.remove();
+
+            // Fade out
+            overlay.classList.add('fade-out-overlay');
+            await sleep(750);
+            overlay.classList.remove('visible');
+            overlay.style.display = 'none';
+            textEl.innerHTML = '';
+
+            await sleep(300); // gap between screens
+        }
+
+        async function startMotivation() {
+            for (const screen of screens) {
+                await showScreen(screen);
+            }
+            // All done — go to dashboard
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+    <script src="auth-check.js"></script>
+</body>
+</html>
