@@ -7,7 +7,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
@@ -26,82 +25,59 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
+        .logo { display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; }
+        .logo img { height: 44px; object-fit: contain; }
 
-        .logo img {
-            height: 44px;
-            object-fit: contain;
-        }
-
-        .progress-bar {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-        }
-
+        .progress-bar { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
         .progress-step { flex: 1; height: 4px; background: #e5e7eb; border-radius: 2px; }
         .progress-step.active { background: #3b82f6; }
 
-        h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
+        h1 { font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem; text-align: center; }
+        .subtitle { font-size: 1rem; color: #6b7280; text-align: center; margin-bottom: 0.5rem; }
 
-        .subtitle {
-            font-size: 1rem;
-            color: #6b7280;
+        .selected-count {
             text-align: center;
-            margin-bottom: 2rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
         }
 
         .subject-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }
 
-        /* Card wrapper handles relative positioning for the banner */
-        .subject-card-wrapper {
-            position: relative;
-        }
+        .subject-card-wrapper { position: relative; }
 
         .subject-card {
             background: #f9fafb;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1.25rem;
             cursor: pointer;
-            transition: all 0.2s;
-            height: 100%;
+            transition: border-color 0.15s, background 0.15s;
+            user-select: none;
         }
-
-        .subject-card:hover { border-color: #3b82f6; }
+        .subject-card:hover { border-color: #93c5fd; }
         .subject-card.selected { border-color: #3b82f6; background: #eff6ff; }
+        .subject-card.complete { border-color: #3b82f6; background: #eff6ff; }
+        .subject-card.incomplete { border-color: #f87171; background: #fff5f5; }
 
-        /* Coming soon cards are dimmed and not clickable */
         .subject-card-wrapper.coming-soon .subject-card {
-            opacity: 0.55;
+            opacity: 0.5;
             cursor: not-allowed;
             pointer-events: none;
         }
 
-        /* The banner ribbon */
         .coming-soon-banner {
             position: absolute;
             top: 10px;
             right: -4px;
             background: #f59e0b;
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             font-weight: 700;
             letter-spacing: 0.06em;
             text-transform: uppercase;
@@ -110,7 +86,6 @@
             z-index: 2;
             box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
-
         .coming-soon-banner::after {
             content: '';
             position: absolute;
@@ -120,43 +95,70 @@
             border-bottom: 4px solid transparent;
         }
 
-        .subject-name {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 1rem;
+        .subject-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
+
+        .subject-name { font-size: 1rem; font-weight: 600; color: #111827; }
+
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .check-icon svg { width: 11px; height: 11px; }
+        .subject-card.complete .check-icon { display: flex; }
 
         .subject-options {
             display: none;
             margin-top: 1rem;
             padding-top: 1rem;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid #dbeafe;
+            flex-direction: column;
+            gap: 0.75rem;
         }
+        .subject-card.selected .subject-options,
+        .subject-card.complete .subject-options,
+        .subject-card.incomplete .subject-options { display: flex; }
 
-        .subject-card.selected .subject-options { display: block; }
-
-        .option-group { margin-bottom: 1rem; }
+        .option-group { display: flex; flex-direction: column; gap: 0.3rem; }
 
         .option-label {
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.72rem;
+            font-weight: 700;
             color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
-            display: block;
         }
 
         select {
             width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
+            padding: 0.5rem 0.6rem;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 7px;
             font-size: 0.875rem;
             font-family: 'Inter', sans-serif;
             background: white;
+            color: #111827;
+            cursor: pointer;
+            transition: border-color 0.15s;
         }
+        select:focus { outline: none; border-color: #3b82f6; }
+        .subject-card.incomplete select.empty { border-color: #f87171; }
+
+        .incomplete-hint {
+            font-size: 0.75rem;
+            color: #ef4444;
+            display: none;
+        }
+        .subject-card.incomplete .incomplete-hint { display: block; }
 
         .continue-btn {
             width: 100%;
@@ -168,10 +170,9 @@
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background 0.2s;
             font-family: 'Inter', sans-serif;
         }
-
         .continue-btn:hover { background: #2563eb; }
         .continue-btn:disabled { background: #9ca3af; cursor: not-allowed; }
 
@@ -188,197 +189,192 @@
             margin-bottom: 1rem;
             font-family: 'Inter', sans-serif;
         }
-
         .back-btn:hover { background: #f9fafb; }
 
-        .selected-count {
-            text-align: center;
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-bottom: 1rem;
-        }
-
         @media (max-width: 768px) {
-            .container { padding: 2rem 1.5rem; }
+            .container { padding: 2rem 1.25rem; }
             .subject-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <img src="https://i.postimg.cc/nVYDqvGr/Monturalearn-logo.jpg" alt="Monturalearn">
-        </div>
-
-        <div class="progress-bar">
-            <div class="progress-step active"></div>
-            <div class="progress-step active"></div>
-            <div class="progress-step"></div>
-            <div class="progress-step"></div>
-            <div class="progress-step"></div>
-        </div>
-
-        <h1>Choose your subjects</h1>
-        <p class="subtitle">Select the subjects you're studying and we'll customize your experience</p>
-
-        <div class="selected-count" id="selectedCount">0 subjects selected</div>
-
-        <div class="subject-grid" id="subjectGrid"></div>
-
-        <button class="back-btn" onclick="window.location.href='onboarding-step1.html'">Back</button>
-        <button class="continue-btn" id="continueBtn" disabled>Continue</button>
+<div class="container">
+    <div class="logo">
+        <img src="https://i.postimg.cc/nVYDqvGr/Monturalearn-logo.jpg" alt="Monturalearn">
     </div>
+    <div class="progress-bar">
+        <div class="progress-step active"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+    </div>
+    <h1>Choose your subjects</h1>
+    <p class="subtitle">Select all the subjects you're studying</p>
+    <div class="selected-count" id="selectedCount">0 subjects selected</div>
+    <div class="subject-grid" id="subjectGrid"></div>
+    <button class="back-btn" onclick="window.location.href='onboarding-step1.html'">Back</button>
+    <button class="continue-btn" id="continueBtn" disabled>Continue</button>
+</div>
 
-    <script>
-        const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
-        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<script>
+    const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Live subjects — selectable
-        const liveSubjects = [
-            'Mathematics',
-            'English Language',
-            'English Literature',
-            'Chemistry',
-            'Physics',
-            'Biology'
-        ];
+    const liveSubjects = ['Mathematics','English Language','English Literature','Chemistry','Physics','Biology'];
 
-        const subjects = [
-            { name: 'Mathematics', requiresTier: true },
-            { name: 'English Language', requiresTier: false },
-            { name: 'English Literature', requiresTier: false },
-            { name: 'Biology', requiresTier: true },
-            { name: 'Chemistry', requiresTier: true },
-            { name: 'Physics', requiresTier: true },
-            { name: 'Combined Science', requiresTier: true },
-            { name: 'History', requiresTier: false },
-            { name: 'Geography', requiresTier: false },
-            { name: 'Computer Science', requiresTier: false },
-            { name: 'Business', requiresTier: false },
-            { name: 'Psychology', requiresTier: false },
-            { name: 'Religious Education', requiresTier: false },
-            { name: 'Food & Nutrition', requiresTier: false }
-        ];
+    const subjects = [
+        { name: 'Mathematics',         requiresTier: true  },
+        { name: 'English Language',    requiresTier: false },
+        { name: 'English Literature',  requiresTier: false },
+        { name: 'Biology',             requiresTier: true  },
+        { name: 'Chemistry',           requiresTier: true  },
+        { name: 'Physics',             requiresTier: true  },
+        { name: 'Combined Science',    requiresTier: true  },
+        { name: 'History',             requiresTier: false },
+        { name: 'Geography',           requiresTier: false },
+        { name: 'Computer Science',    requiresTier: false },
+        { name: 'Business',            requiresTier: false },
+        { name: 'Psychology',          requiresTier: false },
+        { name: 'Religious Education', requiresTier: false },
+        { name: 'Food & Nutrition',    requiresTier: false }
+    ];
 
-        // No WJEC
-        const examBoards = ['AQA', 'Edexcel', 'OCR'];
+    const examBoards = ['AQA', 'Edexcel', 'OCR'];
+    const selectedSubjects = new Map();
 
-        const selectedSubjects = new Map();
+    function isComplete(data) {
+        if (!data.examBoard) return false;
+        if (data.requiresTier && !data.tier) return false;
+        return true;
+    }
 
-        function isLive(name) {
-            return liveSubjects.includes(name);
+    function refreshCardState(card, subjectName) {
+        const data = selectedSubjects.get(subjectName);
+        if (!data) return;
+        const complete = isComplete(data);
+        card.classList.remove('complete', 'incomplete');
+        card.classList.add(complete ? 'complete' : 'incomplete');
+        card.querySelectorAll('select').forEach(s => {
+            s.classList.toggle('empty', s.value === '');
+        });
+    }
+
+    function updateUI() {
+        const count = selectedSubjects.size;
+        document.getElementById('selectedCount').textContent =
+            count === 0 ? '0 subjects selected' : `${count} subject${count !== 1 ? 's' : ''} selected`;
+        const allDone = count > 0 && [...selectedSubjects.values()].every(isComplete);
+        document.getElementById('continueBtn').disabled = !allDone;
+    }
+
+    function buildCard(subject) {
+        const live = liveSubjects.includes(subject.name);
+        const wrapper = document.createElement('div');
+        wrapper.className = 'subject-card-wrapper' + (live ? '' : ' coming-soon');
+
+        if (!live) {
+            const banner = document.createElement('div');
+            banner.className = 'coming-soon-banner';
+            banner.textContent = 'Coming Soon';
+            wrapper.appendChild(banner);
         }
 
-        function renderSubjects() {
-            const grid = document.getElementById('subjectGrid');
-            grid.innerHTML = '';
+        const card = document.createElement('div');
+        card.className = 'subject-card';
+        card.innerHTML = `
+            <div class="subject-header">
+                <span class="subject-name">${subject.name}</span>
+                <span class="check-icon">
+                    <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="2,6 5,9 10,3"/>
+                    </svg>
+                </span>
+            </div>
+            <div class="subject-options">
+                <div class="option-group">
+                    <span class="option-label">Exam Board</span>
+                    <select class="exam-board-select">
+                        <option value="">Select exam board</option>
+                        ${examBoards.map(b => `<option value="${b}">${b}</option>`).join('')}
+                    </select>
+                </div>
+                ${subject.requiresTier ? `
+                <div class="option-group">
+                    <span class="option-label">Tier</span>
+                    <select class="tier-select">
+                        <option value="">Select tier</option>
+                        <option value="Foundation">Foundation</option>
+                        <option value="Higher">Higher</option>
+                    </select>
+                </div>` : ''}
+                <div class="incomplete-hint">Please complete all fields above ↑</div>
+            </div>
+        `;
 
-            subjects.forEach(subject => {
-                const live = isLive(subject.name);
+        if (!live) { wrapper.appendChild(card); return wrapper; }
 
-                const wrapper = document.createElement('div');
-                wrapper.className = 'subject-card-wrapper' + (live ? '' : ' coming-soon');
+        // Click card body to toggle selection
+        card.addEventListener('click', (e) => {
+            if (e.target.tagName === 'SELECT' || e.target.tagName === 'OPTION') return;
+            if (selectedSubjects.has(subject.name)) {
+                selectedSubjects.delete(subject.name);
+                card.classList.remove('selected', 'complete', 'incomplete');
+                card.querySelectorAll('select').forEach(s => { s.value = ''; s.classList.remove('empty'); });
+            } else {
+                selectedSubjects.set(subject.name, {
+                    name: subject.name,
+                    examBoard: '',
+                    tier: subject.requiresTier ? '' : null,
+                    requiresTier: subject.requiresTier
+                });
+                card.classList.add('selected');
+                refreshCardState(card, subject.name);
+            }
+            updateUI();
+        });
 
-                if (!live) {
-                    const banner = document.createElement('div');
-                    banner.className = 'coming-soon-banner';
-                    banner.textContent = 'Coming Soon';
-                    wrapper.appendChild(banner);
+        // Exam board
+        card.querySelector('.exam-board-select').addEventListener('change', (e) => {
+            e.stopPropagation();
+            if (selectedSubjects.has(subject.name)) {
+                selectedSubjects.get(subject.name).examBoard = e.target.value;
+                refreshCardState(card, subject.name);
+                updateUI();
+            }
+        });
+
+        // Tier
+        const tierSel = card.querySelector('.tier-select');
+        if (tierSel) {
+            tierSel.addEventListener('change', (e) => {
+                e.stopPropagation();
+                if (selectedSubjects.has(subject.name)) {
+                    selectedSubjects.get(subject.name).tier = e.target.value;
+                    refreshCardState(card, subject.name);
+                    updateUI();
                 }
-
-                const card = document.createElement('div');
-                card.className = 'subject-card';
-                card.dataset.subject = subject.name;
-
-                card.innerHTML = `
-                    <div class="subject-name">${subject.name}</div>
-                    <div class="subject-options">
-                        <div class="option-group">
-                            <label class="option-label">Exam Board</label>
-                            <select class="exam-board-select">
-                                <option value="">Select exam board</option>
-                                ${examBoards.map(board => `<option value="${board}">${board}</option>`).join('')}
-                            </select>
-                        </div>
-                        ${subject.requiresTier ? `
-                            <div class="option-group">
-                                <label class="option-label">Tier</label>
-                                <select class="tier-select">
-                                    <option value="">Select tier</option>
-                                    <option value="Foundation">Foundation</option>
-                                    <option value="Higher">Higher</option>
-                                </select>
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-
-                if (live) {
-                    card.addEventListener('click', (e) => {
-                        if (e.target.tagName === 'SELECT') return;
-                        if (card.classList.contains('selected')) {
-                            card.classList.remove('selected');
-                            selectedSubjects.delete(subject.name);
-                        } else {
-                            card.classList.add('selected');
-                            if (!selectedSubjects.has(subject.name)) {
-                                selectedSubjects.set(subject.name, {
-                                    name: subject.name,
-                                    examBoard: '',
-                                    tier: subject.requiresTier ? '' : null,
-                                    requiresTier: subject.requiresTier
-                                });
-                            }
-                        }
-                        updateUI();
-                    });
-
-                    const examBoardSelect = card.querySelector('.exam-board-select');
-                    examBoardSelect.addEventListener('change', (e) => {
-                        if (selectedSubjects.has(subject.name)) {
-                            selectedSubjects.get(subject.name).examBoard = e.target.value;
-                            updateUI();
-                        }
-                    });
-
-                    const tierSelect = card.querySelector('.tier-select');
-                    if (tierSelect) {
-                        tierSelect.addEventListener('change', (e) => {
-                            if (selectedSubjects.has(subject.name)) {
-                                selectedSubjects.get(subject.name).tier = e.target.value;
-                                updateUI();
-                            }
-                        });
-                    }
-                }
-
-                wrapper.appendChild(card);
-                grid.appendChild(wrapper);
             });
         }
 
-        function updateUI() {
-            const count = selectedSubjects.size;
-            document.getElementById('selectedCount').textContent = `${count} subject${count !== 1 ? 's' : ''} selected`;
+        wrapper.appendChild(card);
+        return wrapper;
+    }
 
-            let allValid = count > 0;
-            for (const [name, data] of selectedSubjects) {
-                if (!data.examBoard) allValid = false;
-                if (data.requiresTier && !data.tier) allValid = false;
-            }
+    document.getElementById('continueBtn').addEventListener('click', () => {
+        localStorage.setItem('onboarding_subjects', JSON.stringify([...selectedSubjects.values()]));
+        window.location.href = 'onboarding-step3.html';
+    });
 
-            document.getElementById('continueBtn').disabled = !allValid;
-        }
+    function renderSubjects() {
+        const grid = document.getElementById('subjectGrid');
+        subjects.forEach(s => grid.appendChild(buildCard(s)));
+    }
 
-        document.getElementById('continueBtn').addEventListener('click', () => {
-            const subjectsArray = Array.from(selectedSubjects.values());
-            localStorage.setItem('onboarding_subjects', JSON.stringify(subjectsArray));
-            window.location.href = 'onboarding-step3.html';
-        });
-
-        renderSubjects();
-    </script>
-    <script src="auth-check.js"></script>
+    renderSubjects();
+</script>
+<script src="auth-check.js"></script>
 </body>
 </html>
