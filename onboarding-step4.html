@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Why Join GCSE Mastery?</title>
+    <title>Why Join Monturalearn?</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -37,18 +33,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.75rem;
             margin-bottom: 2rem;
         }
 
         .logo img {
-            height: 32px;
-        }
-
-        .logo-text {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #111827;
+            height: 44px;
+            object-fit: contain;
         }
 
         .progress-bar {
@@ -57,16 +47,8 @@
             margin-bottom: 2rem;
         }
 
-        .progress-step {
-            flex: 1;
-            height: 4px;
-            background: #e5e7eb;
-            border-radius: 2px;
-        }
-
-        .progress-step.active {
-            background: #3b82f6;
-        }
+        .progress-step { flex: 1; height: 4px; background: #e5e7eb; border-radius: 2px; }
+        .progress-step.active { background: #3b82f6; }
 
         h1 {
             font-size: 1.75rem;
@@ -102,15 +84,8 @@
             font-weight: 500;
         }
 
-        .option-card:hover {
-            border-color: #3b82f6;
-            background: #eff6ff;
-        }
-
-        .option-card.selected {
-            border-color: #3b82f6;
-            background: #eff6ff;
-        }
+        .option-card:hover { border-color: #3b82f6; background: #eff6ff; }
+        .option-card.selected { border-color: #3b82f6; background: #eff6ff; }
 
         .helper-text {
             font-size: 0.875rem;
@@ -133,14 +108,8 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .continue-btn:hover {
-            background: #2563eb;
-        }
-
-        .continue-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
+        .continue-btn:hover { background: #2563eb; }
+        .continue-btn:disabled { background: #9ca3af; cursor: not-allowed; }
 
         .back-btn {
             width: 100%;
@@ -156,9 +125,7 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .back-btn:hover {
-            background: #f9fafb;
-        }
+        .back-btn:hover { background: #f9fafb; }
 
         .error-message {
             background: #fee2e2;
@@ -170,26 +137,18 @@
             display: none;
         }
 
-        .error-message.show {
-            display: block;
-        }
+        .error-message.show { display: block; }
 
         @media (max-width: 640px) {
-            .container {
-                padding: 2rem 1.5rem;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
+            .container { padding: 2rem 1.5rem; }
+            h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="logo">
-            <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="Logo">
-            <span class="logo-text">GCSE Mastery</span>
+            <img src="https://i.postimg.cc/nVYDqvGr/Monturalearn-logo.jpg" alt="Monturalearn">
         </div>
 
         <div class="progress-bar">
@@ -197,10 +156,11 @@
             <div class="progress-step active"></div>
             <div class="progress-step active"></div>
             <div class="progress-step active"></div>
+            <div class="progress-step"></div>
         </div>
 
-        <h1>Why join GCSE Mastery?</h1>
-        <p class="subtitle">Select all that apply (we'll personalize your experience)</p>
+        <h1>Why join Monturalearn?</h1>
+        <p class="subtitle">Select all that apply — we'll personalise your experience</p>
 
         <div id="errorMessage" class="error-message"></div>
 
@@ -217,7 +177,7 @@
         <p class="helper-text">Select at least one option to continue</p>
 
         <button class="back-btn" onclick="window.location.href='onboarding-step3.html'">Back</button>
-        <button class="continue-btn" id="continueBtn" disabled>Complete Setup</button>
+        <button class="continue-btn" id="continueBtn" disabled>Continue</button>
     </div>
 
     <script>
@@ -232,7 +192,6 @@
         options.forEach(option => {
             option.addEventListener('click', () => {
                 const reason = option.dataset.reason;
-                
                 if (selectedReasons.has(reason)) {
                     selectedReasons.delete(reason);
                     option.classList.remove('selected');
@@ -240,7 +199,6 @@
                     selectedReasons.add(reason);
                     option.classList.add('selected');
                 }
-
                 continueBtn.disabled = selectedReasons.size === 0;
             });
         });
@@ -259,129 +217,100 @@
             continueBtn.textContent = 'Saving...';
 
             try {
-                // Get current user
                 const { data: { session }, error: sessionError } = await sbClient.auth.getSession();
-                
-                if (sessionError || !session) {
-                    throw new Error('Not authenticated');
-                }
+                if (sessionError || !session) throw new Error('Not authenticated');
 
                 const userId = session.user.id;
-
-                // Get all onboarding data from localStorage
                 const yearGroup = localStorage.getItem('onboarding_year');
                 const subjectsData = JSON.parse(localStorage.getItem('onboarding_subjects') || '[]');
                 const referralSource = localStorage.getItem('onboarding_referral');
                 const joinReasons = Array.from(selectedReasons);
 
-                // Calculate trial end date (2 minutes from now for testing)
-const trialEndDate = new Date();
-trialEndDate.setMinutes(trialEndDate.getMinutes() + 1);
+                const trialEndDate = new Date();
+                trialEndDate.setMinutes(trialEndDate.getMinutes() + 1);
 
-                // Create or update user profile in Supabase
-const firstName = session.user.user_metadata.first_name || '';
-const lastName = session.user.user_metadata.last_name || '';
+                const firstName = session.user.user_metadata.first_name || '';
+                const lastName = session.user.user_metadata.last_name || '';
 
-// Check if profile already exists
-const { data: existingProfile } = await sbClient
-    .from('user_profiles')
-    .select('id')
-    .eq('id', userId)
-    .single();
+                const { data: existingProfile } = await sbClient
+                    .from('user_profiles')
+                    .select('id')
+                    .eq('id', userId)
+                    .single();
 
-const profileData = {
-    id: userId,
-    first_name: firstName,
-    last_name: lastName,
-    year_group: yearGroup,
-    referral_source: referralSource,
-    join_reason: joinReasons,
-    subscription_status: 'trial',
-    trial_end_date: trialEndDate.toISOString(),
-    onboarding_completed: true,
-    updated_at: new Date().toISOString()
-};
+                const profileData = {
+                    id: userId,
+                    first_name: firstName,
+                    last_name: lastName,
+                    year_group: yearGroup,
+                    referral_source: referralSource,
+                    join_reason: joinReasons,
+                    subscription_status: 'trial',
+                    trial_end_date: trialEndDate.toISOString(),
+                    onboarding_completed: false, // will be set true after step5
+                    updated_at: new Date().toISOString()
+                };
 
-// Only add created_at if it's a new profile
-if (!existingProfile) {
-    profileData.created_at = new Date().toISOString();
-}
+                if (!existingProfile) {
+                    profileData.created_at = new Date().toISOString();
+                }
 
-const { error: profileError } = await sbClient
-    .from('user_profiles')
-    .upsert(profileData, {
-        onConflict: 'id'
-    });
+                const { error: profileError } = await sbClient
+                    .from('user_profiles')
+                    .upsert(profileData, { onConflict: 'id' });
 
                 if (profileError) throw profileError;
 
-// Define default subjects
-const defaultSubjects = [
-    { name: 'Mathematics', examBoard: 'AQA', tier: 'Foundation' },
-    { name: 'English Language', examBoard: 'AQA', tier: null },
-    { name: 'English Literature', examBoard: 'AQA', tier: null },
-    { name: 'Combined Science - Biology', examBoard: 'AQA', tier: 'Foundation' },
-    { name: 'Combined Science - Chemistry', examBoard: 'AQA', tier: 'Foundation' },
-    { name: 'Combined Science - Physics', examBoard: 'AQA', tier: 'Foundation' }
-];
+                // Default subjects
+                const defaultSubjects = [
+                    { name: 'Mathematics', examBoard: 'AQA', tier: 'Foundation' },
+                    { name: 'English Language', examBoard: 'AQA', tier: null },
+                    { name: 'English Literature', examBoard: 'AQA', tier: null },
+                    { name: 'Combined Science - Biology', examBoard: 'AQA', tier: 'Foundation' },
+                    { name: 'Combined Science - Chemistry', examBoard: 'AQA', tier: 'Foundation' },
+                    { name: 'Combined Science - Physics', examBoard: 'AQA', tier: 'Foundation' }
+                ];
 
-// Combine default subjects with user-selected subjects
-const allSubjects = [...defaultSubjects];
+                const allSubjects = [...defaultSubjects];
+                subjectsData.forEach(userSubject => {
+                    const isDuplicate = allSubjects.some(s =>
+                        s.name === userSubject.name &&
+                        s.examBoard === userSubject.examBoard &&
+                        s.tier === userSubject.tier
+                    );
+                    if (!isDuplicate) {
+                        allSubjects.push({ name: userSubject.name, examBoard: userSubject.examBoard, tier: userSubject.tier });
+                    }
+                });
 
-// Add user-selected subjects if they're not already in defaults
-subjectsData.forEach(userSubject => {
-    const isDuplicate = allSubjects.some(s => 
-        s.name === userSubject.name && 
-        s.examBoard === userSubject.examBoard && 
-        s.tier === userSubject.tier
-    );
-    if (!isDuplicate) {
-        allSubjects.push({
-            name: userSubject.name,
-            examBoard: userSubject.examBoard,
-            tier: userSubject.tier
-        });
-    }
-});
+                const subjectInserts = allSubjects.map(subject => ({
+                    user_id: userId,
+                    subject_name: subject.name,
+                    exam_board: subject.examBoard,
+                    tier: subject.tier,
+                    progress_percentage: 0,
+                    is_default: defaultSubjects.some(d => d.name === subject.name && d.examBoard === subject.examBoard && d.tier === subject.tier),
+                    color_variant: getColorVariant(subject.name)
+                }));
 
-// Add all subjects to user_subjects table
-const subjectInserts = allSubjects.map(subject => ({
-    user_id: userId,
-    subject_name: subject.name,
-    exam_board: subject.examBoard,
-    tier: subject.tier,
-    progress_percentage: 0,
-    is_default: defaultSubjects.some(d => 
-        d.name === subject.name && 
-        d.examBoard === subject.examBoard && 
-        d.tier === subject.tier
-    ),
-    color_variant: getColorVariant(subject.name)
-}));
+                const { error: subjectsError } = await sbClient.from('user_subjects').insert(subjectInserts);
+                if (subjectsError) throw subjectsError;
 
-const { error: subjectsError } = await sbClient
-    .from('user_subjects')
-    .insert(subjectInserts);
+                // Store join reasons for step5 to pick up if needed
+                localStorage.setItem('onboarding_join_reasons', JSON.stringify(joinReasons));
 
-if (subjectsError) throw subjectsError;
-
-                // Clear localStorage
-                localStorage.removeItem('onboarding_year');
-                localStorage.removeItem('onboarding_subjects');
-                localStorage.removeItem('onboarding_referral');
-
-                // Success! Redirect to dashboard
-                window.location.href = 'dashboard.html';
+                // DO NOT clear localStorage yet — step5 will finalize
+                // Go to step 5 (target grade)
+                window.location.href = 'onboarding-step5.html';
 
             } catch (error) {
-                console.error('Error completing onboarding:', error);
+                console.error('Error:', error);
                 showError('An error occurred. Please try again.');
                 continueBtn.disabled = false;
-                continueBtn.textContent = 'Complete Setup';
+                continueBtn.textContent = 'Continue';
             }
         });
 
-        // Helper function to assign color variants
         function getColorVariant(subjectName) {
             const colorMap = {
                 'Mathematics': 'color-blue',
