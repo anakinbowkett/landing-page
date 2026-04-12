@@ -226,7 +226,7 @@
         .motivation-text {
             font-family: 'Crimson Text', serif;
             font-size: clamp(1.4rem, 3vw, 2rem);
-            font-weight: 400;
+            font-weight: 600;
             color: #111827;
             max-width: 700px;
             line-height: 1.65;
@@ -523,17 +523,19 @@
                 segments: [
                     { text: 'Your saying yes to your career, a yes to your friends, a yes to your parents who smile knowing that you walked away with success, a can-do attitude, and a yes to your dreams', pauseAfter: 3500 },
                     { text: '\n\nThey know you\'re capable of success', pauseAfter: 2000 },
-                    { text: ' are you?' }
+                    { text: ' are you?', pauseAfter: 0, slowType: true }
                 ],
-                holdMs: 1000
+                holdMs: 3500
             }
         ];
 
         const CHAR_DELAY = 28; // ms per character
+        const CHAR_DELAY_SLOW = 90; // ms per character for slow segments
 
         function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-        async function typeText(container, text) {
+        async function typeText(container, text, slow) {
+            const delay = slow ? CHAR_DELAY_SLOW : CHAR_DELAY;
             // Handles \n as line break
             for (let i = 0; i < text.length; i++) {
                 const ch = text[i];
@@ -546,7 +548,7 @@
                 } else {
                     container.appendChild(document.createTextNode(ch));
                 }
-                await sleep(CHAR_DELAY);
+                await sleep(delay);
             }
         }
 
@@ -575,7 +577,7 @@
                 // Insert text before cursor
                 const textNode = document.createElement('span');
                 textEl.insertBefore(textNode, cursor);
-                await typeText(textNode, seg.text);
+                await typeText(textNode, seg.text, seg.slowType || false);
                 if (seg.pauseAfter) {
                     await sleep(seg.pauseAfter);
                 }
