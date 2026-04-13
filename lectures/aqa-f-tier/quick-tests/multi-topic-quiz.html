@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Multi-Topic Quiz — Monturalearn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --correct: #54d3ab;
+  --incorrect: #e16280;
+  --partial: #f59e0b;
+  --accent: #1d7fe2;
+  --border: #e5e7eb;
+  --text: #111827;
+  --muted: #6b7280;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;background:#fff;font-family:Inter,system-ui,sans-serif;color:var(--text);padding-top:55px;}
+
+/* ── HEADER ── */
+.header-bar {
+  position:fixed;top:0;left:0;right:0;height:55px;
+  background:#fff;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  padding:0 24px;z-index:100;
+  box-shadow:0 1px 2px rgba(0,0,0,0.05);
+}
+.back-btn {
+  position:absolute;left:24px;font-size:14px;font-weight:600;
+  color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:6px;
+  cursor:pointer;background:none;border:none;
+}
+.back-btn:hover{opacity:0.75;}
+.progress-bar-wrap {
+  width:50%;max-width:600px;height:8px;
+  background:#f3f4f6;border-radius:10px;overflow:hidden;display:flex;
+}
+.progress-seg {
+  height:100%;transition:background 0.4s;border-right:2px solid #fff;
+}
+.enigma-counter {
+  position:absolute;right:24px;display:flex;align-items:center;gap:5px;
+  font-size:14px;font-weight:600;color:var(--text);
+}
+.retest-badge {
+  font-size:11px;background:var(--partial);color:#fff;
+  padding:3px 8px;border-radius:6px;margin-left:6px;font-weight:600;display:none;
+}
+
+/* ── LOADING SCREEN ── */
+#loading-screen {
+  position:fixed;inset:0;background:#fff;z-index:9999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+}
+.loading-spinner {
+  width:36px;height:36px;border:3px solid #f3f4f6;
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-size:15px;color:var(--muted);}
+.loading-sub{font-size:13px;color:#9ca3af;}
+
+/* ── MAIN LAYOUT ── */
+.main-container {
+  display:flex;flex-direction:column;
+  height:calc(100vh - 55px);width:100%;
+  position:fixed;top:55px;left:0;right:0;
+}
+.content-side {
+  width:100%;height:50%;overflow:hidden;
+  background:#fff;display:flex;align-items:center;
+  justify-content:center;padding:12px 24px;box-sizing:border-box;
+}
+.question-box {
+  background:#fff;border:1px solid var(--border);border-radius:16px;
+  padding:28px 32px;box-shadow:0 2px 12px rgba(16,24,40,0.07);
+  position:relative;transition:all 0.3s;
+  max-width:720px;width:calc(100% - 48px);height:100%;
+  box-sizing:border-box;overflow:hidden;
+}
+.question-box.correct{border-color:var(--correct);background:#f0fdf4;}
+.question-box.incorrect{border-color:var(--incorrect);background:#fef2f2;}
+.q-number-label {
+  position:absolute;top:16px;right:16px;font-size:13px;font-weight:600;
+  color:var(--muted);background:#f3f4f6;padding:6px 12px;border-radius:6px;
+}
+.mark-counter {
+  position:absolute;top:16px;left:16px;font-size:13px;font-weight:600;
+  color:var(--muted);background:#f9fafb;padding:6px 12px;border-radius:6px;
+  border:1px solid var(--border);transition:all 0.3s;
+}
+.mark-counter.correct{background:var(--correct)!important;color:#fff!important;border-color:var(--correct)!important;}
+.mark-counter.incorrect{background:var(--incorrect)!important;color:#fff!important;border-color:var(--incorrect)!important;}
+.topic-pill {
+  position:absolute;bottom:16px;left:16px;font-size:11px;
+  background:#f3f4f6;color:var(--muted);padding:4px 10px;border-radius:20px;
+  max-width:60%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.question-title {
+  font-size:16px;font-weight:500;color:var(--text);text-align:center;
+  line-height:1.6;margin:40px 0 20px;
+}
+
+/* ── ANSWER ZONE ── */
+.answer-zone {
+  width:100%;height:50%;background:#fff;border-top:0.5px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:space-between;padding:22px 24px 0;
+  box-sizing:border-box;overflow:hidden;
+}
+.answer-zone-inner {
+  width:100%;max-width:680px;flex:1;
+  display:flex;flex-direction:column;justify-content:center;position:relative;
+}
+.az-enter-hint {
+  font-size:11px;color:#d1d5db;text-align:center;
+  padding-bottom:8px;flex-shrink:0;display:none;
+}
+.az-enter-hint.visible{display:block;}
+.answer-zone-nav {
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;max-width:680px;padding:14px 0;flex-shrink:0;
+}
+.az-nav-btn {
+  font-size:13px;font-weight:500;background:none;
+  border:1.5px solid var(--accent);color:var(--accent);
+  border-radius:8px;padding:8px 20px;cursor:pointer;transition:all 0.15s;
+}
+.az-nav-btn:hover{background:var(--accent);color:#fff;}
+.az-nav-btn:disabled{opacity:0.3;border-color:#d1d5db;color:#9ca3af;cursor:default;background:none;}
+.az-counter{font-size:13px;color:var(--muted);}
+
+/* ── ANSWER TYPE STYLES ── */
+.az-options{display:flex;flex-direction:column;gap:8px;}
+.az-opt {
+  border:1.5px solid var(--border);border-radius:10px;
+  padding:13px 16px;font-size:14px;color:var(--text);
+  background:#fff;cursor:pointer;text-align:left;transition:all 0.15s;width:100%;
+}
+.az-opt:hover{border-color:var(--accent);background:#f8fbff;}
+.az-opt.selected{border-color:var(--accent);background:#eff6ff;color:#1d4ed8;}
+.az-opt.correct{border-color:var(--correct);background:#f0fdf4;color:#065f46;}
+.az-opt.wrong{border-color:var(--incorrect);background:#fff1f2;color:#9f1239;}
+
+.az-tf{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.az-tf-btn {
+  border:1.5px solid var(--border);border-radius:10px;
+  padding:18px 16px;font-size:15px;font-weight:500;
+  color:#374151;background:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;
+}
+.az-tf-btn:first-child:hover{border-color:var(--correct);color:#065f46;background:#f0fdf4;}
+.az-tf-btn:last-child:hover{border-color:var(--incorrect);color:#9f1239;background:#fff1f2;}
+.az-tf-btn.sel-true{border-color:var(--correct);background:#f0fdf4;color:#065f46;}
+.az-tf-btn.sel-false{border-color:var(--incorrect);background:#fff1f2;color:#9f1239;}
+.az-tf-icon{width:20px;height:20px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px;}
+
+.az-match{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.az-match-col{display:flex;flex-direction:column;gap:8px;}
+.az-match-col-label{font-size:10px;font-weight:500;color:#d1d5db;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;}
+.az-match-item {
+  border:1.5px solid var(--border);border-radius:10px;
+  padding:12px 14px;font-size:13px;color:var(--text);
+  background:#fff;cursor:pointer;text-align:center;transition:all 0.15s;line-height:1.4;
+}
+.az-match-item:hover{border-color:var(--accent);background:#f8fbff;}
+.az-match-item.active{border-color:var(--accent);background:#eff6ff;color:#1d4ed8;}
+.az-match-item.matched{border-color:var(--correct);background:#f0fdf4;color:#065f46;cursor:default;}
+
+.az-lines{display:flex;flex-direction:column;gap:0;}
+.az-line-row{display:flex;align-items:center;padding:6px 0;border-bottom:1.5px solid var(--border);transition:border-color 0.15s;}
+.az-line-row:focus-within{border-color:var(--accent);}
+.az-line-input{flex:1;border:none;padding:4px 0;font-size:15px;color:var(--text);font-family:inherit;outline:none;background:transparent;}
+.az-sentence{font-size:15px;color:#374151;line-height:1.6;margin-bottom:14px;}
+.az-tab-hint{font-size:11px;color:#d1d5db;text-align:right;margin-top:7px;}
+
+.az-box-row{display:flex;align-items:center;gap:0;}
+.az-box-context{font-size:15px;color:#374151;padding:6px 8px 6px 0;}
+.az-box-input{width:80px;border:none;border-bottom:2px solid var(--border);padding:6px 8px;font-size:15px;font-weight:500;color:var(--text);font-family:inherit;outline:none;background:transparent;text-align:center;transition:border-color 0.15s;}
+.az-box-input:focus{border-color:var(--accent);}
+
+.az-drag{display:flex;flex-direction:column;gap:8px;}
+.az-drag-item{display:flex;align-items:center;gap:10px;}
+.az-drag-rank{font-size:12px;font-weight:500;color:#9ca3af;width:16px;text-align:right;flex-shrink:0;}
+.az-drag-card{flex:1;border:0.5px solid var(--border);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--text);background:#fff;display:flex;align-items:center;justify-content:space-between;cursor:grab;transition:border-color 0.15s;user-select:none;}
+.az-drag-card:hover{border-color:#9ca3af;}
+.az-drag-card.dragging{opacity:0.5;border-color:var(--accent);}
+.az-drag-grip{display:grid;grid-template-columns:1fr 1fr;gap:3px;flex-shrink:0;}
+.az-drag-grip span{width:3px;height:3px;border-radius:50%;background:#d1d5db;display:block;}
+
+/* ── ANIMATIONS ── */
+.slide-out-left{animation:slideOutLeft 0.5s cubic-bezier(0.4,0,0.2,1) forwards;}
+.slide-in-right{animation:slideInRight 0.5s cubic-bezier(0.4,0,0.2,1) forwards;}
+@keyframes slideOutLeft{from{transform:translateX(0);opacity:1;}to{transform:translateX(-60px);opacity:0;}}
+@keyframes slideInRight{from{transform:translateX(60px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.az-fade-out{animation:azOut 0.3s ease forwards;}
+.az-fade-in{animation:azIn 0.3s ease forwards;}
+@keyframes azOut{from{opacity:1;}to{opacity:0;}}
+@keyframes azIn{from{opacity:0;}to{opacity:1;}}
+
+/* ── ENIGMA BURST ── */
+.enigma-burst{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Crimson Text',serif;font-size:72px;font-weight:700;
+  letter-spacing:-0.04em;pointer-events:none;z-index:9000;opacity:0;
+  animation:enigmaBurst 1.1s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.enigma-burst.correct{color:var(--correct);}
+.enigma-burst.partial{color:var(--partial);}
+.enigma-burst.incorrect{color:var(--incorrect);}
+@keyframes enigmaBurst{
+  0%{opacity:0;transform:translate(-50%,-30%);}
+  20%{opacity:1;transform:translate(-50%,-50%);}
+  70%{opacity:1;transform:translate(-50%,-55%);}
+  100%{opacity:0;transform:translate(-50%,-70%);}
+}
+.pulse-ring{
+  position:absolute;inset:-4px;border-radius:18px;
+  pointer-events:none;border:2.5px solid transparent;
+  animation:pulseRing 0.7s ease-out forwards;z-index:10;
+}
+.pulse-ring.correct{border-color:var(--correct);}
+.pulse-ring.partial{border-color:var(--partial);}
+.pulse-ring.incorrect{border-color:var(--incorrect);}
+@keyframes pulseRing{0%{opacity:1;transform:scale(1);}100%{opacity:0;transform:scale(1.06);}}
+
+/* ── END SCREEN ── */
+#quiz-end-screen{
+  position:fixed;inset:0;background:#fff;z-index:8000;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 2s ease;
+}
+#quiz-end-screen.visible{display:flex;}
+#quiz-end-screen.faded-in{opacity:1;}
+.end-message{
+  font-family:'Crimson Text',serif;font-size:36px;font-weight:600;
+  color:#000;letter-spacing:-0.09em;line-height:1.2;text-align:center;
+  max-width:560px;padding:0 40px;opacity:0;transition:opacity 1s ease;
+  position:absolute;display:none;
+}
+.end-message.faded-in{opacity:1;}
+
+/* ── RESULTS ── */
+#quiz-results-screen{
+  position:fixed;inset:0;background:#fff;z-index:8000;
+  display:none;flex-direction:column;align-items:center;
+  overflow-y:auto;padding:60px 24px 80px;
+  opacity:0;transition:opacity 1s ease;
+}
+#quiz-results-screen.visible{display:flex;}
+#quiz-results-screen.faded-in{opacity:1;}
+.results-title{font-family:'Crimson Text',serif;font-size:40px;font-weight:600;letter-spacing:-0.09em;color:#000;margin-bottom:6px;text-align:center;}
+.results-subtitle{font-size:14px;color:var(--muted);margin-bottom:40px;text-align:center;}
+.results-enigma-total{font-family:'Crimson Text',serif;font-size:52px;font-weight:700;letter-spacing:-0.06em;color:var(--text);text-align:center;margin-bottom:6px;}
+.results-enigma-label{font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#9ca3af;text-align:center;margin-bottom:40px;}
+.results-grid{width:100%;max-width:600px;display:flex;flex-direction:column;gap:10px;margin-bottom:40px;}
+.result-row{display:flex;align-items:center;gap:14px;border:0.5px solid var(--border);border-radius:12px;padding:14px 18px;}
+.result-row.correct-row{border-color:var(--correct);background:#f0fdf4;}
+.result-row.incorrect-row{border-color:var(--incorrect);background:#fff1f2;}
+.result-icon{font-size:18px;flex-shrink:0;width:24px;text-align:center;}
+.result-qnum{font-size:12px;font-weight:600;color:#9ca3af;width:28px;flex-shrink:0;}
+.result-text{flex:1;font-size:14px;color:var(--text);line-height:1.4;}
+.result-topic{font-size:11px;color:#9ca3af;margin-top:2px;}
+.result-enigma{font-size:13px;font-weight:600;flex-shrink:0;}
+.correct-row .result-enigma{color:var(--correct);}
+.incorrect-row .result-enigma{color:var(--incorrect);}
+.results-retry-note{width:100%;max-width:600px;background:#f8fafc;border:0.5px solid var(--border);border-radius:12px;padding:16px 20px;font-size:13px;color:var(--muted);line-height:1.6;text-align:center;margin-bottom:32px;}
+.results-done-btn{border:1.5px solid #111827;background:#111827;color:#fff;border-radius:10px;padding:14px 40px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;}
+.results-done-btn:hover{background:#1f2937;}
+
+/* ── ERROR STATE ── */
+#error-screen{
+  position:fixed;inset:0;background:#fff;z-index:9998;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;padding:40px;text-align:center;
+}
+#error-screen.visible{display:flex;}
+.error-icon{font-size:48px;}
+.error-title{font-size:20px;font-weight:600;color:var(--text);}
+.error-msg{font-size:14px;color:var(--muted);max-width:400px;line-height:1.6;}
+.error-btn{background:#111827;color:#fff;border:none;padding:12px 28px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;}
+</style>
+</head>
+<body>
+
+<audio id="quiz-end-audio" preload="auto">
+  <source src="https://bdoesoqpjhpxkwsjauwo.supabase.co/storage/v1/object/public/audio/ScreenRecording_04-09-2026%2018-26-35_1.mp3" type="audio/mpeg">
+</audio>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Building your quiz…</div>
+  <div class="loading-sub" id="loading-sub">Loading topics</div>
+</div>
+
+<!-- ERROR -->
+<div id="error-screen">
+  <div class="error-icon">⚠️</div>
+  <div class="error-title">Couldn't load quiz</div>
+  <div class="error-msg" id="error-msg">No topics were selected. Please go back and select at least one topic.</div>
+  <button class="error-btn" onclick="window.location.href='../quick-test.html'">← Back to Quiz Builder</button>
+</div>
+
+<!-- END SCREEN -->
+<div id="quiz-end-screen">
+  <div class="end-message" id="end-message-1"></div>
+  <div class="end-message" id="end-message-2"></div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div id="quiz-results-screen">
+  <div class="results-title">Quiz Complete</div>
+  <div class="results-subtitle" id="results-subtitle">Here's how you did</div>
+  <div class="results-enigma-total" id="results-enigma-total">0</div>
+  <div class="results-enigma-label">Enigma earned</div>
+  <div class="results-grid" id="results-grid"></div>
+  <div class="results-retry-note">Questions you got wrong will reappear next time — keep going until you're confident on every topic.</div>
+  <button class="results-done-btn" onclick="window.location.href='../../dashboard.html'">Back to Dashboard</button>
+</div>
+
+<!-- HEADER -->
+<div class="header-bar">
+  <button class="back-btn" onclick="window.location.href='../quick-test.html'">
+    ← Back
+  </button>
+  <div class="progress-bar-wrap" id="progress-bar-wrap"></div>
+  <div class="enigma-counter">
+    <span>⚡</span>
+    <span id="enigma-value">0 E</span>
+    <span class="retest-badge" id="retest-badge"></span>
+  </div>
+</div>
+
+<!-- MAIN QUIZ LAYOUT -->
+<div class="main-container" id="main-container" style="display:none;">
+  <div class="content-side" id="content-side">
+    <div class="question-box" id="question-box">
+      <div class="q-number-label" id="q-number-label">Q1</div>
+      <div class="mark-counter" id="mark-counter">0/1</div>
+      <div class="question-title" id="question-title">Loading…</div>
+      <div class="topic-pill" id="topic-pill"></div>
+    </div>
+  </div>
+
+  <div class="answer-zone">
+    <div class="answer-zone-inner">
+      <div id="answer-zone-options"></div>
+      <div class="az-enter-hint" id="az-enter-hint">Press Enter to submit</div>
+    </div>
+    <div class="answer-zone-nav">
+      <button class="az-nav-btn" id="nav-prev" onclick="previousQuestion()" disabled>← Previous</button>
+      <span class="az-counter" id="az-counter">Question 1</span>
+      <button class="az-nav-btn" id="nav-next" onclick="nextQuestion()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════════
+var SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+
+function getJWT() {
+  try {
+    var raw = localStorage.getItem('sb-bdoesoqpjhpxkwsjauwo-auth-token');
+    var session = raw ? JSON.parse(raw) : null;
+    return (session && session.access_token) ? session.access_token : SUPABASE_KEY;
+  } catch(e) { return SUPABASE_KEY; }
+}
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+var quizQuestions = [];      // [{key, question, correctAnswer, topic, topicSlug, answerType, options, marks}]
+var questionAnswers = {};    // per-Q answer config (same format as template)
+var correctAnswers = {};     // per-Q correct answer
+var selectedAnswers = {};    // student's selections
+var quizResults = {};        // {qIndex: {result, enigma, question, topic}}
+var currentIndex = 0;
+var totalQuestions = 0;
+var sessionEnigma = 0;
+var currentUser = null;
+var currentUserProfile = null;
+var autoAdvanceTimer = null;
+var submittedQuestions = {};  // {index: true}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+window.addEventListener('load', function() {
+  var topicsRaw = sessionStorage.getItem('quizTopics');
+  var countRaw = sessionStorage.getItem('quizCount') || '20';
+  var mode = sessionStorage.getItem('quizMode') || 'custom';
+
+  if (!topicsRaw) {
+    showError('No topics were selected. Please go back and choose topics first.');
+    return;
+  }
+
+  var topicUrls;
+  try { topicUrls = JSON.parse(topicsRaw); } catch(e) {
+    showError('Could not read topic selection. Please go back and try again.');
+    return;
+  }
+
+  if (!topicUrls || topicUrls.length === 0) {
+    showError('No topics were selected. Please go back and choose at least one topic.');
+    return;
+  }
+
+  var requestedCount = parseInt(countRaw) || 20;
+  loadUserAndBuildQuiz(topicUrls, requestedCount);
+});
+
+async function loadUserAndBuildQuiz(topicUrls, requestedCount) {
+  try {
+    var res = await fetch(SUPABASE_URL + '/auth/v1/user', {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + getJWT() }
+    });
+    var data = await res.json();
+    if (data && data.id) {
+      currentUser = data;
+      var pRes = await fetch(SUPABASE_URL + '/rest/v1/user_profiles?id=eq.' + data.id + '&select=first_name,last_name,enigma_balance,current_grade', {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + getJWT() }
+      });
+      var profiles = await pRes.json();
+      if (profiles && profiles[0]) currentUserProfile = profiles[0];
+    }
+  } catch(e) { /* continue without auth */ }
+
+  document.getElementById('loading-sub').textContent = 'Loading ' + topicUrls.length + ' topic' + (topicUrls.length > 1 ? 's' : '') + '…';
+  await buildQuizFromTopics(topicUrls, requestedCount);
+}
+
+// ══════════════════════════════════════════════
+//  QUESTION BANK EXTRACTION VIA IFRAME
+// ══════════════════════════════════════════════
+function extractQuestionBankFromUrl(url) {
+  return new Promise(function(resolve) {
+    var iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;top:-9999px;';
+    iframe.src = url;
+    var timeout = setTimeout(function() {
+      if (iframe.parentNode) document.body.removeChild(iframe);
+      resolve(null);
+    }, 8000);
+
+    iframe.addEventListener('load', function() {
+      clearTimeout(timeout);
+      try {
+        var bank = iframe.contentWindow.QUESTION_BANK;
+        var qAnswers = iframe.contentWindow.questionAnswers;
+        var cAnswers = iframe.contentWindow.correctAnswers;
+        var slug = iframe.contentWindow.topicSlug || url.split('/').pop().replace('.html','');
+        if (iframe.parentNode) document.body.removeChild(iframe);
+        resolve(bank ? { bank: bank, questionAnswers: qAnswers, correctAnswers: cAnswers, slug: slug } : null);
+      } catch(e) {
+        if (iframe.parentNode) document.body.removeChild(iframe);
+        resolve(null);
+      }
+    });
+
+    iframe.addEventListener('error', function() {
+      clearTimeout(timeout);
+      if (iframe.parentNode) document.body.removeChild(iframe);
+      resolve(null);
+    });
+
+    document.body.appendChild(iframe);
+  });
+}
+
+// ══════════════════════════════════════════════
+//  BUILD QUIZ
+// ══════════════════════════════════════════════
+async function buildQuizFromTopics(topicUrls, requestedCount) {
+  var allQuestions = [];
+  var perTopic = Math.max(1, Math.ceil(requestedCount / topicUrls.length));
+  var studentGrade = (currentUserProfile && parseInt(currentUserProfile.current_grade)) || 3;
+
+  for (var i = 0; i < topicUrls.length; i++) {
+    var url = topicUrls[i];
+    document.getElementById('loading-sub').textContent = 'Loading topic ' + (i + 1) + ' of ' + topicUrls.length + '…';
+
+    // Build absolute URL
+    var absUrl = url;
+    if (!url.startsWith('http')) {
+      absUrl = window.location.href.replace(/\/[^/]+$/, '/') + '../' + url;
+    }
+
+    var result = await extractQuestionBankFromUrl(absUrl);
+
+    if (!result || !result.bank) {
+      // Fallback: create placeholder questions from URL slug
+      var slug = url.split('/').pop().replace('.html','').replace(/-/g,' ');
+      var topicName = slug.replace(/^\d+ /, '').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+      for (var p = 0; p < Math.min(perTopic, 2); p++) {
+        allQuestions.push({
+          key: 'PLACEHOLDER_' + i + '_' + p,
+          question: 'Question ' + (p+1) + ' from ' + topicName,
+          correctAnswer: 'placeholder',
+          topic: topicName,
+          topicSlug: url.split('/').pop().replace('.html',''),
+          answerType: 'multiple-choice',
+          options: ['Option A', 'Option B', 'Option C', 'Option D'],
+          grade: 3,
+          qAnswerData: { type: 'multiple-choice', options: ['Option A', 'Option B', 'Option C', 'Option D'] },
+          cAnswerData: 'Option A'
+        });
+      }
+      continue;
+    }
+
+    var bank = result.bank;
+    var qAnswers = result.questionAnswers || {};
+    var cAnswers = result.correctAnswers || {};
+    var slug2 = result.slug;
+
+    // Grade filtering
+    var keys = Object.keys(bank);
+    var gradeFiltered = keys.filter(function(k) {
+      var q = bank[k];
+      if (!q.grade) return true;
+      return q.grade >= studentGrade - 1 && q.grade <= studentGrade + 1;
+    });
+    if (gradeFiltered.length >= 4) keys = gradeFiltered;
+
+    // Shuffle and pick perTopic
+    keys = keys.sort(function() { return Math.random() - 0.5; }).slice(0, perTopic);
+
+    keys.forEach(function(key) {
+      var q = bank[key];
+      // Extract question number from key (e.g. _Q3 -> 3)
+      var qNumMatch = key.match(/_Q(\d+)$/);
+      var qNum = qNumMatch ? parseInt(qNumMatch[1]) : null;
+      var qAnsData = (qNum && qAnswers[qNum]) ? qAnswers[qNum] : { type: 'multiple-choice', options: ['A', 'B', 'C', 'D'] };
+      var cAnsData = (qNum && cAnswers[qNum] !== undefined) ? cAnswers[qNum] : q.correctAnswer;
+
+      allQuestions.push({
+        key: key,
+        question: q.question || '',
+        correctAnswer: q.correctAnswer || '',
+        topic: q.topic || '',
+        topicSlug: slug2,
+        grade: q.grade || 3,
+        qAnswerData: qAnsData,
+        cAnswerData: cAnsData
+      });
+    });
+  }
+
+  if (allQuestions.length === 0) {
+    showError('Could not load any questions. Make sure the quiz files exist in the quick-tests folder.');
+    return;
+  }
+
+  // Shuffle and cap at requestedCount
+  allQuestions = allQuestions.sort(function() { return Math.random() - 0.5; }).slice(0, requestedCount);
+
+  quizQuestions = allQuestions;
+  totalQuestions = allQuestions.length;
+
+  // Build questionAnswers + correctAnswers maps (1-indexed)
+  allQuestions.forEach(function(q, i) {
+    questionAnswers[i + 1] = q.qAnswerData;
+    correctAnswers[i + 1] = q.cAnswerData;
+  });
+
+  // Build progress bar
+  buildProgressBar();
+
+  // Check for retest questions
+  await loadRetestBadge();
+
+  // Hide loading, show quiz
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('main-container').style.display = 'flex';
+
+  showQuestion(1);
+  loadUserProfile_enigmaUpdate();
+}
+
+// ══════════════════════════════════════════════
+//  PROGRESS BAR
+// ══════════════════════════════════════════════
+function buildProgressBar() {
+  var wrap = document.getElementById('progress-bar-wrap');
+  wrap.innerHTML = '';
+  for (var i = 0; i < totalQuestions; i++) {
+    var seg = document.createElement('div');
+    seg.className = 'progress-seg';
+    seg.id = 'seg-' + (i + 1);
+    seg.style.width = (100 / totalQuestions) + '%';
+    seg.style.background = 'transparent';
+    wrap.appendChild(seg);
+  }
+}
+
+function updateProgressSeg(qNum, result) {
+  var seg = document.getElementById('seg-' + qNum);
+  if (!seg) return;
+  seg.style.background = result === 'correct' ? '#54d3ab' : result === 'partial' ? '#f59e0b' : '#e16280';
+}
+
+// ══════════════════════════════════════════════
+//  SHOW QUESTION
+// ══════════════════════════════════════════════
+function showQuestion(num) {
+  if (num < 1 || num > totalQuestions) return;
+  currentIndex = num;
+  var q = quizQuestions[num - 1];
+  if (!q) return;
+
+  document.getElementById('q-number-label').textContent = 'Q' + num + ' of ' + totalQuestions;
+  document.getElementById('question-title').textContent = q.question;
+  document.getElementById('topic-pill').textContent = q.topic;
+  document.getElementById('az-counter').textContent = 'Question ' + num + ' of ' + totalQuestions;
+
+  // Reset box state if not submitted
+  var box = document.getElementById('question-box');
+  var mc = document.getElementById('mark-counter');
+  if (submittedQuestions[num]) {
+    var res = quizResults[num];
+    box.className = 'question-box ' + (res && res.result === 'correct' ? 'correct' : 'incorrect');
+    mc.className = 'mark-counter ' + (res && res.result === 'correct' ? 'correct' : 'incorrect');
+    mc.textContent = res && res.result === 'correct' ? '1/1' : '0/1';
+  } else {
+    box.className = 'question-box';
+    mc.className = 'mark-counter';
+    mc.textContent = '0/1';
+    delete mc.dataset.submitted;
+  }
+
+  // Nav buttons
+  document.getElementById('nav-prev').disabled = (num === 1);
+  document.getElementById('nav-next').disabled = (num === totalQuestions);
+
+  renderAnswerZone(num);
+  showEnterHint(false);
+}
+
+function nextQuestion() {
+  if (currentIndex < totalQuestions) animatedShowQuestion(currentIndex + 1);
+}
+function previousQuestion() {
+  if (currentIndex > 1) animatedShowQuestion(currentIndex - 1);
+}
+
+function animatedShowQuestion(num) {
+  var box = document.getElementById('question-box');
+  var azOptions = document.getElementById('answer-zone-options');
+  box.classList.add('slide-out-left');
+  azOptions.classList.add('az-fade-out');
+  setTimeout(function() {
+    box.classList.remove('slide-out-left');
+    azOptions.classList.remove('az-fade-out');
+    showQuestion(num);
+    box.classList.add('slide-in-right');
+    azOptions.classList.add('az-fade-in');
+    setTimeout(function() {
+      box.classList.remove('slide-in-right');
+      azOptions.classList.remove('az-fade-in');
+    }, 500);
+  }, 300);
+}
+
+// ══════════════════════════════════════════════
+//  RENDER ANSWER ZONE — all 6 types
+// ══════════════════════════════════════════════
+function renderAnswerZone(qNum) {
+  var container = document.getElementById('answer-zone-options');
+  container.innerHTML = '';
+  showEnterHint(false);
+
+  var qData = questionAnswers[qNum];
+  if (!qData) return;
+  var type = qData.type || 'multiple-choice';
+  var submitted = !!submittedQuestions[qNum];
+
+  if (type === 'multiple-choice') {
+    var opts = document.createElement('div');
+    opts.className = 'az-options';
+    (qData.options || []).forEach(function(opt) {
+      var btn = document.createElement('button');
+      btn.className = 'az-opt';
+      btn.textContent = opt;
+      if (submitted) {
+        btn.disabled = true;
+        if (answersMatch(opt, correctAnswers[qNum])) btn.classList.add('correct');
+        else if (selectedAnswers[qNum] === opt) btn.classList.add('wrong');
+      } else {
+        if (selectedAnswers[qNum] === opt) btn.classList.add('selected');
+        btn.addEventListener('click', function() {
+          selectedAnswers[qNum] = opt;
+          evaluateAnswer(qNum, opt);
+        });
+      }
+      opts.appendChild(btn);
+    });
+    container.appendChild(opts);
+
+  } else if (type === 'true-false') {
+    var tf = document.createElement('div');
+    tf.className = 'az-tf';
+    ['True','False'].forEach(function(val) {
+      var btn = document.createElement('button');
+      btn.className = 'az-tf-btn';
+      var icon = document.createElement('span');
+      icon.className = 'az-tf-icon';
+      icon.textContent = val === 'True' ? '✓' : '✗';
+      btn.appendChild(icon);
+      btn.appendChild(document.createTextNode(val));
+      if (submitted) {
+        btn.disabled = true;
+        if (val === correctAnswers[qNum]) btn.classList.add('sel-true');
+        else if (selectedAnswers[qNum] === val) btn.classList.add('sel-false');
+      } else {
+        if (selectedAnswers[qNum] === val) btn.classList.add(val === 'True' ? 'sel-true' : 'sel-false');
+        btn.addEventListener('click', function() {
+          selectedAnswers[qNum] = val;
+          evaluateAnswer(qNum, val);
+        });
+      }
+      tf.appendChild(btn);
+    });
+    container.appendChild(tf);
+
+  } else if (type === 'match') {
+    var grid = document.createElement('div');
+    grid.className = 'az-match';
+    var lCol = document.createElement('div'); lCol.className = 'az-match-col';
+    var rCol = document.createElement('div'); rCol.className = 'az-match-col';
+    var lLbl = document.createElement('div'); lLbl.className = 'az-match-col-label'; lLbl.textContent = qData.leftLabel || 'Term';
+    var rLbl = document.createElement('div'); rLbl.className = 'az-match-col-label'; rLbl.textContent = qData.rightLabel || 'Definition';
+    lCol.appendChild(lLbl); rCol.appendChild(rLbl);
+    var activeLeft = null;
+    var matches = selectedAnswers[qNum] || {};
+    (qData.left || []).forEach(function(term) {
+      var item = document.createElement('div');
+      item.className = 'az-match-item' + (matches[term] ? ' matched' : '');
+      item.textContent = term;
+      if (!submitted && !matches[term]) {
+        item.addEventListener('click', function() {
+          activeLeft = term;
+          lCol.querySelectorAll('.az-match-item').forEach(function(el){ el.classList.remove('active'); });
+          item.classList.add('active');
+        });
+      }
+      lCol.appendChild(item);
+    });
+    (qData.right || []).forEach(function(def) {
+      var item = document.createElement('div');
+      item.className = 'az-match-item';
+      var alreadyMatched = Object.values(matches).includes(def);
+      if (alreadyMatched) item.classList.add('matched');
+      if (!submitted && !alreadyMatched) {
+        item.addEventListener('click', function() {
+          if (!activeLeft) return;
+          if (!selectedAnswers[qNum]) selectedAnswers[qNum] = {};
+          selectedAnswers[qNum][activeLeft] = def;
+          var allDone = (qData.left || []).every(function(t){ return selectedAnswers[qNum][t]; });
+          if (allDone) evaluateAnswer(qNum, selectedAnswers[qNum]);
+          activeLeft = null;
+          renderAnswerZone(qNum);
+        });
+      }
+      item.textContent = def;
+      rCol.appendChild(item);
+    });
+    grid.appendChild(lCol); grid.appendChild(rCol);
+    container.appendChild(grid);
+
+  } else if (type === 'type-answer') {
+    if (qData.sentence) {
+      var sent = document.createElement('div'); sent.className = 'az-sentence'; sent.textContent = qData.sentence; container.appendChild(sent);
+    }
+    var lines = document.createElement('div'); lines.className = 'az-lines';
+    var lineCount = qData.lines || 1;
+    var inputs = [];
+    for (var i = 0; i < lineCount; i++) {
+      (function(idx) {
+        var row = document.createElement('div'); row.className = 'az-line-row';
+        var inp = document.createElement('input'); inp.className = 'az-line-input';
+        inp.placeholder = idx === 0 ? 'Write here…' : '';
+        inp.value = (selectedAnswers[qNum] && selectedAnswers[qNum][idx]) || '';
+        inp.addEventListener('keydown', function(e) {
+          if (e.key === 'Tab') { e.preventDefault(); if (inputs[idx+1]) inputs[idx+1].focus(); }
+          if (e.key === 'Enter') {
+            var vals = inputs.map(function(ip){ return ip.value.trim(); });
+            selectedAnswers[qNum] = vals;
+            evaluateAnswer(qNum, vals.join(' '));
+          }
+        });
+        if (idx === 0) setTimeout(function(){ inp.focus(); }, 50);
+        showEnterHint(true);
+        inputs.push(inp); row.appendChild(inp); lines.appendChild(row);
+      })(i);
+    }
+    container.appendChild(lines);
+    if (lineCount > 1) {
+      var hint = document.createElement('div'); hint.className = 'az-tab-hint'; hint.textContent = 'Tab to move between lines'; container.appendChild(hint);
+    }
+
+  } else if (type === 'fill-box') {
+    if (qData.sentence) {
+      var s2 = document.createElement('div'); s2.className = 'az-sentence'; s2.textContent = qData.sentence; container.appendChild(s2);
+    }
+    var boxRow = document.createElement('div'); boxRow.className = 'az-box-row';
+    if (qData.prefix) { var ctx = document.createElement('span'); ctx.className = 'az-box-context'; ctx.textContent = qData.prefix; boxRow.appendChild(ctx); }
+    var bi = document.createElement('input'); bi.className = 'az-box-input'; bi.placeholder = '?';
+    bi.value = selectedAnswers[qNum] || '';
+    bi.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { selectedAnswers[qNum] = bi.value.trim(); evaluateAnswer(qNum, bi.value.trim()); }
+    });
+    setTimeout(function(){ bi.focus(); }, 50);
+    showEnterHint(true);
+    boxRow.appendChild(bi);
+    if (qData.suffix) { var sfx = document.createElement('span'); sfx.className = 'az-box-context'; sfx.textContent = qData.suffix; boxRow.appendChild(sfx); }
+    container.appendChild(boxRow);
+
+  } else if (type === 'drag-order') {
+    var dragList = qData.items ? qData.items.slice() : [];
+    if (selectedAnswers[qNum] && Array.isArray(selectedAnswers[qNum])) dragList = selectedAnswers[qNum].slice();
+    var dc = document.createElement('div'); dc.className = 'az-drag';
+    var draggedIdx = null;
+    function buildDragUI() {
+      dc.innerHTML = '';
+      dragList.forEach(function(text, di) {
+        var item = document.createElement('div'); item.className = 'az-drag-item';
+        var rank = document.createElement('span'); rank.className = 'az-drag-rank'; rank.textContent = di + 1;
+        var card = document.createElement('div'); card.className = 'az-drag-card'; card.draggable = true;
+        var grip = document.createElement('div'); grip.className = 'az-drag-grip';
+        for (var g = 0; g < 6; g++) { var dot = document.createElement('span'); grip.appendChild(dot); }
+        card.textContent = text; card.appendChild(grip);
+        card.addEventListener('dragstart', function(){ draggedIdx = di; card.classList.add('dragging'); });
+        card.addEventListener('dragend', function(){ card.classList.remove('dragging'); });
+        card.addEventListener('dragover', function(e){ e.preventDefault(); });
+        card.addEventListener('drop', function(){
+          if (draggedIdx === null || draggedIdx === di) return;
+          var moved = dragList.splice(draggedIdx, 1)[0];
+          dragList.splice(di, 0, moved);
+          selectedAnswers[qNum] = dragList.slice();
+          draggedIdx = null; buildDragUI();
+        });
+        item.appendChild(rank); item.appendChild(card); dc.appendChild(item);
+      });
+    }
+    buildDragUI();
+    container.appendChild(dc);
+    var confirmBtn = document.createElement('button');
+    confirmBtn.className = 'az-opt';
+    confirmBtn.style.cssText = 'margin-top:12px;background:#111827;color:#fff;border-color:#111827;';
+    confirmBtn.textContent = 'Confirm order';
+    confirmBtn.addEventListener('click', function(){
+      selectedAnswers[qNum] = dragList.slice();
+      evaluateAnswer(qNum, dragList.slice());
+    });
+    container.appendChild(confirmBtn);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  EVALUATE
+// ══════════════════════════════════════════════
+function evaluateAnswer(qNum, selected) {
+  if (submittedQuestions[qNum]) return;
+  submittedQuestions[qNum] = true;
+
+  var correct = correctAnswers[qNum];
+  var isCorrect = answersMatch(selected, correct);
+  var result = isCorrect ? 'correct' : 'incorrect';
+
+  var box = document.getElementById('question-box');
+  var mc = document.getElementById('mark-counter');
+  mc.dataset.submitted = 'true';
+
+  if (isCorrect) {
+    mc.textContent = '1/1'; mc.className = 'mark-counter correct';
+    box.className = 'question-box correct';
+  } else {
+    mc.textContent = '0/1'; mc.className = 'mark-counter incorrect';
+    box.className = 'question-box incorrect';
+  }
+
+  var q = quizQuestions[qNum - 1] || {};
+  quizResults[qNum] = {
+    result: result,
+    enigma: getEnigmaForResult(result),
+    question: q.question || '',
+    topic: q.topic || '',
+    topicSlug: q.topicSlug || '',
+    questionKey: q.key || ''
+  };
+
+  updateProgressSeg(qNum, result);
+  renderAnswerZone(qNum); // re-render to show correct/wrong states
+
+  onQuestionAnswered(qNum, result);
+}
+
+function normaliseMaths(str) {
+  if (!str) return '';
+  return str.toString().toLowerCase().replace(/\s+/g,'')
+    .replace(/×/g,'x').replace(/\^2/g,'²').replace(/\^3/g,'³')
+    .replace(/\^(\d)/g,function(m,d){return d;}).trim();
+}
+function answersMatch(given, correct) {
+  if (Array.isArray(correct)) return JSON.stringify(given) === JSON.stringify(correct);
+  if (typeof correct === 'object' && correct !== null) return JSON.stringify(given) === JSON.stringify(correct);
+  return normaliseMaths(given) === normaliseMaths(correct);
+}
+
+// ══════════════════════════════════════════════
+//  ENIGMA + ANIMATIONS
+// ══════════════════════════════════════════════
+function getEnigmaForResult(r) { return r === 'correct' ? 1000 : r === 'partial' ? 750 : 250; }
+
+function onQuestionAnswered(qNum, result) {
+  showPulseRing(result);
+  var amount = getEnigmaForResult(result);
+  sessionEnigma += amount;
+  document.getElementById('enigma-value').textContent = sessionEnigma.toLocaleString() + ' E';
+  showEnigmaBurst(amount, result);
+  quizResults[qNum].enigma = amount;
+
+  if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+  autoAdvanceTimer = setTimeout(function() {
+    if (currentIndex < totalQuestions) animatedShowQuestion(currentIndex + 1);
+    else triggerEndScreen();
+  }, 1200);
+}
+
+function showEnigmaBurst(amount, result) {
+  var burst = document.createElement('div');
+  burst.className = 'enigma-burst ' + result;
+  burst.textContent = '+' + amount.toLocaleString();
+  document.body.appendChild(burst);
+  setTimeout(function(){ if (burst.parentNode) burst.parentNode.removeChild(burst); }, 1200);
+}
+
+function showPulseRing(result) {
+  var box = document.getElementById('question-box');
+  var ring = document.createElement('div');
+  ring.className = 'pulse-ring ' + result;
+  box.style.position = 'relative';
+  box.appendChild(ring);
+  setTimeout(function(){ if (ring.parentNode) ring.parentNode.removeChild(ring); }, 750);
+}
+
+function showEnterHint(show) {
+  var hint = document.getElementById('az-enter-hint');
+  if (hint) hint.classList.toggle('visible', show);
+}
+
+// ══════════════════════════════════════════════
+//  END SCREEN
+// ══════════════════════════════════════════════
+var endMessages1 = ['Quiz complete.','Well done.','That\'s a wrap.','You showed up.','All done.','Nice work.','Finished.'];
+var endMessages2 = [
+  'Every quiz completed is a step closer to that next grade.',
+  'Consistency beats talent every single time.',
+  'The student who shows up wins.',
+  'Small sessions. Big results.',
+  'Hard now. Easy then.',
+  'One quiz closer to where you want to be.',
+  'You didn\'t skip it. That matters.',
+  'Keep going. It adds up.',
+  'This is what preparation looks like.',
+  'Results start with repetition.'
+];
+
+function triggerEndScreen() {
+  saveResultsToSupabase();
+  var audio = document.getElementById('quiz-end-audio');
+  if (audio) { audio.volume = 0.7; audio.play().catch(function(){}); }
+
+  var screen = document.getElementById('quiz-end-screen');
+  screen.style.display = 'flex';
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ screen.classList.add('faded-in'); }); });
+
+  var firstName = (currentUserProfile && currentUserProfile.first_name) ? currentUserProfile.first_name : '';
+  var m1 = endMessages1[Math.floor(Math.random() * endMessages1.length)];
+  var m2 = endMessages2[Math.floor(Math.random() * endMessages2.length)];
+  if (firstName) m1 = firstName + '. ' + m1;
+
+  var m1El = document.getElementById('end-message-1');
+  var m2El = document.getElementById('end-message-2');
+  m1El.textContent = m1; m1El.style.display = 'block'; m2El.style.display = 'none';
+  setTimeout(function(){ m1El.classList.add('faded-in'); }, 500);
+  setTimeout(function(){
+    m1El.classList.remove('faded-in');
+    setTimeout(function(){
+      m1El.style.display = 'none';
+      m2El.style.display = 'block'; m2El.textContent = m2;
+      void m2El.offsetWidth; m2El.classList.add('faded-in');
+      setTimeout(function(){
+        m2El.classList.remove('faded-in');
+        setTimeout(showResultsScreen, 1000);
+      }, 4000);
+    }, 1000);
+  }, 4000);
+}
+
+function showResultsScreen() {
+  var endScreen = document.getElementById('quiz-end-screen');
+  endScreen.classList.remove('faded-in');
+  setTimeout(function(){
+    endScreen.style.display = 'none';
+    buildResultsScreen();
+    var rs = document.getElementById('quiz-results-screen');
+    rs.style.display = 'flex';
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ rs.classList.add('faded-in'); }); });
+  }, 1000);
+}
+
+function buildResultsScreen() {
+  var grid = document.getElementById('results-grid');
+  grid.innerHTML = '';
+  document.getElementById('results-enigma-total').textContent = sessionEnigma.toLocaleString();
+  var firstName = (currentUserProfile && currentUserProfile.first_name) ? currentUserProfile.first_name : 'You';
+  document.getElementById('results-subtitle').textContent = firstName + ', here\'s how you did';
+
+  for (var i = 1; i <= totalQuestions; i++) {
+    var res = quizResults[i] || { result: 'incorrect', enigma: 250 };
+    var row = document.createElement('div');
+    row.className = 'result-row ' + (res.result === 'correct' ? 'correct-row' : 'incorrect-row');
+    row.innerHTML = '<div class="result-icon">' + (res.result === 'correct' ? '✓' : '✗') + '</div>' +
+      '<div class="result-qnum">Q' + i + '</div>' +
+      '<div class="result-text">' + (res.question || '') + '<div class="result-topic">' + (res.topic || '') + '</div></div>' +
+      '<div class="result-enigma">+' + (res.enigma || 250).toLocaleString() + '</div>';
+    grid.appendChild(row);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  SUPABASE SAVING
+// ══════════════════════════════════════════════
+async function saveResultsToSupabase() {
+  if (!currentUser) return;
+  var jwt = getJWT();
+  var correctCount = Object.values(quizResults).filter(function(r){ return r.result === 'correct'; }).length;
+  var score = Math.round((correctCount / totalQuestions) * 100);
+
+  try {
+    // Save per-question results
+    var rows = [];
+    for (var i = 1; i <= totalQuestions; i++) {
+      var res = quizResults[i]; if (!res) continue;
+      rows.push({
+        user_id: currentUser.id,
+        topic_slug: res.topicSlug || 'multi-topic',
+        question_key: res.questionKey || ('MULTI_Q' + i),
+        question_text: res.question || '',
+        topic_name: res.topic || '',
+        result: res.result,
+        enigma_earned: res.enigma || 250,
+        needs_retest: res.result !== 'correct'
+      });
+    }
+    if (rows.length > 0) {
+      await fetch(SUPABASE_URL + '/rest/v1/quiz_question_results', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt, 'Prefer': 'return=minimal' },
+        body: JSON.stringify(rows)
+      });
+    }
+
+    // Save custom_quiz_session
+    var topicUrls = JSON.parse(sessionStorage.getItem('quizTopics') || '[]');
+    var mode = sessionStorage.getItem('quizMode') || 'custom';
+    await fetch(SUPABASE_URL + '/rest/v1/custom_quiz_sessions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        user_id: currentUser.id,
+        topics_selected: topicUrls,
+        total_questions: totalQuestions,
+        questions_correct: correctCount,
+        questions_incorrect: totalQuestions - correctCount,
+        enigma_earned: sessionEnigma,
+        mode: mode,
+        completed: true,
+        completed_at: new Date().toISOString()
+      })
+    });
+
+    // Update enigma balance
+    var newBalance = ((currentUserProfile && currentUserProfile.enigma_balance) || 0) + sessionEnigma;
+    await fetch(SUPABASE_URL + '/rest/v1/user_profiles?id=eq.' + currentUser.id, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ enigma_balance: newBalance })
+    });
+
+    // Clear needs_retest for correct answers
+    for (var j = 1; j <= totalQuestions; j++) {
+      if (quizResults[j] && quizResults[j].result === 'correct' && quizResults[j].questionKey) {
+        await fetch(SUPABASE_URL + '/rest/v1/quiz_question_results?user_id=eq.' + currentUser.id + '&question_key=eq.' + quizResults[j].questionKey, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt, 'Prefer': 'return=minimal' },
+          body: JSON.stringify({ needs_retest: false })
+        });
+      }
+    }
+  } catch(e) { console.log('Save error:', e); }
+}
+
+async function loadUserProfile_enigmaUpdate() {
+  // Nothing extra needed — profile already loaded in init
+}
+
+async function loadRetestBadge() {
+  if (!currentUser) return;
+  try {
+    var topicUrls = JSON.parse(sessionStorage.getItem('quizTopics') || '[]');
+    var slugs = topicUrls.map(function(u){ return u.split('/').pop().replace('.html',''); });
+    var res = await fetch(
+      SUPABASE_URL + '/rest/v1/quiz_question_results?user_id=eq.' + currentUser.id + '&needs_retest=eq.true&select=topic_slug',
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + getJWT() } }
+    );
+    var rows = await res.json();
+    if (!rows || !rows.length) return;
+    var matching = rows.filter(function(r){ return slugs.includes(r.topic_slug); });
+    if (matching.length > 0) {
+      var badge = document.getElementById('retest-badge');
+      badge.textContent = matching.length + ' retest';
+      badge.style.display = 'inline-block';
+    }
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════
+function showError(msg) {
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('error-msg').textContent = msg;
+  document.getElementById('error-screen').classList.add('visible');
+}
+</script>
+</body>
+</html>
