@@ -213,6 +213,17 @@
     </main>
 
 <script>
+
+let AUTH_JWT = SUPABASE_KEY; // fallback to anon if not signed in
+
+function getJWT() {
+    try {
+        const raw = localStorage.getItem('sb-bdoesoqpjhpxkwsjauwo-auth-token');
+        const session = raw ? JSON.parse(raw) : null;
+        return session?.access_token || SUPABASE_KEY;
+    } catch(e) { return SUPABASE_KEY; }
+}
+    
 const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
 
@@ -397,14 +408,20 @@ let topicPerformance = {};
 
 async function init() {
     try {
+        // Get the real JWT from Supabase localStorage session
+        const sessionKey = 'sb-bdoesoqpjhpxkwsjauwo-auth-token';
+        const raw = localStorage.getItem(sessionKey);
+        const session = raw ? JSON.parse(raw) : null;
+        const jwt = session?.access_token || SUPABASE_KEY;
+
         const res = await fetch(SUPABASE_URL + '/auth/v1/user', {
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt }
         });
         const data = await res.json();
         if (data && data.id) {
             currentUser = data;
             const pRes = await fetch(SUPABASE_URL + '/rest/v1/user_profiles?id=eq.' + data.id + '&select=first_name,current_grade,current_grade_tier', {
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt }
             });
             const profiles = await pRes.json();
             if (profiles && profiles[0]) {
@@ -427,7 +444,7 @@ async function loadPerformanceData() {
     try {
         const res = await fetch(
             SUPABASE_URL + '/rest/v1/quiz_question_results?user_id=eq.' + currentUser.id + '&select=topic_name,result',
-            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
+            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt } }
         );
         const rows = await res.json();
         if (!rows || !rows.length) return;
@@ -581,7 +598,7 @@ async function loadSuggestedTopics() {
         const res = await fetch(
             SUPABASE_URL + '/rest/v1/quiz_question_results?user_id=eq.' + currentUser.id +
             '&needs_retest=eq.true&select=topic_name,result&limit=50',
-            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
+            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt } }
         );
         const rows = await res.json();
 
