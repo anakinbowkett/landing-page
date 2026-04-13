@@ -1229,10 +1229,12 @@ Use this guide as your PRIMARY resource.
 ` : `Use your GCSE knowledge for: "${questionData?.question}"`}
 
 TEACHING RULES:
-- Keep responses 1-2 sentences MAX (saves costs)
+- Give clear, step-by-step explanations when needed
+- Aim for understanding, not brevity
+- Use short explanations followed by a guiding question
 - Use Socratic method: ask questions, don't explain everything
 - NO formatting (no **, no lists)
-- Be warm and encouraging
+- Be warm and encouraging and human-like, you should have a personality. 
 ${selectedGuide ? '- Reference the guide method' : '- Focus on the specific question'}
 
 EXAMPLES:
@@ -1253,10 +1255,9 @@ Be concise to save tokens.`;
     body: JSON.stringify({
       model: 'deepseek-chat',
       messages: [
-        { role: 'system', content: systemPrompt },
-        ...conversationHistory,
-        { role: 'user', content: message }
-      ],
+  { role: 'system', content: systemPrompt },
+  { role: 'user', content: message }
+],
       temperature: 0.7,
       max_tokens: 300
     })
