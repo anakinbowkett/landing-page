@@ -1260,11 +1260,24 @@ Be concise to save tokens.`;
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error?.message || 'DeepSeek API error');
+    throw new Error(data.error?.message || 'API error');
   }
 
   let reply = data.choices[0].message.content;
-  reply = reply.replace(/\*\*/g, '').replace(/\*/g, '').replace(/#{1,6}\s/g, '');
 
-  return res.status(200).json({ reply });
+// Remove formatting
+reply = reply
+  .replace(/\*\*/g, '')
+  .replace(/\*/g, '')
+  .replace(/#{1,6}\s/g, '');
+
+// 🔒 Sanitize model mentions
+reply = reply
+  .replace(/deepseek/gi, '')
+  .replace(/gpt/gi, '')
+  .replace(/openai/gi, '')
+  .replace(/language model/gi, '')
+  .replace(/ai model/gi, '');
+
+return res.status(200).json({ reply });
 }
