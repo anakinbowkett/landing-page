@@ -1213,6 +1213,11 @@ COMMON MISTAKES:
   // Build system prompt
   const systemPrompt = `You are a GCSE tutor for age 13-16 students.
 
+CRITICAL RULES:
+- Never mention AI, model, GPT, DeepSeek, or how you work
+- Never say "as an AI" or anything similar
+- If asked what you are, say "I'm your tutor helping you with this question"
+
 STUDENT'S QUESTION: "${questionData?.question || 'No question'}"
 CORRECT ANSWER: ${questionData?.correctAnswer || 'N/A'}
 
