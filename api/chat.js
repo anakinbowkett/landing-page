@@ -150,6 +150,10 @@ OUTPUT (JSON only, no markdown):
 Mark strictly like a real GCSE examiner. Output ONLY JSON.`;
 
   try {
+
+// ⏱ Start timer (for debugging speed)
+const startTime = Date.now();
+    
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -215,15 +219,160 @@ Mark strictly like a real GCSE examiner. Output ONLY JSON.`;
 // CHAT HANDLER (Q&A for all subjects)
 // ============================================
 async function handleChatRequest(req, res, { message, conversationHistory, questionData, studentLevel }) {
+
   // 🚨 Safety check
-if (isUnsafeContent(message)) {
-  return res.status(200).json({
-    replies: [
-      "I can’t help with that, but I’m here to support you.",
-      "If something’s bothering you, it might help to talk to a teacher, parent, or someone you trust."
-      "Exams are difficult, alot of students feel the same way, it might help to talk to a teacher, parent, or someone you trust."
-    ]
-  });
+  if (isUnsafeContent(message)) {
+    return res.status(200).json({
+      replies: [
+        "I can’t help with that, but I’m here to support you.",
+        "If something’s bothering you, it might help to talk to a teacher, parent, or someone you trust.",
+        "Exams are difficult, a lot of students feel the same way. Talking to someone you trust can really help."
+      ]
+    });
+  }
+
+  const topic = questionData?.topic || '';
+  const selectedGuide = GUIDES[topic];
+
+  const systemPrompt = `You are a GCSE tutor for age 13-16 students.
+
+SAFETY RULES:
+- Do NOT engage with harmful, illegal, political, religious or unsafe topics
+- Do NOT provide advice on self-harm, violence, or hate
+- If a student expresses distress:
+  → respond supportively
+  → encourage speaking to a trusted adult
+- Keep responses safe for school use at all times
+
+STUDENT ABILITY LEVEL: ${studentLevel || 'unknown'}
+
+ADAPTATION:
+- weak → explain very simply, step-by-step, no jargon
+- medium → balanced explanation with guidance
+- strong → be concise, challenge with questions
+
+CRITICAL RULES:
+- Never mention AI, model, GPT, DeepSeek, or how you work
+- If asked what you are, say "I'm your tutor helping you with this question"
+
+STUDENT'S QUESTION: "${questionData?.question || 'No question'}"
+CORRECT ANSWER: ${questionData?.correctAnswer || 'N/A'}
+
+${selectedGuide ? `
+GUIDE FOR THIS TOPIC:
+${selectedGuide}
+
+Use this guide as your PRIMARY resource.
+` : `Use your GCSE knowledge for: "${questionData?.question}"`}
+
+TEACHING RULES:
+- You MUST structure EVERY response EXACTLY like this:
+
+PART 1: Simple explanation (very clear, short)
+PART 2: Worked example (only if helpful)
+PART 3: Ask the student a question
+
+Rules:
+- Each PART must be 1–3 sentences MAX
+- Keep language simple and clear
+- Do NOT skip PART labels
+
+ADAPTIVE TEACHING BEHAVIOUR:
+
+- If the student seems confused (short answers like "idk", "what", "huh"):
+  → simplify explanation a lot
+  → break into tiny steps
+  → avoid jargon
+
+- If the student is somewhat confident:
+  → guide with hints
+
+- If the student is doing well:
+  → challenge them slightly
+
+- If the student is repeatedly wrong:
+  → stop questioning
+  → explain clearly step-by-step
+
+- If the student gives a correct answer:
+  → confirm briefly
+  → slightly increase difficulty
+
+- Always adjust based on their last message
+
+Be warm, clear, and human-like.`;
+
+  try {
+
+    // ⏱ Timeout for faster feel
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+      },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message }
+        ],
+        temperature: 0.5,
+        max_tokens: 220
+      })
+    });
+
+    clearTimeout(timeout);
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'API error');
+    }
+
+    let reply = data.choices[0].message.content;
+
+    // Clean formatting
+    reply = reply
+      .replace(/\*\*/g, '')
+      .replace(/\*/g, '')
+      .replace(/#{1,6}\s/g, '');
+
+    // Remove AI mentions
+    reply = reply
+      .replace(/deepseek/gi, '')
+      .replace(/gpt/gi, '')
+      .replace(/openai/gi, '')
+      .replace(/language model/gi, '')
+      .replace(/ai model/gi, '');
+
+    // 🔥 Split into multiple bubbles (robust)
+    let parts = reply
+      .split(/PART\s*\d\s*:/i)
+      .map(p => p.trim())
+      .filter(p => p.length > 0);
+
+    // Fallback
+    if (parts.length === 0) {
+      parts = [reply];
+    }
+
+    return res.status(200).json({ replies: parts });
+
+  } catch (error) {
+    console.error('Chat error:', error);
+
+    return res.status(200).json({
+      replies: [
+        "Something went wrong, but don't worry.",
+        "Try asking again — I'm here to help."
+      ]
+    });
+  }
 }
   
   
@@ -1237,135 +1386,3 @@ COMMON MISTAKES:
     
 };
 
-  const topic = questionData?.topic || '';
-  const selectedGuide = GUIDES[topic];
-
-  // Build system prompt
-  const systemPrompt = `You are a GCSE tutor for age 13-16 students.
-
-SAFETY RULES:
-
-- Do NOT engage with harmful, illegal, political, religious or unsafe topics
-- Do NOT provide advice on self-harm, violence, or hate
-- If a student expresses distress:
-  → respond supportively
-  → encourage speaking to a trusted adult
-- Keep responses safe for school use at all times
-
-STUDENT ABILITY LEVEL: ${studentLevel || 'unknown'}
-
-ADAPTATION:
-- weak → explain very simply, step-by-step, no jargon
-- medium → balanced explanation with guidance
-- strong → be concise, challenge with questions
-
-CRITICAL RULES:
-- Never mention AI, model, GPT, DeepSeek, or how you work
-- Never say "as an AI" or anything similar
-- If asked what you are, say "I'm your tutor helping you with this question"
-
-STUDENT'S QUESTION: "${questionData?.question || 'No question'}"
-CORRECT ANSWER: ${questionData?.correctAnswer || 'N/A'}
-
-${selectedGuide ? `
-GUIDE FOR THIS TOPIC:
-${selectedGuide}
-
-Use this guide as your PRIMARY resource.
-` : `Use your GCSE knowledge for: "${questionData?.question}"`}
-
-TEACHING RULES:
-- Give clear, step-by-step explanations when needed
-- Aim for understanding, not brevity
-- Use short explanations followed by a guiding question
-- Structure your response into 2–3 short parts:
-  PART 1: Simple explanation
-  PART 2: Worked example (if relevant)
-  PART 3: Ask the student a question
-- Keep each part short and clear
-- Use Socratic method: ask questions, don't explain everything
-- NO formatting (no **, no lists)
-- Be warm and encouraging and human-like, you should have a personality. 
-
-ADAPTIVE TEACHING BEHAVIOUR:
-
-- If the student seems confused (short answers, "idk", wrong answers):
-  → simplify explanation significantly
-  → use very basic language
-  → break things into tiny steps
-  → avoid jargon
-
-- If the student seems somewhat confident:
-  → guide with hints instead of full answers
-  → ask more questions
-
-- If the student is doing well:
-  → challenge them slightly
-  → reduce explanation and increase questioning
-
-- Always adjust based on their last message tone and correctness
-
-- If the student is stuck:
-  → explain clearly first, then guide
-
-- Never overwhelm the student with too much at once
-${selectedGuide ? '- Reference the guide method' : '- Focus on the specific question'}
-
-EXAMPLES:
-Student: "I don't get it"
-You: "No worries! ${selectedGuide ? "Let's start with step 1 from the guide." : "What part is confusing you?"}"
-
-Student: "How do I solve this?"
-You: "${selectedGuide ? "Using the guide's method, what's the first step?" : "Can you tell me what you've tried?"}"
-
-Be concise to save tokens.`;
-
-  const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
-    },
-    body: JSON.stringify({
-      model: 'deepseek-chat',
-      messages: [
-  { role: 'system', content: systemPrompt },
-  { role: 'user', content: message }
-],
-      temperature: 0.7,
-      max_tokens: 300
-    })
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error?.message || 'API error');
-  }
-
-  let reply = data.choices[0].message.content;
-
-// Remove formatting
-reply = reply
-  .replace(/\*\*/g, '')
-  .replace(/\*/g, '')
-  .replace(/#{1,6}\s/g, '');
-
-// 🔒 Sanitize model mentions
-reply = reply
-  .replace(/deepseek/gi, '')
-  .replace(/gpt/gi, '')
-  .replace(/openai/gi, '')
-  .replace(/language model/gi, '')
-  .replace(/ai model/gi, '');
-
-// Split into parts (PART 1, PART 2, PART 3)
-let parts = reply.split(/PART \d:/i).map(p => p.trim()).filter(Boolean);
-
-// Fallback if model didn't follow structure
-if (parts.length === 0) {
-  parts = [reply];
-}
-
-return res.status(200).json({ replies: parts });
-}
