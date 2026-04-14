@@ -1,8 +1,6 @@
 // api/create-checkout-session.js
 import Stripe from 'stripe';
-
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 export default async function handler(req, res) {
     // Only allow POST requests
     if (req.method !== 'POST') {
@@ -17,7 +15,6 @@ export default async function handler(req, res) {
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
-
     try {
         const { priceId, userId, userEmail, successUrl, cancelUrl, quantity = 1 } = req.body;
         
@@ -29,38 +26,30 @@ export default async function handler(req, res) {
         }
         
         // Create Stripe Checkout Session
-const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    line_items: [
-        {
-            price: priceId,
-            quantity: quantity,
-        },
-    ],
-    mode: 'subscription',
-    success_url: successUrl || `${req.headers.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: cancelUrl || `${req.headers.origin}/pricing.html`,
-    customer_email: userEmail,
-    client_reference_id: userId,
-    metadata: {
-        userId: userId,
-        userEmail: userEmail,
-        productType: req.body.productType || 'standard',
-    },
-    subscription_data: {
-        metadata: {
-            userId: userId,
-        }
-    }
-});
-    // ADD THIS LINE to skip Stripe's success page
-    after_completion: {
-        type: 'redirect',
-        redirect: {
-            url: `${req.headers.origin}/dashboard.html?session_id={CHECKOUT_SESSION_ID}&payment_success=true`
-        }
-    }
-});
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [
+                {
+                    price: priceId,
+                    quantity: quantity,
+                },
+            ],
+            mode: 'subscription',
+            success_url: successUrl || `${req.headers.origin}/dashboard.html?session_id={CHECKOUT_SESSION_ID}&payment_success=true`,
+            cancel_url: cancelUrl || `${req.headers.origin}/pricing.html`,
+            customer_email: userEmail,
+            client_reference_id: userId,
+            metadata: {
+                userId: userId,
+                userEmail: userEmail,
+                productType: req.body.productType || 'standard',
+            },
+            subscription_data: {
+                metadata: {
+                    userId: userId,
+                }
+            }
+        });
         
         return res.status(200).json({ 
             id: session.id,
