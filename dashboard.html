@@ -1892,18 +1892,18 @@ function createSubjectCard(subject) {
 }
 
 function shouldSubjectBeLocked(subject) {
-    // During trial or active subscription, nothing is locked
-    if (userData.trialStatus === 'trial' || userData.subscriptionStatus === 'active') {
+    // During active subscription, nothing is locked
+    if (userData.subscriptionStatus === 'active') {
         return false;
     }
     
-    // Trial has expired
+    // During trial period, allow all subjects
+    if (userData.trialStatus === 'trial') {
+        return false;
+    }
+    
+    // Trial expired and no subscription - everything is locked
     if (userData.trialStatus === 'expired') {
-        // If user has Core Bundle subscription, only non-default subjects are locked
-        if (userData.subscriptionStatus === 'active') {
-            return !subject.is_default;
-        }
-        // No subscription - everything is locked
         return true;
     }
     
@@ -1912,13 +1912,23 @@ function shouldSubjectBeLocked(subject) {
 
 function checkTrialStatus(profile) {
     const now = new Date();
-    const trialEnd = new Date(profile.trial_end_date);
     
+    // If subscription is active (paid), they have full access
     if (profile.subscription_status === 'active') {
         return 'active';
-    } else if (profile.subscription_status === 'trial') {
+    }
+    
+    // If in trial, check if 48 hours have passed since trial_start_date
+    if (profile.subscription_status === 'trial') {
+        const trialStart = new Date(profile.trial_start_date);
+        const trialEnd = new Date(trialStart.getTime() + 48 * 60 * 60 * 1000); // 48 hours from start
+        
+        // Store end date in userData for paywall display
+        userData.trialEndDate = trialEnd.toISOString();
+        
         return now > trialEnd ? 'expired' : 'trial';
     }
+    
     return 'expired';
 }
 
@@ -1926,66 +1936,86 @@ function showPaywall() {
     let paywall = document.getElementById('paywall-overlay');
     
     if (!paywall) {
+        // Calculate hours left if in trial
+        let timeRemaining = '';
+        if (userData.trialStatus === 'trial' && userData.trialEndDate) {
+            const now = new Date();
+            const trialEnd = new Date(userData.trialEndDate);
+            const hoursLeft = Math.max(0, Math.ceil((trialEnd - now) / (1000 * 60 * 60)));
+            timeRemaining = hoursLeft > 0 ? `(${hoursLeft} hours remaining)` : '';
+        }
+        
         paywall = document.createElement('div');
         paywall.id = 'paywall-overlay';
         paywall.style.cssText = `
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.8); z-index: 10000;
             display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(4px);
         `;
         
         paywall.innerHTML = `
-            <div style="background: white; border-radius: 16px; padding: 3rem; max-width: 500px; text-align: center;">
-                <h2 style="font-size: 2rem; font-weight: 700; color: #111827; margin-bottom: 1rem;">
-                    Your Free Trial Has Ended
+            <div style="background: white; border-radius: 16px; padding: 3rem; max-width: 500px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔒</div>
+                <h2 style="font-size: 2rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem;">
+                    Free Trial Ended
                 </h2>
-                <p style="font-size: 1rem; color: #6b7280; margin-bottom: 2rem;">
-                    Continue your learning journey with full access to all subjects, lectures, and resources.
+                <p style="font-size: 1rem; color: #6b7280; margin-bottom: 0.5rem;">
+                    Unlock all subjects and save your progress
+                </p>
+                <p style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 2rem;">
+                    Upgrade to Monturalearn Pro for £5.99/month ${timeRemaining}
                 </p>
                 <button onclick="window.location.href='pricing.html'" style="
                     background: #1d7fe2; color: white; border: none;
-                    padding: 1rem 2rem; border-radius: 8px; font-size: 1rem;
+                    padding: 1rem 2rem; border-radius: 8px; font-size: 1.125rem;
                     font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
-                    margin-bottom: 1rem; width: 100%;
-                ">Become a Mastery Member</button>
+                    margin-bottom: 0.75rem; width: 100%;
+                    transition: all 0.2s;
+                ">✨ Upgrade to Pro!</button>
                 <button onclick="document.getElementById('paywall-overlay').remove()" style="
-                    background: transparent; color: #6b7280; border: none;
-                    padding: 0.5rem; font-size: 0.875rem; cursor: pointer;
-                    font-family: 'Inter', sans-serif;
-                ">Return to Dashboard</button>
+                    background: transparent; color: #6b7280; border: 1px solid #e0e4e9;
+                    padding: 0.75rem; font-size: 0.875rem; cursor: pointer;
+                    font-family: 'Inter', sans-serif; border-radius: 8px;
+                    width: 100%; transition: all 0.2s;
+                ">Maybe Later</button>
             </div>
         `;
         document.body.appendChild(paywall);
     }
     paywall.style.display = 'flex';
 }
-
-function showTrialBanner(trialEndDate) {
+function showTrialBanner(trialStartDate) {
     const now = new Date();
-    const trialEnd = new Date(trialEndDate);
+    const trialStart = new Date(trialStartDate);
+    const trialEnd = new Date(trialStart.getTime() + 48 * 60 * 60 * 1000);
     const hoursLeft = Math.floor((trialEnd - now) / (1000 * 60 * 60));
+    
     if (hoursLeft <= 0) return;
     
     const banner = document.createElement('div');
     banner.style.cssText = `
-        background: #fef3c7; border: 1px solid #fbbf24; border-radius: 10px;
-        padding: 1rem 1.5rem; margin-bottom: 1.5rem;
-        display: flex; justify-content: space-between; align-items: center;
+        background: linear-gradient(135deg, #1d7fe2 0%, #1a5fb8 100%); 
+        border-radius: 10px; padding: 1.5rem;
+        margin-bottom: 1.5rem; display: flex; 
+        justify-content: space-between; align-items: center;
+        box-shadow: 0 4px 12px rgba(29, 127, 226, 0.2);
     `;
     
     banner.innerHTML = `
         <div>
-            <strong style="color: #92400e;">Free Trial: ${hoursLeft} hours remaining</strong>
-            <p style="color: #78350f; font-size: 0.875rem; margin-top: 0.25rem;">
-                Upgrade now to keep your progress and unlock all features
+            <strong style="color: white; font-size: 1.125rem;">⏳ Free Trial: ${hoursLeft} hours remaining</strong>
+            <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem; margin-top: 0.5rem;">
+                Upgrade to Monturalearn Pro to keep your progress and unlock all subjects
             </p>
         </div>
         <button onclick="window.location.href='pricing.html'" style="
-            background: #000000; color: white; border: none;
-            padding: 0.625rem 1.25rem; border-radius: 8px; font-size: 0.875rem;
-            font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
-            white-space: nowrap;
-        ">Upgrade Now</button>
+            background: white; color: #1d7fe2; border: none;
+            padding: 0.75rem 1.75rem; border-radius: 8px; font-size: 0.875rem;
+            font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
+            white-space: nowrap; margin-left: 1rem;
+            transition: all 0.2s;
+        ">Upgrade Now →</button>
     `;
     
     const container = document.querySelector('.container');
@@ -2027,8 +2057,11 @@ userData.name = firstName;
         userData.streak = currentStreak;
         userData.miles = profile.mastery_miles || 0;
         userData.trialStatus = checkTrialStatus(profile);
-        userData.trialEndDate = profile.trial_end_date;
+        // trialEndDate is calculated in checkTrialStatus
         userData.subscriptionStatus = profile.subscription_status;
+        
+        // Only show trial banner if in active trial
+
 
 updateUserData();
 
