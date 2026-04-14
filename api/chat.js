@@ -6,6 +6,24 @@ const ALLOWED_ORIGINS = [
   process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : null
 ].filter(Boolean);
 
+function isUnsafeContent(text) {
+  const unsafePatterns = [
+    /suicide/i,
+    /kill myself/i,
+    /self harm/i,
+    /cut myself/i,
+    /how to die/i,
+    /racist/i,
+    /hate (black|white|asian|muslim|jew)/i,
+    /nazi/i,
+    /hitler/i,
+    /terrorist/i,
+    /bomb/i
+  ];
+
+  return unsafePatterns.some(pattern => pattern.test(text));
+}
+
 export default async function handler(req, res) {
   // CORS setup
   const origin = req.headers.origin;
@@ -32,14 +50,14 @@ export default async function handler(req, res) {
 
   try {
     const { 
-      message, 
-      conversationHistory, 
-      questionData,
-      // NEW: For marking requests
-      isMarkingRequest,
-      studentText,
-      allLineData
-    } = req.body;
+  message, 
+  conversationHistory, 
+  questionData,
+  isMarkingRequest,
+  studentText,
+  allLineData,
+  studentLevel // 👈 NEW
+} = req.body;
 
     // ============================================
     // ROUTE 1: MARKING REQUEST (English Literature)
@@ -56,10 +74,11 @@ export default async function handler(req, res) {
     // ROUTE 2: CHAT REQUEST (All subjects Q&A)
     // ============================================
     return await handleChatRequest(req, res, {
-      message,
-      conversationHistory,
-      questionData
-    });
+  message,
+  conversationHistory,
+  questionData,
+  studentLevel
+});
 
   } catch (error) {
     console.error('API error:', error);
@@ -195,7 +214,18 @@ Mark strictly like a real GCSE examiner. Output ONLY JSON.`;
 // ============================================
 // CHAT HANDLER (Q&A for all subjects)
 // ============================================
-async function handleChatRequest(req, res, { message, conversationHistory, questionData }) {
+async function handleChatRequest(req, res, { message, conversationHistory, questionData, studentLevel }) {
+  // 🚨 Safety check
+if (isUnsafeContent(message)) {
+  return res.status(200).json({
+    replies: [
+      "I can’t help with that, but I’m here to support you.",
+      "If something’s bothering you, it might help to talk to a teacher, parent, or someone you trust."
+      "Exams are difficult, alot of students feel the same way, it might help to talk to a teacher, parent, or someone you trust."
+    ]
+  });
+}
+  
   
   // GUIDE LIBRARY (All subjects)
   const GUIDES = {
@@ -1213,6 +1243,22 @@ COMMON MISTAKES:
   // Build system prompt
   const systemPrompt = `You are a GCSE tutor for age 13-16 students.
 
+SAFETY RULES:
+
+- Do NOT engage with harmful, illegal, political, religious or unsafe topics
+- Do NOT provide advice on self-harm, violence, or hate
+- If a student expresses distress:
+  → respond supportively
+  → encourage speaking to a trusted adult
+- Keep responses safe for school use at all times
+
+STUDENT ABILITY LEVEL: ${studentLevel || 'unknown'}
+
+ADAPTATION:
+- weak → explain very simply, step-by-step, no jargon
+- medium → balanced explanation with guidance
+- strong → be concise, challenge with questions
+
 CRITICAL RULES:
 - Never mention AI, model, GPT, DeepSeek, or how you work
 - Never say "as an AI" or anything similar
@@ -1240,6 +1286,29 @@ TEACHING RULES:
 - Use Socratic method: ask questions, don't explain everything
 - NO formatting (no **, no lists)
 - Be warm and encouraging and human-like, you should have a personality. 
+
+ADAPTIVE TEACHING BEHAVIOUR:
+
+- If the student seems confused (short answers, "idk", wrong answers):
+  → simplify explanation significantly
+  → use very basic language
+  → break things into tiny steps
+  → avoid jargon
+
+- If the student seems somewhat confident:
+  → guide with hints instead of full answers
+  → ask more questions
+
+- If the student is doing well:
+  → challenge them slightly
+  → reduce explanation and increase questioning
+
+- Always adjust based on their last message tone and correctness
+
+- If the student is stuck:
+  → explain clearly first, then guide
+
+- Never overwhelm the student with too much at once
 ${selectedGuide ? '- Reference the guide method' : '- Focus on the specific question'}
 
 EXAMPLES:
