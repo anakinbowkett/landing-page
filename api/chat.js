@@ -1232,6 +1232,11 @@ TEACHING RULES:
 - Give clear, step-by-step explanations when needed
 - Aim for understanding, not brevity
 - Use short explanations followed by a guiding question
+- Structure your response into 2–3 short parts:
+  PART 1: Simple explanation
+  PART 2: Worked example (if relevant)
+  PART 3: Ask the student a question
+- Keep each part short and clear
 - Use Socratic method: ask questions, don't explain everything
 - NO formatting (no **, no lists)
 - Be warm and encouraging and human-like, you should have a personality. 
@@ -1285,5 +1290,13 @@ reply = reply
   .replace(/language model/gi, '')
   .replace(/ai model/gi, '');
 
-return res.status(200).json({ reply });
+// Split into parts (PART 1, PART 2, PART 3)
+let parts = reply.split(/PART \d:/i).map(p => p.trim()).filter(Boolean);
+
+// Fallback if model didn't follow structure
+if (parts.length === 0) {
+  parts = [reply];
+}
+
+return res.status(200).json({ replies: parts });
 }
