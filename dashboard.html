@@ -1697,7 +1697,8 @@ let userData = {
     name: "Student",
     userId: "00000000",
     streak: 0,
-    trialStatus: 'active',
+    miles: 0,
+    trialStatus: 'trial',
     trialEndDate: null,
     subscriptionStatus: 'trial'
 };
@@ -2091,8 +2092,11 @@ updateUserData();
         }
 
         if (userData.trialStatus === 'trial') {
-            showTrialBanner(userData.trialEndDate);
-        }
+    // Calculate trial start date from end date (subtract 48 hours)
+    const trialEnd = new Date(userData.trialEndDate);
+    const trialStart = new Date(trialEnd.getTime() - 48 * 60 * 60 * 1000);
+    showTrialBanner(trialStart.toISOString());
+}
     } catch (error) {
         console.error('Auth check error:', error);
         window.location.href = 'signin.html';
