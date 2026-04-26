@@ -1922,7 +1922,7 @@ function checkTrialStatus(profile) {
     // If in trial, check if 48 hours have passed since trial_start_date
     if (profile.subscription_status === 'trial') {
         const trialStart = new Date(profile.trial_start_date);
-        const trialEnd = new Date(trialStart.getTime() + 48 * 60 * 60 * 1000); // 48 hours from start
+        const trialEnd = new Date(trialStart.getTime() + 20 * 1000); // 20 seconds for testing
         
         // Store end date in userData for paywall display
         userData.trialEndDate = trialEnd.toISOString();
