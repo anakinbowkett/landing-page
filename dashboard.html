@@ -2075,7 +2075,14 @@ updateUserData();
         }
 
         const subjects = await loadUserSubjects(userId);
-        
+
+
+        // Show trial banner if in active trial
+if (userData.trialStatus === 'trial' && userData.trialEndDate) {
+    const trialEnd = new Date(userData.trialEndDate);
+    const trialStart = new Date(trialEnd.getTime() - 48 * 60 * 60 * 1000);
+    showTrialBanner(trialStart.toISOString());
+}
         if (subjects.length === 0) {
             document.querySelector('.subjects-container').innerHTML = `
                 <div class="subjects-header-container">
