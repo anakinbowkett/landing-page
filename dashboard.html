@@ -1288,38 +1288,56 @@ nav {
         </div>
     </div>
 
-        <!-- TRIAL BANNER - HARDCODED -->
-    <div id="trial-banner" style="
-        background: linear-gradient(135deg, #1d7fe2 0%, #1a5fb8 100%); 
-        border-radius: 10px; 
-        padding: 1.5rem;
-        margin-bottom: 1.5rem; 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center;
-        box-shadow: 0 4px 12px rgba(29, 127, 226, 0.2);
+       <!-- STICKY TRIAL BANNER AT TOP -->
+<div id="trial-banner" onclick="window.location.href='pricing.html'" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #1d7fe2 0%, #1a5fb8 100%);
+    padding: 0.75rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(29, 127, 226, 0.3);
+    z-index: 999;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+">
+    <span style="
+        color: white; 
+        font-size: 0.875rem;
+        font-weight: 500;
+        letter-spacing: 0.02em;
     ">
-        <div>
-            <strong style="color: white; font-size: 1.125rem;">⏳ Free Trial Active</strong>
-            <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem; margin-top: 0.5rem;">
-                Upgrade to Monturalearn Pro to keep your progress and unlock all subjects after trial ends
-            </p>
-        </div>
-        <button onclick="window.location.href='pricing.html'" style="
-            background: white; 
-            color: #1d7fe2; 
-            border: none;
-            padding: 0.75rem 1.75rem; 
-            border-radius: 8px; 
-            font-size: 0.875rem;
-            font-weight: 700; 
-            cursor: pointer; 
-            font-family: 'Inter', sans-serif;
-            white-space: nowrap; 
-            margin-left: 1rem;
-            transition: all 0.2s;
-        ">Upgrade Now →</button>
-    </div>
+        ⏳ Free Trial Active - Upgrade to Monturalearn Pro to keep your progress and unlock all features after trial ends!
+    </span>
+    <button style="
+        background: white;
+        color: #1d7fe2;
+        border: none;
+        padding: 0.5rem 1.25rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        white-space: nowrap;
+        margin-left: 1.5rem;
+        flex-shrink: 0;
+        transition: all 0.2s;
+    " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(29, 127, 226, 0.3)';"
+       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+        Upgrade Now →
+    </button>
+</div>
+
+<style>
+    body {
+        padding-top: 3.5rem;
+    }
+</style>
         
     <!-- Metrics & Leaderboard Container -->
     <div class="metrics-leaderboard-container">
