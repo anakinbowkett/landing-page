@@ -308,8 +308,8 @@
         <!-- Header -->
         <div class="header">
             <div class="logo">
-                <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="GCSE Mastery">
-                <span class="logo-text">GCSE Mastery</span>
+                <img src="https://i.postimg.cc/kDrBZ2z5/Monturalearn-logo.jpg" alt="Monturalearn" style="height: 40px;">
+                <span class="logo-text">Montura</span>
             </div>
             <h1>One platform. Every GCSE.<br>Built to turn confusion into confidence.</h1>
             <p>Choose the plan that works for you. Cancel anytime.</p>
@@ -402,16 +402,10 @@
             </div>
         </div>
 
-        <!-- Trust Section -->
-        <div class="trust-section">
-            <p>Trusted by thousands of GCSE students across the UK</p>
-            <div class="trust-badges">
-                <div class="trust-badge">🔒 Secure Payment</div>
-                <div class="trust-badge">↩️ Cancel Anytime</div>
-                <div class="trust-badge">💳 No Hidden Fees</div>
-                <div class="trust-badge">✨ Start Instantly</div>
-            </div>
-        </div>
+        <!-- Trustpilot Section -->
+<div class="trust-section" onclick="window.location.href='https://uk.trustpilot.com/review/gmmmaths.com'" style="cursor: pointer;">
+    <img src="https://i.postimg.cc/d1VZv7XH/Trustpilot-Logo-(2022)-svg.png" alt="Trustpilot" style="height: 30px;">
+</div>
 
         <!-- Loading State -->
         <div class="loading" id="loading">
@@ -421,117 +415,137 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
-        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    
-        const STRIPE_PUBLISHABLE_KEY = 'pk_live_51QwR7UAgI47NcCKvnCna1fFQlE8NnLIyu2lqn4mevVqydfDaDhCvsEOCmZPePpivRSBAEeVybWKajNuXuPpjRCfz00xrUcJYT8';
-        const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
-
-        // TODO: Replace with your actual Stripe Price IDs
-        const STRIPE_PRICES = {
-            bundle: 'price_1TN3iZAgI47NcCKvWBcvGPB3',
-            perSubject: 'price_1TN3mhAgI47NcCKv7S2sEQdi'
-        };
-
-        let currentUser = null;
-
-        // Check authentication
-        async function checkAuth() {
-            const { data: { session } } = await sbClient.auth.getSession();
-            if (!session) {
-                // Not logged in - redirect to signup
-                window.location.href = 'signup.html';
-                return;
-            }
-            currentUser = session.user;
+    const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+ 
+    const STRIPE_PUBLISHABLE_KEY = 'pk_live_51QwR7UAgI47NcCKvnCna1fFQlE8NnLIyu2lqn4mevVqydfDaDhCvsEOCmZPePpivRSBAEeVybWKajNuXuPpjRCfz00xrUcJYT8';
+    const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+ 
+    const STRIPE_PRICES = {
+        bundle: 'price_1TN3iZAgI47NcCKvWBcvGPB3',
+        perSubject: 'price_1TN3mhAgI47NcCKv7S2sEQdi'
+    };
+ 
+    let currentUser = null;
+ 
+    // Check authentication
+    async function checkAuth() {
+        const { data: { session } } = await sbClient.auth.getSession();
+        if (!session) {
+            window.location.href = 'signup.html';
+            return;
         }
-
-        
-// Handle Bundle Subscription
-document.getElementById('bundle-btn').addEventListener('click', async () => {
-    if (!currentUser) {
-        window.location.href = 'signin.html';
-        return;
+        currentUser = session.user;
     }
-    
-    showLoading(true);
-    
-    try {
-        const response = await fetch('/api/create-checkout-session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                priceId: STRIPE_PRICES.bundle,
-                userId: currentUser.id,
-                userEmail: currentUser.email,
-                productType: 'core_bundle'
-            })
-        });
+ 
+    // Handle Bundle Subscription
+    document.getElementById('bundle-btn').addEventListener('click', async () => {
+        if (!currentUser) {
+            window.location.href = 'signin.html';
+            return;
+        }
         
-        if (!response.ok) throw new Error('Failed to create checkout');
+        showLoading(true);
         
-        const { id: sessionId } = await response.json();
-        await stripe.redirectToCheckout({ sessionId });
-        
-    } catch (error) {
-        console.error('Checkout error:', error);
-        alert('Payment error. Please try again.');
-        showLoading(false);
-    }
-});
-
-// Handle Per Subject Subscription
-document.getElementById('persubject-btn').addEventListener('click', async () => {
-    if (!currentUser) {
-        window.location.href = 'signin.html';
-        return;
-    }
-    
-    showLoading(true);
-    
-    try {
-        const response = await fetch('/api/create-checkout-session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                priceId: STRIPE_PRICES.perSubject,
-                userId: currentUser.id,
-                userEmail: currentUser.email,
-                productType: 'per_subject'
-            })
-        });
-        
-        if (!response.ok) throw new Error('Failed to create checkout');
-        
-        const { id: sessionId } = await response.json();
-        await stripe.redirectToCheckout({ sessionId });
-        
-    } catch (error) {
-        console.error('Checkout error:', error);
-        alert('Payment error. Please try again.');
-        showLoading(false);
-    }
-});
-
-        // Show/hide loading
-        function showLoading(show) {
-            const loading = document.getElementById('loading');
-            const buttons = document.querySelectorAll('.cta-button');
+        try {
+            const response = await fetch('/api/create-checkout-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    priceId: STRIPE_PRICES.bundle,
+                    userId: currentUser.id,
+                    userEmail: currentUser.email,
+                    productType: 'core_bundle'
+                })
+            });
             
-            if (show) {
-                loading.classList.add('active');
-                buttons.forEach(btn => btn.disabled = true);
-            } else {
-                loading.classList.remove('active');
-                buttons.forEach(btn => btn.disabled = false);
+            const data = await response.json();
+            
+            if (!response.ok) {
+                console.error('API Error:', data);
+                throw new Error(data.error || 'Failed to create checkout');
             }
+            
+            if (!data.id) {
+                throw new Error('No session ID returned from API');
+            }
+            
+            const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
+            if (error) {
+                console.error('Stripe error:', error);
+                alert('Stripe error: ' + error.message);
+            }
+            
+        } catch (error) {
+            console.error('Checkout error:', error);
+            alert('Payment error: ' + error.message);
+            showLoading(false);
         }
-
-        // Initialize
-        checkAuth();
-    </script>
+    });
+ 
+    // Handle Per Subject Subscription
+    document.getElementById('persubject-btn').addEventListener('click', async () => {
+        if (!currentUser) {
+            window.location.href = 'signin.html';
+            return;
+        }
+        
+        showLoading(true);
+        
+        try {
+            const response = await fetch('/api/create-checkout-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    priceId: STRIPE_PRICES.perSubject,
+                    userId: currentUser.id,
+                    userEmail: currentUser.email,
+                    productType: 'per_subject'
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                console.error('API Error:', data);
+                throw new Error(data.error || 'Failed to create checkout');
+            }
+            
+            if (!data.id) {
+                throw new Error('No session ID returned from API');
+            }
+            
+            const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
+            if (error) {
+                console.error('Stripe error:', error);
+                alert('Stripe error: ' + error.message);
+            }
+            
+        } catch (error) {
+            console.error('Checkout error:', error);
+            alert('Payment error: ' + error.message);
+            showLoading(false);
+        }
+    });
+ 
+    // Show/hide loading
+    function showLoading(show) {
+        const loading = document.getElementById('loading');
+        const buttons = document.querySelectorAll('.cta-button');
+        
+        if (show) {
+            loading.classList.add('active');
+            buttons.forEach(btn => btn.disabled = true);
+        } else {
+            loading.classList.remove('active');
+            buttons.forEach(btn => btn.disabled = false);
+        }
+    }
+ 
+    // Initialize
+    checkAuth();
+</script>
 
 </body>
 </html>
