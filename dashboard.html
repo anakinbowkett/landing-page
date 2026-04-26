@@ -1288,6 +1288,38 @@ nav {
         </div>
     </div>
 
+        <!-- TRIAL BANNER - HARDCODED -->
+    <div id="trial-banner" style="
+        background: linear-gradient(135deg, #1d7fe2 0%, #1a5fb8 100%); 
+        border-radius: 10px; 
+        padding: 1.5rem;
+        margin-bottom: 1.5rem; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(29, 127, 226, 0.2);
+    ">
+        <div>
+            <strong style="color: white; font-size: 1.125rem;">⏳ Free Trial Active</strong>
+            <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem; margin-top: 0.5rem;">
+                Upgrade to Monturalearn Pro to keep your progress and unlock all subjects after trial ends
+            </p>
+        </div>
+        <button onclick="window.location.href='pricing.html'" style="
+            background: white; 
+            color: #1d7fe2; 
+            border: none;
+            padding: 0.75rem 1.75rem; 
+            border-radius: 8px; 
+            font-size: 0.875rem;
+            font-weight: 700; 
+            cursor: pointer; 
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap; 
+            margin-left: 1rem;
+            transition: all 0.2s;
+        ">Upgrade Now →</button>
+    </div>
         
     <!-- Metrics & Leaderboard Container -->
     <div class="metrics-leaderboard-container">
@@ -2357,6 +2389,33 @@ async function syncMilesToLeaderboard(userId, miles) {
 }
 
 initializeDashboard();
+
+// Show banner only if user is in trial
+function showTrialBannerIfNeeded() {
+    const banner = document.getElementById('trial-banner');
+    if (banner) {
+        // Only show if subscription is 'trial'
+        if (userData && userData.subscriptionStatus === 'trial') {
+            banner.style.display = 'flex';
+        } else {
+            banner.style.display = 'none';
+        }
+    }
+}
+
+// Check every second if we should hide the banner
+setInterval(() => {
+    if (userData && userData.subscriptionStatus !== 'trial') {
+        const banner = document.getElementById('trial-banner');
+        if (banner) banner.style.display = 'none';
+    }
+}, 1000);
+
+// Call on load
+setTimeout(() => {
+    showTrialBannerIfNeeded();
+}, 500);
+       
 </script>
 <script src="leaderboard.js"></script>
 <script src="auth-check.js"></script>
