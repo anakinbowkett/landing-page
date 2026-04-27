@@ -74,15 +74,14 @@ export default async function handler(req, res) {
         // Update user in Supabase
         // Update user in Supabase
         const { data, error } = await supabase
-            .from('user_profiles')
-            .update({
-                subscription_status: 'active',
-                subscription_type: productType,
-                stripe_customer_id: session.customer,
-                stripe_subscription_id: session.subscription,
-                subscription_start_date: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-            })
+    .from('user_profiles')
+    .update({
+        subscription_status: 'active',
+        stripe_customer_id: session.customer,
+        stripe_subscription_id: session.subscription,
+        subscription_start_date: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+    })
             .eq('id', stripeUserId)
             .select();
         
