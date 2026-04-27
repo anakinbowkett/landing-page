@@ -1,4 +1,3 @@
-// api/verify-payment.js
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
@@ -8,128 +7,48 @@ const supabase = createClient(
     process.env.SUPABASE_SERVICE_KEY
 );
 
-// SECURE: Only allow your domains
-const ALLOWED_ORIGINS = [
-  'https://www.monturalearn.co.uk',
-  'https://monturalearn.co.uk',
-  /^https:\/\/.*-anakins-projects-5f9470f9\.vercel\.app$/
-];
-
 export default async function handler(req, res) {
-    // Only allow POST requests
-    if (req.method !== 'POST' && req.method !== 'OPTIONS') {
+    if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
-    }
-    
-    // SECURE ORIGIN CHECK
-    const origin = req.headers.origin;
-    const isAllowed = ALLOWED_ORIGINS.some(allowed => 
-      typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
-    );
-    
-    if (!isAllowed) {
-      return res.status(403).json({ error: 'Forbidden' });
-    }
-    
-    // Set CORS headers for allowed origin only
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
     }
 
     try {
         const { sessionId, userId } = req.body;
         
         if (!sessionId || !userId) {
-            return res.status(400).json({ 
-                error: 'Missing required fields: sessionId, userId' 
-            });
+            return res.status(400).json({ error: 'Missing sessionId or userId' });
         }
         
-        // Retrieve the session from Stripe
         const session = await stripe.checkout.sessions.retrieve(sessionId);
         
         if (session.payment_status !== 'paid') {
-            return res.status(400).json({ 
-                success: false, 
-                error: 'Payment not completed' 
-            });
+            return res.status(400).json({ error: 'Payment not completed' });
         }
         
-        // Get product type from metadata
-        const productType = session.metadata.productType || 'standard';
-        const stripeUserId = session.metadata.userId;
-        
-        // Verify the userId matches
-        if (stripeUserId !== userId) {
-            return res.status(403).json({ 
-                success: false, 
-                error: 'User ID mismatch' 
-            });
-        }
-        
-        // Update user in Supabase
-        // Update user in Supabase
         const { data, error } = await supabase
-    .from('user_profiles')
-    .update({
-        subscription_status: 'active',
-        stripe_customer_id: session.customer,
-        stripe_subscription_id: session.subscription,
-        subscription_start_date: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-    })
-            .eq('id', stripeUserId)
+            .from('user_profiles')
+            .update({
+                subscription_status: 'active',
+                stripe_customer_id: session.customer,
+                stripe_subscription_id: session.subscription,
+                subscription_start_date: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', userId)
             .select();
         
         if (error) {
-            console.error('Supabase update error:', error);
-            return res.status(500).json({ 
-                success: false, 
-                error: 'Failed to update subscription status' 
-            });
+            console.error('Supabase error:', error);
+            return res.status(500).json({ error: 'Failed to update subscription' });
         }
 
-        // --- REFERRAL TRACKING: link payment to ambassador ---
-        const userEmail = session.customer_details?.email || null;
-        if (userEmail) {
-            // Look up waitlist entry for this email
-            const { data: waitlistEntry } = await supabase
-                .from('waitlist')
-                .select('ambassador_id')
-                .eq('email', userEmail.toLowerCase().trim())
-                .maybeSingle();
-
-            const ambassadorId = waitlistEntry?.ambassador_id || null;
-
-            // Insert payment record (triggers auto-increment on ambassadors table)
-            await supabase
-                .from('payments')
-                .insert({
-                    email: userEmail.toLowerCase().trim(),
-                    ambassador_id: ambassadorId,
-                    amount: (session.amount_total || 0) / 100, // Stripe uses pence
-                    status: 'paid',
-                    stripe_session_id: sessionId
-                });
-        }
-        // --- END REFERRAL TRACKING ---
-        
         return res.status(200).json({ 
-            success: true, 
-            productType: productType,
-            subscriptionId: session.subscription
+            success: true,
+            productType: session.metadata?.productType || 'standard'
         });
         
     } catch (error) {
-    console.error('Payment verification error:', error);
-    console.error('Error stack:', error.stack);
-    return res.status(500).json({ 
-        success: false, 
-        error: error.message || 'Internal server error',
-        details: error.toString()
-    });
+        console.error('Error:', error.message);
+        return res.status(500).json({ error: error.message });
+    }
 }
