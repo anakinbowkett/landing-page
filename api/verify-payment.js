@@ -126,10 +126,11 @@ export default async function handler(req, res) {
         });
         
     } catch (error) {
-        console.error('Payment verification error:', error);
-        return res.status(500).json({ 
-            success: false, 
-            error: error.message || 'Internal server error' 
-        });
-    }
+    console.error('Payment verification error:', error);
+    console.error('Error stack:', error.stack);
+    return res.status(500).json({ 
+        success: false, 
+        error: error.message || 'Internal server error',
+        details: error.toString()
+    });
 }
