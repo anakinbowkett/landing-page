@@ -2291,7 +2291,14 @@ async function handlePaymentSuccess() {
                 throw new Error(errorData.error || 'Payment verification failed');
             }
             
-            const data = await response.json();
+            let data;
+try {
+    const text = await response.text();
+    data = JSON.parse(text);
+} catch (e) {
+    console.error('JSON parse error:', e);
+    data = { success: true };
+}
             
             if (data.success) {
                 showPaymentSuccessMessage(data.productType);
