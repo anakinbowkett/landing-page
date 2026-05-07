@@ -232,6 +232,7 @@ async function handleChatRequest(req, res, { message, conversationHistory, quest
   }
 
   const topic = questionData?.topic || '';
+  const currentPageSummary = req.body.insightPageSummary || '';
   const selectedGuide = GUIDES[topic];
 
   const systemPrompt = `You are a GCSE tutor for age 13-16 students.
@@ -258,11 +259,10 @@ CRITICAL RULES:
 STUDENT'S QUESTION: "${questionData?.question || 'No question'}"
 CORRECT ANSWER: ${questionData?.correctAnswer || 'N/A'}
 
-${selectedGuide ? `
-GUIDE FOR THIS TOPIC:
-${selectedGuide}
-
-Use this guide as your PRIMARY resource.
+${currentPageSummary ? `
+INSIGHT CONTEXT FOR THIS QUESTION:
+${currentPageSummary}
+Use this as your PRIMARY reference when helping the student.
 ` : `Use your GCSE knowledge for: "${questionData?.question}"`}
 
 TEACHING RULES:
