@@ -9,484 +9,109 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            background: #ffffff;
-            color: #111827;
-        }
-
-        /* ── NAV ── */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(12px);
-            z-index: 50;
-            border-bottom: 1px solid #f3f4f6;
-        }
-        .nav-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            height: 5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; background: #ffffff; color: #111827; }
+        nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); z-index: 50; border-bottom: 1px solid #f3f4f6; }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 0 2rem; height: 5rem; display: flex; align-items: center; justify-content: space-between; }
         .logo-container { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
         .logo-gmm { height: 36px; width: auto; object-fit: contain; }
         .brand-text { font-size: 1.125rem; font-weight: 700; color: #111827; }
         .nav-links { display: flex; align-items: center; gap: 1.5rem; }
         .nav-link { font-size: 0.9375rem; font-weight: 500; color: #374151; text-decoration: none; transition: color 0.2s; }
         .nav-link:hover { color: #111827; }
-        .nav-cta {
-            background: #0a1e3d;
-            color: white;
-            padding: 0.625rem 1.5rem;
-            font-size: 0.9375rem;
-            font-weight: 600;
-            border-radius: 15px;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.2s;
-        }
+        .nav-link.active { color: #1d7fe2; font-weight: 600; }
+        .nav-cta { background: #0a1e3d; color: white; padding: 0.625rem 1.5rem; font-size: 0.9375rem; font-weight: 600; border-radius: 15px; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.2s; }
         .nav-cta:hover { background: #061429; transform: scale(1.04); }
-
-        /* ── HERO HEADER ── */
-        .page-header {
-            background: #0a1e3d;
-            padding: 9rem 2rem 4rem;
-            text-align: center;
-        }
-        .header-eyebrow {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: rgba(255,255,255,0.45);
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-        }
-        .header-title {
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            font-weight: 800;
-            color: #ffffff;
-            line-height: 1.05;
-            letter-spacing: -0.03em;
-            margin-bottom: 1.25rem;
-        }
+        .page-header { background: #0a1e3d; padding: 9rem 2rem 4rem; text-align: center; }
+        .header-eyebrow { font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.45); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem; }
+        .header-title { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; color: #ffffff; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 1.25rem; }
         .header-title span { color: #1d7fe2; }
-        .header-sub {
-            font-size: 1.125rem;
-            color: rgba(255,255,255,0.6);
-            max-width: 480px;
-            margin: 0 auto 2rem;
-            line-height: 1.6;
-        }
-        .header-stats {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2.5rem;
-            flex-wrap: wrap;
-        }
+        .header-sub { font-size: 1.125rem; color: rgba(255,255,255,0.6); max-width: 480px; margin: 0 auto 2rem; line-height: 1.6; }
+        .header-stats { display: flex; align-items: center; justify-content: center; gap: 2.5rem; flex-wrap: wrap; }
         .stat { text-align: center; }
         .stat-num { font-size: 1.75rem; font-weight: 800; color: #ffffff; line-height: 1; }
         .stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
         .stat-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.12); }
-
-        /* ── SIGN-IN GATE BANNER ── */
-        .gate-banner {
-            background: #eff6ff;
-            border-bottom: 1px solid #bfdbfe;
-            padding: 1rem 2rem;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .gate-banner p {
-            font-size: 0.9375rem;
-            color: #1e40af;
-            font-weight: 500;
-        }
-        .gate-banner-btn {
-            background: #1d7fe2;
-            color: white;
-            padding: 0.5rem 1.25rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-        }
+        .live-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(29,127,226,0.15); border: 1px solid rgba(29,127,226,0.3); border-radius: 9999px; padding: 6px 14px; margin-bottom: 1.5rem; font-size: 0.8125rem; font-weight: 600; color: #93c5fd; }
+        .live-dot { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; animation: livePulse 1.8s ease-in-out infinite; }
+        @keyframes livePulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.7); } }
+        .gate-banner { background: #eff6ff; border-bottom: 1px solid #bfdbfe; padding: 1rem 2rem; text-align: center; display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .gate-banner p { font-size: 0.9375rem; color: #1e40af; font-weight: 500; }
+        .gate-banner-btn { background: #1d7fe2; color: white; padding: 0.5rem 1.25rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; font-family: 'Inter', sans-serif; }
         .gate-banner-btn:hover { background: #1565c0; transform: scale(1.04); }
-
-        /* ── MAIN CONTENT ── */
-        .main-content {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 4rem 2rem 6rem;
-        }
-
-        .section-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #9ca3af;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        .section-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #f3f4f6;
-        }
-
-        /* ── PDF GRID ── */
-        .pdf-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 1.5rem;
-        }
-
-        .pdf-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-        .pdf-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-            border-color: #1d7fe2;
-        }
-
-        /* Cover image */
-        .pdf-cover {
-            width: 100%;
-            aspect-ratio: 3/4;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* Lock overlay shown to logged-out users */
-        .pdf-lock-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(10, 30, 61, 0.55);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            opacity: 0;
-            transition: opacity 0.2s;
-            border-radius: 14px 14px 0 0;
-        }
+        .main-content { max-width: 1280px; margin: 0 auto; padding: 4rem 2rem 6rem; }
+        .section-label { font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem; }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: #f3f4f6; }
+        .pdf-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; }
+        .pdf-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; }
+        .pdf-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); border-color: #1d7fe2; }
+        .pdf-cover-wrap { position: relative; width: 100%; aspect-ratio: 3/4; overflow: hidden; }
+        .pdf-cover { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .dl-badge { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.72); backdrop-filter: blur(6px); color: #ffffff; font-size: 0.6875rem; font-weight: 700; padding: 4px 8px; border-radius: 9999px; display: flex; align-items: center; gap: 4px; z-index: 5; white-space: nowrap; transition: opacity 0.3s; }
+        .dl-badge-dot { width: 5px; height: 5px; background: #22c55e; border-radius: 50%; flex-shrink: 0; }
+        .dl-badge.loading { background: rgba(0,0,0,0.3); color: transparent; min-width: 60px; animation: skeletonPulse 1.2s ease-in-out infinite; }
+        .dl-badge.loading .dl-badge-dot { opacity: 0; }
+        @keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+        .pdf-lock-overlay { position: absolute; inset: 0; background: rgba(10,30,61,0.55); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; opacity: 0; transition: opacity 0.2s; }
         .pdf-card:hover .pdf-lock-overlay { opacity: 1; }
-        .lock-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .lock-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .lock-icon svg { width: 20px; height: 20px; color: white; }
-        .lock-text {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: rgba(255,255,255,0.9);
-            text-align: center;
-            padding: 0 12px;
-        }
-
-        /* Download overlay for logged-in users */
-        .pdf-download-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(29,127,226,0.6);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            opacity: 0;
-            transition: opacity 0.2s;
-            border-radius: 14px 14px 0 0;
-        }
-        .pdf-card:hover .pdf-download-overlay { opacity: 1; }
-        .dl-icon {
-            width: 48px;
-            height: 48px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .dl-icon svg { width: 22px; height: 22px; color: #1d7fe2; }
-        .dl-text {
-            font-size: 0.8125rem;
-            font-weight: 700;
-            color: white;
-        }
-
-        /* Card footer */
-        .pdf-info {
-            padding: 0.875rem 1rem;
-            border-top: 1px solid #f3f4f6;
-        }
-        .pdf-title {
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: #111827;
-            line-height: 1.4;
-            margin-bottom: 4px;
-        }
-        .pdf-meta {
-            font-size: 0.6875rem;
-            color: #9ca3af;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-        }
-
-        /* ── SIGN-IN MODAL ── */
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 100;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
+        .lock-text { font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.9); text-align: center; padding: 0 12px; }
+        .pdf-dl-overlay { position: absolute; inset: 0; background: rgba(29,127,226,0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; opacity: 0; transition: opacity 0.2s; }
+        .pdf-card:hover .pdf-dl-overlay { opacity: 1; }
+        .dl-circle { width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .dl-circle svg { width: 22px; height: 22px; color: #1d7fe2; }
+        .dl-overlay-text { font-size: 0.8125rem; font-weight: 700; color: white; }
+        .pdf-info { padding: 0.875rem 1rem 0.75rem; border-top: 1px solid #f3f4f6; }
+        .pdf-title { font-size: 0.8125rem; font-weight: 600; color: #111827; line-height: 1.4; margin-bottom: 6px; }
+        .pdf-count-row { display: flex; align-items: center; gap: 5px; }
+        .pdf-count-icon svg { width: 12px; height: 12px; color: #9ca3af; }
+        .pdf-count-text { font-size: 0.6875rem; color: #9ca3af; font-weight: 500; }
+        .pdf-count-text.loaded { color: #6b7280; }
+        .pdf-count-text.loading { background: #f3f4f6; color: transparent; border-radius: 4px; min-width: 70px; animation: skeletonPulse 1.2s ease-in-out infinite; }
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: none; align-items: center; justify-content: center; padding: 1rem; }
         .modal-backdrop.open { display: flex; }
-
-        .modal {
-            background: white;
-            border-radius: 20px;
-            padding: 2.5rem;
-            width: 100%;
-            max-width: 440px;
-            position: relative;
-            animation: modalIn 0.25s cubic-bezier(0.4,0,0.2,1);
-        }
-        @keyframes modalIn {
-            from { opacity: 0; transform: translateY(24px) scale(0.97); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .modal-close {
-            position: absolute;
-            top: 1.25rem; right: 1.25rem;
-            width: 32px; height: 32px;
-            background: #f3f4f6;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem;
-            color: #6b7280;
-            transition: background 0.15s;
-        }
+        .modal { background: white; border-radius: 20px; padding: 2.5rem; width: 100%; max-width: 440px; position: relative; animation: modalIn 0.25s cubic-bezier(0.4,0,0.2,1); }
+        @keyframes modalIn { from { opacity: 0; transform: translateY(24px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .modal-close { position: absolute; top: 1.25rem; right: 1.25rem; width: 32px; height: 32px; background: #f3f4f6; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #6b7280; transition: background 0.15s; }
         .modal-close:hover { background: #e5e7eb; }
-
-        .modal-eyebrow {
-            font-size: 0.6875rem;
-            font-weight: 700;
-            color: #1d7fe2;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
-        }
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #111827;
-            line-height: 1.2;
-            margin-bottom: 0.5rem;
-        }
-        .modal-sub {
-            font-size: 0.875rem;
-            color: #6b7280;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-selected-pdf {
-            background: #f0f9ff;
-            border: 1px solid #bae6fd;
-            border-radius: 10px;
-            padding: 0.75rem 1rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        .modal-selected-pdf img {
-            width: 40px;
-            height: 53px;
-            object-fit: cover;
-            border-radius: 4px;
-            flex-shrink: 0;
-        }
-        .modal-pdf-label {
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: #0c4a6e;
-            line-height: 1.3;
-        }
-        .modal-pdf-sub {
-            font-size: 0.6875rem;
-            color: #0369a1;
-            margin-top: 2px;
-        }
-
-        .wl-field {
-            width: 100%;
-            background: #f9fafb;
-            border: 1.5px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 12px 16px;
-            color: #111827;
-            font-size: 0.875rem;
-            font-family: 'Inter', sans-serif;
-            margin-bottom: 10px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
+        .modal-eyebrow { font-size: 0.6875rem; font-weight: 700; color: #1d7fe2; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+        .modal-title { font-size: 1.5rem; font-weight: 800; color: #111827; line-height: 1.2; margin-bottom: 0.5rem; }
+        .modal-sub { font-size: 0.875rem; color: #6b7280; line-height: 1.6; margin-bottom: 1.5rem; }
+        .modal-selected-pdf { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .modal-selected-pdf img { width: 40px; height: 53px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+        .modal-pdf-label { font-size: 0.8125rem; font-weight: 600; color: #0c4a6e; line-height: 1.3; }
+        .modal-pdf-sub { font-size: 0.6875rem; color: #0369a1; margin-top: 2px; }
+        .wl-field { width: 100%; background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 12px 16px; color: #111827; font-size: 0.875rem; font-family: 'Inter', sans-serif; margin-bottom: 10px; outline: none; transition: border-color 0.2s; }
         .wl-field::placeholder { color: #9ca3af; }
         .wl-field:focus { border-color: #1d7fe2; background: white; }
         .wl-field.error { border-color: #ef4444; }
-
-        .modal-submit {
-            width: 100%;
-            background: linear-gradient(135deg, #1d7fe2, #1e88f5);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 13px;
-            font-size: 0.9375rem;
-            font-weight: 700;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 4px 14px rgba(29,127,226,0.3);
-            transition: all 0.2s;
-            margin-top: 4px;
-        }
+        .modal-submit { width: 100%; background: linear-gradient(135deg, #1d7fe2, #1e88f5); color: white; border: none; border-radius: 10px; padding: 13px; font-size: 0.9375rem; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; box-shadow: 0 4px 14px rgba(29,127,226,0.3); transition: all 0.2s; margin-top: 4px; }
         .modal-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(29,127,226,0.4); }
         .modal-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-        .modal-note {
-            font-size: 0.6875rem;
-            color: #9ca3af;
-            text-align: center;
-            margin-top: 0.875rem;
-            line-height: 1.5;
-        }
-
-        /* Confirmed state inside modal */
+        .modal-note { font-size: 0.6875rem; color: #9ca3af; text-align: center; margin-top: 0.875rem; line-height: 1.5; }
+        .modal-form-wrap.hidden { display: none; }
         .modal-confirmed { display: none; text-align: center; }
         .modal-confirmed.show { display: block; }
-        .modal-form-wrap.hidden { display: none; }
-
-        .confirmed-circle {
-            width: 56px; height: 56px;
-            background: linear-gradient(135deg, #1d7fe2, #1e88f5);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 1rem;
-            box-shadow: 0 4px 14px rgba(29,127,226,0.3);
-        }
+        .confirmed-circle { width: 56px; height: 56px; background: linear-gradient(135deg, #1d7fe2, #1e88f5); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; box-shadow: 0 4px 14px rgba(29,127,226,0.3); }
         .confirmed-circle svg { width: 28px; height: 28px; color: white; }
         .confirmed-title { font-size: 1.25rem; font-weight: 800; color: #111827; margin-bottom: 0.5rem; }
         .confirmed-sub { font-size: 0.875rem; color: #6b7280; line-height: 1.6; margin-bottom: 1.5rem; }
-        .confirmed-dl-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #0a1e3d;
-            color: white;
-            padding: 0.875rem 2rem;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.9375rem;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
+        .confirmed-dl-btn { display: inline-flex; align-items: center; gap: 8px; background: #0a1e3d; color: white; padding: 0.875rem 2rem; border-radius: 10px; font-weight: 700; font-size: 0.9375rem; text-decoration: none; transition: all 0.2s; }
         .confirmed-dl-btn:hover { background: #061429; transform: scale(1.03); }
         .confirmed-dl-btn svg { width: 18px; height: 18px; }
-
-        /* ── BOTTOM CTA ── */
-        .bottom-cta {
-            background: #0a1e3d;
-            border-radius: 20px;
-            padding: 3rem 2rem;
-            text-align: center;
-            margin-top: 5rem;
-        }
+        .bottom-cta { background: #0a1e3d; border-radius: 20px; padding: 3rem 2rem; text-align: center; margin-top: 5rem; }
         .bottom-cta h2 { font-size: 1.875rem; font-weight: 800; color: white; margin-bottom: 0.75rem; }
         .bottom-cta p { font-size: 1rem; color: rgba(255,255,255,0.55); margin-bottom: 1.5rem; }
-        .bottom-cta-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #1d7fe2;
-            color: white;
-            padding: 0.875rem 2rem;
-            border-radius: 9999px;
-            font-weight: 700;
-            font-size: 0.9375rem;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
+        .bottom-cta-btn { display: inline-flex; align-items: center; gap: 8px; background: #1d7fe2; color: white; padding: 0.875rem 2rem; border-radius: 9999px; font-weight: 700; font-size: 0.9375rem; text-decoration: none; transition: all 0.2s; }
         .bottom-cta-btn:hover { background: #1565c0; transform: scale(1.04); }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 1200px) {
-            .pdf-grid { grid-template-columns: repeat(4, 1fr); }
-        }
-        @media (max-width: 900px) {
-            .pdf-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-        @media (max-width: 640px) {
-            .pdf-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-            .page-header { padding: 7rem 1rem 3rem; }
-            .header-title { font-size: 2rem; }
-            .main-content { padding: 2.5rem 1rem 4rem; }
-            .stat-divider { display: none; }
-            .nav-container { padding: 0 1rem; }
-            .brand-text { display: none; }
-        }
-        @media (max-width: 400px) {
-            .pdf-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-            .pdf-info { padding: 0.625rem 0.75rem; }
-            .pdf-title { font-size: 0.75rem; }
-        }
+        @media (max-width: 1200px) { .pdf-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 900px)  { .pdf-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 640px) { .pdf-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; } .page-header { padding: 7rem 1rem 3rem; } .header-title { font-size: 2rem; } .main-content { padding: 2.5rem 1rem 4rem; } .stat-divider { display: none; } .nav-container { padding: 0 1rem; } .brand-text { display: none; } }
+        @media (max-width: 400px) { .pdf-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; } .pdf-info { padding: 0.625rem 0.75rem; } .pdf-title { font-size: 0.6875rem; } }
     </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
     <div class="nav-container">
         <a href="index.html" class="logo-container">
@@ -495,336 +120,38 @@
         </a>
         <div class="nav-links">
             <a href="index.html#faq" class="nav-link">FAQ</a>
-            <a href="training.html" class="nav-link" style="color:#1d7fe2; font-weight:600;">Training</a>
+            <a href="training.html" class="nav-link active">Training</a>
             <a href="index.html#ambassador" class="nav-link">Content Creators</a>
             <a href="signin.html" class="nav-cta">Sign in</a>
         </div>
     </div>
 </nav>
 
-<!-- HERO HEADER -->
 <div class="page-header">
     <p class="header-eyebrow">Monturalearn · Free Study Resources</p>
+    <div class="live-pill">
+        <span class="live-dot"></span>
+        <span id="totalDownloadsText">Loading downloads...</span>
+    </div>
     <h1 class="header-title">Stop Guessing.<br><span>Start Downloading.</span></h1>
     <p class="header-sub">15 guides written by the founder. No theory. Just the exact strategies that actually move your grade.</p>
     <div class="header-stats">
-        <div class="stat">
-            <div class="stat-num">15</div>
-            <div class="stat-label">Free guides</div>
-        </div>
+        <div class="stat"><div class="stat-num">15</div><div class="stat-label">Free guides</div></div>
         <div class="stat-divider"></div>
-        <div class="stat">
-            <div class="stat-num">Free</div>
-            <div class="stat-label">Always</div>
-        </div>
+        <div class="stat"><div class="stat-num" id="headerTotalStat">—</div><div class="stat-label">Total downloads</div></div>
         <div class="stat-divider"></div>
-        <div class="stat">
-            <div class="stat-num">1</div>
-            <div class="stat-label">Quick signup</div>
-        </div>
+        <div class="stat"><div class="stat-num">Free</div><div class="stat-label">Always</div></div>
     </div>
 </div>
 
-<!-- GATE BANNER -->
 <div class="gate-banner" id="gateBanner">
     <p>🔒 Sign up free to unlock instant downloads — takes 10 seconds</p>
     <button class="gate-banner-btn" onclick="openModal(null)">Get instant access →</button>
 </div>
 
-<!-- MAIN CONTENT -->
 <div class="main-content">
     <p class="section-label">All 15 guides</p>
-
-    <div class="pdf-grid" id="pdfGrid">
-
-        <!-- Card 1 -->
-        <div class="pdf-card" onclick="handleCardClick(0)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover1.png" alt="13X Study System">
-                <div class="pdf-lock-overlay" id="lock-0">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-0" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">13X Study System</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="pdf-card" onclick="handleCardClick(1)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover2.png" alt="Mastering the study game">
-                <div class="pdf-lock-overlay" id="lock-1">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-1" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">Mastering the Study Game</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="pdf-card" onclick="handleCardClick(2)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover3.png" alt="The perfect revision system">
-                <div class="pdf-lock-overlay" id="lock-2">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-2" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">The Perfect Revision System</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="pdf-card" onclick="handleCardClick(3)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover4.png" alt="Exam domination blueprint">
-                <div class="pdf-lock-overlay" id="lock-3">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-3" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">Exam Domination Blueprint</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 5 -->
-        <div class="pdf-card" onclick="handleCardClick(4)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover5.png" alt="How to create freedom in a competitive classroom">
-                <div class="pdf-lock-overlay" id="lock-4">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-4" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">How to Create Freedom in a Competitive Classroom</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 6 -->
-        <div class="pdf-card" onclick="handleCardClick(5)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover6.png" alt="Study methods from square one">
-                <div class="pdf-lock-overlay" id="lock-5">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-5" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">Study Methods from Square One</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 7 -->
-        <div class="pdf-card" onclick="handleCardClick(6)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover7.png" alt="Personal study secrets from the founder">
-                <div class="pdf-lock-overlay" id="lock-6">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-6" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">Personal Study Secrets from the Founder of Monturalearn</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 8 -->
-        <div class="pdf-card" onclick="handleCardClick(7)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover8.png" alt="Pushing through tough times in your GCSEs">
-                <div class="pdf-lock-overlay" id="lock-7">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-7" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">Pushing Through Tough Times in Your GCSEs</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 9 -->
-        <div class="pdf-card" onclick="handleCardClick(8)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover9.png" alt="Ensuring maximum output from your revision">
-                <div class="pdf-lock-overlay" id="lock-8">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-8" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">Ensuring Maximum Output from Your Revision</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 10 -->
-        <div class="pdf-card" onclick="handleCardClick(9)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover10.png" alt="Using the correct study strategies to dominate">
-                <div class="pdf-lock-overlay" id="lock-9">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-9" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">Using the Correct Study Strategies to Dominate</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 11 -->
-        <div class="pdf-card" onclick="handleCardClick(10)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover11.png" alt="Study secrets of the top 0.001% students">
-                <div class="pdf-lock-overlay" id="lock-10">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-10" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">Study Secrets of the Top 0.001% Students</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 12 -->
-        <div class="pdf-card" onclick="handleCardClick(11)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover12.png" alt="5 steps to jump a grade">
-                <div class="pdf-lock-overlay" id="lock-11">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-11" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">5 Steps to Jump a Grade</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 13 -->
-        <div class="pdf-card" onclick="handleCardClick(12)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover13.png" alt="Study dominance">
-                <div class="pdf-lock-overlay" id="lock-12">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-12" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">Study Dominance</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 14 -->
-        <div class="pdf-card" onclick="handleCardClick(13)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover14.png" alt="Success in studying through tough times">
-                <div class="pdf-lock-overlay" id="lock-13">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-13" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">Success in Studying Through Tough Times</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-        <!-- Card 15 -->
-        <div class="pdf-card" onclick="handleCardClick(14)">
-            <div style="position:relative;">
-                <img class="pdf-cover" src="training-assets/cover15.png" alt="Questioning the status quo of studying">
-                <div class="pdf-lock-overlay" id="lock-14">
-                    <div class="lock-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
-                    <span class="lock-text">Sign up free to download</span>
-                </div>
-                <div class="pdf-download-overlay" id="dl-14" style="display:none;">
-                    <div class="dl-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></div>
-                    <span class="dl-text">Download PDF</span>
-                </div>
-            </div>
-            <div class="pdf-info">
-                <p class="pdf-title">Questioning the Status Quo of Studying</p>
-                <p class="pdf-meta">Free guide</p>
-            </div>
-        </div>
-
-    </div><!-- /pdf-grid -->
-
-    <!-- BOTTOM CTA -->
+    <div class="pdf-grid" id="pdfGrid"></div>
     <div class="bottom-cta">
         <h2>Ready to stop guessing?</h2>
         <p>Join thousands of GCSE students already using these guides.</p>
@@ -833,40 +160,28 @@
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
         </a>
     </div>
+</div>
 
-</div><!-- /main-content -->
-
-
-<!-- SIGN-UP MODAL -->
 <div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
     <div class="modal">
         <button class="modal-close" onclick="closeModal()">✕</button>
-
-        <!-- Form state -->
         <div class="modal-form-wrap" id="modalFormWrap">
             <p class="modal-eyebrow">Free access</p>
             <h2 class="modal-title">Unlock this guide instantly.</h2>
             <p class="modal-sub">Join the Monturalearn waitlist — get this guide and all 14 others, free, the moment you sign up.</p>
-
             <div class="modal-selected-pdf" id="modalSelectedPdf">
                 <img id="modalCoverThumb" src="" alt="">
                 <div>
-                    <p class="modal-pdf-label" id="modalPdfTitle">Guide title</p>
+                    <p class="modal-pdf-label" id="modalPdfTitle"></p>
                     <p class="modal-pdf-sub">Free PDF · Instant download after signup</p>
                 </div>
             </div>
-
-            <input class="wl-field" id="modalEmail" type="email" placeholder="your@email.com" autocomplete="email">
-            <input class="wl-field" id="modalTiktok" type="text" placeholder="@tiktokusername (optional)">
-            <input class="wl-field" id="modalPromo" type="text" placeholder="Promo code (optional)">
-
-            <button class="modal-submit" id="modalSubmitBtn" onclick="handleModalSubmit()">
-                Sign up free &amp; download →
-            </button>
+            <input class="wl-field" id="modalEmail"  type="email" placeholder="your@email.com" autocomplete="email">
+            <input class="wl-field" id="modalTiktok" type="text"  placeholder="@tiktokusername (optional)">
+            <input class="wl-field" id="modalPromo"  type="text"  placeholder="Promo code (optional)">
+            <button class="modal-submit" id="modalSubmitBtn" onclick="handleModalSubmit()">Sign up free &amp; download →</button>
             <p class="modal-note">No spam. No payment. Just your free guides.</p>
         </div>
-
-        <!-- Confirmed state -->
         <div class="modal-confirmed" id="modalConfirmed">
             <div class="confirmed-circle">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
@@ -881,28 +196,97 @@
     </div>
 </div>
 
-
 <script>
-// ── PDF DATA ──
 var PDFS = [
-    { title: '13X Study System',                                       link: 'https://canva.link/y26wfdbd7dovvso',  cover: 'training-assets/cover1.png'  },
-    { title: 'Mastering the Study Game',                               link: 'https://canva.link/dkx8cexm9rmpbe7',  cover: 'training-assets/cover2.png'  },
-    { title: 'The Perfect Revision System',                            link: 'https://canva.link/yh2up4c6hda8kjx',  cover: 'training-assets/cover3.png'  },
-    { title: 'Exam Domination Blueprint',                              link: 'https://canva.link/if9o3cunqcy5tnx',  cover: 'training-assets/cover4.png'  },
-    { title: 'How to Create Freedom in a Competitive Classroom',       link: 'https://canva.link/5uudmkej8hoagrq',  cover: 'training-assets/cover5.png'  },
-    { title: 'Study Methods from Square One',                          link: 'https://canva.link/nuxjhfayxqhfux9',  cover: 'training-assets/cover6.png'  },
-    { title: 'Personal Study Secrets from the Founder of Monturalearn',link: 'https://canva.link/uncdbmdct9fb4fh',  cover: 'training-assets/cover7.png'  },
-    { title: 'Pushing Through Tough Times in Your GCSEs',             link: 'https://canva.link/dy0th5keo479779',  cover: 'training-assets/cover8.png'  },
-    { title: 'Ensuring Maximum Output from Your Revision',             link: 'https://canva.link/sjp7dkqs8jg3c88',  cover: 'training-assets/cover9.png'  },
-    { title: 'Using the Correct Study Strategies to Dominate',        link: 'https://canva.link/5sgxml48ulnddft',  cover: 'training-assets/cover10.png' },
-    { title: 'Study Secrets of the Top 0.001% Students',              link: 'https://canva.link/7mxnqh41pd83jw1',  cover: 'training-assets/cover11.png' },
-    { title: '5 Steps to Jump a Grade',                               link: 'https://canva.link/unqs81cr9cr7v1d',  cover: 'training-assets/cover12.png' },
-    { title: 'Study Dominance',                                        link: 'https://canva.link/unqs81cr9cr7v1d',  cover: 'training-assets/cover13.png' },
-    { title: 'Success in Studying Through Tough Times',               link: 'https://canva.link/uh67o2zxw3zer41',  cover: 'training-assets/cover14.png' },
-    { title: 'Questioning the Status Quo of Studying',                link: 'https://canva.link/o2hldv3uqdq3af3',  cover: 'training-assets/cover15.png' },
+    { title: '13X Study System',                                        link: 'https://canva.link/y26wfdbd7dovvso',  cover: 'training-assets/cover1.png'  },
+    { title: 'Mastering the Study Game',                                link: 'https://canva.link/dkx8cexm9rmpbe7',  cover: 'training-assets/cover2.png'  },
+    { title: 'The Perfect Revision System',                             link: 'https://canva.link/yh2up4c6hda8kjx',  cover: 'training-assets/cover3.png'  },
+    { title: 'Exam Domination Blueprint',                               link: 'https://canva.link/if9o3cunqcy5tnx',  cover: 'training-assets/cover4.png'  },
+    { title: 'How to Create Freedom in a Competitive Classroom',        link: 'https://canva.link/5uudmkej8hoagrq',  cover: 'training-assets/cover5.png'  },
+    { title: 'Study Methods from Square One',                           link: 'https://canva.link/nuxjhfayxqhfux9',  cover: 'training-assets/cover6.png'  },
+    { title: 'Personal Study Secrets from the Founder of Monturalearn', link: 'https://canva.link/uncdbmdct9fb4fh',  cover: 'training-assets/cover7.png'  },
+    { title: 'Pushing Through Tough Times in Your GCSEs',              link: 'https://canva.link/dy0th5keo479779',  cover: 'training-assets/cover8.png'  },
+    { title: 'Ensuring Maximum Output from Your Revision',              link: 'https://canva.link/sjp7dkqs8jg3c88',  cover: 'training-assets/cover9.png'  },
+    { title: 'Using the Correct Study Strategies to Dominate',         link: 'https://canva.link/5sgxml48ulnddft',  cover: 'training-assets/cover10.png' },
+    { title: 'Study Secrets of the Top 0.001% Students',               link: 'https://canva.link/7mxnqh41pd83jw1',  cover: 'training-assets/cover11.png' },
+    { title: '5 Steps to Jump a Grade',                                link: 'https://canva.link/unqs81cr9cr7v1d',  cover: 'training-assets/cover12.png' },
+    { title: 'Study Dominance',                                         link: 'https://canva.link/unqs81cr9cr7v1d',  cover: 'training-assets/cover13.png' },
+    { title: 'Success in Studying Through Tough Times',                link: 'https://canva.link/uh67o2zxw3zer41',  cover: 'training-assets/cover14.png' },
+    { title: 'Questioning the Status Quo of Studying',                 link: 'https://canva.link/o2hldv3uqdq3af3',  cover: 'training-assets/cover15.png' },
 ];
 
-// ── AUTH STATE ──
+var LOCK_SVG = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>';
+var DL_SVG   = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>';
+
+function buildGrid() {
+    var grid = document.getElementById('pdfGrid');
+    grid.innerHTML = PDFS.map(function(pdf, i) {
+        return '<div class="pdf-card" onclick="handleCardClick(' + i + ')">' +
+            '<div class="pdf-cover-wrap">' +
+                '<img class="pdf-cover" src="' + pdf.cover + '" alt="' + pdf.title + '" loading="lazy">' +
+                '<div class="dl-badge loading" id="badge-' + i + '"><span class="dl-badge-dot"></span><span id="badge-text-' + i + '">...</span></div>' +
+                '<div class="pdf-lock-overlay" id="lock-' + i + '"><div class="lock-icon">' + LOCK_SVG + '</div><span class="lock-text">Sign up free to download</span></div>' +
+                '<div class="pdf-dl-overlay" id="dlov-' + i + '"><div class="dl-circle">' + DL_SVG + '</div><span class="dl-overlay-text">Download PDF</span></div>' +
+            '</div>' +
+            '<div class="pdf-info">' +
+                '<p class="pdf-title">' + pdf.title + '</p>' +
+                '<div class="pdf-count-row"><span class="pdf-count-icon">' + DL_SVG + '</span><span class="pdf-count-text loading" id="count-' + i + '">loading...</span></div>' +
+            '</div>' +
+        '</div>';
+    }).join('');
+}
+
+function fmt(n) {
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return n.toString();
+}
+
+function applyCountsToDOM(counts) {
+    var total = counts.reduce(function(a, b) { return a + b; }, 0);
+    var tt = document.getElementById('totalDownloadsText');
+    var hs = document.getElementById('headerTotalStat');
+    if (tt) tt.textContent = fmt(total) + ' total downloads across all guides';
+    if (hs) hs.textContent = fmt(total);
+    counts.forEach(function(count, i) {
+        var badge = document.getElementById('badge-' + i);
+        var badgeText = document.getElementById('badge-text-' + i);
+        var countEl = document.getElementById('count-' + i);
+        if (badge) { badge.classList.remove('loading'); }
+        if (badgeText) badgeText.textContent = fmt(count) + ' downloads';
+        if (countEl) { countEl.classList.remove('loading'); countEl.classList.add('loaded'); countEl.textContent = fmt(count) + ' downloads'; }
+    });
+}
+
+async function loadCounts() {
+    try {
+        var res = await fetch('/api/track-referral?action=downloads');
+        if (!res.ok) throw new Error('fetch failed');
+        var data = await res.json();
+        applyCountsToDOM(data.counts || Array(15).fill(0));
+    } catch(e) {
+        for (var i = 0; i < 15; i++) {
+            var b = document.getElementById('badge-' + i);
+            var c = document.getElementById('count-' + i);
+            if (b) { b.classList.remove('loading'); var bt = document.getElementById('badge-text-' + i); if(bt) bt.textContent = '—'; }
+            if (c) { c.classList.remove('loading'); c.textContent = '—'; }
+        }
+        var tt = document.getElementById('totalDownloadsText');
+        if (tt) tt.textContent = 'Downloads tracked live';
+    }
+}
+
+async function trackAndRefresh(index) {
+    try {
+        var res = await fetch('/api/track-referral?action=downloads', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pdf_index: index })
+        });
+        var data = await res.json();
+        if (data.counts) applyCountsToDOM(data.counts);
+    } catch(e) {}
+}
+
 function isLoggedIn() {
     return sessionStorage.getItem('gmm_waitlist_joined') === 'true'
         || localStorage.getItem('gmm_signed_in') === 'true';
@@ -910,56 +294,43 @@ function isLoggedIn() {
 
 function applyAuthState() {
     var loggedIn = isLoggedIn();
-    // Hide gate banner if logged in
     var banner = document.getElementById('gateBanner');
     if (banner) banner.style.display = loggedIn ? 'none' : 'flex';
-
-    // Toggle overlays on all cards
     for (var i = 0; i < 15; i++) {
         var lockEl = document.getElementById('lock-' + i);
-        var dlEl   = document.getElementById('dl-' + i);
+        var dlEl   = document.getElementById('dlov-' + i);
         if (lockEl) lockEl.style.display = loggedIn ? 'none' : 'flex';
         if (dlEl)   dlEl.style.display   = loggedIn ? 'flex' : 'none';
     }
 }
 
-// ── CARD CLICK ──
 var pendingIndex = null;
 
 function handleCardClick(index) {
     if (isLoggedIn()) {
+        trackAndRefresh(index);
         window.open(PDFS[index].link, '_blank', 'noopener');
     } else {
         openModal(index);
     }
 }
 
-// ── MODAL ──
 function openModal(index) {
     pendingIndex = index;
     var pdf = index !== null ? PDFS[index] : null;
-
-    // Populate modal with selected PDF
     var thumbEl  = document.getElementById('modalCoverThumb');
     var titleEl  = document.getElementById('modalPdfTitle');
     var pdfBlock = document.getElementById('modalSelectedPdf');
-
-    if (pdf) {
-        thumbEl.src      = pdf.cover;
-        titleEl.textContent = pdf.title;
-        pdfBlock.style.display = 'flex';
-    } else {
-        pdfBlock.style.display = 'none';
-    }
-
-    // Reset to form state
+    if (pdf) { thumbEl.src = pdf.cover; titleEl.textContent = pdf.title; pdfBlock.style.display = 'flex'; }
+    else { pdfBlock.style.display = 'none'; }
     document.getElementById('modalFormWrap').classList.remove('hidden');
     document.getElementById('modalConfirmed').classList.remove('show');
-    document.getElementById('modalEmail').value = '';
+    document.getElementById('modalEmail').value  = '';
     document.getElementById('modalTiktok').value = '';
-    document.getElementById('modalPromo').value = '';
+    document.getElementById('modalPromo').value  = '';
     document.getElementById('modalEmail').classList.remove('error');
-
+    var btn = document.getElementById('modalSubmitBtn');
+    btn.disabled = false; btn.textContent = 'Sign up free & download →';
     document.getElementById('modalBackdrop').classList.add('open');
     document.body.style.overflow = 'hidden';
     setTimeout(function(){ document.getElementById('modalEmail').focus(); }, 100);
@@ -974,81 +345,51 @@ function handleBackdropClick(e) {
     if (e.target === document.getElementById('modalBackdrop')) closeModal();
 }
 
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeModal();
-});
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
 
-// ── SUBMIT ──
 async function handleModalSubmit() {
     var emailEl = document.getElementById('modalEmail');
     var btn     = document.getElementById('modalSubmitBtn');
     var email   = emailEl.value.trim();
-
     emailEl.classList.remove('error');
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        emailEl.classList.add('error');
-        emailEl.focus();
-        return;
-    }
-
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { emailEl.classList.add('error'); emailEl.focus(); return; }
     var tiktok = document.getElementById('modalTiktok').value.trim();
     if (tiktok && !tiktok.startsWith('@')) tiktok = '@' + tiktok;
-
     var promo = document.getElementById('modalPromo').value.trim();
-
-    btn.disabled     = true;
-    btn.textContent  = 'Signing you up...';
-
+    btn.disabled = true; btn.textContent = 'Signing you up...';
     try {
         var res = await fetch('/api/waitlist', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email: email,
-                tiktok_username: tiktok || null,
-                referral_code: promo || localStorage.getItem('referral_code') || null,
-                source: 'training_page'
-            })
+            body: JSON.stringify({ email: email, tiktok_username: tiktok || null, referral_code: promo || localStorage.getItem('referral_code') || null, source: 'training_page' })
         });
-
         if (res.ok || res.status === 409) {
-            // Mark as signed up
             sessionStorage.setItem('gmm_waitlist_joined', 'true');
             localStorage.setItem('gmm_signed_in', 'true');
-
-            // Show confirmed state
+            if (pendingIndex !== null) trackAndRefresh(pendingIndex);
             document.getElementById('modalFormWrap').classList.add('hidden');
-            var confirmed = document.getElementById('modalConfirmed');
-            confirmed.classList.add('show');
-
-            // Set download link
+            document.getElementById('modalConfirmed').classList.add('show');
             var dlLink = document.getElementById('confirmedDlLink');
-            if (pendingIndex !== null) {
-                dlLink.href = PDFS[pendingIndex].link;
-                dlLink.style.display = 'inline-flex';
-            } else {
-                dlLink.style.display = 'none';
-            }
-
-            // Update all card overlays
+            if (pendingIndex !== null) { dlLink.href = PDFS[pendingIndex].link; dlLink.style.display = 'inline-flex'; }
+            else { dlLink.style.display = 'none'; }
             applyAuthState();
-
         } else {
             var data = await res.json().catch(function(){ return {}; });
-            btn.disabled    = false;
-            btn.textContent = 'Sign up free & download →';
+            btn.disabled = false; btn.textContent = 'Sign up free & download →';
             alert(data.error || 'Something went wrong. Please try again.');
         }
     } catch(e) {
-        btn.disabled    = false;
-        btn.textContent = 'Sign up free & download →';
+        btn.disabled = false; btn.textContent = 'Sign up free & download →';
         alert('Network error. Please check your connection.');
     }
 }
 
-// ── INIT ──
-document.addEventListener('DOMContentLoaded', applyAuthState);
+document.addEventListener('DOMContentLoaded', function() {
+    buildGrid();
+    applyAuthState();
+    loadCounts();
+    setInterval(loadCounts, 60000);
+});
 </script>
-
 </body>
 </html>
