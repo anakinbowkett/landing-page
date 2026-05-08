@@ -49,15 +49,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { 
-  message, 
-  conversationHistory, 
-  questionData,
-  isMarkingRequest,
-  studentText,
-  allLineData,
-  studentLevel // 👈 NEW
-} = req.body;
+    const {
+    message,
+    conversationHistory,
+    questionData,
+    isMarkingRequest,
+    studentText,
+    allLineData,
+    studentLevel,
+    insightPageSummary
+  } = req.body;
 
     // ============================================
     // ROUTE 1: MARKING REQUEST (English Literature)
@@ -73,12 +74,13 @@ export default async function handler(req, res) {
     // ============================================
     // ROUTE 2: CHAT REQUEST (All subjects Q&A)
     // ============================================
-    return await handleChatRequest(req, res, {
-  message,
-  conversationHistory,
-  questionData,
-  studentLevel
-});
+   return await handleChatRequest(req, res, {
+    message,
+    conversationHistory,
+    questionData,
+    studentLevel,
+    insightPageSummary
+  });
 
   } catch (error) {
     console.error('API error:', error);
@@ -218,7 +220,7 @@ const startTime = Date.now();
 // ============================================
 // CHAT HANDLER (Q&A for all subjects)
 // ============================================
-async function handleChatRequest(req, res, { message, conversationHistory, questionData, studentLevel }) {
+async function handleChatRequest(req, res, { message, conversationHistory, questionData, studentLevel, insightPageSummary }) {
 
   // 🚨 Safety check
   if (isUnsafeContent(message)) {
@@ -231,9 +233,9 @@ async function handleChatRequest(req, res, { message, conversationHistory, quest
     });
   }
 
-  const topic = questionData?.topic || '';
-  const currentPageSummary = req.body.insightPageSummary || '';
+const topic = questionData?.topic || '';
   const selectedGuide = GUIDES[topic];
+  const insightContext = insightPageSummary || '';
 
   const systemPrompt = `You are a GCSE tutor for age 13-16 students.
 
@@ -259,10 +261,11 @@ CRITICAL RULES:
 STUDENT'S QUESTION: "${questionData?.question || 'No question'}"
 CORRECT ANSWER: ${questionData?.correctAnswer || 'N/A'}
 
-${currentPageSummary ? `
-INSIGHT CONTEXT FOR THIS QUESTION:
-${currentPageSummary}
+${insightContext ? `
+INSIGHT CONTEXT FOR THIS QUESTION (what the student is currently reading):
+${insightContext}
 Use this as your PRIMARY reference when helping the student.
+Refer to it directly — e.g. "As your Insight explains..." or "The Overview page covers this..."
 ` : `Use your GCSE knowledge for: "${questionData?.question}"`}
 
 TEACHING RULES:
