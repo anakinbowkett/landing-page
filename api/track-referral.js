@@ -6,6 +6,90 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
+
+  // ============================================================
+  // DOWNLOAD TRACKING ROUTE
+  // Handles GET and POST to /api/track-referral?action=downloads
+  // Completely separate from referral logic below.
+  // ============================================================
+  if (req.query.action === 'downloads') {
+
+    // GET — return all 15 download counts
+    if (req.method === 'GET') {
+      const { data, error } = await supabase
+        .from('pdf_downloads')
+        .select('pdf_index, download_count')
+        .order('pdf_index', { ascending: true });
+
+      if (error) {
+        console.error('Download GET error:', error);
+        return res.status(500).json({ error: 'Failed to fetch counts' });
+      }
+
+      const counts = Array(15).fill(0);
+      (data || []).forEach(row => {
+        counts[row.pdf_index] = row.download_count;
+      });
+
+      return res.status(200).json({ counts });
+    }
+
+    // POST — increment count for a given pdf_index
+    if (req.method === 'POST') {
+      const pdfIndex = parseInt(req.body?.pdf_index, 10);
+
+      if (isNaN(pdfIndex) || pdfIndex < 0 || pdfIndex > 14) {
+        return res.status(400).json({ error: 'Invalid pdf_index' });
+      }
+
+      // Try atomic RPC first, fall back to manual increment
+      const { error: rpcError } = await supabase.rpc('increment_download_count', {
+        p_index: pdfIndex
+      });
+
+      if (rpcError) {
+        // Fallback manual increment
+        const { data: current } = await supabase
+          .from('pdf_downloads')
+          .select('download_count')
+          .eq('pdf_index', pdfIndex)
+          .single();
+
+        const { error: updateError } = await supabase
+          .from('pdf_downloads')
+          .update({
+            download_count: (current?.download_count || 0) + 1,
+            updated_at: new Date().toISOString()
+          })
+          .eq('pdf_index', pdfIndex);
+
+        if (updateError) {
+          console.error('Download update error:', updateError);
+          return res.status(500).json({ error: 'Failed to update count' });
+        }
+      }
+
+      // Return all updated counts
+      const { data: allData } = await supabase
+        .from('pdf_downloads')
+        .select('pdf_index, download_count')
+        .order('pdf_index', { ascending: true });
+
+      const counts = Array(15).fill(0);
+      (allData || []).forEach(row => { counts[row.pdf_index] = row.download_count; });
+
+      return res.status(200).json({ counts });
+    }
+
+    // Any other method on downloads route
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // ============================================================
+  // ORIGINAL REFERRAL TRACKING ROUTE — UNCHANGED
+  // Everything below this line is exactly as it was before.
+  // ============================================================
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -61,12 +145,12 @@ export default async function handler(req, res) {
     }
 
     // Increment ambassador's total_leads
-    await supabase.rpc('increment_ambassador_leads', { 
-      ambassador_uuid: ambassador.id 
+    await supabase.rpc('increment_ambassador_leads', {
+      ambassador_uuid: ambassador.id
     });
 
-    return res.status(200).json({ 
-      success: true, 
+    return res.status(200).json({
+      success: true,
       referred: true,
       ambassadorId: ambassador.id
     });
