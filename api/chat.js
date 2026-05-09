@@ -8,18 +8,29 @@ const ALLOWED_ORIGINS = [
 
 function isUnsafeContent(text) {
   const unsafePatterns = [
-    /suicide/i,
-    /kill myself/i,
-    /self harm/i,
-    /cut myself/i,
-    /how to die/i,
-    /racist/i,
-    /hate (black|white|asian|muslim|jew)/i,
-    /nazi/i,
-    /hitler/i,
-    /terrorist/i,
-    /bomb/i
+    // self harm + suicide
+    /suicide/i, /suicidal/i, /kill myself/i, /end my life/i,
+    /end it all/i, /don't want to be here/i, /dont want to be here/i,
+    /self harm/i, /self-harm/i, /cut myself/i, /cutting myself/i,
+    /hurt myself/i, /hurting myself/i, /how to die/i, /ways to die/i,
+    /kms/i, /kys/i, /unalive/i,
+    // sexual / grooming
+    /rape/i, /r[*@]pe/i, /molest/i, /touch me/i, /send (me )?(nudes|pics|photos)/i,
+    /naked/i, /sex with/i, /sexual/i,
+    // hate speech
+    /racist/i, /hate (black|white|asian|muslim|jew|gay|trans)/i,
+    /n[i!1]gg/i, /f[a@]gg/i,
+    /nazi/i, /hitler/i, /white power/i, /white suprema/i,
+    // violence + extremism
+    /terrorist/i, /terrorism/i, /bomb/i, /shoot (up|the|a)/i,
+    /mass (shooting|murder|killing)/i, /how to (make|build) a (gun|weapon|knife)/i,
+    /stab/i, /attack (a school|the school)/i,
+    // drugs
+    /how to (get|buy|make|take) (drugs|weed|cocaine|heroin|mdma|pills)/i,
+    /where to buy drugs/i
   ];
+  return unsafePatterns.some(pattern => pattern.test(text));
+}
 
   return unsafePatterns.some(pattern => pattern.test(text));
 }
@@ -224,14 +235,34 @@ async function handleChatRequest(req, res, { message, conversationHistory, quest
 
   // 🚨 Safety check
   if (isUnsafeContent(message)) {
-    return res.status(200).json({
-      replies: [
-        "I can’t help with that, but I’m here to support you.",
-        "If something’s bothering you, it might help to talk to a teacher, parent, or someone you trust.",
-        "Exams are difficult, a lot of students feel the same way. Talking to someone you trust can really help."
-      ]
+  // log to Supabase for safeguarding record
+  try {
+    await fetch(`${process.env.SUPABASE_URL}/rest/v1/safeguarding_logs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': process.env.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        message_preview: message.substring(0, 100),
+        flagged_at: new Date().toISOString(),
+        topic: questionData?.topic || 'unknown'
+      })
     });
+  } catch(e) {
+    console.error('Safeguarding log failed:', e);
   }
+
+  return res.status(200).json({
+    replies: [
+      "I'm not able to help with that — but if something's going on for you right now, that matters more than any exam.",
+      "Please talk to a trusted adult — a teacher, parent, or school counsellor. If you're in the UK and need to talk to someone right now, you can contact Childline free on 0800 1111 or at childline.org.uk — they're available 24/7.",
+      "You don't have to deal with anything alone."
+    ]
+  });
+}
 
 const topic = questionData?.topic || '';
   const selectedGuide = GUIDES[topic];
