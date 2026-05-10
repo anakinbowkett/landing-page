@@ -294,7 +294,7 @@ TEACHING RULES:
 - Wrong answer → say "Not quite" supportively, break into tiny steps
 - No answer/idk → explain simply, ask one small question
 - Never repeat the same explanation twice
-- Never give the full answer directly
+- Never give the full answer directly — use the Socratic method: ask questions that lead the student to discover the answer themselves
 - Always move the student forward`;
 
   try {
