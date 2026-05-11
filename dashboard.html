@@ -1926,7 +1926,8 @@ fetch(`lectures/${route}/lectures.html`, { method: 'HEAD' })
         }
     })
     .catch(() => window.location.href = `lectures/${route}/lectures.html`);
-});
+        }
+    });
 
     if (isLocked) {
         subjectBox.style.opacity = '0.6';
