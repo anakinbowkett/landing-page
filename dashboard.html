@@ -1902,21 +1902,30 @@ function createSubjectCard(subject) {
         showPaywall();
     } else {
         // Map subjects to their correct folder names
-        const subjectRoutes = {
-    'Mathematics': 'aqa-f-tier',
+        const staticRoutes = {
     'English Literature': 'aqa-english-literature',
     'English Language': 'aqa-english-language',
-    // Add more subjects as you create them
 };
-        
-        const route = subjectRoutes[subject.subject_name];
-        
-        if (route) {
+
+const boardSlug = (subject.exam_board || 'AQA')
+    .toLowerCase().replace(/\s+/g, '-');
+
+const tierMap = { 'foundation': 'f', 'higher': 'h' };
+const tierKey = (subject.tier || '').toLowerCase();
+const tierSlug = tierMap[tierKey] ? `-${tierMap[tierKey]}-tier` : '';
+
+const autoRoute = boardSlug + tierSlug;
+const route = staticRoutes[subject.subject_name] || autoRoute;
+
+fetch(`lectures/${route}/lectures.html`, { method: 'HEAD' })
+    .then(res => {
+        if (res.ok) {
             window.location.href = `lectures/${route}/lectures.html`;
         } else {
-            alert(`Page for ${subject.subject_name} is not yet available`);
+            alert(`${subject.subject_name} (${subject.exam_board}${subject.tier ? ' ' + subject.tier + ' Tier' : ''}) is not yet available.`);
         }
-    }
+    })
+    .catch(() => window.location.href = `lectures/${route}/lectures.html`);
 });
 
     if (isLocked) {
