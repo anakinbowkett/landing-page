@@ -68,7 +68,8 @@ export default async function handler(req, res) {
     studentText,
     allLineData,
     studentLevel,
-    insightPageSummary
+    insightPageSummary,
+    studentProfile
   } = req.body;
 
     // ============================================
@@ -90,7 +91,8 @@ export default async function handler(req, res) {
     conversationHistory,
     questionData,
     studentLevel,
-    insightPageSummary
+    insightPageSummary,
+    studentProfile
   });
 
   } catch (error) {
@@ -231,7 +233,11 @@ const startTime = Date.now();
 // ============================================
 // CHAT HANDLER (Q&A for all subjects)
 // ============================================
-async function handleChatRequest(req, res, { message, conversationHistory, questionData, studentLevel, insightPageSummary }) {
+async function handleChatRequest(req, res, { message, conversationHistory, questionData, studentLevel, insightPageSummary, studentProfile }) {
+  // map grade target to student level
+  const targetGrade = studentProfile?.target_grade || studentProfile?.current_grade || 5;
+  const calibratedLevel = targetGrade <= 4 ? 'weak' : targetGrade <= 6 ? 'medium' : 'strong';
+  const effectiveLevel = studentLevel || calibratedLevel;
 
   // 🚨 Safety check
   if (isUnsafeContent(message)) {
@@ -274,7 +280,7 @@ IDENTITY: You are a Montura tutor. Never mention AI, DeepSeek, GPT, or how you w
 
 SAFEGUARDING: Never engage with harmful, political, religious or inappropriate topics. If a student seems distressed, respond with warmth and direct them to a trusted adult immediately.
 
-STUDENT LEVEL: ${studentLevel || 'medium'}
+STUDENT LEVEL: ${effectiveLevel}
 - weak → plain English only, define every term, very short steps, maximum encouragement, never make them feel stupid
 - medium → clear explanation, one challenge question per response, some terminology with definitions
 - strong → concise, precise, push with harder follow-ups and edge cases, assume they know the basics
