@@ -8,35 +8,26 @@ const ALLOWED_ORIGINS = [
 
 function isUnsafeContent(text) {
   const unsafePatterns = [
-    // self harm + suicide
     /suicide/i, /suicidal/i, /kill myself/i, /end my life/i,
     /end it all/i, /don't want to be here/i, /dont want to be here/i,
     /self harm/i, /self-harm/i, /cut myself/i, /cutting myself/i,
     /hurt myself/i, /hurting myself/i, /how to die/i, /ways to die/i,
     /kms/i, /kys/i, /unalive/i,
-    // sexual / grooming
     /rape/i, /r[*@]pe/i, /molest/i, /touch me/i, /send (me )?(nudes|pics|photos)/i,
     /naked/i, /sex with/i, /sexual/i,
-    // hate speech
     /racist/i, /hate (black|white|asian|muslim|jew|gay|trans)/i,
     /n[i!1]gg/i, /f[a@]gg/i,
     /nazi/i, /hitler/i, /white power/i, /white suprema/i,
-    // violence + extremism
     /terrorist/i, /terrorism/i, /bomb/i, /shoot (up|the|a)/i,
     /mass (shooting|murder|killing)/i, /how to (make|build) a (gun|weapon|knife)/i,
     /stab/i, /attack (a school|the school)/i,
-    // drugs
     /how to (get|buy|make|take) (drugs|weed|cocaine|heroin|mdma|pills)/i,
     /where to buy drugs/i
   ];
   return unsafePatterns.some(pattern => pattern.test(text));
 }
 
-  return unsafePatterns.some(pattern => pattern.test(text));
-}
-
 export default async function handler(req, res) {
-  // CORS setup
   const origin = req.headers.origin;
   const isAllowed = ALLOWED_ORIGINS.some(allowed => 
     typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
@@ -61,39 +52,29 @@ export default async function handler(req, res) {
 
   try {
     const {
-    message,
-    conversationHistory,
-    questionData,
-    isMarkingRequest,
-    studentText,
-    allLineData,
-    studentLevel,
-    insightPageSummary,
-    studentProfile
-  } = req.body;
+      message,
+      conversationHistory,
+      questionData,
+      isMarkingRequest,
+      studentText,
+      allLineData,
+      studentLevel,
+      insightPageSummary,
+      studentProfile
+    } = req.body;
 
-    // ============================================
-    // ROUTE 1: MARKING REQUEST (English Literature)
-    // ============================================
     if (isMarkingRequest) {
-      return await handleMarkingRequest(req, res, {
-        studentText,
-        allLineData,
-        questionData
-      });
+      return await handleMarkingRequest(req, res, { studentText, allLineData, questionData });
     }
 
-    // ============================================
-    // ROUTE 2: CHAT REQUEST (All subjects Q&A)
-    // ============================================
-   return await handleChatRequest(req, res, {
-    message,
-    conversationHistory,
-    questionData,
-    studentLevel,
-    insightPageSummary,
-    studentProfile
-  });
+    return await handleChatRequest(req, res, {
+      message,
+      conversationHistory,
+      questionData,
+      studentLevel,
+      insightPageSummary,
+      studentProfile
+    });
 
   } catch (error) {
     console.error('API error:', error);
@@ -105,16 +86,14 @@ export default async function handler(req, res) {
 }
 
 // ============================================
-// MARKING HANDLER (English Literature Essays)
+// MARKING HANDLER
 // ============================================
 
 async function handleMarkingRequest(req, res, { studentText, allLineData, questionData }) {
-  
   const questionId = questionData?.exerciseId || 'English_Lit_Q4';
   const totalMarks = questionData?.marks || 2;
   const question = questionData?.question || '';
 
-  // STRICT PROFESSIONAL MARKING PROMPT
   const markingPrompt = `You are a UK AQA GCSE English Literature examiner. Mark this answer with PROFESSIONAL EXAM BOARD STRICTNESS.
 
 QUESTION (${totalMarks} marks):
@@ -125,50 +104,31 @@ ${studentText}
 
 STRICT MARKING CRITERIA:
 
-For 2-mark questions (Q4):
-- 2 marks: TWO distinct features clearly explained in full sentences (e.g., "The fatal flaw is a weakness in the hero's character, such as Macbeth's ambition" AND "The hero dies at the end, like when Macbeth is killed by Macduff")
-- 1 mark: ONE feature explained in a full sentence OR two features mentioned without explanation
+For 2-mark questions:
+- 2 marks: TWO distinct features clearly explained in full sentences
+- 1 mark: ONE feature explained OR two features mentioned without explanation
 - 0 marks: No valid features, single words, or irrelevant answers
 
-For 3-mark questions (Q5):
-- 3 marks: THREE reasons explained in full sentences with reference to Macbeth (e.g., "Macbeth transforms from a brave hero to a murderous tyrant", "His fatal flaw of ambition causes his downfall", "His death restores order to Scotland")
+For 3-mark questions:
+- 3 marks: THREE reasons explained in full sentences with reference to the text
 - 2 marks: TWO reasons explained OR three reasons with minimal explanation
 - 1 mark: ONE reason explained OR vague understanding
 - 0 marks: No valid reasons or irrelevant answer
 
-For 4-mark questions (Q6):
-- 4 marks: ALL FIVE acts described with key events in full sentences
-- 3 marks: FOUR acts described with events
-- 2 marks: THREE acts described
-- 1 mark: ONE or TWO acts mentioned
-- 0 marks: No accurate structure
-
 REJECTION CRITERIA (Award 0 marks if):
-- Single words or phrases without sentences (e.g., "ambition", "death", "not sure")
-- Vague statements without explanation (e.g., "He is bad", "Things happen")
+- Single words or phrases without sentences
+- Vague statements without explanation
 - Answers under 15 words total
-- No reference to Macbeth or tragedy concepts
+- No reference to relevant concepts
 - Completely irrelevant content
-
-PROFESSIONAL STANDARDS:
-- Require FULL SENTENCES for each mark
-- Require EXPLANATION, not just naming
-- Require SUBJECT-SPECIFIC terminology
-- Be as strict as a real UK examiner would be
 
 OUTPUT (JSON only, no markdown):
 {
   "marksAwarded": 1,
-  "strengths": ["Mentioned fatal flaw with brief explanation"]
-}
-
-Mark strictly like a real GCSE examiner. Output ONLY JSON.`;
+  "strengths": ["One sentence of constructive feedback"]
+}`;
 
   try {
-
-// ⏱ Start timer (for debugging speed)
-const startTime = Date.now();
-    
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -182,10 +142,7 @@ const startTime = Date.now();
             role: 'system',
             content: 'You are a strict UK GCSE examiner. Require full sentences and explanations. Single words or phrases get 0 marks. Output only JSON.'
           },
-          {
-            role: 'user',
-            content: markingPrompt
-          }
+          { role: 'user', content: markingPrompt }
         ],
         temperature: 0.1,
         max_tokens: 300
@@ -199,82 +156,65 @@ const startTime = Date.now();
 
     const data = await response.json();
     let aiReply = data.choices[0].message.content.trim();
-    
-    // Clean JSON
     aiReply = aiReply.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     
     const markingResult = JSON.parse(aiReply);
-    
-    // Cap marks at total
     if (markingResult.marksAwarded > totalMarks) {
       markingResult.marksAwarded = totalMarks;
     }
-    
-    // NO HIGHLIGHTS - Remove them completely
     markingResult.highlights = [];
     
     return res.status(200).json(markingResult);
 
   } catch (error) {
     console.error('Marking error:', error);
-    
-    // Fallback
-    return res.status(200).json({
-      marksAwarded: 0,
-      strengths: [],
-      highlights: []
-    });
+    return res.status(200).json({ marksAwarded: 0, strengths: [], highlights: [] });
   }
 }
 
 // ============================================
-// CHAT HANDLER (Q&A for all subjects)
+// CHAT HANDLER
+// ============================================
 
-// ============================================
-// CHAT HANDLER (Q&A for all subjects)
-// ============================================
 async function handleChatRequest(req, res, { message, conversationHistory, questionData, studentLevel, insightPageSummary, studentProfile }) {
-  // map grade target to student level
   const targetGrade = studentProfile?.target_grade || studentProfile?.current_grade || 5;
   const calibratedLevel = targetGrade <= 4 ? 'weak' : targetGrade <= 6 ? 'medium' : 'strong';
   const effectiveLevel = studentLevel || calibratedLevel;
 
-  // 🚨 Safety check
   if (isUnsafeContent(message)) {
-  // log to Supabase for safeguarding record
-  try {
-    await fetch(`${process.env.SUPABASE_URL}/rest/v1/safeguarding_logs`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': process.env.SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({
-        message_preview: message.substring(0, 100),
-        flagged_at: new Date().toISOString(),
-        topic: questionData?.topic || 'unknown'
-      })
+    try {
+      await fetch(`${process.env.SUPABASE_URL}/rest/v1/safeguarding_logs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': process.env.SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          message_preview: message.substring(0, 100),
+          flagged_at: new Date().toISOString(),
+          topic: questionData?.topic || 'unknown'
+        })
+      });
+    } catch(e) {
+      console.error('Safeguarding log failed:', e);
+    }
+
+    return res.status(200).json({
+      replies: [
+        "I'm not able to help with that — but if something's going on for you right now, that matters more than any exam.",
+        "Please talk to a trusted adult — a teacher, parent, or school counsellor. If you're in the UK and need to talk to someone right now, you can contact Childline free on 0800 1111 or at childline.org.uk — they're available 24/7.",
+        "You don't have to deal with anything alone."
+      ]
     });
-  } catch(e) {
-    console.error('Safeguarding log failed:', e);
   }
 
-  return res.status(200).json({
-    replies: [
-      "I'm not able to help with that — but if something's going on for you right now, that matters more than any exam.",
-      "Please talk to a trusted adult — a teacher, parent, or school counsellor. If you're in the UK and need to talk to someone right now, you can contact Childline free on 0800 1111 or at childline.org.uk — they're available 24/7.",
-      "You don't have to deal with anything alone."
-    ]
-  });
-}
-
-const topic = questionData?.topic || '';
-  const selectedGuide = GUIDES[topic];
+  // insightPageSummary now contains the full insight page text (up to 1500 chars)
+  // labelled with the page name — use it as primary reference
   const insightContext = insightPageSummary || '';
 
-const systemPrompt = `You are an expert GCSE tutor working with students aged 13-16. You are calm, encouraging, and deeply knowledgeable. You communicate with the warmth and precision of a £250/hr private tutor — never condescending, never vague, always purposeful.
+  const systemPrompt = `You are an expert GCSE tutor working with students aged 13-16. You are calm, encouraging, and deeply knowledgeable. You communicate with the warmth and precision of a £250/hr private tutor — never condescending, never vague, always purposeful.
 
 IDENTITY: You are a Montura tutor. Never mention AI, DeepSeek, GPT, or how you work. If asked what you are, say "I'm your Montura tutor — here to help you master this."
 
@@ -285,13 +225,16 @@ STUDENT LEVEL: ${effectiveLevel}
 - medium → clear explanation, one challenge question per response, some terminology with definitions
 - strong → concise, precise, push with harder follow-ups and edge cases, assume they know the basics
 
-If the student's message suggests they have zero prior knowledge (e.g. "what even is this", "I don't understand anything", "what does that mean") — treat them as weak regardless of their level setting and start from absolute basics.
+If the student's message suggests zero prior knowledge — treat them as weak regardless of level setting and start from absolute basics.
 
 CURRENT QUESTION: "${questionData?.question || ''}"
 CORRECT ANSWER: ${questionData?.correctAnswer || 'N/A'}
 
-${insightContext ? `INSIGHT (what the student is reading right now — use as your primary reference, cite it naturally):
-${insightContext}` : `Use your GCSE expertise for: "${questionData?.question || ''}"`}
+${insightContext ? `WHAT THE STUDENT IS READING RIGHT NOW (treat this as your primary source — answer directly from this, cite it naturally, never contradict it):
+
+${insightContext}
+
+When a student asks about something covered in the above, answer from it directly. Do not introduce information that conflicts with what they have been taught.` : `Use your GCSE expertise for: "${questionData?.question || ''}"`}
 
 RESPONSE FORMAT — three parts, always:
 PART 1: Explanation — clear, direct, 1-3 sentences. No waffle.
@@ -305,13 +248,11 @@ TEACHING RULES:
 - No answer → explain the concept simply, end with the smallest possible question
 - Socratic always — lead them to the answer, never hand it to them
 - Never repeat an explanation you've already given — change your approach instead
-- Reference the Insight panel naturally when relevant — "your Overview page explains this well"
-- Use subject-specific language: for English lit use PEMEW, SIR, PEEL, AO1/AO2/AO3
+- Reference the insight panel naturally when relevant
+- Use subject-specific language: PEMEW, SIR, PEEL, AO1/AO2/AO3
 - Every response must end with PART 3 — never leave the student without a next step`;
   
   try {
-
-    // ⏱ Timeout for faster feel
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
 
@@ -334,7 +275,6 @@ TEACHING RULES:
     });
 
     clearTimeout(timeout);
-
     const data = await response.json();
 
     if (!response.ok) {
@@ -343,36 +283,27 @@ TEACHING RULES:
 
     let reply = data.choices[0].message.content;
 
-    // Clean formatting
     reply = reply
       .replace(/\*\*/g, '')
       .replace(/\*/g, '')
-      .replace(/#{1,6}\s/g, '');
-
-    // Remove AI mentions
-    reply = reply
+      .replace(/#{1,6}\s/g, '')
       .replace(/deepseek/gi, '')
       .replace(/gpt/gi, '')
       .replace(/openai/gi, '')
       .replace(/language model/gi, '')
       .replace(/ai model/gi, '');
 
-    // 🔥 Split into multiple bubbles (robust)
     let parts = reply
       .split(/PART\s*\d\s*:/i)
       .map(p => p.trim())
       .filter(p => p.length > 0);
 
-    // Fallback
-    if (parts.length === 0) {
-      parts = [reply];
-    }
+    if (parts.length === 0) parts = [reply];
 
     return res.status(200).json({ replies: parts });
 
   } catch (error) {
     console.error('Chat error:', error);
-
     return res.status(200).json({
       replies: [
         "Something went wrong, but don't worry.",
