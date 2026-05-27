@@ -29,141 +29,82 @@ function isUnsafeContent(text) {
 
 export default async function handler(req, res) {
   const origin = req.headers.origin;
-  const isAllowed = ALLOWED_ORIGINS.some(allowed => 
+  const isAllowed = ALLOWED_ORIGINS.some(allowed =>
     typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
   );
-  
-  if (!origin || !isAllowed) {
-    return res.status(403).json({ error: 'Forbidden' });
-  }
+
+  if (!origin || !isAllowed) return res.status(403).json({ error: 'Forbidden' });
 
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
     const {
-      message,
-      conversationHistory,
-      questionData,
-      isMarkingRequest,
-      studentText,
-      allLineData,
-      studentLevel,
-      insightPageSummary,
-      studentProfile
+      message, conversationHistory, questionData,
+      isMarkingRequest, studentText, allLineData,
+      studentLevel, insightPageSummary, studentProfile
     } = req.body;
 
     if (isMarkingRequest) {
       return await handleMarkingRequest(req, res, { studentText, allLineData, questionData });
     }
-
     return await handleChatRequest(req, res, {
-      message,
-      conversationHistory,
-      questionData,
-      studentLevel,
-      insightPageSummary,
-      studentProfile
+      message, conversationHistory, questionData,
+      studentLevel, insightPageSummary, studentProfile
     });
 
   } catch (error) {
     console.error('API error:', error);
-    return res.status(500).json({ 
-      error: 'Failed to process request',
-      details: error.message 
-    });
+    return res.status(500).json({ error: 'Failed to process request', details: error.message });
   }
 }
 
 // ============================================
 // MARKING HANDLER
 // ============================================
-
 async function handleMarkingRequest(req, res, { studentText, allLineData, questionData }) {
-  const questionId = questionData?.exerciseId || 'English_Lit_Q4';
   const totalMarks = questionData?.marks || 2;
   const question = questionData?.question || '';
 
-  const markingPrompt = `You are a UK AQA GCSE English Literature examiner. Mark this answer with PROFESSIONAL EXAM BOARD STRICTNESS.
+  const markingPrompt = `You are a UK AQA GCSE English Literature examiner. Mark strictly.
 
-QUESTION (${totalMarks} marks):
-${question}
+QUESTION (${totalMarks} marks): ${question}
+STUDENT ANSWER: ${studentText}
 
-STUDENT ANSWER:
-${studentText}
-
-STRICT MARKING CRITERIA:
-
-For 2-mark questions:
+CRITERIA:
 - 2 marks: TWO distinct features clearly explained in full sentences
-- 1 mark: ONE feature explained OR two features mentioned without explanation
-- 0 marks: No valid features, single words, or irrelevant answers
+- 1 mark: ONE feature explained OR two features without explanation
+- 0 marks: single words, vague statements, under 15 words, irrelevant
 
-For 3-mark questions:
-- 3 marks: THREE reasons explained in full sentences with reference to the text
-- 2 marks: TWO reasons explained OR three reasons with minimal explanation
-- 1 mark: ONE reason explained OR vague understanding
-- 0 marks: No valid reasons or irrelevant answer
-
-REJECTION CRITERIA (Award 0 marks if):
-- Single words or phrases without sentences
-- Vague statements without explanation
-- Answers under 15 words total
-- No reference to relevant concepts
-- Completely irrelevant content
-
-OUTPUT (JSON only, no markdown):
-{
-  "marksAwarded": 1,
-  "strengths": ["One sentence of constructive feedback"]
-}`;
+OUTPUT JSON only:
+{"marksAwarded": 1, "strengths": ["one sentence of feedback"]}`;
 
   try {
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}` },
       body: JSON.stringify({
         model: 'deepseek-chat',
         messages: [
-          {
-            role: 'system',
-            content: 'You are a strict UK GCSE examiner. Require full sentences and explanations. Single words or phrases get 0 marks. Output only JSON.'
-          },
+          { role: 'system', content: 'Strict UK GCSE examiner. Output only JSON.' },
           { role: 'user', content: markingPrompt }
         ],
         temperature: 0.1,
-        max_tokens: 300
+        max_tokens: 200
       })
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error?.message || 'DeepSeek API error');
-    }
-
     const data = await response.json();
-    let aiReply = data.choices[0].message.content.trim();
-    aiReply = aiReply.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-    
+    let aiReply = data.choices[0].message.content.trim()
+      .replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     const markingResult = JSON.parse(aiReply);
-    if (markingResult.marksAwarded > totalMarks) {
-      markingResult.marksAwarded = totalMarks;
-    }
+    if (markingResult.marksAwarded > totalMarks) markingResult.marksAwarded = totalMarks;
     markingResult.highlights = [];
-    
     return res.status(200).json(markingResult);
 
   } catch (error) {
@@ -175,7 +116,6 @@ OUTPUT (JSON only, no markdown):
 // ============================================
 // CHAT HANDLER
 // ============================================
-
 async function handleChatRequest(req, res, { message, conversationHistory, questionData, studentLevel, insightPageSummary, studentProfile }) {
   const targetGrade = studentProfile?.target_grade || studentProfile?.current_grade || 5;
   const calibratedLevel = targetGrade <= 4 ? 'weak' : targetGrade <= 6 ? 'medium' : 'strong';
@@ -197,71 +137,54 @@ async function handleChatRequest(req, res, { message, conversationHistory, quest
           topic: questionData?.topic || 'unknown'
         })
       });
-    } catch(e) {
-      console.error('Safeguarding log failed:', e);
-    }
+    } catch(e) { console.error('Safeguarding log failed:', e); }
 
     return res.status(200).json({
       replies: [
         "I'm not able to help with that — but if something's going on for you right now, that matters more than any exam.",
-        "Please talk to a trusted adult — a teacher, parent, or school counsellor. If you're in the UK and need to talk to someone right now, you can contact Childline free on 0800 1111 or at childline.org.uk — they're available 24/7.",
+        "Please talk to a trusted adult. In the UK you can contact Childline free on 0800 1111 or childline.org.uk — available 24/7.",
         "You don't have to deal with anything alone."
       ]
     });
   }
 
-  // insightPageSummary now contains the full insight page text (up to 1500 chars)
-  // labelled with the page name — use it as primary reference
   const insightContext = insightPageSummary || '';
+  const isGreeting = /^(hi|hello|hey|sup|yo|hiya|howdy|good morning|good afternoon|good evening)[\s!?.]*$/i.test(message.trim());
 
-  const systemPrompt = `You are an expert GCSE tutor working with students aged 13-16. You are calm, encouraging, and deeply knowledgeable. You communicate with the warmth and precision of a £250/hr private tutor — never condescending, never vague, always purposeful.
+  const systemPrompt = `You are a Montura tutor — a warm, expert GCSE tutor for students aged 13-16. Never mention AI, DeepSeek, or GPT.
 
-IDENTITY: You are a Montura tutor. Never mention AI, DeepSeek, GPT, or how you work. If asked what you are, say "I'm your Montura tutor — here to help you master this."
-
-SAFEGUARDING: Never engage with harmful, political, religious or inappropriate topics. If a student seems distressed, respond with warmth and direct them to a trusted adult immediately.
+RULES:
+- Keep every response SHORT. Maximum 3 sentences total across all parts.
+- Always split your response into exactly 2-3 separate short messages using the markers BUBBLE_1, BUBBLE_2, BUBBLE_3.
+- Each bubble is ONE sentence only. Never more.
+- Never write essays. Never list multiple points. One idea per bubble.
+- Socratic always — ask one question to guide the student, never give the full answer.
 
 STUDENT LEVEL: ${effectiveLevel}
-- weak → plain English only, define every term, very short steps, maximum encouragement, never make them feel stupid
-- medium → clear explanation, one challenge question per response, some terminology with definitions
-- strong → concise, precise, push with harder follow-ups and edge cases, assume they know the basics
+- weak → very simple words, maximum warmth, tiny steps
+- medium → clear and friendly, one challenge per response  
+- strong → concise, push harder
 
-If the student's message suggests zero prior knowledge — treat them as weak regardless of level setting and start from absolute basics.
-
+${isGreeting ? `The student said "${message}". Respond warmly and briefly, then ask what they are working on today.` : `
 CURRENT QUESTION: "${questionData?.question || ''}"
 CORRECT ANSWER: ${questionData?.correctAnswer || 'N/A'}
+${insightContext ? `WHAT STUDENT IS READING:\n${insightContext}` : ''}
 
-${insightContext ? `WHAT THE STUDENT IS READING RIGHT NOW (treat this as your primary source — answer directly from this, cite it naturally, never contradict it):
+Respond to: "${message}"
+`}
 
-${insightContext}
+OUTPUT FORMAT — use exactly this structure, nothing else:
+BUBBLE_1: [one sentence]
+BUBBLE_2: [one sentence]
+BUBBLE_3: [one sentence — a question to guide them forward]`;
 
-When a student asks about something covered in the above, answer from it directly. Do not introduce information that conflicts with what they have been taught.` : `Use your GCSE expertise for: "${questionData?.question || ''}"`}
-
-RESPONSE FORMAT — three parts, always:
-PART 1: Explanation — clear, direct, 1-3 sentences. No waffle.
-PART 2: Example — concrete and specific to this question. Skip if not helpful.
-PART 3: Question — one guiding question that moves the student forward. Never rhetorical.
-
-TEACHING RULES:
-- Correct → confirm warmly in one sentence, immediately ask a harder follow-up
-- Partially correct → name exactly what's right, then guide the gap without filling it
-- Wrong → never say "wrong" — say "not quite" or "almost" — then ask one small step question
-- No answer → explain the concept simply, end with the smallest possible question
-- Socratic always — lead them to the answer, never hand it to them
-- Never repeat an explanation you've already given — change your approach instead
-- Reference the insight panel naturally when relevant
-- Use subject-specific language: PEMEW, SIR, PEEL, AO1/AO2/AO3
-- Every response must end with PART 3 — never leave the student without a next step`;
-  
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
 
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}` },
       signal: controller.signal,
       body: JSON.stringify({
         model: 'deepseek-chat',
@@ -269,46 +192,51 @@ TEACHING RULES:
           { role: 'system', content: systemPrompt },
           { role: 'user', content: message }
         ],
-        temperature: 0.5,
-        max_tokens: 220
+        temperature: 0.4,
+        max_tokens: 180
       })
     });
 
     clearTimeout(timeout);
     const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error?.message || 'API error');
-    }
+    if (!response.ok) throw new Error(data.error?.message || 'API error');
 
     let reply = data.choices[0].message.content;
 
+    // Clean formatting
     reply = reply
-      .replace(/\*\*/g, '')
-      .replace(/\*/g, '')
+      .replace(/\*\*/g, '').replace(/\*/g, '')
       .replace(/#{1,6}\s/g, '')
-      .replace(/deepseek/gi, '')
-      .replace(/gpt/gi, '')
-      .replace(/openai/gi, '')
-      .replace(/language model/gi, '')
+      .replace(/deepseek/gi, '').replace(/gpt/gi, '')
+      .replace(/openai/gi, '').replace(/language model/gi, '')
       .replace(/ai model/gi, '');
 
+    // Split on BUBBLE_N markers
     let parts = reply
-      .split(/PART\s*\d\s*:/i)
+      .split(/BUBBLE_\d\s*:/i)
       .map(p => p.trim())
       .filter(p => p.length > 0);
 
+    // Fallback: split on sentence boundaries if markers missing
+    if (parts.length <= 1) {
+      parts = reply
+        .split(/(?<=[.!?])\s+/)
+        .map(p => p.trim())
+        .filter(p => p.length > 10);
+    }
+
+    // Final fallback
     if (parts.length === 0) parts = [reply];
+
+    // Cap at 3 bubbles max
+    parts = parts.slice(0, 3);
 
     return res.status(200).json({ replies: parts });
 
   } catch (error) {
     console.error('Chat error:', error);
     return res.status(200).json({
-      replies: [
-        "Something went wrong, but don't worry.",
-        "Try asking again — I'm here to help."
-      ]
+      replies: ["Something went wrong.", "Try asking again — I'm here to help."]
     });
   }
 }
