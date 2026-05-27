@@ -32,7 +32,6 @@ export default async function handler(req, res) {
   const isAllowed = ALLOWED_ORIGINS.some(allowed =>
     typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
   );
-
   if (!origin || !isAllowed) return res.status(403).json({ error: 'Forbidden' });
 
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -44,11 +43,8 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const {
-      message, conversationHistory, questionData,
-      isMarkingRequest, studentText, allLineData,
-      studentLevel, insightPageSummary, studentProfile
-    } = req.body;
+    const { message, conversationHistory, questionData, isMarkingRequest,
+            studentText, allLineData, studentLevel, insightPageSummary, studentProfile } = req.body;
 
     if (isMarkingRequest) {
       return await handleMarkingRequest(req, res, { studentText, allLineData, questionData });
@@ -57,7 +53,6 @@ export default async function handler(req, res) {
       message, conversationHistory, questionData,
       studentLevel, insightPageSummary, studentProfile
     });
-
   } catch (error) {
     console.error('API error:', error);
     return res.status(500).json({ error: 'Failed to process request', details: error.message });
@@ -71,18 +66,11 @@ async function handleMarkingRequest(req, res, { studentText, allLineData, questi
   const totalMarks = questionData?.marks || 2;
   const question = questionData?.question || '';
 
-  const markingPrompt = `You are a UK AQA GCSE English Literature examiner. Mark strictly.
-
+  const markingPrompt = `UK AQA GCSE examiner. Mark strictly.
 QUESTION (${totalMarks} marks): ${question}
 STUDENT ANSWER: ${studentText}
-
-CRITERIA:
-- 2 marks: TWO distinct features clearly explained in full sentences
-- 1 mark: ONE feature explained OR two features without explanation
-- 0 marks: single words, vague statements, under 15 words, irrelevant
-
-OUTPUT JSON only:
-{"marksAwarded": 1, "strengths": ["one sentence of feedback"]}`;
+2 marks: TWO features explained in full sentences. 1 mark: ONE feature. 0 marks: vague, under 15 words, irrelevant.
+OUTPUT JSON only: {"marksAwarded": 1, "strengths": ["one sentence"]}`;
 
   try {
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
@@ -95,10 +83,9 @@ OUTPUT JSON only:
           { role: 'user', content: markingPrompt }
         ],
         temperature: 0.1,
-        max_tokens: 200
+        max_tokens: 150
       })
     });
-
     const data = await response.json();
     let aiReply = data.choices[0].message.content.trim()
       .replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
@@ -106,7 +93,6 @@ OUTPUT JSON only:
     if (markingResult.marksAwarded > totalMarks) markingResult.marksAwarded = totalMarks;
     markingResult.highlights = [];
     return res.status(200).json(markingResult);
-
   } catch (error) {
     console.error('Marking error:', error);
     return res.status(200).json({ marksAwarded: 0, strengths: [], highlights: [] });
@@ -141,42 +127,41 @@ async function handleChatRequest(req, res, { message, conversationHistory, quest
 
     return res.status(200).json({
       replies: [
-        "I'm not able to help with that — but if something's going on for you right now, that matters more than any exam.",
-        "Please talk to a trusted adult. In the UK you can contact Childline free on 0800 1111 or childline.org.uk — available 24/7.",
-        "You don't have to deal with anything alone."
+        "That's not something I can help with.",
+        "If something's going on, please talk to a trusted adult.",
+        "Childline: 0800 1111 — free, 24/7."
       ]
     });
   }
 
   const insightContext = insightPageSummary || '';
-  const isGreeting = /^(hi|hello|hey|sup|yo|hiya|howdy|good morning|good afternoon|good evening)[\s!?.]*$/i.test(message.trim());
+  const isGreeting = /^(hi|hello|hey|sup|yo|hiya|howdy|gm|morning|afternoon|evening)[\s!?.]*$/i.test(message.trim());
 
-  const systemPrompt = `You are a Montura tutor — a warm, expert GCSE tutor for students aged 13-16. Never mention AI, DeepSeek, or GPT.
+  // CRITICAL: system prompt forces SHORT responses
+  const systemPrompt = `You are a Montura tutor. You help GCSE students aged 13-17.
 
-RULES:
-- Keep every response SHORT. Maximum 3 sentences total across all parts.
-- Always split your response into exactly 2-3 separate short messages using the markers BUBBLE_1, BUBBLE_2, BUBBLE_3.
-- Each bubble is ONE sentence only. Never more.
-- Never write essays. Never list multiple points. One idea per bubble.
-- Socratic always — ask one question to guide the student, never give the full answer.
+STRICT LENGTH RULE — THIS IS THE MOST IMPORTANT RULE:
+Each message must be 15 words or fewer. No exceptions. Ever.
+You send 3 separate short messages. Each one is max 15 words.
+Think of it like texting — short, punchy, one idea at a time.
+
+NEVER write long paragraphs. NEVER explain everything at once.
+If you feel the urge to write more — stop. Cut it down.
+
+FORMAT — output exactly this, nothing else:
+B1: [max 15 words]
+B2: [max 15 words]  
+B3: [max 15 words — always end with a question]
 
 STUDENT LEVEL: ${effectiveLevel}
-- weak → very simple words, maximum warmth, tiny steps
-- medium → clear and friendly, one challenge per response  
-- strong → concise, push harder
-
-${isGreeting ? `The student said "${message}". Respond warmly and briefly, then ask what they are working on today.` : `
-CURRENT QUESTION: "${questionData?.question || ''}"
-CORRECT ANSWER: ${questionData?.correctAnswer || 'N/A'}
-${insightContext ? `WHAT STUDENT IS READING:\n${insightContext}` : ''}
-
-Respond to: "${message}"
-`}
-
-OUTPUT FORMAT — use exactly this structure, nothing else:
-BUBBLE_1: [one sentence]
-BUBBLE_2: [one sentence]
-BUBBLE_3: [one sentence — a question to guide them forward]`;
+${isGreeting
+  ? 'Student said hi. Welcome them warmly. Ask what topic they need help with.'
+  : `Current question: "${questionData?.question || 'general'}"
+Correct answer: ${questionData?.correctAnswer || 'N/A'}
+${insightContext ? `What they just read: ${insightContext.substring(0, 300)}` : ''}
+Student message: "${message}"
+Be Socratic — guide them, never give the answer away.`
+}`;
 
   try {
     const controller = new AbortController();
@@ -192,8 +177,8 @@ BUBBLE_3: [one sentence — a question to guide them forward]`;
           { role: 'system', content: systemPrompt },
           { role: 'user', content: message }
         ],
-        temperature: 0.4,
-        max_tokens: 180
+        temperature: 0.3,
+        max_tokens: 120
       })
     });
 
@@ -201,42 +186,43 @@ BUBBLE_3: [one sentence — a question to guide them forward]`;
     const data = await response.json();
     if (!response.ok) throw new Error(data.error?.message || 'API error');
 
-    let reply = data.choices[0].message.content;
-
-    // Clean formatting
-    reply = reply
+    let reply = data.choices[0].message.content
       .replace(/\*\*/g, '').replace(/\*/g, '')
       .replace(/#{1,6}\s/g, '')
-      .replace(/deepseek/gi, '').replace(/gpt/gi, '')
-      .replace(/openai/gi, '').replace(/language model/gi, '')
-      .replace(/ai model/gi, '');
+      .replace(/deepseek/gi, '').replace(/openai/gi, '')
+      .replace(/language model/gi, '').replace(/\bai\b/gi, '');
 
-    // Split on BUBBLE_N markers
+    // Split on B1/B2/B3 markers
     let parts = reply
-      .split(/BUBBLE_\d\s*:/i)
+      .split(/\bB[123]\s*:/i)
       .map(p => p.trim())
       .filter(p => p.length > 0);
 
-    // Fallback: split on sentence boundaries if markers missing
+    // Fallback: split on sentence endings
     if (parts.length <= 1) {
       parts = reply
-        .split(/(?<=[.!?])\s+/)
+        .replace(/([.!?])\s+/g, '$1|||')
+        .split('|||')
         .map(p => p.trim())
-        .filter(p => p.length > 10);
+        .filter(p => p.length > 3);
     }
 
-    // Final fallback
-    if (parts.length === 0) parts = [reply];
+    // Hard cap each bubble at 20 words
+    parts = parts.map(p => {
+      const words = p.split(/\s+/);
+      return words.length > 20 ? words.slice(0, 20).join(' ') + '…' : p;
+    });
 
-    // Cap at 3 bubbles max
+    // Cap at 3 bubbles
     parts = parts.slice(0, 3);
+    if (parts.length === 0) parts = ["Got it — what would you like to know?"];
 
     return res.status(200).json({ replies: parts });
 
   } catch (error) {
     console.error('Chat error:', error);
     return res.status(200).json({
-      replies: ["Something went wrong.", "Try asking again — I'm here to help."]
+      replies: ["Something went wrong.", "Try asking again!"]
     });
   }
 }
