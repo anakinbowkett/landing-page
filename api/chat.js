@@ -160,7 +160,8 @@ ${isGreeting
 Correct answer: ${questionData?.correctAnswer || 'N/A'}
 ${insightContext ? `What they just read: ${insightContext.substring(0, 300)}` : ''}
 Student message: "${message}"
-Be Socratic — guide them, never give the answer away.`
+Be Socratic — guide them, never give the answer away.
+Never refer to a specific named writer or author unless the question or insight explicitly names one. Use "the writer" or "the poet" generically. Never invent or assume an author name.`
 }`;
 
   try {
