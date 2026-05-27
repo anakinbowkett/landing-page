@@ -224,6 +224,89 @@ function slugToTitle(slug) {
 ════════════════════════════════════════════ */
 const papersData = [
 
+/* ══════════════════════════════════════
+       FOUNDATION — UNIVERSAL (Phases 0–3)
+    ══════════════════════════════════════ */
+    {
+        tag: "Foundation",
+        title: "Start Here — Universal Skills",
+        type: "single",
+        pillars: [
+            {
+                tag: "Phase 0", title: "Orientation — What Is This Course?",
+                lectures: [
+                    { slug: "p0-l1-what-is-gcse-english-literature",         title: "What is GCSE English Literature?" },
+                    { slug: "p0-l2-what-does-the-exam-look-like",            title: "What Does the Exam Look Like?" },
+                    { slug: "p0-l3-what-is-the-examiner-actually-marking",   title: "What is the Examiner Actually Marking?" },
+                    { slug: "p0-l4-why-your-opinion-matters",                title: "Why Your Opinion Matters" },
+                    { slug: "p0-l5-what-is-a-grade-9-and-how-do-you-get-there", title: "What is a Grade 9 and How Do You Get There?" },
+                    { slug: "p0-l6-how-to-use-this-platform",               title: "How to Use This Platform" },
+                    { slug: "p0-l7-what-texts-will-you-study-and-why",      title: "What Texts Will You Study and Why?" },
+                    { slug: "p0-l8-how-to-read-anything-with-intention",    title: "How to Read Anything with Intention" }
+                ]
+            },
+            {
+                tag: "Phase 1", title: "Close Reading Skills",
+                lectures: [
+                    { slug: "cr-l1-what-a-word-is-actually-doing",               title: "What a Word is Actually Doing" },
+                    { slug: "cr-l2-denotation-vs-connotation",                   title: "Denotation vs Connotation" },
+                    { slug: "cr-l3-why-writers-choose-words",                    title: "Why Writers Choose Words" },
+                    { slug: "cr-l4-what-a-sentence-is-doing-vs-what-it-says",   title: "What a Sentence is Doing vs What it Says" },
+                    { slug: "cr-l5-how-to-zoom-in-from-paragraph-to-word",      title: "How to Zoom In — From Paragraph to Word" },
+                    { slug: "cr-l6-what-mood-is-and-how-it-is-created",         title: "What Mood is and How it is Created" },
+                    { slug: "cr-l7-what-tone-is-and-how-it-differs-from-mood",  title: "What Tone is and How it Differs from Mood" },
+                    { slug: "cr-l8-how-to-read-a-character",                    title: "How to Read a Character" },
+                    { slug: "cr-l9-how-to-read-a-theme",                        title: "How to Read a Theme" },
+                    { slug: "cr-l10-what-an-audience-is-and-why-it-matters",    title: "What an Audience is and Why it Matters" },
+                    { slug: "cr-l11-how-context-changes-meaning",               title: "How Context Changes Meaning" },
+                    { slug: "cr-l12-reading-a-short-extract-from-scratch",      title: "Reading a Short Extract from Scratch" }
+                ]
+            },
+            {
+                tag: "Phase 2", title: "The Writer's Toolkit — Techniques",
+                lectures: [
+                    { slug: "tk-l1-metaphor",                                  title: "Metaphor" },
+                    { slug: "tk-l2-simile",                                    title: "Simile" },
+                    { slug: "tk-l3-personification",                           title: "Personification" },
+                    { slug: "tk-l4-repetition",                                title: "Repetition" },
+                    { slug: "tk-l5-contrast",                                  title: "Contrast" },
+                    { slug: "tk-l6-oxymoron",                                  title: "Oxymoron" },
+                    { slug: "tk-l7-semantic-field",                            title: "Semantic Field" },
+                    { slug: "tk-l8-imagery",                                   title: "Imagery" },
+                    { slug: "tk-l9-foreshadowing",                             title: "Foreshadowing" },
+                    { slug: "tk-l10-dramatic-irony",                           title: "Dramatic Irony" },
+                    { slug: "tk-l11-soliloquy-and-aside",                      title: "Soliloquy and Aside" },
+                    { slug: "tk-l12-symbolism",                                title: "Symbolism" },
+                    { slug: "tk-l13-hyperbole",                                title: "Hyperbole" },
+                    { slug: "tk-l14-rhetorical-questions",                     title: "Rhetorical Questions" },
+                    { slug: "tk-l15-alliteration-and-sound",                   title: "Alliteration and Sound" },
+                    { slug: "tk-l16-structure-how-shape-creates-meaning",      title: "Structure — How Shape Creates Meaning" },
+                    { slug: "tk-l17-form-why-it-matters-what-type-of-text-this-is", title: "Form — Why it Matters What Type of Text This Is" },
+                    { slug: "tk-l18-narrative-voice",                          title: "Narrative Voice" },
+                    { slug: "tk-l19-sentence-structure",                       title: "Sentence Structure" },
+                    { slug: "tk-l20-putting-it-all-together",                  title: "Putting it All Together" }
+                ]
+            },
+            {
+                tag: "Phase 3", title: "Exam Writing Skills",
+                lectures: [
+                    { slug: "ew-l1-what-ao1-looks-like-written-down",                    title: "What AO1 Looks Like Written Down" },
+                    { slug: "ew-l2-what-ao2-looks-like-written-down",                    title: "What AO2 Looks Like Written Down" },
+                    { slug: "ew-l3-what-ao3-looks-like-written-down",                    title: "What AO3 Looks Like Written Down" },
+                    { slug: "ew-l4-the-sir-verbs-suggests-implies-reveals",              title: "The SIR Verbs — Suggests, Implies, Reveals" },
+                    { slug: "ew-l5-peel-point-evidence-explain-link",                    title: "PEEL — Point, Evidence, Explain, Link" },
+                    { slug: "ew-l6-pemew-point-evidence-method-explain-writers-purpose", title: "PEMEW — Point, Evidence, Method, Explain, Writer's Purpose" },
+                    { slug: "ew-l7-how-to-read-an-exam-question",                        title: "How to Read an Exam Question" },
+                    { slug: "ew-l8-how-to-plan-an-answer-in-two-minutes",               title: "How to Plan an Answer in Two Minutes" },
+                    { slug: "ew-l9-how-to-write-under-time-pressure",                   title: "How to Write Under Time Pressure" },
+                    { slug: "ew-l10-what-a-grade-9-paragraph-looks-like-and-why",       title: "What a Grade 9 Paragraph Looks Like and Why" }
+                ]
+            }
+        ]
+    },  
+  
+  
+  
     /* ══════════════════════════════════════
        PAPER 1 · SECTION A — SHAKESPEARE
     ══════════════════════════════════════ */
