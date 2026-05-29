@@ -7,179 +7,73 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-        font-family: 'Inter', sans-serif;
-        background: #ffffff;
-        display: flex;
-        min-height: 100vh;
-    }
-
-    /* ── Sidebar ── */
-    .sidebar {
-        width: 280px;
-        background: transparent;
-        padding: 2rem 1.5rem;
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        height: calc(100vh - 40px);
-        overflow-y: auto;
-        margin: 20px;
-    }
+    body { font-family: 'Inter', sans-serif; background: #ffffff; display: flex; min-height: 100vh; }
+    .sidebar { width: 280px; background: transparent; padding: 2rem 1.5rem; display: flex; flex-direction: column; position: fixed; height: calc(100vh - 40px); overflow-y: auto; margin: 20px; }
     .logo { font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 2.5rem; letter-spacing: -0.02em; }
-    .nav-item {
-        display: flex; align-items: center; gap: 0.875rem;
-        padding: 0.875rem 1rem; margin-bottom: 0.5rem; border-radius: 8px;
-        cursor: pointer; transition: all 0.2s; font-size: 0.9375rem;
-        font-weight: 500; color: #374151; text-decoration: none;
-    }
+    .nav-item { display: flex; align-items: center; gap: 0.875rem; padding: 0.875rem 1rem; margin-bottom: 0.5rem; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 0.9375rem; font-weight: 500; color: #374151; text-decoration: none; }
     .nav-item:hover { background: rgba(0,0,0,0.05); }
     .nav-item.active { background: #ffffff; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
     .nav-icon { font-size: 1.125rem; }
     .nav-spacer { flex: 1; }
-    .live-study-btn {
-        background: #000; color: white; padding: 0.875rem 1.25rem;
-        border-radius: 8px; font-size: 0.9375rem; font-weight: 600;
-        cursor: pointer; transition: all 0.2s; border: none; width: 100%; margin-top: auto;
-    }
+    .live-study-btn { background: #000; color: white; padding: 0.875rem 1.25rem; border-radius: 8px; font-size: 0.9375rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; width: 100%; margin-top: auto; }
     .live-study-btn:hover { background: #1a1a1a; transform: translateY(-1px); }
-
-    /* ── Main ── */
-    .main-content {
-        flex: 1; margin-left: 320px; margin-right: 20px;
-        margin-top: 20px; margin-bottom: 20px; background: #ffffff;
-        border-radius: 10px; overflow: hidden;
-        border: 1px solid #e0e4e9; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    }
+    .main-content { flex: 1; margin-left: 320px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #e0e4e9; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
     .content-wrapper { background: #97b6e5; padding: 8rem 0 0 0; }
     .subject-header { display: flex; align-items: center; margin-bottom: 4rem; position: relative; }
-    .subject-line-left  { height: 1px; background: #d1d5db; flex: 0 0 60px; }
+    .subject-line-left { height: 1px; background: #d1d5db; flex: 0 0 60px; }
     .subject-line-right { height: 1px; background: #d1d5db; flex: 1; }
     .subject-name { font-size: 2.5rem; font-weight: 600; color: #111827; padding: 0 2rem; letter-spacing: -0.03em; }
-
-    /* ── Topics section ── */
     .topics-section { background: transparent; padding: 0 3rem 2.5rem 3rem; }
-
-    /* ── Top-level paper accordions ── */
     .papers-list { display: flex; flex-direction: column; gap: 0; margin-top: 40px; width: 100%; max-width: 900px; }
-
-    .paper-item {
-        border: 1px solid #e0e0e0;
-        border-radius: 12px;
-        margin-bottom: 12px;
-        overflow: hidden;
-        background: #ffffff;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    }
-    .paper-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 22px 28px; cursor: pointer; background: #ffffff;
-        transition: background 0.15s; user-select: none; border: none; width: 100%;
-    }
+    .paper-item { border: 1px solid #e0e0e0; border-radius: 12px; margin-bottom: 12px; overflow: hidden; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .paper-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 28px; cursor: pointer; background: #ffffff; transition: background 0.15s; user-select: none; border: none; width: 100%; }
     .paper-header:hover { background: #fafafa; }
     .paper-header-left { display: flex; align-items: center; gap: 16px; }
-    .paper-tag {
-        font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-        color: #fff; background: #111; padding: 4px 9px; border-radius: 6px;
-        font-family: 'Inter', sans-serif; white-space: nowrap; flex-shrink: 0;
-    }
-    .paper-title { font-size: 16px; font-weight: 600; color: #111; letter-spacing: -0.02em; font-family: 'Inter', sans-serif; }
+    .paper-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; background: #111; padding: 4px 9px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+    .paper-title { font-size: 16px; font-weight: 600; color: #111; letter-spacing: -0.02em; }
     .paper-chevron { font-size: 18px; color: #bbb; display: inline-block; transition: transform 0.22s; flex-shrink: 0; }
     .paper-item.open .paper-chevron { transform: rotate(90deg); }
-
-    .paper-body {
-        max-height: 0; overflow: hidden;
-        transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1);
-        border-top: 0px solid #f0f0f0;
-    }
+    .paper-body { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1); border-top: 0px solid #f0f0f0; }
     .paper-item.open .paper-body { max-height: 6000px; border-top-width: 1px; }
-
-    /* ── Pillar panel (inside paper body) ── */
-    .lec-panel { display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #fff; border: none; border-radius: 0; }
-
-    /* Pillars */
+    .lec-panel { display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #fff; }
     .lec-pillars { display: flex; flex-direction: column; gap: 10px; }
     .lec-pillar-box { border: 1px solid #e5e5e5; border-radius: 13px; overflow: hidden; }
-    .lec-pillar-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 15px 20px; cursor: pointer; background: #fff;
-        transition: background 0.15s; user-select: none;
-    }
+    .lec-pillar-header { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; cursor: pointer; background: #fff; transition: background 0.15s; user-select: none; }
     .lec-pillar-header:hover { background: #fafafa; }
-    .lec-pillar-header-left  { display: flex; align-items: center; gap: 12px; }
+    .lec-pillar-header-left { display: flex; align-items: center; gap: 12px; }
     .lec-pillar-header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-    .lec-pillar-tag {
-        font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-        color: #fff; background: #111; padding: 3px 8px; border-radius: 5px;
-        font-family: 'Inter', sans-serif; white-space: nowrap; flex-shrink: 0;
-    }
-    .lec-pillar-name { font-size: 13.5px; font-weight: 600; color: #111; letter-spacing: -0.01em; font-family: 'Inter', sans-serif; }
+    .lec-pillar-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; background: #111; padding: 3px 8px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
+    .lec-pillar-name { font-size: 13.5px; font-weight: 600; color: #111; letter-spacing: -0.01em; }
     .lec-aggregate-blocks { display: flex; gap: 3px; flex-wrap: wrap; max-width: 220px; align-items: center; }
     .lec-agg-block { width: 9px; height: 9px; border-radius: 2px; background: #efefef; flex-shrink: 0; }
-    .lec-agg-block.correct { background: #54D3AB; }
-    .lec-agg-block.wrong   { background: #E16280; }
     .lec-pillar-chevron { font-size: 14px; color: #bbb; display: inline-block; transition: transform 0.22s; flex-shrink: 0; }
     .lec-pillar-box.open .lec-pillar-chevron { transform: rotate(90deg); }
     .lec-pillar-body { max-height: 0; overflow: hidden; transition: max-height 0.32s cubic-bezier(0.4,0,0.2,1); }
     .lec-pillar-box.open .lec-pillar-body { max-height: 4000px; border-top: 1px solid #f0f0f0; }
-
-    /* Lecture rows */
-    .lec-sub-row {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 11px 20px; border-bottom: 1px solid #f5f5f5;
-        cursor: pointer; transition: background 0.12s; background: #fff;
-    }
+    .lec-sub-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 20px; border-bottom: 1px solid #f5f5f5; cursor: pointer; transition: background 0.12s; background: #fff; }
     .lec-sub-row:last-child { border-bottom: none; }
     .lec-sub-row:hover { background: #f9f9f9; }
-    .lec-sub-row:hover .lec-sub-arrow { opacity: 1; transform: translateX(3px); }
-    .lec-sub-left  { display: flex; align-items: center; gap: 12px; }
-    .lec-sub-num   { font-size: 11px; font-weight: 600; color: #d0d0d0; min-width: 22px; font-family: 'Inter', sans-serif; }
-    .lec-sub-name  { font-size: 13px; font-weight: 400; color: #333; letter-spacing: -0.01em; font-family: 'Inter', sans-serif; }
+    .lec-sub-left { display: flex; align-items: center; gap: 12px; }
+    .lec-sub-num { font-size: 11px; font-weight: 600; color: #d0d0d0; min-width: 22px; }
+    .lec-sub-name { font-size: 13px; font-weight: 400; color: #333; letter-spacing: -0.01em; }
     .lec-sub-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-    .lec-blocks    { display: flex; gap: 4px; align-items: center; }
-    .lec-block { width: 13px; height: 13px; border-radius: 3px; background: #efefef; flex-shrink: 0; transition: background 0.2s; }
-    .lec-block.correct { background: #54D3AB; }
-    .lec-block.wrong   { background: #E16280; }
+    .lec-blocks { display: flex; gap: 4px; align-items: center; }
+    .lec-block { width: 13px; height: 13px; border-radius: 3px; background: #efefef; flex-shrink: 0; }
     .lec-sub-arrow { font-size: 12px; color: #ccc; opacity: 0.4; transition: all 0.15s; }
-</style>
+    </style>
 </head>
 <body>
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-        <div class="logo"><img src="https://i.postimg.cc/nVYDqvGr/Monturalearn-logo.jpg" alt="Monturalearn" style="height:32px;object-fit:contain;"></div>
-        
-<a href="../../dashboard.html" class="nav-item">
-    <span class="nav-icon">🏠</span>
-    <span>Dashboard</span>
-</a>
-
-<a href="lectures.html" class="nav-item active">
-    <span class="nav-icon">∞</span>
-    <span>Lectures</span>
-</a>
-
-<a href="flashtiles.html" class="nav-item">
-    <span class="nav-icon">⚡</span>
-    <span>Flashtiles</span>
-</a>
-
-<a href="quick-test.html" class="nav-item">
-    <span class="nav-icon">🕐</span>
-    <span>Quiz / Quick Test</span>
-</a>
-
-<a href="past-papers.html" class="nav-item">
-    <span class="nav-icon">📄</span>
-    <span>Past Papers</span>
-</a>
-        <div class="nav-spacer"></div>
-
-        <button class="live-study-btn">Allow Live Study</button>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
+<aside class="sidebar">
+    <div class="logo"><img src="https://i.postimg.cc/nVYDqvGr/Monturalearn-logo.jpg" alt="Monturalearn" style="height:32px;object-fit:contain;"></div>
+    <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">&#127968;</span><span>Dashboard</span></a>
+    <a href="lectures.html" class="nav-item active"><span class="nav-icon">&#8734;</span><span>Lectures</span></a>
+    <a href="flashtiles.html" class="nav-item"><span class="nav-icon">&#9889;</span><span>Flashtiles</span></a>
+    <a href="quick-test.html" class="nav-item"><span class="nav-icon">&#128336;</span><span>Quiz / Quick Test</span></a>
+    <a href="past-papers.html" class="nav-item"><span class="nav-icon">&#128196;</span><span>Past Papers</span></a>
+    <div class="nav-spacer"></div>
+    <button class="live-study-btn">Allow Live Study</button>
+</aside>
+<main class="main-content">
     <div class="content-wrapper">
         <div class="subject-header">
             <div class="subject-line-left"></div>
@@ -191,253 +85,251 @@
         <div class="papers-list" id="papersList"></div>
     </section>
 </main>
-
-    <script>
+<script>
 const papersData = [
     {
         tag: "Topic 1",
         title: "Number",
         sections: [
-            { number: "1",  title: "Product of Prime Factors / Index Form",                  url: "lectures/1-product-of-prime-factors.html" },
-            { number: "2",  title: "Highest Common Factor",                                  url: "lectures/2-highest-common-factor.html" },
-            { number: "3",  title: "Lowest Common Multiple",                                 url: "lectures/3-lowest-common-multiple.html" },
-            { number: "4",  title: "Ordering Numbers & Rounding",                            url: "lectures/4-ordering-numbers-rounding.html" },
-            { number: "5",  title: "Number Conversions",                                     url: "lectures/5-number-conversions.html" },
-            { number: "6",  title: "Order of Operations (BIDMAS)",                           url: "lectures/6-order-of-operations-bidmas.html" },
-            { number: "7",  title: "Inequalities",                                           url: "lectures/7-inequalities.html" },
-            { number: "8",  title: "Error Intervals",                                        url: "lectures/8-error-intervals.html" },
-            { number: "9",  title: "Bounds and Truncation",                                  url: "lectures/9-bounds-and-truncation.html" },
-            { number: "10", title: "Rounding (Decimals and Significant Figures)",            url: "lectures/10-rounding-decimals-and-significant-figures.html" },
-            { number: "11", title: "Multiplying Fractions",                                  url: "lectures/11-multiplying-fractions.html" },
-            { number: "12", title: "Dividing Fractions",                                     url: "lectures/12-dividing-fractions.html" },
-            { number: "13", title: "Adding Fractions",                                       url: "lectures/13-adding-fractions.html" },
-            { number: "14", title: "Subtracting Fractions",                                  url: "lectures/14-subtracting-fractions.html" },
-            { number: "15", title: "Simplifying Fractions",                                  url: "lectures/15-simplifying-fractions.html" },
-            { number: "16", title: "Mixed and Improper Fractions",                           url: "lectures/16-mixed-and-improper-fractions.html" },
-            { number: "17", title: "Fractions of an Amount",                                 url: "lectures/17-fractions-of-an-amount.html" },
-            { number: "18", title: "Percentage of an Amount",                                url: "lectures/18-percentage-of-an-amount.html" },
-            { number: "19", title: "Reverse Percentages",                                    url: "lectures/19-reverse-percentages.html" },
-            { number: "20", title: "Simple Interest",                                        url: "lectures/20-simple-interest.html" },
-            { number: "21", title: "Compound Interest",                                      url: "lectures/21-compound-interest.html" },
-            { number: "22", title: "Depreciation",                                           url: "lectures/22-depreciation.html" },
-            { number: "23", title: "Percentage Profit",                                      url: "lectures/23-percentage-profit.html" },
-            { number: "24", title: "Value for Money",                                        url: "lectures/24-value-for-money.html" },
-            { number: "25", title: "Standard Form / Ordinary Numbers",                       url: "lectures/25-standard-form-ordinary-numbers.html" },
-            { number: "26", title: "Number Powers Calculations",                             url: "lectures/26-number-powers-calculations.html" },
-            { number: "27", title: "Estimation",                                             url: "lectures/27-estimation.html" },
-            { number: "28", title: "Negative Numbers (Ordering & Operations)",               url: "lectures/28-negative-numbers-ordering-operations.html" },
-            { number: "29", title: "Converting Between Fractions ↔ Decimals ↔ Percentages", url: "lectures/29-converting-between-fractions-decimals-percentages.html" },
-            { number: "30", title: "Unit Conversions (Metric)",                              url: "lectures/30-unit-conversions-metric.html" },
-            { number: "31", title: "Calculator Fluency (ANS Key & Multi-Step Calculations)", url: "lectures/31-calculator-fluency-ans-key-multi-step-calculations.html" }
+            { number: "1", title: "Place Value And / Ordering Numbers", url: "lectures/1-place-value-and-ordering-numbers.html" },
+            { number: "2", title: "Negative Numbers Ordering And Calculations", url: "lectures/2-negative-numbers-ordering-and-calculations.html" },
+            { number: "3", title: "Rounding Decimals", url: "lectures/3-rounding-decimals.html" },
+            { number: "4", title: "Rounding To Significant Figures", url: "lectures/4-rounding-to-significant-figures.html" },
+            { number: "5", title: "Estimation And Checking Answers", url: "lectures/5-estimation-and-checking-answers.html" },
+            { number: "6", title: "Order Of Operations BODMAS", url: "lectures/6-order-of-operations-bodmas.html" },
+            { number: "7", title: "Factors And Multiples", url: "lectures/7-factors-and-multiples.html" },
+            { number: "8", title: "Prime Numbers", url: "lectures/8-prime-numbers.html" },
+            { number: "9", title: "Product Of Prime Factors", url: "lectures/9-product-of-prime-factors.html" },
+            { number: "10", title: "HCF And LCM", url: "lectures/10-hcf-and-lcm.html" },
+            { number: "11", title: "Squares Cubes And Roots", url: "lectures/11-squares-cubes-and-roots.html" },
+            { number: "12", title: "Powers And Indices", url: "lectures/12-powers-and-indices.html" },
+            { number: "13", title: "Standard Form", url: "lectures/13-standard-form.html" },
+            { number: "14", title: "Simplifying Fractions", url: "lectures/14-simplifying-fractions.html" },
+            { number: "15", title: "Adding And Subtracting Fractions", url: "lectures/15-adding-and-subtracting-fractions.html" },
+            { number: "16", title: "Multiplying Fractions", url: "lectures/16-multiplying-fractions.html" },
+            { number: "17", title: "Dividing Fractions", url: "lectures/17-dividing-fractions.html" },
+            { number: "18", title: "Mixed And Improper Fractions", url: "lectures/18-mixed-and-improper-fractions.html" },
+            { number: "19", title: "Fractions Of An Amount", url: "lectures/19-fractions-of-an-amount.html" },
+            { number: "20", title: "Expressing One Number As A Fraction Of Another", url: "lectures/20-expressing-one-number-as-a-fraction-of-another.html" },
+            { number: "21", title: "Decimal Calculations", url: "lectures/21-decimal-calculations.html" },
+            { number: "22", title: "Converting Between Fractions Decimals And Percentages", url: "lectures/22-converting-between-fractions-decimals-and-percentages.html" },
+            { number: "23", title: "Ordering Fractions Decimals And Percentages", url: "lectures/23-ordering-fractions-decimals-and-percentages.html" },
+            { number: "24", title: "Percentages Of An Amount", url: "lectures/24-percentages-of-an-amount.html" },
+            { number: "25", title: "Percentage Increase And Decrease", url: "lectures/25-percentage-increase-and-decrease.html" },
+            { number: "26", title: "Expressing One Number As A Percentage Of Another", url: "lectures/26-expressing-one-number-as-a-percentage-of-another.html" },
+            { number: "27", title: "Reverse Percentages", url: "lectures/27-reverse-percentages.html" },
+            { number: "28", title: "Simple Interest", url: "lectures/28-simple-interest.html" },
+            { number: "29", title: "Metric Unit Conversions", url: "lectures/29-metric-unit-conversions.html" },
+            { number: "30", title: "Metric And Imperial Conversions", url: "lectures/30-metric-and-imperial-conversions.html" },
+            { number: "31", title: "Time Calculations", url: "lectures/31-time-calculations.html" },
+            { number: "32", title: "Reading Scales", url: "lectures/32-reading-scales.html" },
+            { number: "33", title: "Upper And Lower Bounds", url: "lectures/33-upper-and-lower-bounds.html" },
         ]
     },
     {
         tag: "Topic 2",
         title: "Algebra",
         sections: [
-            { number: "32", title: "Index Laws",                                             url: "lectures/32-index-laws.html" },
-            { number: "33", title: "Expression vs Equation",                                 url: "lectures/33-expression-vs-equation.html" },
-            { number: "34", title: "Factorising Expressions",                                url: "lectures/34-factorising-expressions.html" },
-            { number: "35", title: "Powers in Brackets",                                     url: "lectures/35-powers-in-brackets.html" },
-            { number: "36", title: "Expanding and Simplifying Brackets",                     url: "lectures/36-expanding-and-simplifying-brackets.html" },
-            { number: "37", title: "Make x the Subject",                                     url: "lectures/37-make-x-the-subject.html" },
-            { number: "38", title: "Substitution",                                           url: "lectures/38-substitution.html" },
-            { number: "39", title: "Solving Linear Equations",                               url: "lectures/39-solving-linear-equations.html" },
-            { number: "40", title: "Forming Equations",                                      url: "lectures/40-forming-equations.html" },
-            { number: "41", title: "Collecting Like Terms",                                  url: "lectures/41-collecting-like-terms.html" },
-            { number: "42", title: "Nth Term and Sequences",                                 url: "lectures/42-nth-term-and-sequences.html" },
-            { number: "43", title: "Inequalities and Number Line Solutions",                  url: "lectures/43-inequalities-and-number-line-solutions.html" },
-            { number: "44", title: "Drawing and Plotting Linear Graphs",                     url: "lectures/44-drawing-and-plotting-linear-graphs.html" },
-            { number: "45", title: "Equation of a Straight Line (y = mx + c)",              url: "lectures/45-equation-of-a-straight-line-y-mx-c.html" },
-            { number: "46", title: "Gradient of a Line",                                     url: "lectures/46-gradient-of-a-line.html" },
-            { number: "47", title: "Coordinates",                                            url: "lectures/47-coordinates.html" }
+            { number: "34", title: "Algebraic Notation", url: "lectures/34-algebraic-notation.html" },
+            { number: "35", title: "Collecting Like Terms", url: "lectures/35-collecting-like-terms.html" },
+            { number: "36", title: "Multiplying And Dividing Algebraic Terms", url: "lectures/36-multiplying-and-dividing-algebraic-terms.html" },
+            { number: "37", title: "Expanding Brackets", url: "lectures/37-expanding-brackets.html" },
+            { number: "38", title: "Expanding Double Brackets", url: "lectures/38-expanding-double-brackets.html" },
+            { number: "39", title: "Factorising Expressions", url: "lectures/39-factorising-expressions.html" },
+            { number: "40", title: "Factorising Quadratics", url: "lectures/40-factorising-quadratics.html" },
+            { number: "41", title: "Using Formulae", url: "lectures/41-using-formulae.html" },
+            { number: "42", title: "Substitution", url: "lectures/42-substitution.html" },
+            { number: "43", title: "Rearranging Formulae", url: "lectures/43-rearranging-formulae.html" },
+            { number: "44", title: "Solving Linear Equations", url: "lectures/44-solving-linear-equations.html" },
+            { number: "45", title: "Solving Equations With Unknowns On Both Sides", url: "lectures/45-solving-equations-with-unknowns-on-both-sides.html" },
+            { number: "46", title: "Solving Equations With Brackets", url: "lectures/46-solving-equations-with-brackets.html" },
+            { number: "47", title: "Solving Linear Inequalities", url: "lectures/47-solving-linear-inequalities.html" },
+            { number: "48", title: "Representing Inequalities On Number Lines", url: "lectures/48-representing-inequalities-on-number-lines.html" },
+            { number: "49", title: "Integer Solutions To Inequalities", url: "lectures/49-integer-solutions-to-inequalities.html" },
+            { number: "50", title: "Sequences Term To Term Rules", url: "lectures/50-sequences-term-to-term-rules.html" },
+            { number: "51", title: "Sequences Position To Term Rules", url: "lectures/51-sequences-position-to-term-rules.html" },
+            { number: "52", title: "Finding The Nth Term", url: "lectures/52-finding-the-nth-term.html" },
+            { number: "53", title: "Using The Nth Term", url: "lectures/53-using-the-nth-term.html" },
+            { number: "54", title: "Special Sequences", url: "lectures/54-special-sequences.html" },
+            { number: "55", title: "Plotting Coordinates", url: "lectures/55-plotting-coordinates.html" },
+            { number: "56", title: "Drawing Linear Graphs", url: "lectures/56-drawing-linear-graphs.html" },
+            { number: "57", title: "Gradient Of A Straight Line", url: "lectures/57-gradient-of-a-straight-line.html" },
+            { number: "58", title: "Straight Line Graphs Y = Mx + C", url: "lectures/58-straight-line-graphs-y=mx+c.html" },
+            { number: "59", title: "Horizontal And Vertical Lines", url: "lectures/59-horizontal-and-vertical-lines.html" },
+            { number: "60", title: "Distance Time Graphs", url: "lectures/60-distance-time-graphs.html" },
+            { number: "61", title: "Speed Time Graphs", url: "lectures/61-speed-time-graphs.html" },
+            { number: "62", title: "Real Life Graphs", url: "lectures/62-real-life-graphs.html" },
+            { number: "63", title: "Quadratic Graphs", url: "lectures/63-quadratic-graphs.html" },
+            { number: "64", title: "Cubic Graphs", url: "lectures/64-cubic-graphs.html" },
+            { number: "65", title: "Reciprocal Graphs", url: "lectures/65-reciprocal-graphs.html" },
         ]
     },
     {
         tag: "Topic 3",
-        title: "Ratio and Proportion",
+        title: "Ratio, Proportion & Rates of Change",
         sections: [
-            { number: "48", title: "Simplifying Ratios",                    url: "lectures/48-simplifying-ratios.html" },
-            { number: "49", title: "Sharing in a Ratio",                    url: "lectures/49-sharing-in-a-ratio.html" },
-            { number: "50", title: "Three-Part Ratios",                     url: "lectures/50-three-part-ratios.html" },
-            { number: "51", title: "Ratios as Fractions",                   url: "lectures/51-ratios-as-fractions.html" },
-            { number: "52", title: "Direct Proportion (Unitary Method)",    url: "lectures/52-direct-proportion-unitary-method.html" },
-            { number: "53", title: "Recipe and Scale Problems",             url: "lectures/53-recipe-and-scale-problems.html" },
-            { number: "54", title: "Best Buys",                             url: "lectures/54-best-buys.html" },
-            { number: "55", title: "Exchange Rates",                        url: "lectures/55-exchange-rates.html" },
-            { number: "56", title: "Speed, Distance and Time",              url: "lectures/56-speed-distance-and-time.html" },
-            { number: "57", title: "Distance-Time Graphs",                  url: "lectures/57-distance-time-graphs.html" },
-            { number: "58", title: "Unit Conversions (Metric)",             url: "lectures/58-unit-conversions-metric.html" }
+            { number: "66", title: "Simplifying Ratios", url: "lectures/66-simplifying-ratios.html" },
+            { number: "67", title: "Sharing In A Ratio", url: "lectures/67-sharing-in-a-ratio.html" },
+            { number: "68", title: "Scale Drawings", url: "lectures/68-scale-drawings.html" },
+            { number: "69", title: "Comparing Using Ratios", url: "lectures/69-comparing-using-ratios.html" },
+            { number: "70", title: "Direct Proportion", url: "lectures/70-direct-proportion.html" },
+            { number: "71", title: "Best Buys", url: "lectures/71-best-buys.html" },
+            { number: "72", title: "Currency Conversion", url: "lectures/72-currency-conversion.html" },
+            { number: "73", title: "Speed Distance Time", url: "lectures/73-speed-distance-time.html" },
+            { number: "74", title: "Density", url: "lectures/74-density.html" },
+            { number: "75", title: "Pressure", url: "lectures/75-pressure.html" },
         ]
     },
     {
         tag: "Topic 4",
         title: "Geometry and Measures",
         sections: [
-            { number: "59", title: "Angle Facts",                                                                       url: "lectures/59-angle-facts.html" },
-            { number: "60", title: "Angles on Lines",                                                                   url: "lectures/60-angles-on-lines.html" },
-            { number: "61", title: "Angles in Triangles and Polygons",                                                  url: "lectures/61-angles-in-triangles-and-polygons.html" },
-            { number: "62", title: "Properties of 2D and 3D Shapes",                                                    url: "lectures/62-properties-of-2d-and-3d-shapes.html" },
-            { number: "63", title: "Bearings",                                                                          url: "lectures/63-bearings.html" },
-            { number: "64", title: "Transformations (Reflection, Rotation, Translation, Enlargement)",                  url: "lectures/64-transformations-reflection-rotation-translation-enlargement.html" },
-            { number: "65", title: "Congruent Shapes",                                                                  url: "lectures/65-congruent-shapes.html" },
-            { number: "66", title: "Similar Shapes (Scale Factor Only)",                                                url: "lectures/66-similar-shapes-scale-factor-only.html" },
-            { number: "67", title: "Area and Perimeter of Shapes",                                                      url: "lectures/67-area-and-perimeter-of-shapes.html" },
-            { number: "68", title: "Area of Triangles, Parallelograms and Trapeziums",                                  url: "lectures/68-area-of-triangles-parallelograms-and-trapeziums.html" },
-            { number: "69", title: "Circles (Area and Circumference)",                                                  url: "lectures/69-circles-area-and-circumference.html" },
-            { number: "70", title: "Nets of 3D Shapes",                                                                url: "lectures/70-nets-of-3d-shapes.html" },
-            { number: "71", title: "Volume of Cuboids, Prisms and Cylinders",                                           url: "lectures/71-volume-of-cuboids-prisms-and-cylinders.html" },
-            { number: "72", title: "Surface Area of Prisms and Cylinders",                                              url: "lectures/72-surface-area-of-prisms-and-cylinders.html" },
-            { number: "73", title: "Scale Diagrams",                                                                    url: "lectures/73-scale-diagrams.html" },
-            { number: "74", title: "Loci and Constructions",                                                            url: "lectures/74-loci-and-constructions.html" }
+            { number: "76", title: "Angle Facts", url: "lectures/76-angle-facts.html" },
+            { number: "77", title: "Angles In Parallel Lines", url: "lectures/77-angles-in-parallel-lines.html" },
+            { number: "78", title: "Alternate Corresponding Co Interior Angles", url: "lectures/78-alternate-corresponding-co-interior-angles.html" },
+            { number: "79", title: "Properties Of Triangles And Quadrilaterals", url: "lectures/79-properties-of-triangles-and-quadrilaterals.html" },
+            { number: "80", title: "Properties Of Polygons", url: "lectures/80-properties-of-polygons.html" },
+            { number: "81", title: "Angles In Polygons", url: "lectures/81-angles-in-polygons.html" },
+            { number: "82", title: "Constructing Triangles", url: "lectures/82-constructing-triangles.html" },
+            { number: "83", title: "Perpendicular Bisectors", url: "lectures/83-perpendicular-bisectors.html" },
+            { number: "84", title: "Angle Bisectors", url: "lectures/84-angle-bisectors.html" },
+            { number: "85", title: "Loci", url: "lectures/85-loci.html" },
+            { number: "86", title: "Bearings", url: "lectures/86-bearings.html" },
+            { number: "87", title: "Scale Drawings", url: "lectures/87-scale-drawings.html" },
+            { number: "88", title: "Perimeter", url: "lectures/88-perimeter.html" },
+            { number: "89", title: "Area Of Rectangles And Triangles", url: "lectures/89-area-of-rectangles-and-triangles.html" },
+            { number: "90", title: "Area Of Parallelograms And Trapezia", url: "lectures/90-area-of-parallelograms-and-trapezia.html" },
+            { number: "91", title: "Circumference And Area Of Circles", url: "lectures/91-circumference-and-area-of-circles.html" },
+            { number: "92", title: "Area Of Compound Shapes", url: "lectures/92-area-of-compound-shapes.html" },
+            { number: "93", title: "Volume Of Prisms", url: "lectures/93-volume-of-prisms.html" },
+            { number: "94", title: "Volume Of Cylinders", url: "lectures/94-volume-of-cylinders.html" },
+            { number: "95", title: "Surface Area Of Cuboids", url: "lectures/95-surface-area-of-cuboids.html" },
+            { number: "96", title: "Unit Conversions Area And Volume", url: "lectures/96-unit-conversions-area-and-volume.html" },
+            { number: "97", title: "Pythagoras Theorem", url: "lectures/97-pythagoras-theorem.html" },
+            { number: "98", title: "3D Shapes", url: "lectures/98-3d-shapes.html" },
+            { number: "99", title: "Nets Of 3D Shapes", url: "lectures/99-nets-of-3d-shapes.html" },
+            { number: "100", title: "Transformations Translation", url: "lectures/100-transformations-translation.html" },
+            { number: "101", title: "Transformations Reflection", url: "lectures/101-transformations-reflection.html" },
+            { number: "102", title: "Transformations Rotation", url: "lectures/102-transformations-rotation.html" },
+            { number: "103", title: "Transformations Enlargement", url: "lectures/103-transformations-enlargement.html" },
+            { number: "104", title: "Congruence", url: "lectures/104-congruence.html" },
+            { number: "105", title: "Similarity", url: "lectures/105-similarity.html" },
+            { number: "106", title: "Vectors", url: "lectures/106-vectors.html" },
+            { number: "107", title: "Vector Addition And Subtraction", url: "lectures/107-vector-addition-and-subtraction.html" },
+            { number: "108", title: "Scalar Multiplication", url: "lectures/108-scalar-multiplication.html" },
         ]
     },
     {
         tag: "Topic 5",
-        title: "Trigonometry",
+        title: "Statistics",
         sections: [
-            { number: "75", title: "Pythagoras' Theorem",                      url: "lectures/75-pythagoras-theorem.html" },
-            { number: "76", title: "SOH CAH TOA (Finding Sides and Angles)",   url: "lectures/76-soh-cah-toa-finding-sides-and-angles.html" },
-            { number: "77", title: "Trigonometry in Real-Life Contexts",        url: "lectures/77-trigonometry-in-real-life-contexts.html" }
+            { number: "109", title: "Types Of Data", url: "lectures/109-types-of-data.html" },
+            { number: "110", title: "Data Collection", url: "lectures/110-data-collection.html" },
+            { number: "111", title: "Frequency Tables", url: "lectures/111-frequency-tables.html" },
+            { number: "112", title: "Two Way Tables", url: "lectures/112-two-way-tables.html" },
+            { number: "113", title: "Pictograms", url: "lectures/113-pictograms.html" },
+            { number: "114", title: "Bar Charts", url: "lectures/114-bar-charts.html" },
+            { number: "115", title: "Pie Charts", url: "lectures/115-pie-charts.html" },
+            { number: "116", title: "Line Graphs", url: "lectures/116-line-graphs.html" },
+            { number: "117", title: "Frequency Polygons", url: "lectures/117-frequency-polygons.html" },
+            { number: "118", title: "Stem And Leaf Diagrams", url: "lectures/118-stem-and-leaf-diagrams.html" },
+            { number: "119", title: "Time Series", url: "lectures/119-time-series.html" },
+            { number: "120", title: "Misleading Graphs", url: "lectures/120-misleading-graphs.html" },
+            { number: "121", title: "Averages From A List", url: "lectures/121-averages-from-a-list.html" },
+            { number: "122", title: "Averages From Tables", url: "lectures/122-averages-from-tables.html" },
+            { number: "123", title: "Comparing Distributions", url: "lectures/123-comparing-distributions.html" },
         ]
     },
     {
         tag: "Topic 6",
-        title: "Probability and Statistics",
+        title: "Probability",
         sections: [
-            { number: "78", title: "Types of Data",                                   url: "lectures/78-types-of-data.html" },
-            { number: "79", title: "Collecting Data & Sampling Methods",              url: "lectures/79-collecting-data-sampling-methods.html" },
-            { number: "80", title: "Probability Scale & Probability Language",        url: "lectures/80-probability-scale-probability-language.html" },
-            { number: "81", title: "Calculating Simple Probability",                  url: "lectures/81-calculating-simple-probability.html" },
-            { number: "82", title: "Experimental Probability",                        url: "lectures/82-experimental-probability.html" },
-            { number: "83", title: "Frequency Tables",                                url: "lectures/83-frequency-tables.html" },
-            { number: "84", title: "Probability from Tables",                         url: "lectures/84-probability-from-tables.html" },
-            { number: "85", title: "Two-Way Tables",                                  url: "lectures/85-two-way-tables.html" },
-            { number: "86", title: "Averages (Mean, Median, Mode & Range)",           url: "lectures/86-averages-mean-median-mode-range.html" },
-            { number: "87", title: "Averages from Frequency Tables",                  url: "lectures/87-averages-from-frequency-tables.html" },
-            { number: "88", title: "Pictograms",                                      url: "lectures/88-pictograms.html" },
-            { number: "89", title: "Bar Charts & Frequency Charts",                   url: "lectures/89-bar-charts-frequency-charts.html" },
-            { number: "90", title: "Pie Charts",                                      url: "lectures/90-pie-charts.html" },
-            { number: "91", title: "Line Graphs (Time Series)",                       url: "lectures/91-line-graphs-time-series.html" },
-            { number: "92", title: "Scatter Graphs",                                  url: "lectures/92-scatter-graphs.html" },
-            { number: "93", title: "Stem and Leaf Trees",                             url: "lectures/93-stem-and-leaf-trees.html" },
-            { number: "94", title: "Probability Trees (Fractions & Decimals)",        url: "lectures/94-probability-trees-fractions-and-decimals.html" },
-            { number: "95", title: "Combined Events (AND OR NOT)",                    url: "lectures/95-combined-events-and-or-not.html" }
+            { number: "124", title: "Probability Scale", url: "lectures/124-probability-scale.html" },
+            { number: "125", title: "Listing Outcomes", url: "lectures/125-listing-outcomes.html" },
+            { number: "126", title: "Theoretical Probability", url: "lectures/126-theoretical-probability.html" },
+            { number: "127", title: "Experimental Probability", url: "lectures/127-experimental-probability.html" },
+            { number: "128", title: "Expected Frequency", url: "lectures/128-expected-frequency.html" },
+            { number: "129", title: "Two Way Tables", url: "lectures/129-two-way-tables.html" },
+            { number: "130", title: "Sample Space Diagrams", url: "lectures/130-sample-space-diagrams.html" },
+            { number: "131", title: "Tree Diagrams", url: "lectures/131-tree-diagrams.html" },
+            { number: "132", title: "Combined Events And / Or", url: "lectures/132-combined-events-and-or.html" },
+            { number: "133", title: "Venn Diagrams", url: "lectures/133-venn-diagrams.html" },
         ]
-    }
+    },
 ];
 
-/* ── Chunk sections into pillar groups of 8 ── */
-function chunkIntoPillars(sections, chunkSize = 8) {
-    const pillars = [];
-    for (let i = 0; i < sections.length; i += chunkSize) {
+function chunkIntoPillars(sections, chunkSize) {
+    chunkSize = chunkSize || 8;
+    var pillars = [];
+    for (var i = 0; i < sections.length; i += chunkSize) {
         pillars.push(sections.slice(i, i + chunkSize));
     }
     return pillars;
 }
 
-/* ── Build aggregate blocks for a pillar (all grey = not started) ── */
 function aggBlocksHTML(count) {
-    return Array.from({ length: count }, () => `<div class="lec-agg-block"></div>`).join('');
+    var html = '';
+    for (var i = 0; i < count; i++) html += '<div class="lec-agg-block"></div>';
+    return html;
 }
 
-/* ── Build lecture row ── */
-function buildRow(section, index) {
-    const blocks = Array.from({ length: 6 }, () => `<div class="lec-block"></div>`).join('');
-    const row = document.createElement('div');
+function buildRow(section) {
+    var blocks = '';
+    for (var i = 0; i < 6; i++) blocks += '<div class="lec-block"></div>';
+    var row = document.createElement('div');
     row.className = 'lec-sub-row';
-    row.innerHTML = `
-        <div class="lec-sub-left">
-            <span class="lec-sub-num">${section.number}</span>
-            <span class="lec-sub-name">${section.title}</span>
-        </div>
-        <div class="lec-sub-right">
-            <div class="lec-blocks">${blocks}</div>
-            <span class="lec-sub-arrow">→</span>
-        </div>`;
-    row.addEventListener('click', () => { window.location.href = section.url; });
+    row.innerHTML = '<div class="lec-sub-left"><span class="lec-sub-num">' + section.number + '</span><span class="lec-sub-name">' + section.title + '</span></div><div class="lec-sub-right"><div class="lec-blocks">' + blocks + '</div><span class="lec-sub-arrow">&#8594;</span></div>';
+    row.addEventListener('click', (function(url){ return function(){ window.location.href = url; }; })(section.url));
     return row;
 }
 
-/* ── Build pillar box ── */
-function buildPillarBox(pillarSections, pillarIndex) {
-    const first = pillarSections[0].number;
-    const last  = pillarSections[pillarSections.length - 1].number;
-    const label = pillarSections.length === 1
-        ? `${first}`
-        : `${first}–${last}`;
-
-    const box = document.createElement('div');
+function buildPillarBox(pillarSections) {
+    var first = pillarSections[0].number;
+    var last  = pillarSections[pillarSections.length - 1].number;
+    var label = pillarSections.length === 1 ? first : first + '\u2013' + last;
+    var names = pillarSections.slice(0, 2).map(function(s){ return s.title.split(' ').slice(0,3).join(' '); }).join(', ');
+    if (pillarSections.length > 2) names += '\u2026';
+    var box = document.createElement('div');
     box.className = 'lec-pillar-box';
-
-    const hdr = document.createElement('div');
+    var hdr = document.createElement('div');
     hdr.className = 'lec-pillar-header';
-    hdr.innerHTML = `
-        <div class="lec-pillar-header-left">
-            <span class="lec-pillar-tag">Topics ${label}</span>
-            <span class="lec-pillar-name">${pillarSections.map(s => s.title.split(' ').slice(0,3).join(' ')).slice(0,2).join(', ')}${pillarSections.length > 2 ? '…' : ''}</span>
-        </div>
-        <div class="lec-pillar-header-right">
-            <div class="lec-aggregate-blocks">${aggBlocksHTML(pillarSections.length)}</div>
-            <span class="lec-pillar-chevron">›</span>
-        </div>`;
-
-    const body = document.createElement('div');
+    hdr.innerHTML = '<div class="lec-pillar-header-left"><span class="lec-pillar-tag">Topics ' + label + '</span><span class="lec-pillar-name">' + names + '</span></div><div class="lec-pillar-header-right"><div class="lec-aggregate-blocks">' + aggBlocksHTML(pillarSections.length) + '</div><span class="lec-pillar-chevron">&#8250;</span></div>';
+    var body = document.createElement('div');
     body.className = 'lec-pillar-body';
-
-    pillarSections.forEach((section, i) => {
-        body.appendChild(buildRow(section, i));
-    });
-
-    hdr.addEventListener('click', e => { e.stopPropagation(); box.classList.toggle('open'); });
+    pillarSections.forEach(function(s){ body.appendChild(buildRow(s)); });
+    hdr.addEventListener('click', function(e){ e.stopPropagation(); box.classList.toggle('open'); });
     box.appendChild(hdr);
     box.appendChild(body);
     return box;
 }
 
-/* ── Build top-level paper accordion ── */
-const list = document.getElementById('papersList');
-
-papersData.forEach(paper => {
-    const item = document.createElement('div');
+var list = document.getElementById('papersList');
+papersData.forEach(function(paper) {
+    var item = document.createElement('div');
     item.className = 'paper-item';
-
-    const header = document.createElement('button');
+    var header = document.createElement('button');
     header.className = 'paper-header';
-    header.innerHTML = `
-        <div class="paper-header-left">
-            <span class="paper-tag">${paper.tag}</span>
-            <span class="paper-title">${paper.title}</span>
-        </div>
-        <span class="paper-chevron">›</span>`;
-
-    const body = document.createElement('div');
+    header.innerHTML = '<div class="paper-header-left"><span class="paper-tag">' + paper.tag + '</span><span class="paper-title">' + paper.title + '</span></div><span class="paper-chevron">&#8250;</span>';
+    var body = document.createElement('div');
     body.className = 'paper-body';
-
-    const panel = document.createElement('div');
+    var panel = document.createElement('div');
     panel.className = 'lec-panel';
-
-    const pillarsDiv = document.createElement('div');
+    var pillarsDiv = document.createElement('div');
     pillarsDiv.className = 'lec-pillars';
-
-    const pillars = chunkIntoPillars(paper.sections, 8);
-    pillars.forEach((pillarSections, pi) => {
-        const pillarBox = buildPillarBox(pillarSections, pi);
-        /* Auto-open first pillar when paper opens */
+    var pillars = chunkIntoPillars(paper.sections, 8);
+    pillars.forEach(function(pillarSections, pi) {
+        var pillarBox = buildPillarBox(pillarSections);
         if (pi === 0) {
             item.addEventListener('click', function openFirst() {
-                if (item.classList.contains('open')) {
-                    pillarBox.classList.add('open');
-                }
+                if (item.classList.contains('open')) pillarBox.classList.add('open');
                 item.removeEventListener('click', openFirst);
             });
         }
         pillarsDiv.appendChild(pillarBox);
     });
-
     panel.appendChild(pillarsDiv);
     body.appendChild(panel);
-    header.addEventListener('click', () => { item.classList.toggle('open'); });
+    header.addEventListener('click', function(){ item.classList.toggle('open'); });
     item.appendChild(header);
     item.appendChild(body);
     list.appendChild(item);
