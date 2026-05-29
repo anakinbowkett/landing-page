@@ -1972,9 +1972,10 @@ function shouldSubjectBeLocked(subject) {
 }
 
 function checkTrialStatus(profile) {
+    return 'active'; // TEMPORARY: Unlock all subjects
+    
     const now = new Date();
     
-    // If subscription is active (paid), they have full access
     if (profile.subscription_status === 'active') {
         return 'active';
     }
