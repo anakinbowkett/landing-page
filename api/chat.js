@@ -43,14 +43,16 @@ export default async function handler(req, res) {
 
   try {
     const { message, conversationHistory, questionData, isMarkingRequest,
-            studentText, allLineData, studentLevel, insightPageSummary, studentProfile } = req.body;
+            studentText, allLineData, studentLevel, insightPageSummary,
+            studentProfile, subject, questionNumber } = req.body;
 
     if (isMarkingRequest) {
       return await handleMarkingRequest(req, res, { studentText, allLineData, questionData });
     }
     return await handleChatRequest(req, res, {
       message, conversationHistory, questionData,
-      studentLevel, insightPageSummary, studentProfile
+      studentLevel, insightPageSummary, studentProfile,
+      subject, questionNumber
     });
   } catch (error) {
     console.error('API error:', error);
@@ -101,11 +103,22 @@ OUTPUT JSON only: {"marksAwarded": 1, "strengths": ["one sentence"]}`;
 // ============================================
 // CHAT HANDLER
 // ============================================
-async function handleChatRequest(req, res, { message, conversationHistory, questionData, studentLevel, insightPageSummary, studentProfile }) {
+async function handleChatRequest(req, res, { message, conversationHistory, questionData, studentLevel, insightPageSummary, studentProfile, subject, questionNumber }) {
+
+  // ── Subject detection ──────────────────────────────────────────────────
+  // Use what the template sends. Fall back to detecting from questionData.
+  const detectedSubject = subject
+    || (questionData?.topic?.toLowerCase().includes('math') ? 'GCSE Maths' : null)
+    || 'GCSE English Literature';
+
+  const isMaths = detectedSubject.toLowerCase().includes('math');
+
+  // ── Level calibration ─────────────────────────────────────────────────
   const targetGrade = studentProfile?.target_grade || studentProfile?.current_grade || 5;
   const calibratedLevel = targetGrade <= 4 ? 'weak' : targetGrade <= 6 ? 'medium' : 'strong';
   const effectiveLevel = studentLevel || calibratedLevel;
 
+  // ── Safeguarding ──────────────────────────────────────────────────────
   if (isUnsafeContent(message)) {
     try {
       await fetch(`${process.env.SUPABASE_URL}/rest/v1/safeguarding_logs`, {
@@ -133,20 +146,48 @@ async function handleChatRequest(req, res, { message, conversationHistory, quest
     });
   }
 
+  // ── Build question context (always included, even on greetings) ───────
+  const qNum = questionNumber || '?';
+  const qText = questionData?.question || questionData?.q || '';
+  const qAnswer = questionData?.correctAnswer || questionData?.answer || '';
+  const qTopic = questionData?.topic || '';
   const insightContext = insightPageSummary || '';
+
+  const questionContext = qText
+    ? `CURRENT QUESTION (Q${qNum}): "${qText}"
+TOPIC: ${qTopic}
+CORRECT ANSWER: ${qAnswer}
+${insightContext ? `CONTEXT:\n${insightContext.substring(0, 500)}` : ''}`
+    : `No question loaded yet. The student has not selected a question.`;
+
+  // ── Greeting detection ────────────────────────────────────────────────
   const isGreeting = /^(hi|hello|hey|sup|yo|hiya|howdy|gm|morning|afternoon|evening)[\s!?.]*$/i.test(message.trim());
 
-  const systemPrompt = `You are a Montura tutor — warm, patient, and encouraging. You help GCSE students aged 13-17. You feel like a supportive older friend, never a teacher. Never mention AI, DeepSeek, or GPT.
+  // ── System prompt ─────────────────────────────────────────────────────
+  const systemPrompt = `You are a Montura tutor — warm, patient, and encouraging. You help GCSE students aged 13-17 with ${detectedSubject}. You feel like a supportive older friend, never a teacher. Never mention AI, DeepSeek, or GPT.
+
+════════════════════════════════════════
+WHAT YOU KNOW RIGHT NOW
+════════════════════════════════════════
+${questionContext}
+
+You ALWAYS know which question the student is on. If they ask "what does the question say" or "what question am I on" — tell them directly using the CURRENT QUESTION above.
+Never say the question box is empty. Never say you cannot see the question. You can always see it.
 
 ════════════════════════════════════════
 ANTI-HALLUCINATION RULES — ABSOLUTE
 ════════════════════════════════════════
-Only talk about content that is explicitly in the CURRENT QUESTION or INSIGHT TEXT below.
-Never invent examples, texts, books, poems, quotes, or authors that are not mentioned.
-Never ask the student about books or poems they may have read — you have no idea what they have studied.
+${isMaths
+  ? `Only discuss maths content that is explicitly in the CURRENT QUESTION and TOPIC above.
+Never invent theorems, rules, or methods not relevant to this specific question.
+If the student goes off topic, gently redirect them back to the current question.`
+  : `Only talk about content explicitly in the CURRENT QUESTION or INSIGHT TEXT above.
+Never invent examples, texts, books, poems, quotes, or authors not mentioned.
+Never ask the student about books or poems they may have read.
 Never reference anything outside the current question and insight context.
-If you have no context, only talk about GCSE English Literature concepts in the abstract.
-Never name a writer or author unless they appear in the question or insight text.
+If you have no context, only discuss abstract GCSE English Literature concepts.
+Never name a writer or author unless they appear in the question or insight text.`
+}
 
 ════════════════════════════════════════
 MESSAGE COUNT — DECIDE BASED ON INPUT
@@ -181,15 +222,12 @@ Never say "correct" or "wrong" — say "yes, exactly" or "not quite — think ab
 
 STUDENT LEVEL: ${effectiveLevel}
 - weak → very simple words, maximum warmth, tiny steps
-- medium → clear, friendly, gentle challenge  
+- medium → clear, friendly, gentle challenge
 - strong → concise, push a little harder
 
 ${isGreeting
-    ? `Student said hi. Send a warm welcome (2-3 bubbles). Last bubble: ask what topic they are working on right now. Do NOT ask about books or poems they have read.`
-    : `CURRENT QUESTION: "${questionData?.question || ''}"
-CORRECT ANSWER: ${questionData?.correctAnswer || 'N/A'}
-${insightContext ? `INSIGHT CONTEXT (only reference content from here):\n${insightContext.substring(0, 500)}` : 'No insight context available — only discuss abstract GCSE concepts.'}
-STUDENT MESSAGE: "${message}"`
+  ? `Student said hi. Send a warm welcome in 2 bubbles. Last bubble: tell them you can see they are on Q${qNum}${qTopic ? ` (${qTopic})` : ''} and ask if they need help with it.`
+  : `STUDENT MESSAGE: "${message}"`
 }`;
 
   try {
@@ -236,13 +274,12 @@ STUDENT MESSAGE: "${message}"`
         .filter(p => p.length > 3);
     }
 
-    // Hard cap each bubble at 20 words (safety net)
+    // Hard cap each bubble at 20 words
     parts = parts.map(p => {
       const words = p.split(/\s+/);
       return words.length > 20 ? words.slice(0, 20).join(' ') + '…' : p;
     });
 
-    // Cap at 6 bubbles max
     parts = parts.slice(0, 6);
     if (parts.length === 0) parts = ["What would you like help with?"];
 
