@@ -153,17 +153,20 @@ async function handleChatRequest(req, res, { message, conversationHistory, quest
   const qTopic = questionData?.topic || '';
   const insightContext = insightPageSummary || '';
 
-  const questionContext = qText
-    ? `CURRENT QUESTION (Q${qNum}): "${qText}"
-TOPIC: ${qTopic}
-CORRECT ANSWER: ${qAnswer}
-${insightContext ? `CONTEXT:\n${insightContext.substring(0, 500)}` : ''}`
-    : `No question loaded yet. The student has not selected a question.`;
-
   // ── Greeting detection ────────────────────────────────────────────────
   const isGreeting = /^(hi|hello|hey|sup|yo|hiya|howdy|gm|morning|afternoon|evening)[\s!?.]*$/i.test(message.trim());
   const isWrongAnswerNotification = message.startsWith('The student just answered question')
     || message.startsWith('WRONG_ANSWER_NOTIFY:');
+
+  // When handling a wrong answer, hide the correct answer from the system prompt
+  // so the AI cannot accidentally reveal it. The wrong answer message itself
+  // contains enough context for the AI to guide the student.
+  const questionContext = qText
+    ? `CURRENT QUESTION (Q${qNum}): "${qText}"
+TOPIC: ${qTopic}
+${isWrongAnswerNotification ? '(Correct answer hidden — guide the student, do not reveal it)' : `CORRECT ANSWER: ${qAnswer}`}
+${insightContext ? `CONTEXT:\n${insightContext.substring(0, 500)}` : ''}`
+    : `No question loaded yet. The student has not selected a question.`;
 
   // ── System prompt ─────────────────────────────────────────────────────
   const systemPrompt = `You are a Montura tutor — warm, patient, and encouraging. You help GCSE students aged 13-17 with ${detectedSubject}. You feel like a supportive older friend, never a teacher. Never mention AI, DeepSeek, or GPT.
