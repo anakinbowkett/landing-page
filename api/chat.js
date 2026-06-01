@@ -162,7 +162,8 @@ ${insightContext ? `CONTEXT:\n${insightContext.substring(0, 500)}` : ''}`
 
   // ── Greeting detection ────────────────────────────────────────────────
   const isGreeting = /^(hi|hello|hey|sup|yo|hiya|howdy|gm|morning|afternoon|evening)[\s!?.]*$/i.test(message.trim());
-  const isWrongAnswerNotification = message.startsWith('The student just answered question');
+  const isWrongAnswerNotification = message.startsWith('The student just answered question')
+    || message.startsWith('WRONG_ANSWER_NOTIFY:');
 
   // ── System prompt ─────────────────────────────────────────────────────
   const systemPrompt = `You are a Montura tutor — warm, patient, and encouraging. You help GCSE students aged 13-17 with ${detectedSubject}. You feel like a supportive older friend, never a teacher. Never mention AI, DeepSeek, or GPT.
