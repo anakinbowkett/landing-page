@@ -162,6 +162,7 @@ ${insightContext ? `CONTEXT:\n${insightContext.substring(0, 500)}` : ''}`
 
   // ── Greeting detection ────────────────────────────────────────────────
   const isGreeting = /^(hi|hello|hey|sup|yo|hiya|howdy|gm|morning|afternoon|evening)[\s!?.]*$/i.test(message.trim());
+  const isWrongAnswerNotification = message.startsWith('The student just answered question');
 
   // ── System prompt ─────────────────────────────────────────────────────
   const systemPrompt = `You are a Montura tutor — warm, patient, and encouraging. You help GCSE students aged 13-17 with ${detectedSubject}. You feel like a supportive older friend, never a teacher. Never mention AI, DeepSeek, or GPT.
@@ -227,6 +228,16 @@ STUDENT LEVEL: ${effectiveLevel}
 
 ${isGreeting
   ? `Student said hi. Send a warm welcome in 2 bubbles. Last bubble: tell them you can see they are on Q${qNum}${qTopic ? ` (${qTopic})` : ''} and ask if they need help with it.`
+  : isWrongAnswerNotification
+  ? `${message}
+
+WRONG ANSWER RESPONSE RULES:
+- Do NOT repeat the correct answer outright — guide the student toward it
+- First bubble: acknowledge what they got wrong specifically (e.g. "You chose X — that's the value of the digit in the Y column, not the Z column")
+- Second bubble: explain the specific misconception or mistake
+- Third bubble: give one small targeted hint that helps them work it out themselves
+- Keep each bubble under 15 words
+- Warm, encouraging tone — never make them feel stupid`
   : `STUDENT MESSAGE: "${message}"`
 }`;
 
