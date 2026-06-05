@@ -70,25 +70,7 @@
         }
         .nav-cta:hover { background: #1565c0; transform: scale(1.05); }
 
-        /* ── BANNER ── */
-        .announcement-banner {
-            position: fixed; top: 5rem; left: 0; right: 0;
-            background: #c41e3a; color: white;
-            text-align: center; padding: 0.5rem 1rem;
-            font-size: 0.875rem; font-weight: 600;
-            z-index: 40; border-bottom: 1px solid #a01729;
-            overflow: hidden; white-space: nowrap; margin-top: -1px;
-        }
-        @media (max-width: 430px) {
-            .announcement-banner { top: 3.5rem; padding: 0.2rem 0.5rem; font-size: 0.5rem; line-height: 1.2; }
-        }
-        .banner-track {
-            display: inline-flex; white-space: nowrap;
-            animation: scroll-left 25s linear infinite;
-        }
-        .banner-content { display: inline-block; padding-right: 180px; }
-        .banner-content--mid { padding-right: 180px; opacity: 0.85; }
-        @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        
 
         /* ── HERO ── */
         .hero { padding: 9rem 1rem 3rem; }
@@ -409,15 +391,7 @@
     </div>
 </nav>
 
-<!-- ── ANNOUNCEMENT BANNER ── -->
-<div class="announcement-banner">
-    <div class="banner-track">
-        <div class="banner-content">⚡ ONLY 3000 SPACES FOR EARLY BIRD PRICING, 🚨 LOCK YOUR PLACE IN NOW! 🚨</div>
-        <div class="banner-content banner-content--mid">🚨 SIGNUP NOW!! 🚨</div>
-        <div class="banner-content">⚡ ONLY 3000 SPACES FOR EARLY BIRD PRICING, 🚨 LOCK YOUR PLACE IN NOW! 🚨</div>
-        <div class="banner-content banner-content--mid">🚨 SIGNUP NOW!! 🚨</div>
-    </div>
-</div>
+    
 
 <!-- ── HERO ── -->
 <section class="hero">
@@ -490,7 +464,7 @@
                 <!-- Preview window — live interactive lecture -->
                 <div id="lecturePreviewWindow" style="width:100%;height:85vh;min-height:600px;border-radius:20px;border:2px solid #e5e7eb;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.1);position:relative;">
                     <iframe
-                        src="generated_lectures/AQA/eng-lit-l1-what-is-english-literature-gcse.html"
+                        src="lectures/aqa-english-literature/lectures/ew-l1-what-ao1-looks-like-written-down.html"
                         style="width:100%;height:100%;border:none;display:block;"
                         title="Live English Literature lecture — try it now"
                         loading="lazy"
