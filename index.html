@@ -789,15 +789,14 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     WAITLIST SIGNUP BOX — paste this where you want it on index.html
-     Recommended spot: right after the hero CTA, or just before the footer
+     WAITLIST SIGNUP BOX
 ═══════════════════════════════════════════════════════════════ -->
 
 <section style="padding:5rem 1rem;background:white;" id="waitlist">
   <div style="max-width:520px;margin:0 auto;text-align:center;font-family:'Inter',sans-serif;">
 
     <p id="waitlistCount" style="font-size:0.875rem;color:#9ca3af;font-weight:500;margin:0 0 0.5rem;letter-spacing:0.01em;">Loading...</p>
-    <p style="font-size:0.8rem;color:#9ca3af;font-weight:500;margin:0 0 1.25rem;">Limited to the <span style="color:#3b82f6;font-weight:600;">first 998 students</span> — early access closes once we're full.</p></p>
+    <p style="font-size:0.8rem;color:#9ca3af;font-weight:500;margin:0 0 1.25rem;">Limited to the <span style="color:#3b82f6;font-weight:600;">first 998 students</span> — early access closes once we're full.</p>
 
     <h2 style="font-size:2rem;font-weight:700;color:#111827;margin:0 0 0.6rem;letter-spacing:-0.02em;">Join the waitlist</h2>
     <p style="font-size:1rem;color:#6b7280;margin:0 0 2rem;">Be first in line when Monturalearn launches.</p>
@@ -808,14 +807,20 @@
     <form id="waitlistForm" style="display:flex;flex-direction:column;gap:0.75rem;text-align:left;">
       <input type="email" id="waitlistEmail" required placeholder="Your email"
              style="width:100%;padding:0.85rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:0.9375rem;font-family:'Inter',sans-serif;color:#111827;background:#f9fafb;transition:border-color 0.15s;">
-      
+
       <button type="submit" id="waitlistSubmitBtn"
               style="margin-top:0.4rem;background:#111827;color:white;border:none;padding:0.9rem;border-radius:10px;font-size:0.9375rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity 0.2s;">
         Join the waitlist
       </button>
     </form>
 
-    <p style="font-size:0.78rem;color:#9ca3af;margin-top:1.1rem;">We'll send you something that will help you prepeare for your entry into the new year.</p>
+    <p style="font-size:0.78rem;color:#9ca3af;margin-top:1.1rem;">We'll send you something that will help you prepare for your entry into the new year.</p>
+
+    <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid #f3f4f6;">
+      <p style="font-size:0.8rem;color:#9ca3af;font-weight:500;margin:0 0 0.5rem;text-transform:uppercase;letter-spacing:0.06em;">Launch date</p>
+      <p style="font-size:2.5rem;font-weight:800;color:#111827;margin:0 0 0.6rem;letter-spacing:-0.02em;">August 20th</p>
+      <p style="font-size:0.9375rem;color:#6b7280;margin:0;">13 GCSE subjects. 13 A Level subjects. One platform.</p>
+    </div>
   </div>
 </section>
 
@@ -836,31 +841,17 @@
                     'Range': '0-0'
                 }
             });
-
-            console.log('Waitlist count response status:', res.status);
             const range = res.headers.get('content-range');
-            console.log('Content-Range header:', range);
-
             if (!res.ok) {
-                console.error('Waitlist count fetch failed:', res.status, await res.text());
                 countEl.textContent = 'Join the waitlist — spaces are limited';
                 return;
             }
-
             let count = 0;
-            if (range) {
-                const parts = range.split('/');
-                count = parseInt(parts[1]) || 0;
-            }
-
-            if (count === 0) {
-                // Either genuinely zero, or RLS is blocking SELECT — show a safe fallback
-                countEl.textContent = 'Join the waitlist — spaces are limited';
-            } else {
-                countEl.textContent = count + (count === 1 ? ' student' : ' students') + ' already on the waitlist';
-            }
+            if (range) count = parseInt(range.split('/')[1]) || 0;
+            countEl.textContent = count === 0
+                ? 'Join the waitlist — spaces are limited'
+                : count + (count === 1 ? ' student' : ' students') + ' already on the waitlist';
         } catch (e) {
-            console.error('Waitlist count error:', e);
             countEl.textContent = 'Join the waitlist — spaces are limited';
         }
     }
@@ -874,18 +865,15 @@
         else { okEl.textContent = msg; okEl.style.display = 'block'; }
     }
 
-    
-
     document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = document.getElementById('waitlistSubmitBtn');
         const email = document.getElementById('waitlistEmail').value.trim();
-        
 
         if (!email) {
-    showWaitlistMsg('error', 'Please enter your email.');
-    return;
-}
+            showWaitlistMsg('error', 'Please enter your email.');
+            return;
+        }
 
         btn.disabled = true;
         btn.textContent = 'Joining...';
@@ -923,6 +911,12 @@
             document.getElementById('waitlistForm').reset();
             btn.textContent = 'Joined ✓';
             loadWaitlistCount();
+
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.textContent = 'Join the waitlist';
+                btn.style.opacity = '1';
+            }, 3000);
 
         } catch (err) {
             console.error('Waitlist signup error:', err);
