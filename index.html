@@ -808,8 +808,7 @@
     <form id="waitlistForm" style="display:flex;flex-direction:column;gap:0.75rem;text-align:left;">
       <input type="email" id="waitlistEmail" required placeholder="Your email"
              style="width:100%;padding:0.85rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:0.9375rem;font-family:'Inter',sans-serif;color:#111827;background:#f9fafb;transition:border-color 0.15s;">
-      <input type="text" id="waitlistTiktok" required placeholder="Your TikTok username"
-             style="width:100%;padding:0.85rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:0.9375rem;font-family:'Inter',sans-serif;color:#111827;background:#f9fafb;transition:border-color 0.15s;">
+      
       <button type="submit" id="waitlistSubmitBtn"
               style="margin-top:0.4rem;background:#111827;color:white;border:none;padding:0.9rem;border-radius:10px;font-size:0.9375rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity 0.2s;">
         Join the waitlist
@@ -875,22 +874,18 @@
         else { okEl.textContent = msg; okEl.style.display = 'block'; }
     }
 
-    function normaliseTiktok(val) {
-        val = val.trim();
-        if (!val.startsWith('@')) val = '@' + val;
-        return val;
-    }
+    
 
     document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = document.getElementById('waitlistSubmitBtn');
         const email = document.getElementById('waitlistEmail').value.trim();
-        const tiktok = normaliseTiktok(document.getElementById('waitlistTiktok').value);
+        
 
-        if (!email || !tiktok || tiktok === '@') {
-            showWaitlistMsg('error', 'Please fill in both your email and TikTok username.');
-            return;
-        }
+        if (!email) {
+    showWaitlistMsg('error', 'Please enter your email.');
+    return;
+}
 
         btn.disabled = true;
         btn.textContent = 'Joining...';
@@ -908,7 +903,7 @@
                     'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
                     'Prefer': 'return=minimal'
                 },
-                body: JSON.stringify({ email: email, tiktok_username: tiktok, referral_code: referralCode })
+                body: JSON.stringify({ email: email, referral_code: referralCode })
             });
 
             if (!res.ok) {
@@ -940,9 +935,6 @@
 
     document.getElementById('waitlistEmail').addEventListener('focus', e => e.target.style.borderColor = '#111827');
     document.getElementById('waitlistEmail').addEventListener('blur', e => e.target.style.borderColor = '#e5e7eb');
-    document.getElementById('waitlistTiktok').addEventListener('focus', e => e.target.style.borderColor = '#111827');
-    document.getElementById('waitlistTiktok').addEventListener('blur', e => e.target.style.borderColor = '#e5e7eb');
-
     loadWaitlistCount();
 })();
 </script>
