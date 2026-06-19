@@ -788,6 +788,165 @@
     </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     WAITLIST SIGNUP BOX — paste this where you want it on index.html
+     Recommended spot: right after the hero CTA, or just before the footer
+═══════════════════════════════════════════════════════════════ -->
+
+<section style="padding:5rem 1rem;background:white;" id="waitlist">
+  <div style="max-width:520px;margin:0 auto;text-align:center;font-family:'Inter',sans-serif;">
+
+    <p id="waitlistCount" style="font-size:0.875rem;color:#9ca3af;font-weight:500;margin:0 0 0.5rem;letter-spacing:0.01em;">Loading...</p>
+    <p style="font-size:0.8rem;color:#9ca3af;font-weight:500;margin:0 0 1.25rem;">Only 998 spaces available — once they're gone, they're gone.</p>
+
+    <h2 style="font-size:2rem;font-weight:700;color:#111827;margin:0 0 0.6rem;letter-spacing:-0.02em;">Join the waitlist</h2>
+    <p style="font-size:1rem;color:#6b7280;margin:0 0 2rem;">Be first in line when Monturalearn launches.</p>
+
+    <div id="waitlistError" style="display:none;color:#dc2626;font-size:0.85rem;margin-bottom:1rem;text-align:left;"></div>
+    <div id="waitlistSuccess" style="display:none;color:#16a34a;font-size:0.85rem;margin-bottom:1rem;text-align:left;"></div>
+
+    <form id="waitlistForm" style="display:flex;flex-direction:column;gap:0.75rem;text-align:left;">
+      <input type="email" id="waitlistEmail" required placeholder="Your email"
+             style="width:100%;padding:0.85rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:0.9375rem;font-family:'Inter',sans-serif;color:#111827;background:#f9fafb;transition:border-color 0.15s;">
+      <input type="text" id="waitlistTiktok" required placeholder="Your TikTok username"
+             style="width:100%;padding:0.85rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:0.9375rem;font-family:'Inter',sans-serif;color:#111827;background:#f9fafb;transition:border-color 0.15s;">
+      <button type="submit" id="waitlistSubmitBtn"
+              style="margin-top:0.4rem;background:#111827;color:white;border:none;padding:0.9rem;border-radius:10px;font-size:0.9375rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity 0.2s;">
+        Join the waitlist
+      </button>
+    </form>
+
+    <p style="font-size:0.78rem;color:#9ca3af;margin-top:1.1rem;">No spam — just one email when we launch.</p>
+  </div>
+</section>
+
+<script>
+(function() {
+    const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+
+    async function loadWaitlistCount() {
+        const countEl = document.getElementById('waitlistCount');
+        try {
+            const res = await fetch(SUPABASE_URL + '/rest/v1/waitlist?select=id', {
+                method: 'GET',
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                    'Prefer': 'count=exact',
+                    'Range': '0-0'
+                }
+            });
+
+            console.log('Waitlist count response status:', res.status);
+            const range = res.headers.get('content-range');
+            console.log('Content-Range header:', range);
+
+            if (!res.ok) {
+                console.error('Waitlist count fetch failed:', res.status, await res.text());
+                countEl.textContent = 'Join the waitlist — spaces are limited';
+                return;
+            }
+
+            let count = 0;
+            if (range) {
+                const parts = range.split('/');
+                count = parseInt(parts[1]) || 0;
+            }
+
+            if (count === 0) {
+                // Either genuinely zero, or RLS is blocking SELECT — show a safe fallback
+                countEl.textContent = 'Join the waitlist — spaces are limited';
+            } else {
+                countEl.textContent = count + (count === 1 ? ' student' : ' students') + ' already on the waitlist';
+            }
+        } catch (e) {
+            console.error('Waitlist count error:', e);
+            countEl.textContent = 'Join the waitlist — spaces are limited';
+        }
+    }
+
+    function showWaitlistMsg(type, msg) {
+        const errEl = document.getElementById('waitlistError');
+        const okEl = document.getElementById('waitlistSuccess');
+        errEl.style.display = 'none';
+        okEl.style.display = 'none';
+        if (type === 'error') { errEl.textContent = msg; errEl.style.display = 'block'; }
+        else { okEl.textContent = msg; okEl.style.display = 'block'; }
+    }
+
+    function normaliseTiktok(val) {
+        val = val.trim();
+        if (!val.startsWith('@')) val = '@' + val;
+        return val;
+    }
+
+    document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('waitlistSubmitBtn');
+        const email = document.getElementById('waitlistEmail').value.trim();
+        const tiktok = normaliseTiktok(document.getElementById('waitlistTiktok').value);
+
+        if (!email || !tiktok || tiktok === '@') {
+            showWaitlistMsg('error', 'Please fill in both your email and TikTok username.');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Joining...';
+        btn.style.opacity = '0.7';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const referralCode = urlParams.get('ref') || localStorage.getItem('referral_code') || null;
+
+        try {
+            const res = await fetch(SUPABASE_URL + '/rest/v1/waitlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                    'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify({ email: email, tiktok_username: tiktok, referral_code: referralCode })
+            });
+
+            if (!res.ok) {
+                const errBody = await res.text();
+                if (errBody.includes('duplicate') || errBody.includes('unique')) {
+                    showWaitlistMsg('error', "You're already on the waitlist with that email!");
+                } else {
+                    throw new Error(errBody);
+                }
+                btn.disabled = false;
+                btn.textContent = 'Join the waitlist';
+                btn.style.opacity = '1';
+                return;
+            }
+
+            showWaitlistMsg('success', "You're in! We'll be in touch when we launch.");
+            document.getElementById('waitlistForm').reset();
+            btn.textContent = 'Joined ✓';
+            loadWaitlistCount();
+
+        } catch (err) {
+            console.error('Waitlist signup error:', err);
+            showWaitlistMsg('error', 'Something went wrong. Please try again.');
+            btn.disabled = false;
+            btn.textContent = 'Join the waitlist';
+            btn.style.opacity = '1';
+        }
+    });
+
+    document.getElementById('waitlistEmail').addEventListener('focus', e => e.target.style.borderColor = '#111827');
+    document.getElementById('waitlistEmail').addEventListener('blur', e => e.target.style.borderColor = '#e5e7eb');
+    document.getElementById('waitlistTiktok').addEventListener('focus', e => e.target.style.borderColor = '#111827');
+    document.getElementById('waitlistTiktok').addEventListener('blur', e => e.target.style.borderColor = '#e5e7eb');
+
+    loadWaitlistCount();
+})();
+</script>
+    
 <!-- ── FOOTER ── -->
 <footer class="site-footer">
     <div class="footer-inner">
