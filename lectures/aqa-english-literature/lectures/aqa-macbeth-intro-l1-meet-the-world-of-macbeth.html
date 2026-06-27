@@ -1890,6 +1890,111 @@ textarea[class^="extended-writing-input-"]{
 }
 .shake-wrong{ animation:shakeWrong 0.5s ease; }
 .nod-correct{ animation:nodCorrect 0.5s ease; }
+  
+
+/* ============================================================
+   MOBILE LAYOUT — iPhone/iPad (≤768px)
+   ============================================================ */
+@media (max-width: 768px){
+
+  .content-side{
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 220px !important;
+  }
+  .answer-zone{
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow-y: auto !important;
+  }
+
+  /* chat-side (Insight + Chat) hidden by default on mobile */
+  .chat-side{
+    display: none;
+  }
+  .chat-side.mobile-active{
+    display: flex !important;
+    position: fixed;
+    top: 55px; left: 0; right: 0; bottom: 0;
+    width: 100% !important;
+    z-index: 9400;
+    background: #ffffff;
+    flex-direction: column;
+  }
+  body.dark-mode .chat-side.mobile-active{ background:#0f1117; }
+
+  /* only show the relevant pane inside the open chat-side */
+  .chat-side.mobile-active .insight-wrapper,
+  .chat-side.mobile-active .chat-messages,
+  .chat-side.mobile-active .chat-input-area{ display:none; }
+
+  .chat-side.mobile-active.mobile-show-insight .insight-wrapper{
+    display:flex; flex:1; width:100%;
+  }
+  .chat-side.mobile-active.mobile-show-chat .chat-messages{
+    display:flex; flex-direction:column; flex:1;
+  }
+  .chat-side.mobile-active.mobile-show-chat .chat-input-area{
+    display:flex;
+  }
+
+  /* the existing fixed-overlay trick no longer needs its own positioning —
+     .chat-side.mobile-active is now the single fixed box */
+  .insight-wrapper.insight-open{
+    position: relative !important;
+    top:auto !important; bottom:auto !important; left:auto !important; right:auto !important;
+    width:100% !important; height:100% !important;
+    box-shadow:none !important;
+  }
+
+  /* new bottom tab bar */
+  .mobile-tab-bar{
+    display: flex;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    height: 56px;
+    padding-bottom: env(safe-area-inset-bottom);
+    gap: 8px;
+    padding-left: 12px; padding-right: 12px;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
+    z-index: 9000;
+  }
+  body.dark-mode .mobile-tab-bar{ background:#0f1117; border-top-color:#2d3748; }
+
+  .mobile-tab-btn{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    min-height: 44px;
+  }
+  body.dark-mode .mobile-tab-btn{ background:#1e2330; border-color:#374151; color:#cbd5e1; }
+
+  .main-container{ padding-bottom: 56px; }
+
+  /* icons relocated into the Insight header on mobile (draw / dark / report) */
+  .insight-top-bar .mobile-relocated-icon{ display:inline-flex !important; }
+
+  /* Chat needs its own close button on mobile only */
+  .chat-mobile-close-btn{ display:flex !important; }
+}
+
+/* hidden everywhere except inside the mobile media query above */
+.mobile-tab-bar,
+.insight-top-bar .mobile-relocated-icon,
+.chat-mobile-close-btn{ display:none; }  
+  
+  
 </style>
 </head>
 <body>
@@ -2341,6 +2446,9 @@ textarea[class^="extended-writing-input-"]{
               <polyline points="2,4 2,8 6,8" stroke="#e16280" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
+          <button class="mobile-relocated-icon" title="Draw on Insight" onclick="toggleDraw()">✏️</button>
+<button class="mobile-relocated-icon" title="Dark / Light mode" onclick="toggleDark()">🌙</button>
+<button class="mobile-relocated-icon" title="Report a problem" onclick="openReport()">🚩</button>
           <button class="insight-close-btn" id="insightCloseBtn" onclick="closeInsightPanel()">Done — back to question</button>
         </div>
         <div class="insight-tab-bar" id="insightTabBar"></div>
@@ -2358,6 +2466,7 @@ textarea[class^="extended-writing-input-"]{
     </div>
 
     <!-- ── AI CHAT (below insight panel) ── -->
+    <button class="chat-mobile-close-btn" id="chatMobileCloseBtn" style="padding:10px 14px;text-align:right;border:none;background:none;color:#1d7fe2;font-size:13px;font-weight:600;">Done</button>
     <div class="chat-messages" id="chatMessages">
       <div class="chat-spacer" id="chatSpacer"></div>
       <div class="chat-placeholder" id="chatPlaceholder">Ask me anything about this question — I'll guide you through it.</div>
@@ -2370,7 +2479,10 @@ textarea[class^="extended-writing-input-"]{
       </div>
     </div>
   </div>
-
+<div class="mobile-tab-bar">
+  <button class="mobile-tab-btn" id="mobileInsightBtn">📖 Insight</button>
+  <button class="mobile-tab-btn" id="mobileChatBtn">💬 Ask Montura</button>
+</div>
 </div>
 
 <script>
