@@ -32,18 +32,51 @@
         <section class="mode-section">
             <div class="mode-grid" style="--mode-count: 2;">
                 <a href="flashtiles-pillar-decks.html" class="mode-card">
-                    <span class="mode-card-tag">Curated</span>
-                    <div class="mode-card-icon">🗂️</div>
+                    <div class="mode-card-visual">
+                        <svg width="120" height="110" viewBox="0 0 120 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="14" y="22" width="76" height="56" rx="8" fill="var(--accent-1)" opacity="0.18"/>
+                            <rect x="24" y="14" width="76" height="56" rx="8" fill="var(--accent-1)" opacity="0.35"/>
+                            <rect x="34" y="6" width="76" height="56" rx="8" fill="url(#pillarGrad)"/>
+                            <line x1="46" y1="22" x2="86" y2="22" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+                            <line x1="46" y1="32" x2="98" y2="32" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+                            <line x1="46" y1="42" x2="78" y2="42" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+                            <defs>
+                                <linearGradient id="pillarGrad" x1="34" y1="6" x2="110" y2="62" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="var(--accent-1)"/>
+                                    <stop offset="1" stop-color="var(--accent-2)"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
                     <div class="mode-card-title">Pillar Decks</div>
                     <p class="mode-card-desc">Pre-built decks covering every AQA topic, ready to go — poetry, Shakespeare, the 19th century novel, the lot.</p>
-                    <div class="mode-card-cta">Browse decks →</div>
+                    <span class="mode-card-btn">Browse decks →</span>
                 </a>
                 <a href="flashtiles-my-decks.html" class="mode-card">
-                    <span class="mode-card-tag">Yours</span>
-                    <div class="mode-card-icon">✏️</div>
+                    <div class="mode-card-visual">
+                        <svg width="120" height="110" viewBox="0 0 120 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <line x1="60" y1="50" x2="30" y2="26" stroke="var(--accent-1)" stroke-width="2.5" opacity="0.55"/>
+                            <line x1="60" y1="50" x2="90" y2="24" stroke="var(--accent-1)" stroke-width="2.5" opacity="0.55"/>
+                            <line x1="60" y1="50" x2="34" y2="82" stroke="var(--accent-1)" stroke-width="2.5" opacity="0.55"/>
+                            <line x1="60" y1="50" x2="92" y2="80" stroke="var(--accent-1)" stroke-width="2.5" opacity="0.55"/>
+                            <circle cx="30" cy="26" r="9" fill="var(--accent-soft-bg)" stroke="var(--accent-2)" stroke-width="2.5"/>
+                            <circle cx="90" cy="24" r="9" fill="var(--accent-soft-bg)" stroke="var(--accent-2)" stroke-width="2.5"/>
+                            <circle cx="34" cy="82" r="9" fill="var(--accent-soft-bg)" stroke="var(--accent-2)" stroke-width="2.5"/>
+                            <circle cx="92" cy="80" r="9" fill="var(--accent-soft-bg)" stroke="var(--accent-2)" stroke-width="2.5"/>
+                            <circle cx="60" cy="50" r="15" fill="url(#deckGrad)"/>
+                            <path d="M54 50 L58 46 L64 52 L60 56 Z" fill="white"/>
+                            <path d="M52 56 L54 50 L58 52 L56 58 Z" fill="white" opacity="0.85"/>
+                            <defs>
+                                <linearGradient id="deckGrad" x1="45" y1="35" x2="75" y2="65" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="var(--accent-1)"/>
+                                    <stop offset="1" stop-color="var(--accent-2)"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
                     <div class="mode-card-title">My Decks</div>
                     <p class="mode-card-desc">Build your own flashcards and mindmaps. Turn your notes into decks you'll actually remember.</p>
-                    <div class="mode-card-cta">Open builder →</div>
+                    <span class="mode-card-btn">Open builder →</span>
                 </a>
             </div>
         </section>
