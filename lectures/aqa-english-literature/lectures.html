@@ -5,62 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AQA English Literature - Lectures</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+    <link href="shared.css" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #ffffff;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* ── Sidebar ── */
-        .sidebar {
-            width: 280px;
-            background: transparent;
-            padding: 2rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            height: calc(100vh - 40px);
-            overflow-y: auto;
-            margin: 20px;
-        }
-        .logo { font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 2.5rem; letter-spacing: -0.02em; }
-        .nav-item {
-            display: flex; align-items: center; gap: 0.875rem;
-            padding: 0.875rem 1rem; margin-bottom: 0.5rem; border-radius: 8px;
-            cursor: pointer; transition: all 0.2s; font-size: 0.9375rem;
-            font-weight: 500; color: #374151; text-decoration: none;
-        }
-        .nav-item:hover { background: rgba(0,0,0,0.05); }
-        .nav-item.active { background: #ffffff; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .nav-icon { font-size: 1.125rem; }
-        .nav-spacer { flex: 1; }
-        .live-study-btn {
-            background: #000; color: white; padding: 0.875rem 1.25rem;
-            border-radius: 8px; font-size: 0.9375rem; font-weight: 600;
-            cursor: pointer; transition: all 0.2s; border: none; width: 100%; margin-top: auto;
-        }
-        .live-study-btn:hover { background: #1a1a1a; transform: translateY(-1px); }
-
-        /* ── Main ── */
-        .main-content {
-            flex: 1; margin-left: 320px; margin-right: 20px;
-            margin-top: 20px; margin-bottom: 20px; background: #ffffff;
-            border-radius: 10px; overflow: hidden;
-            border: 1px solid #e0e4e9; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-        }
-        .content-wrapper { background: #97b6e5; padding: 8rem 0 0 0; }
-        .subject-header { display: flex; align-items: center; margin-bottom: 4rem; position: relative; }
-        .subject-line-left  { height: 1px; background: #d1d5db; flex: 0 0 60px; }
-        .subject-line-right { height: 1px; background: #d1d5db; flex: 1; }
-        .subject-name { font-size: 2.5rem; font-weight: 600; color: #111827; padding: 0 2rem; letter-spacing: -0.03em; }
-
-        /* ── Topics section ── */
-        .topics-section { background: transparent; padding: 0 3rem 2.5rem 3rem; }
-
         /* ── Top-level accordion ── */
         .papers-list { display: flex; flex-direction: column; gap: 0; margin-top: 40px; width: 100%; max-width: 900px; }
 
