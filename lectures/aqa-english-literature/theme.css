@@ -1,8 +1,10 @@
 /* Theme: AQA English Literature
-   A subject only ever needs to override these five variables — everything
-   else in shared.css reads from them, so this file is the entire job. */
+   A subject only ever needs to override these variables — everything
+   else in shared.css reads from them, so this file is the entire job.
+   header-bg is NOT set here on purpose — that band is a fixed platform
+   color shared by every subject (see shared.css). Only the accent
+   identity changes per subject. */
 :root {
-    --header-bg: #ddb0bd;          /* dusty rose — matched in lightness to the maths blue */
     --accent-1: #9d174d;           /* wine */
     --accent-2: #be185d;           /* rose */
     --accent-soft-bg: #fdf2f6;
