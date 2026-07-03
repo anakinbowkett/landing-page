@@ -5,9 +5,12 @@
    ========================================================================== */
 
 /* Subject theme variables — override these in a small theme.css per subject.
-   Nothing else in this file should ever hardcode a subject color again. */
+   Nothing else in this file should ever hardcode a subject color again.
+   NOTE: --header-bg is intentionally NOT overridden per subject. The top
+   band is a fixed platform color across every subject; subject identity
+   lives in the accent variables (buttons, icons, progress) instead. */
 :root {
-    --header-bg: #97b6e5;          /* the tall band behind the subject title */
+    --header-bg: #dcfce7;          /* the tall band behind the subject title — fixed platform-wide */
     --accent-1: #4f46e5;           /* gradient start — progress bars, icons, cta accents */
     --accent-2: #7c3aed;           /* gradient end */
     --accent-soft-bg: #f3f0ff;     /* pill/tag background */
@@ -299,26 +302,28 @@ body {
 
 .mode-section {
     background: transparent;
-    padding: 0 3rem 3rem 3rem;
+    padding: 1rem 3rem 4rem 3rem;
+    display: flex;
+    justify-content: center;
 }
 
 .mode-grid {
     display: grid;
     grid-template-columns: repeat(var(--mode-count, 2), 1fr);
-    gap: 20px;
+    gap: 24px;
     margin-top: 40px;
     width: 100%;
-    max-width: 900px;
+    max-width: 720px;
 }
 
 .mode-card {
     background: white;
     border: 1px solid #d4d4d4;
     border-radius: 14px;
-    padding: 32px 28px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
     text-decoration: none;
     color: inherit;
     transition: all 0.2s ease;
@@ -329,34 +334,21 @@ body {
 
 .mode-card:hover {
     border-color: #a0a0a0;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     transform: translateY(-2px);
 }
 
-.mode-card-icon {
-    width: 48px;
-    height: 48px;
+/* Artifact-style visual — the illustrative preview tile, roughly half the
+   card's height, the way a Claude artifact thumbnail reads at a glance. */
+.mode-card-visual {
+    height: 168px;
     border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent-soft-bg) 0%, #ffffff 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
-    background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
-    color: white;
-}
-
-.mode-card-tag {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--accent-soft-text);
-    background: var(--accent-soft-bg);
-    padding: 4px 10px;
-    border-radius: 999px;
+    color: var(--accent-1);
+    overflow: hidden;
 }
 
 .mode-card-title {
@@ -372,18 +364,24 @@ body {
     color: #4b5563;
 }
 
-.mode-card-cta {
+.mode-card-btn {
     margin-top: auto;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #111827;
-    display: flex;
+    align-self: flex-start;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
 }
 
-.mode-card:hover .mode-card-cta {
+.mode-card:hover .mode-card-btn {
     gap: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
 }
 
 @media (max-width: 768px) {
