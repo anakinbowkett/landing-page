@@ -1,0 +1,408 @@
+/* ==========================================================================
+   Montura Learn — Shared Stylesheet
+   Base layout system used across every subject/page. Scalable via
+   find-and-replace: swap subject name + topic list only.
+   ========================================================================== */
+
+/* Subject theme variables — override these in a small theme.css per subject.
+   Nothing else in this file should ever hardcode a subject color again. */
+:root {
+    --header-bg: #97b6e5;          /* the tall band behind the subject title */
+    --accent-1: #4f46e5;           /* gradient start — progress bars, icons, cta accents */
+    --accent-2: #7c3aed;           /* gradient end */
+    --accent-soft-bg: #f3f0ff;     /* pill/tag background */
+    --accent-soft-text: #7c3aed;   /* pill/tag text */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #ffffff;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ---------- Sidebar ---------- */
+
+.sidebar {
+    width: 280px;
+    background: transparent;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: calc(100vh - 40px);
+    overflow-y: auto;
+    margin: 20px;
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 2.5rem;
+    letter-spacing: -0.02em;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.875rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #374151;
+    text-decoration: none;
+}
+
+.nav-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.nav-item.active {
+    background: #ffffff;
+    color: #111827;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.nav-icon {
+    font-size: 1.125rem;
+}
+
+.nav-spacer {
+    flex: 1;
+}
+
+.live-study-btn {
+    background: #000000;
+    color: white;
+    padding: 0.875rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    width: 100%;
+    margin-top: auto;
+}
+
+.live-study-btn:hover {
+    background: #1a1a1a;
+    transform: translateY(-1px);
+}
+
+/* ---------- Main frame ---------- */
+
+.main-content {
+    flex: 1;
+    margin-left: 320px;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e0e4e9;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.content-wrapper {
+    background: var(--header-bg);
+    padding: 8rem 0 0 0;
+}
+
+/* Shorter header band used on sub-pages (deck lists, quiz start, etc.) so the
+   mode-select page keeps the tall hero and everything nested under it feels
+   one level down. */
+.content-wrapper.compact {
+    padding: 4.5rem 0 0 0;
+}
+
+.subject-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4rem;
+    position: relative;
+}
+
+.content-wrapper.compact .subject-header {
+    margin-bottom: 2.5rem;
+}
+
+.subject-line-left {
+    height: 1px;
+    background: #d1d5db;
+    flex: 0 0 60px;
+}
+
+.subject-name {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #111827;
+    padding: 0 2rem;
+    letter-spacing: -0.03em;
+}
+
+.subject-line-right {
+    height: 1px;
+    background: #d1d5db;
+    flex: 1;
+}
+
+/* Breadcrumb back-link, sits above the subject name on sub-pages */
+.crumb-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: absolute;
+    top: -2.25rem;
+    left: 60px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #1e293b;
+    text-decoration: none;
+    opacity: 0.75;
+    transition: opacity 0.2s;
+}
+
+.crumb-back:hover {
+    opacity: 1;
+}
+
+/* ---------- Topic list (used by Pillar Decks, Official Papers, Topic Drill) ---------- */
+
+.topics-section {
+    background: transparent;
+    padding: 0 3rem 2.5rem 3rem;
+}
+
+.topics-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 40px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.topic-card {
+    background: white;
+    border: 1px solid #d4d4d4;
+    border-radius: 12px;
+    padding: 0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+    display: flex;
+    align-items: stretch;
+    min-height: 80px;
+    overflow: hidden;
+}
+
+.topic-card:hover {
+    border-color: #a0a0a0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.topic-card-left {
+    width: 280px;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    background: url('https://i.postimg.cc/4dTzWKKR/Maths-(2).png') center/cover no-repeat;
+    position: relative;
+}
+
+.topic-card-divider {
+    width: 1px;
+    background: #e5e5e5;
+    align-self: stretch;
+}
+
+.topic-card-right {
+    flex: 1;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.topic-title {
+    font-size: 26px;
+    font-weight: 600;
+    color: #000000;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.topic-number {
+    font-size: 26px;
+    font-weight: 600;
+    color: #999;
+    letter-spacing: -0.02em;
+}
+
+.topic-meta {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+.topic-progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #e5e5e7;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+}
+
+.topic-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-1) 0%, var(--accent-2) 100%);
+    transition: width 0.4s ease;
+    border-radius: 10px;
+}
+
+.topic-progress-text {
+    font-size: 13px;
+    color: #000000;
+    font-weight: 600;
+    background: #ffffff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    align-self: flex-start;
+}
+
+/* ---------- Mode select (Flashtiles / Quiz / Past Papers landing pages) ---------- */
+
+.mode-section {
+    background: transparent;
+    padding: 0 3rem 3rem 3rem;
+}
+
+.mode-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--mode-count, 2), 1fr);
+    gap: 20px;
+    margin-top: 40px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.mode-card {
+    background: white;
+    border: 1px solid #d4d4d4;
+    border-radius: 14px;
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.mode-card:hover {
+    border-color: #a0a0a0;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.mode-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+    color: white;
+}
+
+.mode-card-tag {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent-soft-text);
+    background: var(--accent-soft-bg);
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.mode-card-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #111827;
+    letter-spacing: -0.02em;
+}
+
+.mode-card-desc {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: #4b5563;
+}
+
+.mode-card-cta {
+    margin-top: auto;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mode-card:hover .mode-card-cta {
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 240px;
+        margin: 15px;
+        height: calc(100vh - 30px);
+    }
+
+    .main-content {
+        margin-left: 270px;
+    }
+
+    .subject-name {
+        font-size: 2rem;
+        padding: 0 1.5rem;
+    }
+
+    .mode-grid {
+        grid-template-columns: 1fr;
+    }
+}

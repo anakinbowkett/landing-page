@@ -1,0 +1,10 @@
+/* Theme: AQA English Literature
+   A subject only ever needs to override these five variables — everything
+   else in shared.css reads from them, so this file is the entire job. */
+:root {
+    --header-bg: #ddb0bd;          /* dusty rose — matched in lightness to the maths blue */
+    --accent-1: #9d174d;           /* wine */
+    --accent-2: #be185d;           /* rose */
+    --accent-soft-bg: #fdf2f6;
+    --accent-soft-text: #9d174d;
+}
