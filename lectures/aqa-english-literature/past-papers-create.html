@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQA English Literature - Create a Paper</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+    <link href="shared.css" rel="stylesheet">
+    <style>
+        /* ---------- Stepper ---------- */
+        .stepper {
+            display: flex;
+            align-items: center;
+            max-width: 900px;
+            padding: 0 3rem;
+            margin-bottom: 8px;
+        }
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .step-dot {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            color: #6b7280;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .step-item.active .step-dot {
+            background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+            color: white;
+        }
+        .step-item.done .step-dot {
+            background: #111827;
+            color: white;
+        }
+        .step-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #9ca3af;
+        }
+        .step-item.active .step-label,
+        .step-item.done .step-label { color: #111827; }
+        .step-line {
+            width: 56px;
+            height: 1px;
+            background: #e5e7eb;
+            margin: 0 14px;
+        }
+
+        .stage { padding: 24px 3rem 3rem; max-width: 900px; }
+
+        /* ---------- Step 1: Pick ---------- */
+        .paper-pick-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            max-width: 560px;
+        }
+        .paper-pick-card {
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 12px;
+            padding: 22px;
+            cursor: pointer;
+        }
+        .paper-pick-card.selected {
+            border-color: #111827;
+            box-shadow: 0 0 0 1px #111827;
+        }
+        .paper-pick-title { font-weight: 600; font-size: 1.0625rem; color: #111827; }
+        .paper-pick-sub { font-size: 0.8125rem; color: #6b7280; margin-top: 4px; }
+        .paper-pick-note {
+            font-size: 0.8125rem; color: #6b7280; margin: 18px 0 24px; max-width: 560px; line-height: 1.5;
+        }
+
+        /* ---------- Step 2: Build ---------- */
+        .build-layout {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        .exam-sheet {
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 12px;
+            padding: 32px 28px;
+            font-size: 0.875rem;
+        }
+        .exam-sheet-head {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #9ca3af;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 14px;
+            margin-bottom: 18px;
+        }
+        .exam-question-slot {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 16px 14px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .exam-question-slot:hover, .exam-question-slot.slot-active {
+            background: var(--accent-soft-bg);
+            border-color: var(--accent-1);
+        }
+        .exam-q-number { font-weight: 700; color: #111827; margin-right: 6px; }
+        .exam-q-text { color: #374151; line-height: 1.6; }
+        .exam-q-lines {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .exam-q-lines span {
+            display: block;
+            height: 1px;
+            background: #e5e7eb;
+        }
+        .exam-q-marks {
+            text-align: right;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-top: 8px;
+        }
+
+        .qbank-panel {
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 12px;
+            padding: 20px;
+            position: sticky;
+            top: 20px;
+        }
+        .qbank-slot-note {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 14px;
+        }
+        .qbank-slot-note strong { color: #111827; }
+        .qbank-tabs {
+            display: flex;
+            gap: 4px;
+            background: #f3f4f6;
+            padding: 4px;
+            border-radius: 9px;
+            margin-bottom: 16px;
+        }
+        .qbank-tab {
+            flex: 1;
+            padding: 8px 6px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+        .qbank-tab.active {
+            background: white;
+            color: #111827;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .qbank-option {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            color: #374151;
+            position: relative;
+        }
+        .qbank-option.selected {
+            border-color: #111827;
+            box-shadow: 0 0 0 1px #111827;
+            background: #fafafa;
+        }
+        .qbank-option .urgent-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #b91c1c;
+            background: #fee2e2;
+            padding: 3px 7px;
+            border-radius: 999px;
+        }
+
+        /* ---------- Step 3: Review ---------- */
+        .review-list { display: flex; flex-direction: column; gap: 12px; }
+        .review-row {
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 10px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .review-row-left { display: flex; align-items: center; gap: 12px; }
+        .review-q-num {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--accent-soft-bg); color: var(--accent-soft-text);
+            font-size: 0.75rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .review-q-text { font-size: 0.875rem; color: #374151; }
+        .review-q-tag { font-size: 0.75rem; color: #9ca3af; }
+        .review-summary {
+            display: flex; gap: 24px;
+            margin-top: 20px;
+            font-size: 0.8125rem;
+            color: #6b7280;
+            font-weight: 600;
+        }
+        .review-summary strong { color: #111827; }
+
+        /* ---------- Step 4: Start ---------- */
+        .start-panel {
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 520px;
+            text-align: left;
+        }
+        .start-panel h2 { font-size: 1.375rem; font-weight: 600; color: #111827; margin-bottom: 6px; }
+        .start-panel .sub { font-size: 0.875rem; color: #6b7280; margin-bottom: 24px; }
+        .start-facts { display: flex; gap: 24px; margin-bottom: 28px; }
+        .start-fact-num { font-size: 1.5rem; font-weight: 700; color: #111827; }
+        .start-fact-label { font-size: 0.75rem; color: #6b7280; }
+        .sit-btn {
+            background: #000000; color: white; padding: 1rem 1.5rem;
+            border-radius: 10px; font-size: 0.9375rem; font-weight: 600;
+            border: none; cursor: pointer; width: 100%;
+        }
+        .sit-btn:hover { background: #1a1a1a; }
+
+        .stage-nav { display: flex; justify-content: flex-end; gap: 10px; margin-top: 28px; max-width: 900px; padding: 0 3rem; }
+        .stage-btn {
+            padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 0.875rem; font-weight: 600;
+            border: 1px solid #d4d4d4; background: white; color: #374151; cursor: pointer;
+        }
+        .stage-btn.primary { background: #000000; color: white; border-color: #000000; }
+        .stage-btn.primary:hover { background: #1a1a1a; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">GCSE Mastery</div>
+        <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
+        <a href="lectures.html" class="nav-item"><span class="nav-icon">∞</span><span>Lectures</span></a>
+        <a href="flashtiles.html" class="nav-item"><span class="nav-icon">⚡</span><span>Flashtiles</span></a>
+        <a href="quick-test.html" class="nav-item"><span class="nav-icon">🕐</span><span>Quiz / Quick Test</span></a>
+        <a href="past-papers.html" class="nav-item active"><span class="nav-icon">📄</span><span>Past Papers</span></a>
+        <div class="nav-spacer"></div>
+        <button class="live-study-btn">Allow Live Study</button>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper compact">
+            <div class="subject-header">
+                <a href="past-papers.html" class="crumb-back">← Past Papers</a>
+                <div class="subject-line-left"></div>
+                <h1 class="subject-name">Create</h1>
+                <div class="subject-line-right"></div>
+            </div>
+        </div>
+
+        <div class="stepper">
+            <div class="step-item active" data-goto="pick">
+                <div class="step-dot">1</div><div class="step-label">Pick</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item" data-goto="build">
+                <div class="step-dot">2</div><div class="step-label">Build</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item" data-goto="review">
+                <div class="step-dot">3</div><div class="step-label">Review</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item" data-goto="start">
+                <div class="step-dot">4</div><div class="step-label">Start</div>
+            </div>
+        </div>
+
+        <!-- STEP 1: PICK -->
+        <section class="stage" data-stage="pick">
+            <p class="paper-pick-note">Your subject and tier are already set from the dashboard. Just pick which paper — every build uses standard GCSE difficulty, spread the way AQA actually spreads it across a real paper.</p>
+            <div class="paper-pick-grid">
+                <div class="paper-pick-card selected">
+                    <div class="paper-pick-title">Paper 1</div>
+                    <div class="paper-pick-sub">Shakespeare &amp; the 19th Century Novel</div>
+                </div>
+                <div class="paper-pick-card">
+                    <div class="paper-pick-title">Paper 2</div>
+                    <div class="paper-pick-sub">Modern Texts &amp; Poetry</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 2: BUILD -->
+        <section class="stage" data-stage="build" style="display:none;">
+            <div class="build-layout">
+                <div class="exam-sheet">
+                    <div class="exam-sheet-head">Paper 1 · Section A — Shakespeare</div>
+
+                    <div class="exam-question-slot slot-active">
+                        <div><span class="exam-q-number">0 1</span><span class="exam-q-text">Read the extract below, then answer the question that follows.</span></div>
+                        <div class="exam-q-lines"><span></span><span></span></div>
+                    </div>
+
+                    <div class="exam-question-slot">
+                        <div><span class="exam-q-number">0 2</span><span class="exam-q-text">Starting with this extract, explore how Shakespeare presents the theme of jealousy in Romeo and Juliet.</span></div>
+                        <div class="exam-q-lines"><span></span><span></span><span></span></div>
+                        <div class="exam-q-marks">[ 30 marks + 4 AO4 ]</div>
+                    </div>
+
+                    <div class="exam-question-slot">
+                        <div><span class="exam-q-number">0 3</span><span class="exam-q-text">Hover a question to see its space — click to swap in something similar from the panel.</span></div>
+                        <div class="exam-q-lines"><span></span><span></span></div>
+                        <div class="exam-q-marks">[ 8 marks ]</div>
+                    </div>
+                </div>
+
+                <div class="qbank-panel">
+                    <div class="qbank-slot-note">Swapping <strong>Q02 — Shakespeare essay</strong></div>
+                    <div class="qbank-tabs">
+                        <button class="qbank-tab active" data-panel="mine">Make it yourself</button>
+                        <button class="qbank-tab" data-panel="official">Official</button>
+                        <button class="qbank-tab" data-panel="weak">Struggle on</button>
+                    </div>
+
+                    <div data-qpanel="mine">
+                        <div class="qbank-option selected">Explore how Shakespeare presents the theme of jealousy in Romeo and Juliet.</div>
+                        <div class="qbank-option">Explore how Shakespeare presents the theme of death amongst the feud of the Montagues and Capulets.</div>
+                        <div class="qbank-option">Explore how Shakespeare presents the theme of fate in Romeo and Juliet.</div>
+                        <div class="qbank-option">Explore how Shakespeare presents conflict between the Montagues and Capulets.</div>
+                    </div>
+
+                    <div data-qpanel="official" style="display:none;">
+                        <div class="qbank-option">Explore how Shakespeare presents the theme of love in Romeo and Juliet.</div>
+                        <div class="qbank-option">Explore how Shakespeare presents the character of Tybalt in Romeo and Juliet.</div>
+                    </div>
+
+                    <div data-qpanel="weak" style="display:none;">
+                        <div class="qbank-option">
+                            <span class="urgent-badge">Urgent</span>
+                            Explore how Shakespeare presents the theme of family loyalty in Romeo and Juliet.
+                        </div>
+                        <div class="qbank-option">Explore how Shakespeare presents Juliet as a character who defies expectation.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 3: REVIEW -->
+        <section class="stage" data-stage="review" style="display:none;">
+            <div class="review-list">
+                <div class="review-row">
+                    <div class="review-row-left">
+                        <div class="review-q-num">1</div>
+                        <div class="review-q-text">Extract-based lead-in question</div>
+                    </div>
+                    <div class="review-q-tag">Shakespeare · 4 marks</div>
+                </div>
+                <div class="review-row">
+                    <div class="review-row-left">
+                        <div class="review-q-num">2</div>
+                        <div class="review-q-text">Explore how Shakespeare presents the theme of jealousy in Romeo and Juliet.</div>
+                    </div>
+                    <div class="review-q-tag">Shakespeare · 34 marks</div>
+                </div>
+                <div class="review-row">
+                    <div class="review-row-left">
+                        <div class="review-q-num">3</div>
+                        <div class="review-q-text">19th Century Novel extract question</div>
+                    </div>
+                    <div class="review-q-tag">19th C. Novel · 8 marks</div>
+                </div>
+            </div>
+            <div class="review-summary">
+                <span><strong>3</strong> questions</span>
+                <span><strong>46</strong> marks total</span>
+                <span><strong>1h 45m</strong> recommended time</span>
+            </div>
+        </section>
+
+        <!-- STEP 4: START -->
+        <section class="stage" data-stage="start" style="display:none;">
+            <div class="start-panel">
+                <h2>Paper 1 — Your Build</h2>
+                <p class="sub">Shakespeare &amp; the 19th Century Novel · built just now</p>
+                <div class="start-facts">
+                    <div><div class="start-fact-num">3</div><div class="start-fact-label">Questions</div></div>
+                    <div><div class="start-fact-num">46</div><div class="start-fact-label">Marks</div></div>
+                    <div><div class="start-fact-num">1h 45m</div><div class="start-fact-label">Time</div></div>
+                </div>
+                <button class="sit-btn">Start Paper →</button>
+            </div>
+        </section>
+
+        <div class="stage-nav">
+            <button class="stage-btn" id="backBtn">Back</button>
+            <button class="stage-btn primary" id="nextBtn">Continue</button>
+        </div>
+    </main>
+
+    <script>
+        const order = ['pick', 'build', 'review', 'start'];
+        let current = 0;
+
+        const steps = document.querySelectorAll('.step-item');
+        const stages = document.querySelectorAll('.stage');
+        const nextBtn = document.getElementById('nextBtn');
+        const backBtn = document.getElementById('backBtn');
+
+        function render() {
+            stages.forEach(s => s.style.display = s.dataset.stage === order[current] ? '' : 'none');
+            steps.forEach((s, i) => {
+                s.classList.toggle('active', i === current);
+                s.classList.toggle('done', i < current);
+            });
+            nextBtn.textContent = current === order.length - 1 ? 'Finish' : 'Continue';
+            backBtn.style.visibility = current === 0 ? 'hidden' : 'visible';
+        }
+
+        steps.forEach((step, i) => step.addEventListener('click', () => { current = i; render(); }));
+        nextBtn.addEventListener('click', () => { if (current < order.length - 1) { current++; render(); } });
+        backBtn.addEventListener('click', () => { if (current > 0) { current--; render(); } });
+
+        // Question-bank tab switching within Build stage
+        document.querySelectorAll('.qbank-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.qbank-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('[data-qpanel]').forEach(p => {
+                    p.style.display = p.dataset.qpanel === tab.dataset.panel ? '' : 'none';
+                });
+            });
+        });
+
+        // Exam question slot selection
+        document.querySelectorAll('.exam-question-slot').forEach(slot => {
+            slot.addEventListener('click', () => {
+                document.querySelectorAll('.exam-question-slot').forEach(s => s.classList.remove('slot-active'));
+                slot.classList.add('slot-active');
+            });
+        });
+
+        render();
+    </script>
+</body>
+</html>

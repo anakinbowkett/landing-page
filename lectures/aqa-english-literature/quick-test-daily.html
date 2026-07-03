@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQA English Literature - Daily Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+    <link href="shared.css" rel="stylesheet">
+    <style>
+        .daily-panel {
+            max-width: 640px;
+            margin: 32px 3rem 0;
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 16px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .daily-stats {
+            display: flex;
+            gap: 16px;
+        }
+        .daily-stat {
+            flex: 1;
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 18px 16px;
+            text-align: center;
+        }
+        .daily-stat-num {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #111827;
+            letter-spacing: -0.02em;
+        }
+        .daily-stat-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .daily-note {
+            font-size: 0.875rem;
+            color: #6b7280;
+            line-height: 1.55;
+        }
+        .daily-note strong { color: #374151; }
+        .start-btn {
+            background: #000000;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        .start-btn:hover { background: #1a1a1a; }
+        .streak-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--accent-soft-text);
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">GCSE Mastery</div>
+        <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
+        <a href="lectures.html" class="nav-item"><span class="nav-icon">∞</span><span>Lectures</span></a>
+        <a href="flashtiles.html" class="nav-item"><span class="nav-icon">⚡</span><span>Flashtiles</span></a>
+        <a href="quick-test.html" class="nav-item active"><span class="nav-icon">🕐</span><span>Quiz / Quick Test</span></a>
+        <a href="past-papers.html" class="nav-item"><span class="nav-icon">📄</span><span>Past Papers</span></a>
+        <div class="nav-spacer"></div>
+        <button class="live-study-btn">Allow Live Study</button>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper compact">
+            <div class="subject-header">
+                <a href="quick-test.html" class="crumb-back">← Quiz / Quick Test</a>
+                <div class="subject-line-left"></div>
+                <h1 class="subject-name">Daily Quiz</h1>
+                <div class="subject-line-right"></div>
+            </div>
+        </div>
+
+        <section class="topics-section">
+            <div class="daily-panel">
+                <div class="streak-row">🔥 4-day streak</div>
+                <div class="daily-stats">
+                    <div class="daily-stat">
+                        <div class="daily-stat-num">12</div>
+                        <div class="daily-stat-label">Due for review</div>
+                    </div>
+                    <div class="daily-stat">
+                        <div class="daily-stat-num">8</div>
+                        <div class="daily-stat-label">New</div>
+                    </div>
+                    <div class="daily-stat">
+                        <div class="daily-stat-num">20</div>
+                        <div class="daily-stat-label">Today's set</div>
+                    </div>
+                </div>
+                <p class="daily-note"><strong>Picked for you.</strong> FSRS looks at what you got wrong and what's about to slip from memory, and builds today's set from that — no topic list to scroll through.</p>
+                <button class="start-btn">Start today's quiz →</button>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

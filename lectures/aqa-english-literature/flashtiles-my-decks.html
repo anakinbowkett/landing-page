@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQA English Literature - My Decks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+    <link href="shared.css" rel="stylesheet">
+    <style>
+        .builder-toolbar {
+            padding: 0 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 900px;
+        }
+        .builder-tabs {
+            display: flex;
+            gap: 6px;
+            background: #f3f4f6;
+            padding: 4px;
+            border-radius: 9px;
+        }
+        .builder-tab {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+        .builder-tab.active {
+            background: #ffffff;
+            color: #111827;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .new-deck-btn {
+            background: #000000;
+            color: white;
+            padding: 0.7rem 1.1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+        .new-deck-btn:hover { background: #1a1a1a; }
+
+        .decks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin-top: 32px;
+        }
+        .deck-tile {
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 140px;
+        }
+        .deck-tile-empty {
+            border-style: dashed;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #9ca3af;
+            cursor: pointer;
+        }
+        .deck-tile-empty:hover { border-color: #a0a0a0; color: #6b7280; }
+        .deck-tile-icon { font-size: 22px; }
+        .deck-tile-name { font-weight: 600; color: #111827; font-size: 1rem; }
+        .deck-tile-meta { font-size: 0.75rem; color: #6b7280; }
+
+        /* Mindmap canvas preview area, shown when the Mindmap tab is active */
+        .mindmap-canvas {
+            max-width: 900px;
+            margin-top: 32px;
+            height: 380px;
+            border: 1px dashed #d4d4d4;
+            border-radius: 14px;
+            background:
+                radial-gradient(circle at 1px 1px, #e5e7eb 1px, transparent 1px) 0 0/22px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+            color: #9ca3af;
+            font-size: 0.9375rem;
+        }
+        .mindmap-canvas strong { color: #4b5563; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">GCSE Mastery</div>
+        <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
+        <a href="lectures.html" class="nav-item"><span class="nav-icon">∞</span><span>Lectures</span></a>
+        <a href="flashtiles.html" class="nav-item active"><span class="nav-icon">⚡</span><span>Flashtiles</span></a>
+        <a href="quick-test.html" class="nav-item"><span class="nav-icon">🕐</span><span>Quiz / Quick Test</span></a>
+        <a href="past-papers.html" class="nav-item"><span class="nav-icon">📄</span><span>Past Papers</span></a>
+        <div class="nav-spacer"></div>
+        <button class="live-study-btn">Allow Live Study</button>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper compact">
+            <div class="subject-header">
+                <a href="flashtiles.html" class="crumb-back">← Flashtiles</a>
+                <div class="subject-line-left"></div>
+                <h1 class="subject-name">My Decks</h1>
+                <div class="subject-line-right"></div>
+            </div>
+        </div>
+
+        <section class="topics-section">
+            <div class="builder-toolbar">
+                <div class="builder-tabs">
+                    <button class="builder-tab active" data-tab="cards">Card Decks</button>
+                    <button class="builder-tab" data-tab="mindmap">Mindmaps</button>
+                </div>
+                <button class="new-deck-btn">+ New Deck</button>
+            </div>
+
+            <!-- Card Decks view -->
+            <div class="decks-grid" data-panel="cards">
+                <div class="deck-tile">
+                    <div class="deck-tile-icon">🃏</div>
+                    <div class="deck-tile-name">Macbeth — Key Quotes</div>
+                    <div class="deck-tile-meta">24 cards · edited 2 days ago</div>
+                </div>
+                <div class="deck-tile deck-tile-empty">
+                    <div class="deck-tile-icon">+</div>
+                    <div>Create a card deck</div>
+                </div>
+            </div>
+
+            <!-- Mindmap view (SVG mindmap builder canvas, hidden by default) -->
+            <div class="mindmap-canvas" data-panel="mindmap" style="display: none;">
+                <div style="font-size: 28px;">🧠</div>
+                <div><strong>No mindmaps yet.</strong> Start a node and branch out.</div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const tabs = document.querySelectorAll('.builder-tab');
+        const panels = document.querySelectorAll('[data-panel]');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const target = tab.dataset.tab;
+                panels.forEach(p => {
+                    p.style.display = p.dataset.panel === target ? '' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
