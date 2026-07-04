@@ -404,3 +404,222 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ---------- Pillar cards (Pillar Decks landing page — click-through, no accordion) ---------- */
+
+.pillar-card {
+    background: white;
+    border: 1px solid #d4d4d4;
+    border-radius: 12px;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+    transition: all 0.2s ease;
+}
+
+.pillar-card:hover {
+    border-color: #a0a0a0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.pillar-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.pillar-card-meta {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+.pillar-select-btn {
+    background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-flex;
+}
+
+/* ---------- Lecture selection rows — checkbox pick, no accordion ---------- */
+
+.lecture-select-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 700px;
+}
+
+.lecture-select-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: white;
+}
+
+.lecture-select-row:hover {
+    border-color: #c7c7c7;
+}
+
+.lecture-select-row.selected {
+    border-color: var(--accent-1);
+    background: var(--accent-soft-bg);
+}
+
+.lecture-select-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.lecture-checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid #d1d5db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+    background: white;
+}
+
+.lecture-select-row.selected .lecture-checkbox {
+    background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+    border-color: transparent;
+}
+
+.lecture-checkbox svg {
+    opacity: 0;
+    transition: opacity 0.1s ease;
+}
+
+.lecture-select-row.selected .lecture-checkbox svg {
+    opacity: 1;
+}
+
+.lecture-select-name {
+    font-size: 0.9375rem;
+    color: #111827;
+    font-weight: 500;
+}
+
+.lecture-select-action {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
+.lecture-select-row.selected .lecture-select-action {
+    color: var(--accent-1);
+}
+
+/* ---------- Sticky selection basket bar ---------- */
+
+.selection-basket-bar {
+    position: sticky;
+    bottom: 20px;
+    margin: 24px auto 0;
+    max-width: 700px;
+    background: #111827;
+    color: white;
+    border-radius: 12px;
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.basket-count {
+    font-size: 0.9375rem;
+    font-weight: 600;
+}
+
+.basket-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.basket-clear-btn {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.basket-clear-btn:hover {
+    color: white;
+}
+
+.basket-start-btn {
+    background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ---------- Session top-bar (Previous / Question X of Y / Next) ----------
+   Reserved for the actual study-session base template (coming later), but
+   built now so it's ready and consistent for both Pillar Decks and My Decks
+   sessions when we get to it. */
+
+.session-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.session-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: var(--accent-1);
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.session-nav-btn:hover {
+    background: #f9fafb;
+}
+
+.session-nav-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.session-progress-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+}
