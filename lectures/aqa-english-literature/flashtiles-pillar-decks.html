@@ -23,88 +23,36 @@
     <main class="main-content">
         <div class="content-wrapper compact">
             <div class="subject-header">
-                <a href="flashtiles.html" class="crumb-back">← Flashtiles</a>
                 <div class="subject-line-left"></div>
                 <h1 class="subject-name">Pillar Decks</h1>
                 <div class="subject-line-right"></div>
             </div>
         </div>
 
+        <a href="flashtiles.html" class="crumb-back">← Flashtiles</a>
+
         <section class="topics-section">
             <p style="max-width: 700px; font-size: 0.875rem; color: #6b7280; margin-bottom: 20px;">Same structure as your Lectures — pick a paper, section or text, then choose exactly which lectures become flashcards.</p>
 
-            <div class="pillar-list-row disabled">
-                <div class="pillar-list-row-left">
-                    <span class="pillar-list-tag">Foundation</span>
-                    <span class="pillar-list-title">Start Here — Universal Skills</span>
-                </div>
-                <span class="pillar-list-chevron">›</span>
-            </div>
-
-            <a href="flashtiles-shakespeare-select.html" class="pillar-list-row">
-                <div class="pillar-list-row-left">
-                    <span class="pillar-list-tag">Paper 1 · Section A</span>
-                    <span class="pillar-list-title">Shakespeare</span>
-                </div>
-                <span class="pillar-list-chevron">›</span>
-            </a>
-
-            <div class="pillar-list-row disabled">
-                <div class="pillar-list-row-left">
-                    <span class="pillar-list-tag">Paper 1 · Section B</span>
-                    <span class="pillar-list-title">19th Century Novel</span>
-                </div>
-                <span class="pillar-list-chevron">›</span>
-            </div>
-
-            <div class="pillar-list-row disabled">
-                <div class="pillar-list-row-left">
-                    <span class="pillar-list-tag">Paper 2 · Section A</span>
-                    <span class="pillar-list-title">Modern Drama</span>
-                </div>
-                <span class="pillar-list-chevron">›</span>
-            </div>
-
-            <div class="pillar-list-row disabled">
-                <div class="pillar-list-row-left">
-                    <span class="pillar-list-tag">Paper 2 · Section A</span>
-                    <span class="pillar-list-title">Modern Prose</span>
-                </div>
-                <span class="pillar-list-chevron">›</span>
-            </div>
-
-            <div class="pillar-list-row disabled">
-                <div class="pillar-list-row-left">
-                    <span class="pillar-list-tag">Paper 2 · Section B</span>
-                    <span class="pillar-list-title">Love and Relationships</span>
-                </div>
-                <span class="pillar-list-chevron">›</span>
-            </div>
-
-            <a href="flashtiles-pillars-single.html" class="pillar-list-row">
-                <div class="pillar-list-row-left">
-                    <span class="pillar-list-tag">Paper 2 · Section B</span>
-                    <span class="pillar-list-title">Power and Conflict</span>
-                </div>
-                <span class="pillar-list-chevron">›</span>
-            </a>
-
-            <div class="pillar-list-row disabled">
-                <div class="pillar-list-row-left">
-                    <span class="pillar-list-tag">Paper 2 · Section B</span>
-                    <span class="pillar-list-title">Worlds and Lives</span>
-                </div>
-                <span class="pillar-list-chevron">›</span>
-            </div>
-
-            <div class="pillar-list-row disabled">
-                <div class="pillar-list-row-left">
-                    <span class="pillar-list-tag">Paper 2 · Section C</span>
-                    <span class="pillar-list-title">Unseen Poetry</span>
-                </div>
-                <span class="pillar-list-chevron">›</span>
-            </div>
+            <div id="sectionList"></div>
         </section>
     </main>
+
+    <script src="lectures-data.js"></script>
+    <script>
+        const list = document.getElementById('sectionList');
+        papersData.forEach((paper, i) => {
+            const row = document.createElement('a');
+            row.className = 'pillar-list-row';
+            row.href = `flashtiles-section.html?section=${i}`;
+            row.innerHTML = `
+                <div class="pillar-list-row-left">
+                    <span class="pillar-list-tag">${paper.tag}</span>
+                    <span class="pillar-list-title">${paper.title}</span>
+                </div>
+                <span class="pillar-list-chevron">›</span>`;
+            list.appendChild(row);
+        });
+    </script>
 </body>
 </html>
