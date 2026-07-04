@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQA English Literature - Select Topics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+    <link href="shared.css" rel="stylesheet">
+    <style>
+        /* Template note: this page represents ANY pillar's selection screen —
+           Poetry Anthology is shown here as the example with the most items,
+           but the same layout serves Shakespeare, the Novel, etc. */
+        .select-intro { max-width: 700px; font-size: 0.875rem; color: #6b7280; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">GCSE Mastery</div>
+        <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
+        <a href="lectures.html" class="nav-item"><span class="nav-icon">∞</span><span>Lectures</span></a>
+        <a href="flashtiles.html" class="nav-item active"><span class="nav-icon">⚡</span><span>Flashtiles</span></a>
+        <a href="quick-test.html" class="nav-item"><span class="nav-icon">🕐</span><span>Quiz / Quick Test</span></a>
+        <a href="past-papers.html" class="nav-item"><span class="nav-icon">📄</span><span>Past Papers</span></a>
+        <div class="nav-spacer"></div>
+        <button class="live-study-btn">Allow Live Study</button>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper compact">
+            <div class="subject-header">
+                <a href="flashtiles-pillar-decks.html" class="crumb-back">← Pillar Decks</a>
+                <div class="subject-line-left"></div>
+                <h1 class="subject-name">Poetry Anthology</h1>
+                <div class="subject-line-right"></div>
+            </div>
+        </div>
+
+        <section class="topics-section">
+            <p class="select-intro">Tick the poems you want as flashcards. Tap a selected one again to take it back out.</p>
+
+            <div class="lecture-select-list" id="lectureList">
+                <!-- rows generated below -->
+            </div>
+        </section>
+
+        <div class="selection-basket-bar" id="basketBar" style="display: none;">
+            <span class="basket-count" id="basketCount">0 selected</span>
+            <div class="basket-actions">
+                <button class="basket-clear-btn" id="clearBtn">Clear</button>
+                <button class="basket-start-btn" id="startBtn">Start Deck →</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const poems = [
+            "Ozymandias", "London", "Extract from The Prelude", "My Last Duchess",
+            "The Charge of the Light Brigade", "Exposure", "Storm on the Island",
+            "Bayonet Charge", "Remains", "Poppies", "War Photographer", "Tissue",
+            "The Emigrée", "Checking Out Me History", "Kamikaze"
+        ];
+
+        const list = document.getElementById('lectureList');
+        const basketBar = document.getElementById('basketBar');
+        const basketCount = document.getElementById('basketCount');
+        const clearBtn = document.getElementById('clearBtn');
+        const checkSvg = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L4.5 8.5L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+        poems.forEach((name, i) => {
+            const row = document.createElement('div');
+            row.className = 'lecture-select-row';
+            row.dataset.id = i;
+            row.innerHTML = `
+                <div class="lecture-select-left">
+                    <span class="lecture-checkbox">${checkSvg}</span>
+                    <span class="lecture-select-name">${name}</span>
+                </div>
+                <span class="lecture-select-action">Add</span>`;
+            row.addEventListener('click', () => toggleRow(row));
+            list.appendChild(row);
+        });
+
+        function toggleRow(row) {
+            row.classList.toggle('selected');
+            const action = row.querySelector('.lecture-select-action');
+            action.textContent = row.classList.contains('selected') ? 'Added ✓' : 'Add';
+            updateBasket();
+        }
+
+        function updateBasket() {
+            const selected = document.querySelectorAll('.lecture-select-row.selected');
+            if (selected.length === 0) {
+                basketBar.style.display = 'none';
+            } else {
+                basketBar.style.display = 'flex';
+                basketCount.textContent = `${selected.length} selected`;
+            }
+        }
+
+        clearBtn.addEventListener('click', () => {
+            document.querySelectorAll('.lecture-select-row.selected').forEach(row => {
+                row.classList.remove('selected');
+                row.querySelector('.lecture-select-action').textContent = 'Add';
+            });
+            updateBasket();
+        });
+
+        // Hover affordance: show "Remove" on an already-added row while hovering
+        list.addEventListener('mouseover', e => {
+            const row = e.target.closest('.lecture-select-row.selected');
+            if (row) row.querySelector('.lecture-select-action').textContent = 'Remove';
+        });
+        list.addEventListener('mouseout', e => {
+            const row = e.target.closest('.lecture-select-row.selected');
+            if (row) row.querySelector('.lecture-select-action').textContent = 'Added ✓';
+        });
+    </script>
+</body>
+</html>
