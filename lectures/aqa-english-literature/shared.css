@@ -623,3 +623,102 @@ body {
     color: #6b7280;
     font-weight: 500;
 }
+
+/* ---------- Pillar Decks: real paper/section list rows ----------
+   Deliberately matches lectures.html's block style (tag pill + title +
+   chevron) MINUS the progress-tracking squares — those come later. */
+
+.pillar-list-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px 26px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.pillar-list-row:hover {
+    background: #fafafa;
+    border-color: #c7c7c7;
+}
+
+.pillar-list-row.disabled {
+    cursor: default;
+    opacity: 0.55;
+}
+
+.pillar-list-row.disabled:hover {
+    background: white;
+    border-color: #e0e0e0;
+}
+
+.pillar-list-row-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.pillar-list-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: white;
+    background: #111;
+    padding: 4px 9px;
+    border-radius: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.pillar-list-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+    letter-spacing: -0.02em;
+}
+
+.pillar-list-chevron {
+    font-size: 18px;
+    color: #bbb;
+    flex-shrink: 0;
+}
+
+/* ---------- Text/play selector pills (Shakespeare plays, novels, etc.) ---------- */
+
+.text-selector-wrap { margin-bottom: 28px; }
+
+.text-selector {
+    border: 1px solid #e5e5e5;
+    border-radius: 13px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #fafafa;
+    overflow-x: auto;
+    max-width: 900px;
+}
+
+.text-selector-btn {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #666;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.text-selector-btn:hover { color: #111; background: #f0f0f0; }
+.text-selector-btn.active { background: #111; color: #fff; font-weight: 600; }
+.text-selector-btn.disabled { color: #ccc; cursor: default; }
+.text-selector-btn.disabled:hover { background: transparent; color: #ccc; }
