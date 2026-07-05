@@ -867,7 +867,7 @@ body {
 .lec-sub-row.selectable.selected { background: #fafafa; }
 .lec-sub-row.selectable .lecture-checkbox { margin: 0; }
 .lec-sub-row.selectable.selected .lecture-checkbox {
-    background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+    background: #1d7fe2;
     border-color: transparent;
 }
 .lec-sub-row.selectable.selected .lecture-checkbox svg {
