@@ -162,14 +162,13 @@ body {
     flex: 1;
 }
 
-/* Breadcrumb back-link, sits above the subject name on sub-pages */
+/* Breadcrumb back-link — sits in the white area BELOW the header band,
+   never inside it. Normal flow, not absolutely positioned. */
 .crumb-back {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    position: absolute;
-    top: -2.25rem;
-    left: 60px;
+    margin: 20px 60px 0;
     font-size: 0.8125rem;
     font-weight: 600;
     color: #1e293b;
