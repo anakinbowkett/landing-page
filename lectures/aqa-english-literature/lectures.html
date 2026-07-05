@@ -49,37 +49,6 @@
         /* ── Lecture panel (play/novel/poem selector UI) ── */
         .lec-panel { display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #fff; border: none; border-radius: 0; }
 
-        /* Play/text selector */
-        .lec-play-selector-wrap { position: relative; }
-        .lec-play-selector-wrap .scroll-arrow {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            width: 28px; height: 28px; border-radius: 50%;
-            background: #fff; border: 1px solid #e0e0e0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 10;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.18s;
-            font-size: 13px; color: #444; user-select: none;
-        }
-        .lec-play-selector-wrap .scroll-arrow.left  { left: 4px; }
-        .lec-play-selector-wrap .scroll-arrow.right { right: 4px; }
-        .lec-play-selector-wrap:hover .scroll-arrow { opacity: 1; pointer-events: auto; }
-        .lec-play-selector-wrap .scroll-arrow:hover { background: #111; color: #fff; border-color: #111; }
-        .lec-play-selector {
-            border: 1px solid #e5e5e5; border-radius: 13px; padding: 6px;
-            display: flex; align-items: center; gap: 4px; background: #fafafa;
-            overflow-x: auto; scrollbar-width: none;
-        }
-        .lec-play-selector::-webkit-scrollbar { display: none; }
-        .lec-play-btn {
-            font-size: 12.5px; font-weight: 500; color: #666; background: transparent;
-            border: none; border-radius: 8px; padding: 7px 13px; cursor: pointer;
-            transition: all 0.15s; font-family: 'Inter', sans-serif; white-space: nowrap; flex-shrink: 0;
-        }
-        .lec-play-btn:hover { color: #111; background: #f0f0f0; }
-        .lec-play-btn.active { background: #111; color: #fff; font-weight: 600; }
-
         /* Pillars */
         .lec-pillars { display: flex; flex-direction: column; gap: 10px; }
         .lec-pillar-box { border: 1px solid #e5e5e5; border-radius: 13px; overflow: hidden; }
@@ -229,25 +198,18 @@ function buildMultiTextPanel(texts) {
         ensureStates(activeIdx);
         panel.innerHTML = '';
 
-        /* Text selector */
-        const psWrap = document.createElement('div');
-        psWrap.className = 'lec-play-selector-wrap';
-        const arrowL = document.createElement('div'); arrowL.className='scroll-arrow left'; arrowL.innerHTML='‹';
-        const arrowR = document.createElement('div'); arrowR.className='scroll-arrow right'; arrowR.innerHTML='›';
-        const ps = document.createElement('div'); ps.className='lec-play-selector';
-        ps.innerHTML = texts.map((t,i) =>
-            `<button class="lec-play-btn ${i===activeIdx?'active':''}" data-i="${i}">${t.name}</button>`
-        ).join('');
-        ps.querySelectorAll('.lec-play-btn').forEach(btn => {
-            btn.addEventListener('click', e => { e.stopPropagation(); activeIdx=parseInt(btn.dataset.i); render(); });
-        });
-        const scrollAmt = 160;
-        arrowL.addEventListener('click', e => { e.stopPropagation(); ps.scrollBy({left:-scrollAmt,behavior:'smooth'}); });
-        arrowR.addEventListener('click', e => { e.stopPropagation(); ps.scrollBy({left:scrollAmt,behavior:'smooth'}); });
-        psWrap.appendChild(arrowL); psWrap.appendChild(ps); psWrap.appendChild(arrowR);
-        requestAnimationFrame(() => {
-            const ab = ps.querySelector('.lec-play-btn.active');
-            if (ab) ab.scrollIntoView({behavior:'smooth',block:'nearest',inline:'nearest'});
+        /* Text selector — same catalogue grid used on the Flashtiles side */
+        const grid = document.createElement('div');
+        grid.className = 'catalogue-grid';
+        grid.style.marginTop = '0';
+        texts.forEach((t, i) => {
+            const card = document.createElement('div');
+            card.className = 'catalogue-card' + (i === activeIdx ? ' active' : '');
+            card.innerHTML = `
+                <div class="catalogue-card-name">${t.name}</div>
+                <div class="catalogue-card-meta">${t.pillars.length} pillars</div>`;
+            card.addEventListener('click', e => { e.stopPropagation(); activeIdx = i; render(); });
+            grid.appendChild(card);
         });
 
         /* Pillars */
@@ -275,7 +237,7 @@ function buildMultiTextPanel(texts) {
             bdy.className = 'lec-pillar-body';
 
             pillar.lectures.forEach((slug, li) => {
-                const title = slug.replace(/^aqa-[a-z-]+-(?:intro-|p\d+-)?l\d+-/, '').replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+                const title = slugToTitle(slug);
                 const row = document.createElement('div');
                 row.className = 'lec-sub-row';
                 row.innerHTML = `
@@ -298,7 +260,7 @@ function buildMultiTextPanel(texts) {
             pillarsDiv.appendChild(box);
         });
 
-        panel.appendChild(psWrap);
+        panel.appendChild(grid);
         panel.appendChild(pillarsDiv);
     }
 
@@ -341,7 +303,7 @@ function buildSinglePanel(pillars) {
         pillar.lectures.forEach((lec, li) => {
             const slug  = typeof lec === 'string' ? lec : lec.slug;
             const title = typeof lec === 'string'
-                ? slug.replace(/^aqa-(pc|lr|wl|unseen)-p\d+-l\d+-/, '').replace(/^aqa-unseen-l\d+-/,'').replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())
+                ? slugToTitle(slug)
                 : lec.title;
 
             const row = document.createElement('div');
