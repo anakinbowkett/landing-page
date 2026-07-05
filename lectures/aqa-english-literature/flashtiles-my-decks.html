@@ -50,17 +50,6 @@
         .deck-tile-name { font-weight: 600; color: #111827; font-size: 1rem; }
         .deck-tile-meta { font-size: 0.75rem; color: #6b7280; }
 
-        /* Pick Topics panel */
-        .pick-topics-group-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: #9ca3af;
-            margin: 24px 0 10px;
-        }
-        .pick-topics-group-label:first-child { margin-top: 32px; }
-
         /* Mindmap canvas + toolbar */
         .mindmap-toolbar {
             display: flex;
@@ -98,38 +87,6 @@
         }
         .mindmap-canvas strong { color: #4b5563; }
 
-        /* Card Creator panel */
-        .card-creator-panel { max-width: 700px; margin-top: 32px; }
-        .card-creator-actions { display: flex; gap: 10px; margin-bottom: 20px; }
-        .cc-manual-btn {
-            background: #000000; color: white; border: none;
-            padding: 10px 18px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer;
-        }
-        .cc-autofill-btn {
-            background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
-            color: white; border: none;
-            padding: 10px 18px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer;
-        }
-        .cc-draft-card {
-            background: white; border: 1px solid #d4d4d4; border-radius: 12px;
-            padding: 20px; display: flex; flex-direction: column; gap: 14px;
-        }
-        .cc-draft-label {
-            font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-            color: var(--accent-soft-text); background: var(--accent-soft-bg);
-            padding: 3px 9px; border-radius: 999px; align-self: flex-start;
-        }
-        .cc-draft-field { font-size: 0.9375rem; color: #111827; line-height: 1.5; }
-        .cc-draft-field span { display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 4px; font-weight: 600; }
-        .cc-draft-actions { display: flex; gap: 10px; }
-        .cc-accept-btn {
-            background: #16a34a; color: white; border: none;
-            padding: 8px 16px; border-radius: 8px; font-size: 0.8125rem; font-weight: 600; cursor: pointer;
-        }
-        .cc-edit-btn {
-            background: white; border: 1px solid #d4d4d4; color: #374151;
-            padding: 8px 16px; border-radius: 8px; font-size: 0.8125rem; font-weight: 600; cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -157,18 +114,15 @@
         <a href="flashtiles.html" class="crumb-back">← Flashtiles</a>
 
         <section class="topics-section">
-            <div class="catalogue-grid" style="grid-template-columns: repeat(4, 1fr); margin-top: 0; margin-bottom: 24px;">
+            <div class="catalogue-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 0; margin-bottom: 24px;">
                 <div class="catalogue-card active" data-tab="decks">
                     <div class="catalogue-card-name">My Decks</div>
-                </div>
-                <div class="catalogue-card" data-tab="pick">
-                    <div class="catalogue-card-name">Pick Topics</div>
                 </div>
                 <div class="catalogue-card" data-tab="mindmap">
                     <div class="catalogue-card-name">Mindmaps</div>
                 </div>
-                <div class="catalogue-card" data-tab="cards">
-                    <div class="catalogue-card-name">Card Creator</div>
+                <div class="catalogue-card" data-tab="blueprint">
+                    <div class="catalogue-card-name">Blueprint</div>
                 </div>
             </div>
             <button class="new-deck-btn" style="margin-bottom: 24px;">+ New Deck</button>
@@ -186,30 +140,6 @@
                 </div>
             </div>
 
-            <!-- Pick Topics: cross-pillar basket builder -->
-            <div data-panel="pick" style="display:none;">
-                <p style="max-width: 700px; font-size: 0.875rem; color: #6b7280;">Mix and match lectures from anywhere in the course into one custom deck.</p>
-
-                <div class="pick-topics-group-label">Poetry Anthology</div>
-                <div class="lecture-select-list" id="pickList1">
-                    <div class="lecture-select-row" data-id="oz"><div class="lecture-select-left"><span class="lecture-checkbox"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L4.5 8.5L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="lecture-select-name">Ozymandias</span></div><span class="lecture-select-action">Add to basket</span></div>
-                    <div class="lecture-select-row" data-id="lon"><div class="lecture-select-left"><span class="lecture-checkbox"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L4.5 8.5L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="lecture-select-name">London</span></div><span class="lecture-select-action">Add to basket</span></div>
-                </div>
-
-                <div class="pick-topics-group-label">Shakespeare</div>
-                <div class="lecture-select-list" id="pickList2">
-                    <div class="lecture-select-row" data-id="mac"><div class="lecture-select-left"><span class="lecture-checkbox"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L4.5 8.5L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="lecture-select-name">Macbeth — Full Text</span></div><span class="lecture-select-action">Add to basket</span></div>
-                </div>
-
-                <div class="selection-basket-bar" id="basketBar" style="display: none;">
-                    <span class="basket-count" id="basketCount">0 in basket</span>
-                    <div class="basket-actions">
-                        <button class="basket-clear-btn" id="clearBasketBtn">Clear basket</button>
-                        <button class="basket-start-btn">Start →</button>
-                    </div>
-                </div>
-            </div>
-
             <!-- Mindmaps -->
             <div data-panel="mindmap" style="display:none;">
                 <div class="mindmap-toolbar">
@@ -222,21 +152,10 @@
                 </div>
             </div>
 
-            <!-- Card Creator -->
-            <div class="card-creator-panel" data-panel="cards" style="display:none;">
-                <div class="card-creator-actions">
-                    <button class="cc-manual-btn">+ Add Card Manually</button>
-                    <button class="cc-autofill-btn">✨ Autofill</button>
-                </div>
-                <div class="cc-draft-card">
-                    <span class="cc-draft-label">Autofilled draft</span>
-                    <div class="cc-draft-field"><span>Front</span>What does Shakespeare use the dagger soliloquy to reveal about Macbeth?</div>
-                    <div class="cc-draft-field"><span>Back</span>His guilt and ambition are already at war before the murder happens.</div>
-                    <div class="cc-draft-actions">
-                        <button class="cc-accept-btn">Accept</button>
-                        <button class="cc-edit-btn">Edit</button>
-                    </div>
-                </div>
+            <!-- Blueprint — placeholder while the diagram design is finalised -->
+            <div class="mindmap-canvas" data-panel="blueprint" style="display:none; max-width: 900px; margin-top: 32px;">
+                <div style="font-size: 28px;">🗺️</div>
+                <div><strong>Blueprint is coming.</strong> Technique → mark scheme → application, all connected.</div>
             </div>
         </section>
     </main>
@@ -254,30 +173,6 @@
                     p.style.display = p.dataset.panel === target ? '' : 'none';
                 });
             });
-        });
-
-        // Pick Topics basket logic
-        const basketBar = document.getElementById('basketBar');
-        const basketCount = document.getElementById('basketCount');
-        document.querySelectorAll('#pickList1 .lecture-select-row, #pickList2 .lecture-select-row').forEach(row => {
-            row.addEventListener('click', () => {
-                row.classList.toggle('selected');
-                row.querySelector('.lecture-select-action').textContent =
-                    row.classList.contains('selected') ? 'In basket ✓' : 'Add to basket';
-                updateBasket();
-            });
-        });
-        function updateBasket() {
-            const selected = document.querySelectorAll('[data-panel="pick"] .lecture-select-row.selected');
-            basketBar.style.display = selected.length ? 'flex' : 'none';
-            basketCount.textContent = `${selected.length} in basket`;
-        }
-        document.getElementById('clearBasketBtn').addEventListener('click', () => {
-            document.querySelectorAll('[data-panel="pick"] .lecture-select-row.selected').forEach(row => {
-                row.classList.remove('selected');
-                row.querySelector('.lecture-select-action').textContent = 'Add to basket';
-            });
-            updateBasket();
         });
     </script>
 </body>
