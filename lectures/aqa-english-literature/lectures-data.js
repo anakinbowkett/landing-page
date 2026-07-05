@@ -6,10 +6,7 @@
 ════════════════════════════════════════════ */
 function slugToTitle(slug) {
     return slug
-        .replace(/^aqa-[a-z]+-p\d+-l\d+-/, '')
-        .replace(/^aqa-[a-z]+-intro-l\d+-/, '')
-        .replace(/^aqa-(pc|lr|wl|unseen)-p\d+-l\d+-/, '')
-        .replace(/^aqa-unseen-l\d+-/, '')
+        .replace(/^aqa-[a-z-]+-(?:intro-|p\d+-)?l\d+-/, '')
         .replace(/-/g, ' ')
         .replace(/\b\w/g, c => c.toUpperCase());
 }
