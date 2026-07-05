@@ -726,3 +726,50 @@ body {
 .text-selector-btn.active { background: #111; color: #fff; font-weight: 600; }
 .text-selector-btn.disabled { color: #ccc; cursor: default; }
 .text-selector-btn.disabled:hover { background: transparent; color: #ccc; }
+
+/* ---------- Catalogue grid (play/text/paper picker) ---------- */
+
+.catalogue-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 900px;
+    margin-bottom: 28px;
+}
+
+.catalogue-card {
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 14px;
+    cursor: pointer;
+    background: white;
+    transition: border-color 0.15s ease;
+    text-decoration: none;
+    display: block;
+}
+
+.catalogue-card:hover {
+    border-color: #c7c7c7;
+}
+
+.catalogue-card.active {
+    border: 2px solid var(--accent-1);
+}
+
+.catalogue-card-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 4px;
+}
+
+.catalogue-card-meta {
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+    .catalogue-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
