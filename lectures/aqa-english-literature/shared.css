@@ -167,18 +167,23 @@ body {
 .crumb-back {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 6px;
     margin: 20px 60px 0;
+    padding: 6px 12px;
+    border-radius: 7px;
     font-size: 0.8125rem;
     font-weight: 600;
-    color: #1e293b;
-    text-decoration: none;
-    opacity: 0.75;
-    transition: opacity 0.2s;
+    color: #6b7280;
+    text-decoration: none !important;
+    background: transparent;
+    border: 1px solid #e5e7eb;
+    transition: all 0.15s ease;
 }
 
 .crumb-back:hover {
-    opacity: 1;
+    color: #111827;
+    background: #f9fafb;
+    border-color: #d1d5db;
 }
 
 /* ---------- Topic list (used by Pillar Decks, Official Papers, Topic Drill) ---------- */
