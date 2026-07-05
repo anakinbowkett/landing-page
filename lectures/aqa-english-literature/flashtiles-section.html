@@ -92,6 +92,7 @@
                     wrap.querySelectorAll('.catalogue-card').forEach(c => c.classList.remove('active'));
                     card.classList.add('active');
                     renderPillars(text.pillars, text.id);
+                    history.replaceState(null, '', `flashtiles-section.html?section=${sectionIndex}&text=${text.id}`);
                 });
                 wrap.appendChild(card);
             });
