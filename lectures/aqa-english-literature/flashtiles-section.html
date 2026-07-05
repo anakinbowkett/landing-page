@@ -37,9 +37,7 @@
         <section class="topics-section">
             <p class="select-intro" id="sectionIntro"></p>
 
-            <div class="text-selector-wrap" id="textSelectorWrap" style="display:none;">
-                <div class="text-selector" id="textSelector"></div>
-            </div>
+            <div class="catalogue-grid" id="textSelectorWrap" style="display:none;"></div>
 
             <div id="pillarList"></div>
         </section>
@@ -77,22 +75,28 @@
                 'Pick your text, then a pillar, then the exact lectures you want as flashcards.';
 
             const wrap = document.getElementById('textSelectorWrap');
-            const selector = document.getElementById('textSelector');
             wrap.style.display = '';
 
+            const requestedTextId = params.get('text');
+            const startIdx = requestedTextId
+                ? Math.max(0, paper.texts.findIndex(t => t.id === requestedTextId))
+                : 0;
+
             paper.texts.forEach((text, ti) => {
-                const btn = document.createElement('button');
-                btn.className = 'text-selector-btn' + (ti === 0 ? ' active' : '');
-                btn.textContent = text.name;
-                btn.addEventListener('click', () => {
-                    selector.querySelectorAll('.text-selector-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
+                const card = document.createElement('div');
+                card.className = 'catalogue-card' + (ti === startIdx ? ' active' : '');
+                card.innerHTML = `
+                    <div class="catalogue-card-name">${text.name}</div>
+                    <div class="catalogue-card-meta">${text.pillars.length} pillars</div>`;
+                card.addEventListener('click', () => {
+                    wrap.querySelectorAll('.catalogue-card').forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
                     renderPillars(text.pillars, text.id);
                 });
-                selector.appendChild(btn);
+                wrap.appendChild(card);
             });
 
-            renderPillars(paper.texts[0].pillars, paper.texts[0].id);
+            renderPillars(paper.texts[startIdx].pillars, paper.texts[startIdx].id);
         } else {
             document.getElementById('sectionIntro').textContent =
                 'No text selector needed here — pick a pillar, then the lectures you want as flashcards.';
