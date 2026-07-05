@@ -8,37 +8,6 @@
     <link href="theme.css" rel="stylesheet">
     <link href="shared.css" rel="stylesheet">
     <style>
-        .builder-toolbar {
-            padding: 0 3rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 900px;
-        }
-        .builder-tabs {
-            display: flex;
-            gap: 6px;
-            background: #f3f4f6;
-            padding: 4px;
-            border-radius: 9px;
-            flex-wrap: wrap;
-        }
-        .builder-tab {
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #6b7280;
-            cursor: pointer;
-            border: none;
-            background: transparent;
-            white-space: nowrap;
-        }
-        .builder-tab.active {
-            background: #ffffff;
-            color: #111827;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
         .new-deck-btn {
             background: #000000;
             color: white;
@@ -178,23 +147,31 @@
     <main class="main-content">
         <div class="content-wrapper compact">
             <div class="subject-header">
-                <a href="flashtiles.html" class="crumb-back">← Flashtiles</a>
                 <div class="subject-line-left"></div>
                 <h1 class="subject-name">My Decks</h1>
                 <div class="subject-line-right"></div>
             </div>
         </div>
 
+
+        <a href="flashtiles.html" class="crumb-back">← Flashtiles</a>
+
         <section class="topics-section">
-            <div class="builder-toolbar">
-                <div class="builder-tabs">
-                    <button class="builder-tab active" data-tab="decks">My Decks</button>
-                    <button class="builder-tab" data-tab="pick">Pick Topics</button>
-                    <button class="builder-tab" data-tab="mindmap">Mindmaps</button>
-                    <button class="builder-tab" data-tab="cards">Card Creator</button>
+            <div class="catalogue-grid" style="grid-template-columns: repeat(4, 1fr); margin-top: 0; margin-bottom: 24px;">
+                <div class="catalogue-card active" data-tab="decks">
+                    <div class="catalogue-card-name">My Decks</div>
                 </div>
-                <button class="new-deck-btn">+ New Deck</button>
+                <div class="catalogue-card" data-tab="pick">
+                    <div class="catalogue-card-name">Pick Topics</div>
+                </div>
+                <div class="catalogue-card" data-tab="mindmap">
+                    <div class="catalogue-card-name">Mindmaps</div>
+                </div>
+                <div class="catalogue-card" data-tab="cards">
+                    <div class="catalogue-card-name">Card Creator</div>
+                </div>
             </div>
+            <button class="new-deck-btn" style="margin-bottom: 24px;">+ New Deck</button>
 
             <!-- My Decks: existing decks -->
             <div class="decks-grid" data-panel="decks">
@@ -266,7 +243,7 @@
 
     <script>
         // Top-level tab switching
-        const tabs = document.querySelectorAll('.builder-tab');
+        const tabs = document.querySelectorAll('.catalogue-card[data-tab]');
         const panels = document.querySelectorAll('[data-panel]');
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
