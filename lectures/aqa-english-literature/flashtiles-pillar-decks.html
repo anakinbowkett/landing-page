@@ -41,7 +41,7 @@
 <div class="page-basket-bar" id="basketBar" style="display: none;">
     <span id="basketCount">0 selected</span>
     <button id="clearBasketBtn" style="background:none;border:none;color:#9ca3af;font-size:0.8125rem;font-weight:600;cursor:pointer;">Clear</button>
-    <button id="startDeckBtn" style="background:linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);color:white;border:none;padding:10px 18px;border-radius:8px;font-size:0.875rem;font-weight:600;cursor:pointer;">Start Deck →</button>
+    <button id="startDeckBtn" style="background:#1d7fe2;color:white;border:none;padding:10px 18px;border-radius:8px;font-size:0.875rem;font-weight:600;cursor:pointer;">Start Deck →</button>
 </div>
 
 <script src="lectures-data.js"></script>
@@ -60,11 +60,9 @@ function toggleSelection(key, row) {
     if (selected.has(key)) {
         selected.delete(key);
         row.classList.remove('selected');
-        row.querySelector('.lec-sub-select-action').textContent = 'Add';
     } else {
         selected.add(key);
         row.classList.add('selected');
-        row.querySelector('.lec-sub-select-action').textContent = 'Added ✓';
     }
     basketBar.style.display = selected.size ? 'flex' : 'none';
     basketCount.textContent = `${selected.size} selected`;
@@ -74,7 +72,6 @@ document.getElementById('clearBasketBtn').addEventListener('click', () => {
     selected.clear();
     document.querySelectorAll('.lec-sub-row.selectable.selected').forEach(row => {
         row.classList.remove('selected');
-        row.querySelector('.lec-sub-select-action').textContent = 'Add';
     });
     basketBar.style.display = 'none';
 });
@@ -119,15 +116,13 @@ papersData.forEach((paper, paperIdx) => {
 });
 
 function makeLectureRow(li, title, key) {
+    const checkSvg = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L4.5 8.5L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     const row = document.createElement('div');
     row.className = 'lec-sub-row selectable';
     row.innerHTML = `
         <div class="lec-sub-left">
-            <span class="lec-sub-num">${li+1}</span>
+            <span class="lecture-checkbox">${checkSvg}</span>
             <span class="lec-sub-name">${title}</span>
-        </div>
-        <div class="lec-sub-right">
-            <span class="lec-sub-select-action">Add</span>
         </div>`;
     row.addEventListener('click', e => {
         e.stopPropagation();
