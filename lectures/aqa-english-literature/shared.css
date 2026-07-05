@@ -861,12 +861,18 @@ body {
 .lec-sub-arrow { font-size: 12px; color: #ccc; opacity: 0.4; transition: all 0.15s; }
 
 /* Checkbox variant of lec-sub-row, used only on Pillar Decks (selection),
-   never on Lectures (progress tracking). Same row shell, swapped-in
-   left content and a select action on the right instead of blocks. */
+   never on Lectures (progress tracking). Same row shell, real checkbox
+   square instead of progress blocks. */
 .lec-sub-row.selectable .lec-sub-left { gap: 14px; }
 .lec-sub-row.selectable.selected { background: #fafafa; }
-.lec-sub-select-action { font-size: 11.5px; font-weight: 600; color: #9ca3af; }
-.lec-sub-row.selectable.selected .lec-sub-select-action { color: var(--accent-1); }
+.lec-sub-row.selectable .lecture-checkbox { margin: 0; }
+.lec-sub-row.selectable.selected .lecture-checkbox {
+    background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+    border-color: transparent;
+}
+.lec-sub-row.selectable.selected .lecture-checkbox svg {
+    opacity: 1;
+}
 
 /* Page-wide selection basket, fixed to the viewport since selections can
    come from any open pillar anywhere on a long accordion page. */
