@@ -34,7 +34,7 @@
         <section class="topics-section">
             <p style="max-width: 700px; font-size: 0.875rem; color: #6b7280; margin-bottom: 20px;">Same structure as your Lectures — pick a paper, section or text, then choose exactly which lectures become flashcards.</p>
 
-            <div id="sectionList"></div>
+            <div class="catalogue-grid" id="sectionList"></div>
         </section>
     </main>
 
@@ -42,16 +42,13 @@
     <script>
         const list = document.getElementById('sectionList');
         papersData.forEach((paper, i) => {
-            const row = document.createElement('a');
-            row.className = 'pillar-list-row';
-            row.href = `flashtiles-section.html?section=${i}`;
-            row.innerHTML = `
-                <div class="pillar-list-row-left">
-                    <span class="pillar-list-tag">${paper.tag}</span>
-                    <span class="pillar-list-title">${paper.title}</span>
-                </div>
-                <span class="pillar-list-chevron">›</span>`;
-            list.appendChild(row);
+            const card = document.createElement('a');
+            card.className = 'catalogue-card';
+            card.href = `flashtiles-section.html?section=${i}`;
+            card.innerHTML = `
+                <div class="catalogue-card-name">${paper.title}</div>
+                <div class="catalogue-card-meta">${paper.tag}</div>`;
+            list.appendChild(card);
         });
     </script>
 </body>
