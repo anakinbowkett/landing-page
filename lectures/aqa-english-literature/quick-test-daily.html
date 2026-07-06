@@ -9,76 +9,104 @@
     <link href="shared.css" rel="stylesheet">
     <style>
         .daily-panel {
-            max-width: 640px;
+            max-width: 560px;
             margin: 32px 3rem 0;
             background: white;
-            border: 1px solid #d4d4d4;
-            border-radius: 16px;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-        .daily-stats {
-            display: flex;
-            gap: 16px;
-        }
-        .daily-stat {
-            flex: 1;
-            background: #f9fafb;
+            border: 1px solid #e0e0e0;
             border-radius: 12px;
-            padding: 18px 16px;
-            text-align: center;
-        }
-        .daily-stat-num {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #111827;
-            letter-spacing: -0.02em;
-        }
-        .daily-stat-label {
-            font-size: 0.75rem;
-            color: #6b7280;
-            font-weight: 500;
-            margin-top: 4px;
-        }
-        .start-btn {
-            background: #1d7fe2;
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            font-size: 0.9375rem;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-        }
-        .start-btn:hover { background: #1668c2; }
-        .streak-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: var(--accent-soft-text);
+            overflow: hidden;
         }
 
-        /* Question count slider */
-        .count-slider-row {
+        /* Header */
+        .daily-head {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
         }
-        .count-slider-label {
+        .daily-head-tag {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #fff;
+            background: #111;
+            padding: 4px 9px;
+            border-radius: 6px;
+        }
+        .daily-streak {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 600;
+        }
+
+        /* Ledger stats */
+        .daily-ledger {
+            padding: 0 24px;
+        }
+        .daily-ledger-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .daily-ledger-row:last-child { border-bottom: none; }
+        .daily-ledger-label { font-size: 13.5px; color: #6b7280; }
+        .daily-ledger-value { font-size: 15px; font-weight: 700; color: #111; }
+
+        /* Topics section — Design E: primary focus + secondary list */
+        .daily-topics {
+            padding: 16px 24px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .daily-topics-head {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+        .daily-primary-topic {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            gap: 12px;
+        }
+        .daily-primary-name { font-size: 14px; font-weight: 700; color: #111; }
+        .daily-primary-note { font-size: 11.5px; color: #9ca3af; margin-top: 2px; }
+        .daily-primary-badge {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #fff;
+            background: #111;
+            padding: 3px 8px;
+            border-radius: 5px;
+            flex-shrink: 0;
+        }
+        .daily-secondary-label { font-size: 11px; color: #9ca3af; margin-bottom: 6px; }
+        .daily-secondary-list { font-size: 12.5px; color: #6b7280; line-height: 1.7; }
+
+        /* Slider */
+        .daily-slider-wrap { padding: 16px 24px 20px; }
+        .daily-slider-label {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8125rem;
+            font-size: 12.5px;
             font-weight: 600;
             color: #374151;
+            margin-bottom: 8px;
         }
-        .count-slider-label span:last-child {
-            color: var(--accent-1);
-        }
+        .daily-slider-label span:last-child { color: var(--accent-1); }
         .count-slider {
             -webkit-appearance: none;
             appearance: none;
@@ -95,7 +123,7 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: var(--accent-1);
+            background: #1d7fe2;
             border: 3px solid white;
             box-shadow: 0 0 0 1px #d4d4d4;
             cursor: pointer;
@@ -104,7 +132,7 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: var(--accent-1);
+            background: #1d7fe2;
             border: 3px solid white;
             box-shadow: 0 0 0 1px #d4d4d4;
             cursor: pointer;
@@ -114,22 +142,22 @@
             justify-content: space-between;
             font-size: 0.6875rem;
             color: #9ca3af;
+            margin-top: 6px;
         }
 
-        /* Skill tag transparency row */
-        .skill-tag-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+        /* Start button */
+        .start-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: #1d7fe2;
+            color: white;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
         }
-        .skill-tag {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--accent-soft-text);
-            background: var(--accent-soft-bg);
-            padding: 5px 12px;
-            border-radius: 999px;
-        }
+        .start-btn:hover { background: #1668c2; }
     </style>
 </head>
 <body>
@@ -153,36 +181,37 @@
             </div>
         </div>
 
-
         <a href="quick-test.html" class="crumb-back">← Recall</a>
 
         <section class="topics-section">
             <div class="daily-panel">
-                <div class="streak-row">🔥 4-day streak</div>
-                <div class="daily-stats">
-                    <div class="daily-stat">
-                        <div class="daily-stat-num">12</div>
-                        <div class="daily-stat-label">Due for review</div>
-                    </div>
-                    <div class="daily-stat">
-                        <div class="daily-stat-num">8</div>
-                        <div class="daily-stat-label">New</div>
-                    </div>
-                    <div class="daily-stat">
-                        <div class="daily-stat-num" id="todaysSetNum">20</div>
-                        <div class="daily-stat-label">Today's set</div>
-                    </div>
+                <div class="daily-head">
+                    <span class="daily-head-tag">Today</span>
+                    <span class="daily-streak">🔥 4-day streak</span>
                 </div>
 
-                <!-- Skill tags pulled from fsrs_skill_state — the student's current weakest tags -->
-                <div class="skill-tag-row">
-                    <span class="skill-tag">Quote retrieval</span>
-                    <span class="skill-tag">Effect analysis</span>
-                    <span class="skill-tag">Context linking</span>
+                <div class="daily-ledger">
+                    <div class="daily-ledger-row"><span class="daily-ledger-label">Due for review</span><span class="daily-ledger-value">12</span></div>
+                    <div class="daily-ledger-row"><span class="daily-ledger-label">New</span><span class="daily-ledger-value">8</span></div>
+                    <div class="daily-ledger-row"><span class="daily-ledger-label">Today's set</span><span class="daily-ledger-value" id="todaysSetNum">20</span></div>
                 </div>
 
-                <div class="count-slider-row">
-                    <div class="count-slider-label">
+                <!-- Topics section pulled from fsrs_skill_state — primary weak area + what else is mixed in -->
+                <div class="daily-topics">
+                    <div class="daily-topics-head">What's in today's set</div>
+                    <div class="daily-primary-topic">
+                        <div>
+                            <div class="daily-primary-name">Macbeth — Meet the Characters</div>
+                            <div class="daily-primary-note">Your weakest area right now</div>
+                        </div>
+                        <span class="daily-primary-badge">Focus</span>
+                    </div>
+                    <div class="daily-secondary-label">Also touching on</div>
+                    <div class="daily-secondary-list">Ozymandias · Julius Caesar — The Storyline · 19th C. Novel Context</div>
+                </div>
+
+                <div class="daily-slider-wrap">
+                    <div class="daily-slider-label">
                         <span>Questions today</span>
                         <span id="sliderValueLabel">20</span>
                     </div>
