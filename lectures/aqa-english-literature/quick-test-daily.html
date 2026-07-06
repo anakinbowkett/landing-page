@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AQA English Literature - Daily Quiz</title>
+    <title>AQA English Literature - Recall</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="theme.css" rel="stylesheet">
     <link href="shared.css" rel="stylesheet">
@@ -42,14 +42,8 @@
             font-weight: 500;
             margin-top: 4px;
         }
-        .daily-note {
-            font-size: 0.875rem;
-            color: #6b7280;
-            line-height: 1.55;
-        }
-        .daily-note strong { color: #374151; }
         .start-btn {
-            background: #000000;
+            background: #1d7fe2;
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 10px;
@@ -59,7 +53,7 @@
             cursor: pointer;
             width: 100%;
         }
-        .start-btn:hover { background: #1a1a1a; }
+        .start-btn:hover { background: #1668c2; }
         .streak-row {
             display: flex;
             align-items: center;
@@ -67,6 +61,74 @@
             font-size: 0.8125rem;
             font-weight: 600;
             color: var(--accent-soft-text);
+        }
+
+        /* Question count slider */
+        .count-slider-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .count-slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .count-slider-label span:last-child {
+            color: var(--accent-1);
+        }
+        .count-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 999px;
+            background: #e5e7eb;
+            outline: none;
+            cursor: pointer;
+        }
+        .count-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-1);
+            border: 3px solid white;
+            box-shadow: 0 0 0 1px #d4d4d4;
+            cursor: pointer;
+        }
+        .count-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-1);
+            border: 3px solid white;
+            box-shadow: 0 0 0 1px #d4d4d4;
+            cursor: pointer;
+        }
+        .count-slider-minmax {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6875rem;
+            color: #9ca3af;
+        }
+
+        /* Skill tag transparency row */
+        .skill-tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .skill-tag {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-soft-text);
+            background: var(--accent-soft-bg);
+            padding: 5px 12px;
+            border-radius: 999px;
         }
     </style>
 </head>
@@ -76,7 +138,7 @@
         <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
         <a href="lectures.html" class="nav-item"><span class="nav-icon">∞</span><span>Lectures</span></a>
         <a href="flashtiles.html" class="nav-item"><span class="nav-icon">⚡</span><span>Flashtiles</span></a>
-        <a href="quick-test.html" class="nav-item active"><span class="nav-icon">🕐</span><span>Quiz / Quick Test</span></a>
+        <a href="quick-test.html" class="nav-item active"><span class="nav-icon">🕐</span><span>Recall</span></a>
         <a href="past-papers.html" class="nav-item"><span class="nav-icon">📄</span><span>Past Papers</span></a>
         <div class="nav-spacer"></div>
         <button class="live-study-btn">Allow Live Study</button>
@@ -85,12 +147,14 @@
     <main class="main-content">
         <div class="content-wrapper compact">
             <div class="subject-header">
-                <a href="quick-test.html" class="crumb-back">← Quiz / Quick Test</a>
                 <div class="subject-line-left"></div>
-                <h1 class="subject-name">Daily Quiz</h1>
+                <h1 class="subject-name">Recall</h1>
                 <div class="subject-line-right"></div>
             </div>
         </div>
+
+
+        <a href="quick-test.html" class="crumb-back">← Recall</a>
 
         <section class="topics-section">
             <div class="daily-panel">
@@ -105,14 +169,47 @@
                         <div class="daily-stat-label">New</div>
                     </div>
                     <div class="daily-stat">
-                        <div class="daily-stat-num">20</div>
+                        <div class="daily-stat-num" id="todaysSetNum">20</div>
                         <div class="daily-stat-label">Today's set</div>
                     </div>
                 </div>
-                <p class="daily-note"><strong>Picked for you.</strong> FSRS looks at what you got wrong and what's about to slip from memory, and builds today's set from that — no topic list to scroll through.</p>
-                <button class="start-btn">Start today's quiz →</button>
+
+                <!-- Skill tags pulled from fsrs_skill_state — the student's current weakest tags -->
+                <div class="skill-tag-row">
+                    <span class="skill-tag">Quote retrieval</span>
+                    <span class="skill-tag">Effect analysis</span>
+                    <span class="skill-tag">Context linking</span>
+                </div>
+
+                <div class="count-slider-row">
+                    <div class="count-slider-label">
+                        <span>Questions today</span>
+                        <span id="sliderValueLabel">20</span>
+                    </div>
+                    <input type="range" min="10" max="50" value="20" step="1" class="count-slider" id="countSlider">
+                    <div class="count-slider-minmax">
+                        <span>10</span>
+                        <span>50</span>
+                    </div>
+                </div>
+
+                <button class="start-btn" id="startBtn">Start 20 questions</button>
             </div>
         </section>
     </main>
+
+    <script>
+        const slider = document.getElementById('countSlider');
+        const sliderValueLabel = document.getElementById('sliderValueLabel');
+        const todaysSetNum = document.getElementById('todaysSetNum');
+        const startBtn = document.getElementById('startBtn');
+
+        slider.addEventListener('input', () => {
+            const count = parseInt(slider.value, 10);
+            sliderValueLabel.textContent = count;
+            todaysSetNum.textContent = count;
+            startBtn.textContent = `Start ${count} questions`;
+        });
+    </script>
 </body>
 </html>
