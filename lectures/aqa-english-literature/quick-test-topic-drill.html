@@ -73,7 +73,6 @@
 
         .quiz-row-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .quiz-row-status { font-size: 12px; font-weight: 500; white-space: nowrap; }
-        .quiz-row-status.status-complete { color: #16a34a; }
         .quiz-row-status.status-resume { color: #d97706; }
         .quiz-row-status.status-locked { color: #9ca3af; }
 
@@ -86,11 +85,29 @@
             cursor: pointer;
             white-space: nowrap;
         }
+        .quiz-btn.start {
+            padding: 12px 30px;
+        }
         .quiz-btn.start, .quiz-btn.resume {
             background: #1d7fe2;
             color: white;
         }
         .quiz-btn.start:hover, .quiz-btn.resume:hover { background: #1668c2; }
+
+        /* Percentage badge — same footprint as the Start button, plain outline only */
+        .quiz-pct-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 30px;
+            border: 1px solid #111;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #111;
+            background: transparent;
+            white-space: nowrap;
+        }
 
         /* Inline slider drawer — nested inside the SAME wrap as the row it
            belongs to, so it reads as attached to that one quiz, not the list */
@@ -314,17 +331,20 @@
             row.className = `quiz-row state-${state}` + (state === 'next' ? ' clickable' : '');
 
             let rightHTML = '';
-            let score = 0;
+            let correctCount = 0, halfCount = 0, wrongCount = 0, pct = 0;
             const blockClass = state === 'complete' ? 'pb-complete'
                 : state === 'resume' ? 'pb-resume'
                 : state === 'next' ? 'pb-next'
                 : 'pb-locked';
 
             if (state === 'complete') {
-                score = 5 + ((h + li) % 6); // 5-10
-                const pct = Math.round((score / 10) * 100);
+                correctCount = 4 + ((h + li) % 7); // 4-10
+                const remaining = 10 - correctCount;
+                halfCount = remaining > 0 ? ((h >>> 4) % (remaining + 1)) : 0;
+                wrongCount = remaining - halfCount;
+                pct = correctCount * 10 + halfCount * 5; // each correct = 10%, each half = 5%, wrong = 0%
                 rightHTML = `
-                    <span class="quiz-row-status status-complete">✓ ${pct}%</span>
+                    <span class="quiz-pct-badge">✓ ${pct}%</span>
                     <button class="quiz-btn start">Start</button>
                     <span class="quiz-progress-block ${blockClass}"></span>`;
             } else if (state === 'next') {
@@ -369,42 +389,44 @@
                 drawer.classList.toggle('open');
             }
 
-            // Whole row clickable for 'next' — not just the Start button,
-            // so it never reads as a dead placeholder
-            if (state === 'next') {
-                row.addEventListener('click', toggleDrawer);
-            }
-            const completedStartBtn = state === 'complete' ? row.querySelector('.quiz-btn.start') : null;
-            if (completedStartBtn) completedStartBtn.addEventListener('click', e => e.stopPropagation());
-            const resumeBtn = row.querySelector('.quiz-btn.resume');
-            if (resumeBtn) resumeBtn.addEventListener('click', e => e.stopPropagation());
-
-            // Completed lecture: click the block to unfold the per-question breakdown
+            let toggleBreakdown = null;
             if (state === 'complete') {
-                const block = row.querySelector('.quiz-progress-block');
                 const breakdown = row.querySelector('.quiz-breakdown-blocks');
-                const wrong = 10 - score;
-                const half = Math.floor(wrong / 2);
-                const wrongOnly = wrong - half;
                 let results = [
-                    ...Array(score).fill('correct'),
-                    ...Array(half).fill('half'),
-                    ...Array(wrongOnly).fill('wrong')
+                    ...Array(correctCount).fill('correct'),
+                    ...Array(halfCount).fill('half'),
+                    ...Array(wrongCount).fill('wrong')
                 ];
                 results = seededShuffle(results, h + li);
                 breakdown.innerHTML = results.map(r => `<div class="qb-block ${r}"></div>`).join('');
 
-                block.addEventListener('click', e => {
-                    e.stopPropagation();
+                toggleBreakdown = () => {
                     const isOpen = breakdown.classList.toggle('open');
-                    if (isOpen) {
-                        const w = results.length * 15 - 3; // 12px block + 3px gap
-                        breakdown.style.maxWidth = w + 'px';
-                    } else {
-                        breakdown.style.maxWidth = '0px';
-                    }
-                });
+                    breakdown.style.maxWidth = isOpen ? (results.length * 15 - 3) + 'px' : '0px';
+                };
             }
+
+            // The whole row is clickable wherever there's an action to take —
+            // not just the small button or block, so nothing reads as a dead
+            // placeholder. Buttons themselves stop propagation so a click on
+            // them doesn't ALSO fire the row's handler underneath.
+            if (state === 'next') {
+                row.classList.add('clickable');
+                row.addEventListener('click', toggleDrawer);
+            } else if (state === 'resume') {
+                row.classList.add('clickable');
+                row.addEventListener('click', () => {}); // no real destination yet
+            } else if (state === 'complete') {
+                row.classList.add('clickable');
+                row.addEventListener('click', toggleBreakdown);
+            }
+
+            const completedStartBtn = state === 'complete' ? row.querySelector('.quiz-btn.start') : null;
+            if (completedStartBtn) completedStartBtn.addEventListener('click', e => e.stopPropagation());
+            const resumeBtn = row.querySelector('.quiz-btn.resume');
+            if (resumeBtn) resumeBtn.addEventListener('click', e => e.stopPropagation());
+            const progressBlock = row.querySelector('.quiz-progress-block');
+            if (progressBlock && state === 'complete') progressBlock.addEventListener('click', e => e.stopPropagation());
 
             wrap.appendChild(row);
             wrap.appendChild(drawer);
