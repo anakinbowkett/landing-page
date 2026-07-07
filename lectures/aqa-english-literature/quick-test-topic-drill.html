@@ -389,27 +389,32 @@
                 };
             }
 
-            // The whole row is clickable wherever there's an action to take —
-            // not just the small button or block, so nothing reads as a dead
-            // placeholder. Buttons themselves stop propagation so a click on
-            // them doesn't ALSO fire the row's handler underneath.
-            if (state === 'next') {
+            // Row click = start/access this lecture. Block click = view its
+            // progress breakdown. Two separate actions, never the same one.
+            if (state === 'next' || state === 'complete') {
                 row.classList.add('clickable');
                 row.addEventListener('click', toggleDrawer);
             } else if (state === 'resume') {
                 row.classList.add('clickable');
                 row.addEventListener('click', () => {}); // no real destination yet
-            } else if (state === 'complete') {
-                row.classList.add('clickable');
-                row.addEventListener('click', toggleBreakdown);
             }
 
-            const completedStartBtn = state === 'complete' ? row.querySelector('.quiz-btn.start') : null;
-            if (completedStartBtn) completedStartBtn.addEventListener('click', e => e.stopPropagation());
+            // Buttons must trigger the SAME action as the row (not just
+            // swallow the click) — otherwise clicking Start does nothing.
+            const startBtn = row.querySelector('.quiz-btn.start');
+            if (startBtn) startBtn.addEventListener('click', e => { e.stopPropagation(); toggleDrawer(); });
             const resumeBtn = row.querySelector('.quiz-btn.resume');
-            if (resumeBtn) resumeBtn.addEventListener('click', e => e.stopPropagation());
+            if (resumeBtn) resumeBtn.addEventListener('click', e => e.stopPropagation()); // no real destination yet
+
+            // The blue progress block is the ONLY way to see the per-question
+            // breakdown — it never triggers the row's start action, and vice versa
             const progressBlock = row.querySelector('.quiz-progress-block');
-            if (progressBlock && state === 'complete') progressBlock.addEventListener('click', e => e.stopPropagation());
+            if (progressBlock && toggleBreakdown) {
+                progressBlock.addEventListener('click', e => {
+                    e.stopPropagation();
+                    toggleBreakdown();
+                });
+            }
 
             wrap.appendChild(row);
             wrap.appendChild(drawer);
