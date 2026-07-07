@@ -91,12 +91,6 @@
             color: white;
         }
         .quiz-btn.start:hover, .quiz-btn.resume:hover { background: #1668c2; }
-        .quiz-btn.retry {
-            background: transparent;
-            color: #6b7280;
-            border: 1px solid #e5e7eb;
-        }
-        .quiz-btn.retry:hover { border-color: #9ca3af; color: #374151; }
 
         /* Inline slider drawer — nested inside the SAME wrap as the row it
            belongs to, so it reads as attached to that one quiz, not the list */
@@ -321,30 +315,35 @@
 
             let rightHTML = '';
             let score = 0;
-            if (state === 'complete') {
-                score = 5 + ((h + li) % 6); // 5-10
-                rightHTML = `
-                    <span class="quiz-row-status status-complete">✓ complete — scored ${score}/10</span>
-                    <button class="quiz-btn retry">Retry →</button>`;
-            } else if (state === 'next') {
-                rightHTML = `<button class="quiz-btn start">Start</button>`;
-            } else if (state === 'resume') {
-                rightHTML = `
-                    <span class="quiz-row-status status-resume">⏸ in progress</span>
-                    <button class="quiz-btn resume">Resume →</button>`;
-            } else {
-                rightHTML = `<span class="quiz-row-status status-locked">🔒 locked</span>`;
-            }
-
             const blockClass = state === 'complete' ? 'pb-complete'
                 : state === 'resume' ? 'pb-resume'
                 : state === 'next' ? 'pb-next'
                 : 'pb-locked';
 
+            if (state === 'complete') {
+                score = 5 + ((h + li) % 6); // 5-10
+                const pct = Math.round((score / 10) * 100);
+                rightHTML = `
+                    <span class="quiz-row-status status-complete">✓ ${pct}%</span>
+                    <button class="quiz-btn start">Start</button>
+                    <span class="quiz-progress-block ${blockClass}"></span>`;
+            } else if (state === 'next') {
+                rightHTML = `
+                    <button class="quiz-btn start">Start</button>
+                    <span class="quiz-progress-block ${blockClass}"></span>`;
+            } else if (state === 'resume') {
+                rightHTML = `
+                    <span class="quiz-row-status status-resume">⏸ in progress</span>
+                    <button class="quiz-btn resume">Resume →</button>
+                    <span class="quiz-progress-block ${blockClass}"></span>`;
+            } else {
+                rightHTML = `
+                    <span class="quiz-row-status status-locked">🔒 locked</span>
+                    <span class="quiz-progress-block ${blockClass}"></span>`;
+            }
+
             row.innerHTML = `
                 <div class="quiz-row-left">
-                    <span class="quiz-row-num">Quiz ${li + 1} of ${total}</span>
-                    <span class="quiz-progress-block ${blockClass}"></span>
                     <div class="quiz-title-zone">
                         <span class="quiz-row-title">${title}</span>
                         <div class="quiz-breakdown-blocks"></div>
@@ -375,8 +374,8 @@
             if (state === 'next') {
                 row.addEventListener('click', toggleDrawer);
             }
-            const retryBtn = row.querySelector('.quiz-btn.retry');
-            if (retryBtn) retryBtn.addEventListener('click', e => e.stopPropagation());
+            const completedStartBtn = state === 'complete' ? row.querySelector('.quiz-btn.start') : null;
+            if (completedStartBtn) completedStartBtn.addEventListener('click', e => e.stopPropagation());
             const resumeBtn = row.querySelector('.quiz-btn.resume');
             if (resumeBtn) resumeBtn.addEventListener('click', e => e.stopPropagation());
 
