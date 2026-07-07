@@ -92,80 +92,6 @@
         }
         .quiz-btn.resume:hover { background: #1668c2; }
 
-        /* ── Performance section ── */
-        .perf-toggle-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 32px;
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 10px 16px;
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: #374151;
-            cursor: pointer;
-        }
-        .perf-toggle-btn:hover { border-color: #c7c7c7; }
-
-        .performance-section {
-            margin-top: 16px;
-            max-width: 900px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .perf-block {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 22px 24px;
-        }
-        .perf-block-title {
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: #9ca3af;
-            margin-bottom: 16px;
-        }
-
-        /* Memory strength bars */
-        .memory-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
-        .memory-row:last-child { margin-bottom: 0; }
-        .memory-label { font-size: 13px; color: #374151; font-weight: 500; width: 130px; flex-shrink: 0; }
-        .memory-track { flex: 1; height: 8px; background: #f0f0f0; border-radius: 4px; overflow: hidden; }
-        .memory-fill { height: 100%; background: #1d7fe2; border-radius: 4px; }
-        .memory-fill.low { background: #e16280; }
-        .memory-days { font-size: 12px; color: #6b7280; width: 56px; text-align: right; flex-shrink: 0; }
-
-        /* Score over time line chart */
-        .score-chart-wrap { overflow-x: auto; }
-        .score-chart-svg { display: block; }
-
-        /* Review consistency heatmap */
-        .heatmap-grid {
-            display: grid;
-            grid-template-rows: repeat(7, 1fr);
-            grid-auto-flow: column;
-            gap: 3px;
-        }
-        .heatmap-cell {
-            width: 11px;
-            height: 11px;
-            border-radius: 2px;
-            background: #ebedf0;
-        }
-        .heatmap-legend {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-top: 12px;
-            font-size: 11px;
-            color: #9ca3af;
-        }
-        .heatmap-legend .heatmap-cell { width: 10px; height: 10px; }
     </style>
 </head>
 <body>
@@ -195,30 +121,6 @@
             <p style="max-width: 700px; font-size: 0.875rem; color: #6b7280; margin: 0 0 20px;">Same structure as your Lectures — open a paper, pick a text, then work through each pillar's quizzes in order.</p>
 
             <div class="papers-list" id="papersList"></div>
-
-            <button class="perf-toggle-btn" id="perfToggleBtn">📊 View performance</button>
-            <div class="performance-section" id="performanceSection" style="display: none;">
-                <div class="perf-block">
-                    <div class="perf-block-title">Memory Strength</div>
-                    <div id="memoryBars"></div>
-                </div>
-                <div class="perf-block">
-                    <div class="perf-block-title">Score Over Time</div>
-                    <div class="score-chart-wrap" id="scoreChart"></div>
-                </div>
-                <div class="perf-block">
-                    <div class="perf-block-title">Review Consistency</div>
-                    <div class="heatmap-grid" id="heatmapGrid"></div>
-                    <div class="heatmap-legend">
-                        <span>Less</span>
-                        <div class="heatmap-cell" style="background:#ebedf0;"></div>
-                        <div class="heatmap-cell" style="background:#bcdcfa;"></div>
-                        <div class="heatmap-cell" style="background:#6ab0f0;"></div>
-                        <div class="heatmap-cell" style="background:#1d7fe2;"></div>
-                        <span>More</span>
-                    </div>
-                </div>
-            </div>
         </section>
     </main>
 
@@ -464,80 +366,6 @@
             panel.appendChild(pillarsDiv);
             return panel;
         }
-
-        /* ── Performance section ── */
-        document.getElementById('perfToggleBtn').addEventListener('click', () => {
-            const el = document.getElementById('performanceSection');
-            const showing = el.style.display !== 'none';
-            el.style.display = showing ? 'none' : 'flex';
-            document.getElementById('perfToggleBtn').textContent = showing ? '📊 View performance' : '📊 Hide performance';
-        });
-
-        // Memory strength bars
-        const skills = [
-            { name: 'Quote retrieval', days: 14 },
-            { name: 'Context linking', days: 9 },
-            { name: 'Effect analysis', days: 2 }
-        ];
-        const memWrap = document.getElementById('memoryBars');
-        const MAX_DAYS = 21;
-        skills.forEach(s => {
-            const pct = Math.round((s.days / MAX_DAYS) * 100);
-            const row = document.createElement('div');
-            row.className = 'memory-row';
-            row.innerHTML = `
-                <span class="memory-label">${s.name}</span>
-                <div class="memory-track"><div class="memory-fill${s.days <= 3 ? ' low' : ''}" style="width:${pct}%;"></div></div>
-                <span class="memory-days">${s.days} days</span>`;
-            memWrap.appendChild(row);
-        });
-
-        // Score over time line chart (plain SVG, no library)
-        const scores = [58, 64, 61, 70, 75, 79, 84];
-        const dates = ['Jun 10', 'Jun 17', 'Jun 24', 'Jul 1', 'Jul 8', 'Jul 15', 'Jul 22'];
-        (function buildChart() {
-            const w = 640, h = 180, padL = 32, padB = 24, padT = 12, padR = 12;
-            const plotW = w - padL - padR, plotH = h - padT - padB;
-            const stepX = plotW / (scores.length - 1);
-            const toY = v => padT + plotH - (v / 100) * plotH;
-            const points = scores.map((v, i) => `${padL + i * stepX},${toY(v)}`).join(' ');
-            let dots = '', labels = '';
-            scores.forEach((v, i) => {
-                const x = padL + i * stepX, y = toY(v);
-                dots += `<circle cx="${x}" cy="${y}" r="3.5" fill="#1d7fe2"/>`;
-                labels += `<text x="${x}" y="${h - 6}" font-size="10" fill="#9ca3af" text-anchor="middle" font-family="Inter,sans-serif">${dates[i]}</text>`;
-            });
-            const gridLines = [0, 25, 50, 75, 100].map(v =>
-                `<line x1="${padL}" y1="${toY(v)}" x2="${w - padR}" y2="${toY(v)}" stroke="#f0f0f0" stroke-width="1"/>
-                 <text x="${padL - 8}" y="${toY(v) + 3}" font-size="10" fill="#9ca3af" text-anchor="end" font-family="Inter,sans-serif">${v}</text>`
-            ).join('');
-            document.getElementById('scoreChart').innerHTML = `
-                <svg class="score-chart-svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
-                    ${gridLines}
-                    <polyline points="${points}" fill="none" stroke="#1d7fe2" stroke-width="2"/>
-                    ${dots}${labels}
-                </svg>`;
-        })();
-
-        // Review consistency heatmap (12 weeks x 7 days, deterministic mock activity)
-        (function buildHeatmap() {
-            const grid = document.getElementById('heatmapGrid');
-            const weeks = 12;
-            const colors = ['#ebedf0', '#bcdcfa', '#6ab0f0', '#1d7fe2'];
-            for (let w = 0; w < weeks; w++) {
-                for (let d = 0; d < 7; d++) {
-                    const seed = (w * 7 + d) * 2654435761 % 100;
-                    let level = 0;
-                    if (seed > 80) level = 3;
-                    else if (seed > 60) level = 2;
-                    else if (seed > 40) level = 1;
-                    const cell = document.createElement('div');
-                    cell.className = 'heatmap-cell';
-                    cell.style.background = colors[level];
-                    grid.appendChild(cell);
-                }
-            }
-        })();
     </script>
 </body>
 </html>
