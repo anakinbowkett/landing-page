@@ -20,11 +20,10 @@
             padding: 12px 20px;
         }
         .quiz-row.clickable { cursor: pointer; }
-        .quiz-row.clickable:hover { background: #fafafa; }
+        .quiz-row.clickable:hover { background: rgba(255,255,255,0.6); }
         .quiz-row.state-locked { opacity: 0.55; }
 
         .quiz-row-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
-        .quiz-row-num { font-size: 11px; font-weight: 600; color: #9ca3af; white-space: nowrap; flex-shrink: 0; }
 
         /* Single collapsed progress block */
         .quiz-progress-block {
@@ -73,7 +72,6 @@
 
         .quiz-row-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .quiz-row-status { font-size: 12px; font-weight: 500; white-space: nowrap; }
-        .quiz-row-status.status-complete { color: #16a34a; }
         .quiz-row-status.status-resume { color: #d97706; }
         .quiz-row-status.status-locked { color: #9ca3af; }
 
@@ -86,12 +84,143 @@
             cursor: pointer;
             white-space: nowrap;
         }
-        .quiz-btn.resume {
+        .quiz-btn.start { padding: 12px 30px; }
+        .quiz-btn.start, .quiz-btn.resume {
             background: #1d7fe2;
             color: white;
         }
-        .quiz-btn.resume:hover { background: #1668c2; }
+        .quiz-btn.start:hover, .quiz-btn.resume:hover { background: #1668c2; }
 
+        /* Percentage badge — same footprint as the Start button, plain outline only */
+        .quiz-pct-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 30px;
+            border: 1px solid #111;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #111;
+            background: transparent;
+            white-space: nowrap;
+        }
+
+        /* Inline slider drawer — nested inside the SAME wrap as the row it
+           belongs to, so it reads as attached to that one quiz, not the list */
+        .quiz-slider-drawer {
+            display: none;
+            margin: 0 20px 14px;
+            padding: 14px 16px;
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        .quiz-slider-drawer.open { display: block; }
+        .quiz-slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        .quiz-slider-label span:last-child { color: #1d7fe2; }
+        .quiz-slider-drawer input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 999px;
+            background: #e5e7eb;
+            outline: none;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+        .quiz-slider-drawer input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px; height: 18px; border-radius: 50%;
+            background: #1d7fe2; border: 3px solid white;
+            box-shadow: 0 0 0 1px #d4d4d4; cursor: pointer;
+        }
+        .quiz-slider-drawer input[type=range]::-moz-range-thumb {
+            width: 18px; height: 18px; border-radius: 50%;
+            background: #1d7fe2; border: 3px solid white;
+            box-shadow: 0 0 0 1px #d4d4d4; cursor: pointer;
+        }
+        .quiz-begin-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #1d7fe2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .quiz-begin-btn:hover { background: #1668c2; }
+
+        /* ── Performance section ── */
+        .perf-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 32px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+        }
+        .perf-toggle-btn:hover { border-color: #c7c7c7; }
+
+        .performance-section {
+            margin-top: 16px;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .perf-block {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 22px 24px;
+        }
+        .perf-block-title {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-bottom: 16px;
+        }
+
+        .memory-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+        .memory-row:last-child { margin-bottom: 0; }
+        .memory-label { font-size: 13px; color: #374151; font-weight: 500; width: 130px; flex-shrink: 0; }
+        .memory-track { flex: 1; height: 8px; background: #f0f0f0; border-radius: 4px; overflow: hidden; }
+        .memory-fill { height: 100%; background: #1d7fe2; border-radius: 4px; }
+        .memory-fill.low { background: #e16280; }
+        .memory-days { font-size: 12px; color: #6b7280; width: 56px; text-align: right; flex-shrink: 0; }
+
+        .score-chart-wrap { overflow-x: auto; }
+        .score-chart-svg { display: block; }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-rows: repeat(7, 1fr);
+            grid-auto-flow: column;
+            gap: 3px;
+        }
+        .heatmap-cell { width: 11px; height: 11px; border-radius: 2px; background: #ebedf0; }
+        .heatmap-legend { display: flex; align-items: center; gap: 5px; margin-top: 12px; font-size: 11px; color: #9ca3af; }
+        .heatmap-legend .heatmap-cell { width: 10px; height: 10px; }
     </style>
 </head>
 <body>
@@ -121,13 +250,35 @@
             <p style="max-width: 700px; font-size: 0.875rem; color: #6b7280; margin: 0 0 20px;">Same structure as your Lectures — open a paper, pick a text, then work through each pillar's quizzes in order.</p>
 
             <div class="papers-list" id="papersList"></div>
+
+            <button class="perf-toggle-btn" id="perfToggleBtn">📊 View performance</button>
+            <div class="performance-section" id="performanceSection" style="display: none;">
+                <div class="perf-block">
+                    <div class="perf-block-title">Memory Strength</div>
+                    <div id="memoryBars"></div>
+                </div>
+                <div class="perf-block">
+                    <div class="perf-block-title">Score Over Time</div>
+                    <div class="score-chart-wrap" id="scoreChart"></div>
+                </div>
+                <div class="perf-block">
+                    <div class="perf-block-title">Review Consistency</div>
+                    <div class="heatmap-grid" id="heatmapGrid"></div>
+                    <div class="heatmap-legend">
+                        <span>Less</span>
+                        <div class="heatmap-cell" style="background:#ebedf0;"></div>
+                        <div class="heatmap-cell" style="background:#bcdcfa;"></div>
+                        <div class="heatmap-cell" style="background:#6ab0f0;"></div>
+                        <div class="heatmap-cell" style="background:#1d7fe2;"></div>
+                        <span>More</span>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 
     <script src="lectures-data.js"></script>
     <script>
-        /* ── Deterministic pseudo-progress, so every pillar shows a
-           different but STABLE state on reload, without a backend. ── */
         function hashKey(key) {
             let h = 0;
             for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
@@ -157,23 +308,29 @@
             wrap.className = 'quiz-row-wrap';
 
             const row = document.createElement('div');
-            row.className = `quiz-row state-${state}` + (state === 'next' ? ' clickable' : '');
+            row.className = `quiz-row state-${state}`;
 
             let rightHTML = '';
-            let score = 0;
+            let correctCount = 0, halfCount = 0, wrongCount = 0, pct = 0;
             const blockClass = state === 'complete' ? 'pb-complete'
                 : state === 'resume' ? 'pb-resume'
                 : state === 'next' ? 'pb-next'
                 : 'pb-locked';
 
             if (state === 'complete') {
-                score = 5 + ((h + li) % 6); // 5-10
-                const pct = Math.round((score / 10) * 100);
+                correctCount = 4 + ((h + li) % 7); // 4-10
+                const remaining = 10 - correctCount;
+                halfCount = remaining > 0 ? ((h >>> 4) % (remaining + 1)) : 0;
+                wrongCount = remaining - halfCount;
+                pct = correctCount * 10 + halfCount * 5; // correct=10%, half=5%, wrong=0%
                 rightHTML = `
-                    <span class="quiz-row-status status-complete">✓ ${pct}%</span>
+                    <span class="quiz-pct-badge">✓ ${pct}%</span>
+                    <button class="quiz-btn start">Start</button>
                     <span class="quiz-progress-block ${blockClass}"></span>`;
             } else if (state === 'next') {
-                rightHTML = `<span class="quiz-progress-block ${blockClass}"></span>`;
+                rightHTML = `
+                    <button class="quiz-btn start">Start</button>
+                    <span class="quiz-progress-block ${blockClass}"></span>`;
             } else if (state === 'resume') {
                 rightHTML = `
                     <span class="quiz-row-status status-resume">⏸ in progress</span>
@@ -194,50 +351,61 @@
                 </div>
                 <div class="quiz-row-right">${rightHTML}</div>`;
 
+            // Slider drawer — lives INSIDE this same wrap, attached to this row only
+            const drawer = document.createElement('div');
+            drawer.className = 'quiz-slider-drawer';
+            drawer.innerHTML = `
+                <div class="quiz-slider-label"><span>Questions</span><span class="qcount">10</span></div>
+                <input type="range" min="5" max="30" value="10">
+                <button class="quiz-begin-btn">Begin Quiz →</button>`;
+            const drawerSlider = drawer.querySelector('input[type=range]');
+            const drawerCount = drawer.querySelector('.qcount');
+            drawerSlider.addEventListener('input', () => { drawerCount.textContent = drawerSlider.value; });
+
+            function toggleDrawer() {
+                document.querySelectorAll('.quiz-slider-drawer.open').forEach(d => {
+                    if (d !== drawer) d.classList.remove('open');
+                });
+                drawer.classList.toggle('open');
+            }
+
             let toggleBreakdown = null;
             if (state === 'complete') {
                 const breakdown = row.querySelector('.quiz-breakdown-blocks');
-                const wrong = 10 - score;
-                const half = Math.floor(wrong / 2);
-                const wrongOnly = wrong - half;
                 let results = [
-                    ...Array(score).fill('correct'),
-                    ...Array(half).fill('half'),
-                    ...Array(wrongOnly).fill('wrong')
+                    ...Array(correctCount).fill('correct'),
+                    ...Array(halfCount).fill('half'),
+                    ...Array(wrongCount).fill('wrong')
                 ];
                 results = seededShuffle(results, h + li);
                 breakdown.innerHTML = results.map(r => `<div class="qb-block ${r}"></div>`).join('');
-
                 toggleBreakdown = () => {
                     const isOpen = breakdown.classList.toggle('open');
                     breakdown.style.maxWidth = isOpen ? (results.length * 15 - 3) + 'px' : '0px';
                 };
             }
 
-            // Row click = start/access this lecture (no real destination yet).
-            // Block click = view its progress breakdown. Two separate actions.
-            if (state === 'next' || state === 'complete') {
+            // Whole row clickable wherever there's an action to take
+            if (state === 'next') {
                 row.classList.add('clickable');
-                row.addEventListener('click', () => {});
+                row.addEventListener('click', toggleDrawer);
             } else if (state === 'resume') {
                 row.classList.add('clickable');
                 row.addEventListener('click', () => {}); // no real destination yet
+            } else if (state === 'complete') {
+                row.classList.add('clickable');
+                row.addEventListener('click', toggleBreakdown);
             }
 
+            const startBtn = row.querySelector('.quiz-btn.start');
+            if (startBtn) startBtn.addEventListener('click', e => { e.stopPropagation(); if (state === 'next') toggleDrawer(); });
             const resumeBtn = row.querySelector('.quiz-btn.resume');
-            if (resumeBtn) resumeBtn.addEventListener('click', e => e.stopPropagation()); // no real destination yet
-
-            // The blue progress block is the ONLY way to see the per-question
-            // breakdown — it never triggers the row's start action, and vice versa
+            if (resumeBtn) resumeBtn.addEventListener('click', e => e.stopPropagation());
             const progressBlock = row.querySelector('.quiz-progress-block');
-            if (progressBlock && toggleBreakdown) {
-                progressBlock.addEventListener('click', e => {
-                    e.stopPropagation();
-                    toggleBreakdown();
-                });
-            }
+            if (progressBlock && state === 'complete') progressBlock.addEventListener('click', e => e.stopPropagation());
 
             wrap.appendChild(row);
+            wrap.appendChild(drawer);
             return wrap;
         }
 
@@ -366,6 +534,77 @@
             panel.appendChild(pillarsDiv);
             return panel;
         }
+
+        /* ── Performance section ── */
+        document.getElementById('perfToggleBtn').addEventListener('click', () => {
+            const el = document.getElementById('performanceSection');
+            const showing = el.style.display !== 'none';
+            el.style.display = showing ? 'none' : 'flex';
+            document.getElementById('perfToggleBtn').textContent = showing ? '📊 View performance' : '📊 Hide performance';
+        });
+
+        const skills = [
+            { name: 'Quote retrieval', days: 14 },
+            { name: 'Context linking', days: 9 },
+            { name: 'Effect analysis', days: 2 }
+        ];
+        const memWrap = document.getElementById('memoryBars');
+        const MAX_DAYS = 21;
+        skills.forEach(s => {
+            const pctW = Math.round((s.days / MAX_DAYS) * 100);
+            const row = document.createElement('div');
+            row.className = 'memory-row';
+            row.innerHTML = `
+                <span class="memory-label">${s.name}</span>
+                <div class="memory-track"><div class="memory-fill${s.days <= 3 ? ' low' : ''}" style="width:${pctW}%;"></div></div>
+                <span class="memory-days">${s.days} days</span>`;
+            memWrap.appendChild(row);
+        });
+
+        const scores = [58, 64, 61, 70, 75, 79, 84];
+        const dates = ['Jun 10', 'Jun 17', 'Jun 24', 'Jul 1', 'Jul 8', 'Jul 15', 'Jul 22'];
+        (function buildChart() {
+            const w = 640, h = 180, padL = 32, padB = 24, padT = 12, padR = 12;
+            const plotW = w - padL - padR, plotH = h - padT - padB;
+            const stepX = plotW / (scores.length - 1);
+            const toY = v => padT + plotH - (v / 100) * plotH;
+            const points = scores.map((v, i) => `${padL + i * stepX},${toY(v)}`).join(' ');
+            let dots = '', labels = '';
+            scores.forEach((v, i) => {
+                const x = padL + i * stepX, y = toY(v);
+                dots += `<circle cx="${x}" cy="${y}" r="3.5" fill="#1d7fe2"/>`;
+                labels += `<text x="${x}" y="${h - 6}" font-size="10" fill="#9ca3af" text-anchor="middle" font-family="Inter,sans-serif">${dates[i]}</text>`;
+            });
+            const gridLines = [0, 25, 50, 75, 100].map(v =>
+                `<line x1="${padL}" y1="${toY(v)}" x2="${w - padR}" y2="${toY(v)}" stroke="#f0f0f0" stroke-width="1"/>
+                 <text x="${padL - 8}" y="${toY(v) + 3}" font-size="10" fill="#9ca3af" text-anchor="end" font-family="Inter,sans-serif">${v}</text>`
+            ).join('');
+            document.getElementById('scoreChart').innerHTML = `
+                <svg class="score-chart-svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+                    ${gridLines}
+                    <polyline points="${points}" fill="none" stroke="#1d7fe2" stroke-width="2"/>
+                    ${dots}${labels}
+                </svg>`;
+        })();
+
+        (function buildHeatmap() {
+            const grid = document.getElementById('heatmapGrid');
+            const weeks = 12;
+            const colors = ['#ebedf0', '#bcdcfa', '#6ab0f0', '#1d7fe2'];
+            for (let w = 0; w < weeks; w++) {
+                for (let d = 0; d < 7; d++) {
+                    const seed = (w * 7 + d) * 2654435761 % 100;
+                    let level = 0;
+                    if (seed > 80) level = 3;
+                    else if (seed > 60) level = 2;
+                    else if (seed > 40) level = 1;
+                    const cell = document.createElement('div');
+                    cell.className = 'heatmap-cell';
+                    cell.style.background = colors[level];
+                    grid.appendChild(cell);
+                }
+            }
+        })();
     </script>
 </body>
 </html>
