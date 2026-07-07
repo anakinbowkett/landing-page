@@ -86,67 +86,11 @@
             cursor: pointer;
             white-space: nowrap;
         }
-        .quiz-btn.start, .quiz-btn.resume {
+        .quiz-btn.resume {
             background: #1d7fe2;
             color: white;
         }
-        .quiz-btn.start:hover, .quiz-btn.resume:hover { background: #1668c2; }
-
-        /* Inline slider drawer — nested inside the SAME wrap as the row it
-           belongs to, so it reads as attached to that one quiz, not the list */
-        .quiz-slider-drawer {
-            display: none;
-            margin: 0 20px 14px;
-            padding: 14px 16px;
-            background: #fafafa;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-        }
-        .quiz-slider-drawer.open { display: block; }
-        .quiz-slider-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 8px;
-        }
-        .quiz-slider-label span:last-child { color: #1d7fe2; }
-        .quiz-slider-drawer input[type=range] {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            height: 6px;
-            border-radius: 999px;
-            background: #e5e7eb;
-            outline: none;
-            cursor: pointer;
-            margin-bottom: 12px;
-        }
-        .quiz-slider-drawer input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px; height: 18px; border-radius: 50%;
-            background: #1d7fe2; border: 3px solid white;
-            box-shadow: 0 0 0 1px #d4d4d4; cursor: pointer;
-        }
-        .quiz-slider-drawer input[type=range]::-moz-range-thumb {
-            width: 18px; height: 18px; border-radius: 50%;
-            background: #1d7fe2; border: 3px solid white;
-            box-shadow: 0 0 0 1px #d4d4d4; cursor: pointer;
-        }
-        .quiz-begin-btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background: #1d7fe2;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .quiz-begin-btn:hover { background: #1668c2; }
+        .quiz-btn.resume:hover { background: #1668c2; }
 
         /* ── Performance section ── */
         .perf-toggle-btn {
@@ -325,12 +269,9 @@
                 const pct = Math.round((score / 10) * 100);
                 rightHTML = `
                     <span class="quiz-row-status status-complete">✓ ${pct}%</span>
-                    <button class="quiz-btn start">Start</button>
                     <span class="quiz-progress-block ${blockClass}"></span>`;
             } else if (state === 'next') {
-                rightHTML = `
-                    <button class="quiz-btn start">Start</button>
-                    <span class="quiz-progress-block ${blockClass}"></span>`;
+                rightHTML = `<span class="quiz-progress-block ${blockClass}"></span>`;
             } else if (state === 'resume') {
                 rightHTML = `
                     <span class="quiz-row-status status-resume">⏸ in progress</span>
@@ -350,24 +291,6 @@
                     </div>
                 </div>
                 <div class="quiz-row-right">${rightHTML}</div>`;
-
-            // Slider drawer — lives INSIDE this same wrap, directly attached to this row only
-            const drawer = document.createElement('div');
-            drawer.className = 'quiz-slider-drawer';
-            drawer.innerHTML = `
-                <div class="quiz-slider-label"><span>Questions</span><span class="qcount">10</span></div>
-                <input type="range" min="5" max="30" value="10">
-                <button class="quiz-begin-btn">Begin Quiz →</button>`;
-            const drawerSlider = drawer.querySelector('input[type=range]');
-            const drawerCount = drawer.querySelector('.qcount');
-            drawerSlider.addEventListener('input', () => { drawerCount.textContent = drawerSlider.value; });
-
-            function toggleDrawer() {
-                document.querySelectorAll('.quiz-slider-drawer.open').forEach(d => {
-                    if (d !== drawer) d.classList.remove('open');
-                });
-                drawer.classList.toggle('open');
-            }
 
             let toggleBreakdown = null;
             if (state === 'complete') {
@@ -389,20 +312,16 @@
                 };
             }
 
-            // Row click = start/access this lecture. Block click = view its
-            // progress breakdown. Two separate actions, never the same one.
+            // Row click = start/access this lecture (no real destination yet).
+            // Block click = view its progress breakdown. Two separate actions.
             if (state === 'next' || state === 'complete') {
                 row.classList.add('clickable');
-                row.addEventListener('click', toggleDrawer);
+                row.addEventListener('click', () => {});
             } else if (state === 'resume') {
                 row.classList.add('clickable');
                 row.addEventListener('click', () => {}); // no real destination yet
             }
 
-            // Buttons must trigger the SAME action as the row (not just
-            // swallow the click) — otherwise clicking Start does nothing.
-            const startBtn = row.querySelector('.quiz-btn.start');
-            if (startBtn) startBtn.addEventListener('click', e => { e.stopPropagation(); toggleDrawer(); });
             const resumeBtn = row.querySelector('.quiz-btn.resume');
             if (resumeBtn) resumeBtn.addEventListener('click', e => e.stopPropagation()); // no real destination yet
 
@@ -417,7 +336,6 @@
             }
 
             wrap.appendChild(row);
-            wrap.appendChild(drawer);
             return wrap;
         }
 
