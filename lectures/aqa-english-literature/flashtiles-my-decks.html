@@ -45,6 +45,130 @@
         }
         .mindmap-canvas strong { color: #4b5563; }
 
+        /* ── Deck wall (My Decks home state) ── */
+        .deck-wall-toprow {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 24px;
+        }
+        .create-deck-btn {
+            background: #000000;
+            color: white;
+            padding: 0.7rem 1.1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+        .create-deck-btn:hover { background: #1a1a1a; }
+
+        .deck-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 900px;
+        }
+
+        .deck-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.15s ease, opacity 0.3s ease;
+        }
+        .deck-card:hover { border-color: #c7c7c7; }
+        .deck-card.fading-out { opacity: 0; }
+
+        .deck-card-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.35;
+            margin-bottom: 10px;
+        }
+        .deck-rename-input {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            font-family: inherit;
+            border: 1px solid #1d7fe2;
+            border-radius: 6px;
+            padding: 2px 6px;
+            width: 100%;
+            margin-bottom: 10px;
+            outline: none;
+        }
+
+        .deck-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+        .deck-pill {
+            font-size: 11px;
+            color: #374151;
+            background: #f3f4f6;
+            border-radius: 4px;
+            padding: 4px 10px;
+        }
+        .deck-pill.more { color: #9ca3af; }
+
+        .deck-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .deck-card-count { font-size: 13px; color: #6b7280; }
+        .deck-badge {
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        .deck-badge.strong { background: #22c55e; }
+        .deck-badge.fading { background: #f59e0b; }
+        .deck-badge.due { background: #ef4444; }
+
+        .deck-last-studied { font-size: 12px; color: #9ca3af; margin-bottom: 14px; }
+
+        .deck-divider { border-top: 1px solid #f3f4f6; margin-bottom: 10px; }
+        .deck-actions { display: flex; align-items: center; justify-content: space-between; min-height: 18px; }
+        .deck-action-btn {
+            font-size: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+        }
+        .deck-action-btn.rename { color: #6b7280; }
+        .deck-action-btn.delete { color: #ef4444; }
+
+        .deck-confirm-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #374151; }
+        .deck-confirm-row .yes-btn { color: #ef4444; font-weight: 600; background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; }
+        .deck-confirm-row .cancel-btn { color: #6b7280; background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; }
+
+        .deck-card.empty-state {
+            border: 1px dashed #d1d5db;
+            box-shadow: none;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .deck-card.empty-state:hover { border-color: #9ca3af; }
+        .empty-plus { font-size: 28px; color: #9ca3af; line-height: 1; margin-bottom: 8px; }
+        .empty-text { font-size: 13px; color: #9ca3af; }
+
     </style>
 </head>
 <body>
@@ -84,10 +208,19 @@
                 </div>
             </div>
 
-            <!-- My Decks: build your own deck by browsing everything, same system as Pillar Decks -->
+            <!-- My Decks: deck wall is the home state, accordion is the create-new-deck flow -->
             <div data-panel="decks">
-                <p style="max-width: 700px; font-size: 0.875rem; color: #6b7280; margin: 0 0 20px;">Mix and match anything from the whole course — open a paper, pick a text if there is one, then tick the lectures you want in this deck.</p>
-                <div class="papers-list" id="papersList"></div>
+                <div id="deckWallView">
+                    <div class="deck-wall-toprow">
+                        <button class="create-deck-btn" id="createDeckBtn">+ Create new deck</button>
+                    </div>
+                    <div class="deck-grid" id="deckGrid"></div>
+                </div>
+
+                <div id="deckAccordionView" style="display:none;">
+                    <p style="max-width: 700px; font-size: 0.875rem; color: #6b7280; margin: 0 0 20px;">Mix and match anything from the whole course — open a paper, pick a text if there is one, then tick the lectures you want in this deck.</p>
+                    <div class="papers-list" id="papersList"></div>
+                </div>
             </div>
 
             <!-- Mindmaps -->
@@ -119,6 +252,139 @@
     <script src="lectures-data.js"></script>
     <script>
         /* ════════════════════════════════════════════
+           DECK WALL — home state of My Decks
+        ════════════════════════════════════════════ */
+        let decks = [
+            { name: 'Tragic Heroes Deck', topics: ['Macbeth Themes', 'Carol Context', 'Frankenstein Techniques'], cardCount: 34, strength: 'strong', lastStudied: 'today' },
+            { name: 'Character Studies', topics: ['Romeo & Juliet Characters', 'Blood Brothers Themes'], cardCount: 28, strength: 'fading', lastStudied: '4 days ago' },
+            { name: 'Exam Skills Deck', topics: ['AQA Exam Writing Skills', 'Close Reading'], cardCount: 19, strength: 'due', lastStudied: '9 days ago' },
+            { name: 'Power & Conflict Collection', topics: ['Ozymandias', 'London', 'Exposure'], cardCount: 41, strength: 'strong', lastStudied: '2 days ago' },
+            { name: 'Modern Text Round-up', topics: ['Inspector Calls Themes', 'DNA Characters'], cardCount: 22, strength: null, lastStudied: null }
+        ];
+
+        function buildPillsHtml(topics) {
+            const shown = topics.slice(0, 3);
+            let html = shown.map(t => `<span class="deck-pill">${t}</span>`).join('');
+            if (topics.length > 3) html += `<span class="deck-pill more">+${topics.length - 3} more</span>`;
+            return html;
+        }
+
+        function buildDeckCard(deck) {
+            const card = document.createElement('div');
+            card.className = 'deck-card';
+
+            const badgeLabel = deck.strength === 'strong' ? 'Strong' : deck.strength === 'fading' ? 'Fading' : deck.strength === 'due' ? 'Due' : '';
+
+            card.innerHTML = `
+                <div class="deck-card-name">${deck.name}</div>
+                <div class="deck-pills">${buildPillsHtml(deck.topics)}</div>
+                <div class="deck-meta-row">
+                    <span class="deck-card-count">${deck.cardCount} cards</span>
+                    ${badgeLabel ? `<span class="deck-badge ${deck.strength}">${badgeLabel}</span>` : '<span></span>'}
+                </div>
+                <div class="deck-last-studied">${deck.lastStudied ? 'Last studied ' + deck.lastStudied : 'Not started yet'}</div>
+                <div class="deck-divider"></div>
+                <div class="deck-actions"></div>`;
+
+            const actionsEl = card.querySelector('.deck-actions');
+
+            function renderActions() {
+                actionsEl.innerHTML = `
+                    <button class="deck-action-btn rename" title="Rename">
+                        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M14.5 3.5L16.5 5.5L6 16H4V14L14.5 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                    </button>
+                    <button class="deck-action-btn delete">Delete</button>`;
+                actionsEl.querySelector('.rename').addEventListener('click', e => { e.stopPropagation(); startRename(); });
+                actionsEl.querySelector('.delete').addEventListener('click', e => { e.stopPropagation(); showConfirm(); });
+            }
+
+            function startRename() {
+                const nameEl = card.querySelector('.deck-card-name');
+                const original = deck.name;
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'deck-rename-input';
+                input.value = original;
+                nameEl.replaceWith(input);
+                input.focus();
+                input.select();
+                input.addEventListener('click', e => e.stopPropagation());
+
+                let done = false;
+                function finish(save) {
+                    if (done) return;
+                    done = true;
+                    if (save) deck.name = input.value.trim() || original;
+                    const newNameEl = document.createElement('div');
+                    newNameEl.className = 'deck-card-name';
+                    newNameEl.textContent = deck.name;
+                    input.replaceWith(newNameEl);
+                }
+                input.addEventListener('keydown', e => {
+                    if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+                    else if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+                });
+                input.addEventListener('blur', () => finish(true));
+            }
+
+            function showConfirm() {
+                actionsEl.innerHTML = `
+                    <div class="deck-confirm-row">
+                        <span>Are you sure?</span>
+                        <button class="yes-btn">Yes, delete</button>
+                        <button class="cancel-btn">Cancel</button>
+                    </div>`;
+                actionsEl.querySelector('.yes-btn').addEventListener('click', e => {
+                    e.stopPropagation();
+                    card.classList.add('fading-out');
+                    setTimeout(() => {
+                        const i = decks.indexOf(deck);
+                        if (i > -1) decks.splice(i, 1);
+                        renderDeckWall();
+                    }, 300);
+                });
+                actionsEl.querySelector('.cancel-btn').addEventListener('click', e => {
+                    e.stopPropagation();
+                    renderActions();
+                });
+            }
+
+            renderActions();
+            card.addEventListener('click', () => {
+                // navigates to the deck start page — no real destination yet
+            });
+            return card;
+        }
+
+        function buildEmptyStateCard() {
+            const card = document.createElement('div');
+            card.className = 'deck-card empty-state';
+            card.innerHTML = `<div class="empty-plus">+</div><div class="empty-text">Create your first deck</div>`;
+            card.addEventListener('click', showAccordion);
+            return card;
+        }
+
+        function renderDeckWall() {
+            const grid = document.getElementById('deckGrid');
+            grid.innerHTML = '';
+            decks.forEach(deck => grid.appendChild(buildDeckCard(deck)));
+            grid.appendChild(buildEmptyStateCard());
+        }
+
+        function showAccordion() {
+            document.getElementById('deckWallView').style.display = 'none';
+            document.getElementById('deckAccordionView').style.display = '';
+        }
+        function showWall() {
+            document.getElementById('deckAccordionView').style.display = 'none';
+            document.getElementById('deckWallView').style.display = '';
+            renderDeckWall();
+        }
+
+        document.getElementById('createDeckBtn').addEventListener('click', showAccordion);
+        renderDeckWall();
+
+        /* ════════════════════════════════════════════
            SELECTION STATE — same system as Pillar Decks,
            shared across every open paper/pillar on the page.
         ════════════════════════════════════════════ */
@@ -144,6 +410,24 @@
                 row.classList.remove('selected');
             });
             basketBar.style.display = 'none';
+        });
+
+        // Saving a deck returns to the wall with the new deck added
+        document.getElementById('startDeckBtn').addEventListener('click', () => {
+            const selectedRows = document.querySelectorAll('.lec-sub-row.selectable.selected');
+            if (selectedRows.length === 0) return;
+            const topics = Array.from(selectedRows).map(r => r.querySelector('.lec-sub-name').textContent);
+            decks.unshift({
+                name: `New Deck ${decks.length + 1}`,
+                topics: topics,
+                cardCount: topics.length * 3,
+                strength: null,
+                lastStudied: null
+            });
+            selected.clear();
+            selectedRows.forEach(r => r.classList.remove('selected'));
+            basketBar.style.display = 'none';
+            showWall();
         });
 
         /* ════════════════════════════════════════════
