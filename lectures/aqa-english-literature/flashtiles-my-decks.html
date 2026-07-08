@@ -8,48 +8,6 @@
     <link href="theme.css" rel="stylesheet">
     <link href="shared.css" rel="stylesheet">
     <style>
-        .new-deck-btn {
-            background: #000000;
-            color: white;
-            padding: 0.7rem 1.1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-        }
-        .new-deck-btn:hover { background: #1a1a1a; }
-
-        .decks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-            max-width: 900px;
-            margin-top: 32px;
-        }
-        .deck-tile {
-            background: white;
-            border: 1px solid #d4d4d4;
-            border-radius: 12px;
-            padding: 22px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            min-height: 140px;
-        }
-        .deck-tile-empty {
-            border-style: dashed;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #9ca3af;
-            cursor: pointer;
-        }
-        .deck-tile-empty:hover { border-color: #a0a0a0; color: #6b7280; }
-        .deck-tile-icon { font-size: 22px; }
-        .deck-tile-name { font-weight: 600; color: #111827; font-size: 1rem; }
-        .deck-tile-meta { font-size: 0.75rem; color: #6b7280; }
-
         /* Mindmap canvas + toolbar */
         .mindmap-toolbar {
             display: flex;
@@ -125,19 +83,11 @@
                     <div class="catalogue-card-name">Blueprint</div>
                 </div>
             </div>
-            <button class="new-deck-btn" style="margin-bottom: 24px;">+ New Deck</button>
 
-            <!-- My Decks: existing decks -->
-            <div class="decks-grid" data-panel="decks">
-                <div class="deck-tile">
-                    <div class="deck-tile-icon">🃏</div>
-                    <div class="deck-tile-name">Macbeth — Key Quotes</div>
-                    <div class="deck-tile-meta">24 cards · edited 2 days ago</div>
-                </div>
-                <div class="deck-tile deck-tile-empty">
-                    <div class="deck-tile-icon">+</div>
-                    <div>Create a card deck</div>
-                </div>
+            <!-- My Decks: build your own deck by browsing everything, same system as Pillar Decks -->
+            <div data-panel="decks">
+                <p style="max-width: 700px; font-size: 0.875rem; color: #6b7280; margin: 0 0 20px;">Mix and match anything from the whole course — open a paper, pick a text if there is one, then tick the lectures you want in this deck.</p>
+                <div class="papers-list" id="papersList"></div>
             </div>
 
             <!-- Mindmaps -->
@@ -160,7 +110,194 @@
         </section>
     </main>
 
+    <div class="page-basket-bar" id="basketBar" style="display: none;">
+        <span id="basketCount">0 selected</span>
+        <button id="clearBasketBtn" style="background:none;border:none;color:#9ca3af;font-size:0.8125rem;font-weight:600;cursor:pointer;">Clear</button>
+        <button id="startDeckBtn" style="background:#1d7fe2;color:white;border:none;padding:10px 18px;border-radius:8px;font-size:0.875rem;font-weight:600;cursor:pointer;">Start Deck →</button>
+    </div>
+
+    <script src="lectures-data.js"></script>
     <script>
+        /* ════════════════════════════════════════════
+           SELECTION STATE — same system as Pillar Decks,
+           shared across every open paper/pillar on the page.
+        ════════════════════════════════════════════ */
+        const selected = new Set();
+        const basketBar = document.getElementById('basketBar');
+        const basketCount = document.getElementById('basketCount');
+
+        function toggleSelection(key, row) {
+            if (selected.has(key)) {
+                selected.delete(key);
+                row.classList.remove('selected');
+            } else {
+                selected.add(key);
+                row.classList.add('selected');
+            }
+            basketBar.style.display = selected.size ? 'flex' : 'none';
+            basketCount.textContent = `${selected.size} selected`;
+        }
+
+        document.getElementById('clearBasketBtn').addEventListener('click', () => {
+            selected.clear();
+            document.querySelectorAll('.lec-sub-row.selectable.selected').forEach(row => {
+                row.classList.remove('selected');
+            });
+            basketBar.style.display = 'none';
+        });
+
+        /* ════════════════════════════════════════════
+           BUILD UI — identical to Pillar Decks
+        ════════════════════════════════════════════ */
+        const papersList = document.getElementById('papersList');
+
+        papersData.forEach((paper, paperIdx) => {
+            const item = document.createElement('div');
+            item.className = 'paper-item';
+
+            const header = document.createElement('button');
+            header.className = 'paper-header';
+            header.innerHTML = `
+                <div class="paper-header-left">
+                    <span class="paper-tag">${paper.tag}</span>
+                    <span class="paper-title">${paper.title}</span>
+                </div>
+                <span class="paper-chevron">›</span>`;
+
+            const body = document.createElement('div');
+            body.className = 'paper-body';
+
+            const cardsWrap = document.createElement('div');
+            cardsWrap.className = 'subject-cards';
+
+            if (paper.type === 'multi') {
+                cardsWrap.appendChild(buildMultiTextPanel(paper.texts, paperIdx));
+            } else {
+                cardsWrap.appendChild(buildSinglePanel(paper.pillars, paperIdx));
+            }
+
+            body.appendChild(cardsWrap);
+            header.addEventListener('click', () => item.classList.toggle('open'));
+            item.appendChild(header);
+            item.appendChild(body);
+            papersList.appendChild(item);
+        });
+
+        function makeLectureRow(li, title, key) {
+            const checkSvg = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L4.5 8.5L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+            const row = document.createElement('div');
+            row.className = 'lec-sub-row selectable';
+            row.innerHTML = `
+                <div class="lec-sub-left">
+                    <span class="lecture-checkbox">${checkSvg}</span>
+                    <span class="lec-sub-name">${title}</span>
+                </div>`;
+            row.addEventListener('click', e => {
+                e.stopPropagation();
+                toggleSelection(key, row);
+            });
+            return row;
+        }
+
+        function buildMultiTextPanel(texts, paperIdx) {
+            const panel = document.createElement('div');
+            panel.className = 'lec-panel';
+            let activeIdx = 0;
+
+            function render() {
+                panel.innerHTML = '';
+
+                const grid = document.createElement('div');
+                grid.className = 'catalogue-grid';
+                grid.style.marginTop = '0';
+                texts.forEach((t, i) => {
+                    const card = document.createElement('div');
+                    card.className = 'catalogue-card' + (i === activeIdx ? ' active' : '');
+                    card.innerHTML = `
+                        <div class="catalogue-card-name">${t.name}</div>
+                        <div class="catalogue-card-meta">${t.pillars.length} pillars</div>`;
+                    card.addEventListener('click', e => { e.stopPropagation(); activeIdx = i; render(); });
+                    grid.appendChild(card);
+                });
+
+                const pillarsDiv = document.createElement('div');
+                pillarsDiv.className = 'lec-pillars';
+                const text = texts[activeIdx];
+
+                text.pillars.forEach((pillar, pi) => {
+                    const box = document.createElement('div');
+                    box.className = 'lec-pillar-box';
+                    const hdr = document.createElement('div');
+                    hdr.className = 'lec-pillar-header';
+                    hdr.innerHTML = `
+                        <div class="lec-pillar-header-left">
+                            <span class="lec-pillar-tag">${pillar.tag}</span>
+                            <span class="lec-pillar-name">${pillar.title}</span>
+                        </div>
+                        <span class="lec-pillar-chevron">›</span>`;
+                    hdr.addEventListener('click', e => { e.stopPropagation(); box.classList.toggle('open'); });
+
+                    const bdy = document.createElement('div');
+                    bdy.className = 'lec-pillar-body';
+
+                    pillar.lectures.forEach((slug, li) => {
+                        const title = slugToTitle(slug);
+                        const key = `${paperIdx}-${text.id}-${pi}-${li}`;
+                        bdy.appendChild(makeLectureRow(li, title, key));
+                    });
+
+                    box.appendChild(hdr); box.appendChild(bdy);
+                    pillarsDiv.appendChild(box);
+                });
+
+                panel.appendChild(grid);
+                panel.appendChild(pillarsDiv);
+            }
+
+            render();
+            return panel;
+        }
+
+        function buildSinglePanel(pillars, paperIdx) {
+            const panel = document.createElement('div');
+            panel.className = 'lec-panel';
+            panel.style.padding = '0';
+
+            const pillarsDiv = document.createElement('div');
+            pillarsDiv.className = 'lec-pillars';
+            pillarsDiv.style.padding = '16px';
+
+            pillars.forEach((pillar, pi) => {
+                const box = document.createElement('div');
+                box.className = 'lec-pillar-box';
+
+                const hdr = document.createElement('div');
+                hdr.className = 'lec-pillar-header';
+                hdr.innerHTML = `
+                    <div class="lec-pillar-header-left">
+                        <span class="lec-pillar-tag">${pillar.tag}</span>
+                        <span class="lec-pillar-name">${pillar.title}</span>
+                    </div>
+                    <span class="lec-pillar-chevron">›</span>`;
+                hdr.addEventListener('click', e => { e.stopPropagation(); box.classList.toggle('open'); });
+
+                const bdy = document.createElement('div');
+                bdy.className = 'lec-pillar-body';
+
+                pillar.lectures.forEach((lec, li) => {
+                    const title = typeof lec === 'string' ? slugToTitle(lec) : lec.title;
+                    const key = `${paperIdx}-x-${pi}-${li}`;
+                    bdy.appendChild(makeLectureRow(li, title, key));
+                });
+
+                box.appendChild(hdr); box.appendChild(bdy);
+                pillarsDiv.appendChild(box);
+            });
+
+            panel.appendChild(pillarsDiv);
+            return panel;
+        }
+
         // Top-level tab switching
         const tabs = document.querySelectorAll('.catalogue-card[data-tab]');
         const panels = document.querySelectorAll('[data-panel]');
