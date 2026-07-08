@@ -8,61 +8,7 @@
     <link href="theme.css" rel="stylesheet">
     <link href="shared.css" rel="stylesheet">
     <style>
-        /* Mindmap canvas + toolbar */
-        .mindmap-toolbar {
-            display: flex;
-            gap: 10px;
-            max-width: 900px;
-            margin-top: 32px;
-        }
-        .mindmap-tool-btn {
-            background: white;
-            border: 1px solid #d4d4d4;
-            color: #374151;
-            font-size: 0.8125rem;
-            font-weight: 600;
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .mindmap-tool-btn:hover { border-color: #a0a0a0; }
-        .mindmap-tool-btn.danger { color: #b91c1c; }
-        .mindmap-canvas {
-            max-width: 900px;
-            margin-top: 16px;
-            height: 340px;
-            border: 1px dashed #d4d4d4;
-            border-radius: 14px;
-            background:
-                radial-gradient(circle at 1px 1px, #e5e7eb 1px, transparent 1px) 0 0/22px 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 10px;
-            color: #9ca3af;
-            font-size: 0.9375rem;
-        }
-        .mindmap-canvas strong { color: #4b5563; }
-
         /* ── Deck wall (My Decks home state) ── */
-        .deck-wall-toprow {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 24px;
-        }
-        .create-deck-btn {
-            background: #000000;
-            color: white;
-            padding: 0.7rem 1.1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-        }
-        .create-deck-btn:hover { background: #1a1a1a; }
-
         .deck-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -196,49 +142,17 @@
         <a href="flashtiles.html" class="crumb-back">← Flashtiles</a>
 
         <section class="topics-section">
-            <div class="catalogue-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 0; margin-bottom: 24px;">
-                <div class="catalogue-card active" data-tab="decks">
-                    <div class="catalogue-card-name">My Decks</div>
-                </div>
-                <div class="catalogue-card" data-tab="mindmap">
-                    <div class="catalogue-card-name">Mindmaps</div>
-                </div>
-                <div class="catalogue-card" data-tab="blueprint">
-                    <div class="catalogue-card-name">Blueprint</div>
-                </div>
-            </div>
-
             <!-- My Decks: deck wall is the home state, accordion is the create-new-deck flow -->
             <div data-panel="decks">
                 <div id="deckWallView">
-                    <div class="deck-wall-toprow">
-                        <button class="create-deck-btn" id="createDeckBtn">+ Create new deck</button>
-                    </div>
                     <div class="deck-grid" id="deckGrid"></div>
                 </div>
 
                 <div id="deckAccordionView" style="display:none;">
+                    <button class="crumb-back" id="backToWallBtn" style="border:none; background:none; padding:0; margin:0 0 16px; cursor:pointer;">← Back to Decks</button>
                     <p style="max-width: 700px; font-size: 0.875rem; color: #6b7280; margin: 0 0 20px;">Mix and match anything from the whole course — open a paper, pick a text if there is one, then tick the lectures you want in this deck.</p>
                     <div class="papers-list" id="papersList"></div>
                 </div>
-            </div>
-
-            <!-- Mindmaps -->
-            <div data-panel="mindmap" style="display:none;">
-                <div class="mindmap-toolbar">
-                    <button class="mindmap-tool-btn">Rename Branch</button>
-                    <button class="mindmap-tool-btn danger">Reset Mindmap</button>
-                </div>
-                <div class="mindmap-canvas">
-                    <div style="font-size: 28px;">🧠</div>
-                    <div><strong>No mindmaps yet.</strong> Start a node and branch out.</div>
-                </div>
-            </div>
-
-            <!-- Blueprint — placeholder while the diagram design is finalised -->
-            <div class="mindmap-canvas" data-panel="blueprint" style="display:none; max-width: 900px; margin-top: 32px;">
-                <div style="font-size: 28px;">🗺️</div>
-                <div><strong>Blueprint is coming.</strong> Technique → mark scheme → application, all connected.</div>
             </div>
         </section>
     </main>
@@ -290,9 +204,7 @@
 
             function renderActions() {
                 actionsEl.innerHTML = `
-                    <button class="deck-action-btn rename" title="Rename">
-                        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M14.5 3.5L16.5 5.5L6 16H4V14L14.5 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-                    </button>
+                    <button class="deck-action-btn rename">Rename</button>
                     <button class="deck-action-btn delete">Delete</button>`;
                 actionsEl.querySelector('.rename').addEventListener('click', e => { e.stopPropagation(); startRename(); });
                 actionsEl.querySelector('.delete').addEventListener('click', e => { e.stopPropagation(); showConfirm(); });
@@ -381,7 +293,7 @@
             renderDeckWall();
         }
 
-        document.getElementById('createDeckBtn').addEventListener('click', showAccordion);
+        document.getElementById('backToWallBtn').addEventListener('click', showWall);
         renderDeckWall();
 
         /* ════════════════════════════════════════════
@@ -581,20 +493,6 @@
             panel.appendChild(pillarsDiv);
             return panel;
         }
-
-        // Top-level tab switching
-        const tabs = document.querySelectorAll('.catalogue-card[data-tab]');
-        const panels = document.querySelectorAll('[data-panel]');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                const target = tab.dataset.tab;
-                panels.forEach(p => {
-                    p.style.display = p.dataset.panel === target ? '' : 'none';
-                });
-            });
-        });
     </script>
 </body>
 </html>
