@@ -99,11 +99,14 @@ export default async function handler(req, res) {
           }, { onConflict: 'ambassador_id' });
 
       } else if (stage === 'consent') {
+        // This is now the FINAL onboarding step (UGC Guide).
+        // onboarding_completed is set here, not on 'guide'.
         await supabase
           .from('ambassadors')
           .update({ 
             accepted_consent: true,
-            consent_accepted_at: new Date().toISOString()
+            consent_accepted_at: new Date().toISOString(),
+            onboarding_completed: true
           })
           .eq('id', ambassadorId);
 
@@ -123,12 +126,14 @@ export default async function handler(req, res) {
           }, { onConflict: 'ambassador_id' });
 
       } else if (stage === 'guide') {
+        // Guide is now the FIRST onboarding step — it must NOT
+        // mark onboarding as complete. That bug was causing the
+        // whole modal to be skipped after just this one step.
         await supabase
           .from('ambassadors')
           .update({ 
             accepted_guide: true,
-            guide_accepted_at: new Date().toISOString(),
-            onboarding_completed: true
+            guide_accepted_at: new Date().toISOString()
           })
           .eq('id', ambassadorId);
       }
