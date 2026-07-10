@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Become an Ambassador - GMM</title>
+    <title>Become an Ambassador - Monturalearn</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -307,6 +307,7 @@ document.getElementById('ambassadorForm').addEventListener('submit', async funct
             // Store ambassador data
             sessionStorage.setItem('ambassador_id', data.ambassadorId);
             sessionStorage.setItem('referral_code', data.referralCode);
+            sessionStorage.setItem('ambassador_email', email);
             
             // Redirect to info page
             setTimeout(() => {
