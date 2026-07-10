@@ -563,8 +563,32 @@ tbody tr:hover { background: #f9fafb; }
     margin-top: 1rem;
     padding: 0 0.5rem;
 }      
-      
-      
+
+/* ── Simplified PDF + tickbox stage ── */
+.simple-stage-check {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 24px;
+}
+.simple-stage-check input {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+}
+.simple-stage-btn {
+    width: 100%;
+    padding: 16px;
+    background: #cbd5e1;
+    color: #fff;
+    border: none;
+    border-radius: 13px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: not-allowed;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+}
       
     </style>
 </head>
@@ -575,173 +599,99 @@ tbody tr:hover { background: #f9fafb; }
 <!-- Onboarding Modal -->
 <div id="onboardingModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; overflow-y:auto;">
   <div style="max-width:900px; margin:40px auto; background:#fff; border-radius:16px; padding:40px;">
-    
-    <!-- Stage 1: Terms -->
-    <div id="stage1" style="display:none;">
-  <h2 style="color:#1d7fe2; margin-bottom:20px;">Terms & Conditions</h2>
-  
-  <div style="background:#5865F2; color:#fff; padding:16px; border-radius:10px; margin-bottom:20px; text-align:center;">
-    <p style="margin-bottom:12px; font-weight:600;">📢 Join our Discord community first!</p>
-    <a href="https://discord.gg/wsFPvEhsVj" target="_blank" style="display:inline-block; background:#fff; color:#5865F2; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:700;">Join Discord Server</a>
-  </div>
-        
-      <iframe src="https://pdfhost.io/v/NXmhbqLBuT_UGC_Agreement_FEB_2026__2_" style="width:100%; height:500px; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:20px;"></iframe>
-      
-      <form id="termsForm">
-        <div style="margin-bottom:16px;">
-          <label style="display:block; font-weight:600; margin-bottom:8px;">Full Name *</label>
-          <input type="text" name="fullName" required style="width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:8px; font-size:15px;">
-        </div>
-        
-        <div style="margin-bottom:16px;">
-          <label style="display:block; font-weight:600; margin-bottom:8px;">Parent/Guardian Name (if under 18 — required to receive payment) *</label>
-          <input type="text" name="parentName" required style="width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:8px; font-size:15px;">
-        </div>
-        
-        <div style="margin-bottom:16px;">
-          <label style="display:block; font-weight:600; margin-bottom:8px;">Digital Signature *</label>
-          <input type="text" name="signature" required placeholder="Type your full name" style="width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:8px; font-size:15px;">
-        </div>
-        
-        <div style="margin-bottom:24px;">
-          <label style="display:flex; align-items:center; cursor:pointer;">
-            <input type="checkbox" id="termsCheckbox" style="width:20px; height:20px; margin-right:12px;">
-            <span>I comply with these terms and conditions on becoming a content creator with Monturalearn</span>
-          </label>
-        </div>
-        
-        <button type="submit" id="termsSubmit" disabled style="width:100%; padding:16px; background:#cbd5e1; color:#fff; border:none; border-radius:13px; font-size:16px; font-weight:700; cursor:not-allowed;">Next</button>
-      </form>
-    </div>
 
-    <!-- Stage 2: Consent -->
-    <div id="stage2" style="display:none;">
-      <h2 style="color:#1d7fe2; margin-bottom:20px;">Consent Form</h2>
-      <iframe src="https://pdfhost.io/v/phxXKuNCug_UGC_Consent_Form_FEB_2026" style="width:100%; height:500px; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:20px;"></iframe>
-      
-      <form id="consentForm">
-        <div style="margin-bottom:16px;">
-          <label style="display:block; font-weight:600; margin-bottom:8px;">Parent/Guardian Name *</label>
-          <input type="text" name="parentName" required style="width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:8px; font-size:15px;">
-        </div>
-        
-        <div style="margin-bottom:16px;">
-          <label style="display:block; font-weight:600; margin-bottom:8px;">Relationship to Participant *</label>
-          <input type="text" name="relationship" required placeholder="e.g., Mother, Father, Guardian" style="width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:8px; font-size:15px;">
-        </div>
-        
-        <div style="margin-bottom:16px;">
-          <label style="display:block; font-weight:600; margin-bottom:8px;">Parent Email *</label>
-          <input type="email" name="parentEmail" required style="width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:8px; font-size:15px;">
-        </div>
-        
-        <div style="margin-bottom:16px;">
-          <label style="display:block; font-weight:600; margin-bottom:8px;">Parent Phone *</label>
-          <input type="tel" name="parentPhone" required style="width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:8px; font-size:15px;">
-        </div>
-        
-        <div style="margin-bottom:16px;">
-          <label style="display:block; font-weight:600; margin-bottom:8px;">Participant Name *</label>
-          <input type="text" name="participantName" required style="width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:8px; font-size:15px;">
-        </div>
-        
-        <div style="margin-bottom:16px;">
-          <label style="display:block; font-weight:600; margin-bottom:8px;">Participant Date of Birth *</label>
-          <input type="date" name="participantDob" required style="width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:8px; font-size:15px;">
-        </div>
-        
-        <div style="margin-bottom:16px;">
-          <label style="display:block; font-weight:600; margin-bottom:8px;">Digital Signature *</label>
-          <input type="text" name="signature" required placeholder="Type your full name" style="width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:8px; font-size:15px;">
-        </div>
-        
-        <div style="margin-bottom:24px;">
-          <label style="display:flex; align-items:center; cursor:pointer;">
-            <input type="checkbox" id="consentCheckbox" style="width:20px; height:20px; margin-right:12px;">
-            <span>I comply with the terms on the consent form and have truthfully filled out the details in order to become a content creator with Monturalearn</span>
-          </label>
-        </div>
-        
-        <button type="submit" id="consentSubmit" disabled style="width:100%; padding:16px; background:#cbd5e1; color:#fff; border:none; border-radius:13px; font-size:16px; font-weight:700; cursor:not-allowed;">Next</button>
-      </form>
-    </div>
-
-    <!-- Stage 3: Guide -->
-    <div id="stage3" style="display:none;">
+    <!-- Stage 1: Guide -->
+    <div id="stageGuide" style="display:none;">
       <h2 style="color:#1d7fe2; margin-bottom:20px;">Content Creator Guide</h2>
-      <iframe src="https://pdfhost.io/v/Ats3RCR4u5_Monturalearn-Creator-Guide" style="width:100%; height:500px; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:20px;"></iframe>
-      
-      <div style="margin-bottom:24px;">
-        <label style="display:flex; align-items:center; cursor:pointer;">
-          <input type="checkbox" id="guideCheckbox" style="width:20px; height:20px; margin-right:12px;">
-          <span>I comply with the content guide and have familiarised myself with the contents</span>
-        </label>
-      </div>
-      
-      <button id="guideSubmit" disabled style="width:100%; padding:16px; background:#cbd5e1; color:#fff; border:none; border-radius:13px; font-size:16px; font-weight:700; cursor:not-allowed;">Complete Onboarding</button>
+      <iframe src="https://pdflink.to/69209db8/" style="width:100%; height:500px; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:20px;"></iframe>
+
+      <label class="simple-stage-check">
+        <input type="checkbox" id="guideCheckbox">
+        <span>I comply with the content guide and have familiarised myself with the contents</span>
+      </label>
+
+      <button id="guideSubmit" class="simple-stage-btn" disabled>Continue</button>
     </div>
 
+    <!-- Stage 2: Referral Link Quiz -->
+    <div id="stageQuiz" style="display:none;">
+      <div style="max-width:700px; margin:0 auto;">
+        <h2 style="color:#1d7fe2; margin-bottom:10px; font-size:24px; font-weight:700; text-align:center;">📝 Knowledge Check</h2>
+        <p style="color:#6b7280; margin-bottom:30px; font-size:15px; text-align:center;">Answer these questions correctly to proceed. One wrong answer resets the quiz.</p>
 
-      
+        <div style="background:#fff; border:2px solid #e5e7eb; border-radius:13px; padding:40px; margin-bottom:30px;">
+          <div style="background:#e5e7eb; height:6px; border-radius:13px; margin-bottom:30px; overflow:hidden;">
+            <div id="quizProgress" style="background:#10b981; height:100%; width:0%; transition:width 0.3s; border-radius:13px;"></div>
+          </div>
 
-<!-- Stage 3.5: Referral Link Quiz -->
-<div id="stageQuiz" style="display:none;">
-  <div style="max-width:700px; margin:0 auto;">
-    <h2 style="color:#1d7fe2; margin-bottom:10px; font-size:24px; font-weight:700; text-align:center;">📝 Knowledge Check</h2>
-    <p style="color:#6b7280; margin-bottom:30px; font-size:15px; text-align:center;">Answer these questions correctly to proceed. One wrong answer resets the quiz.</p>
-    
-    <!-- Question Card with Progress Bar Inside -->
-    <div style="background:#fff; border:2px solid #e5e7eb; border-radius:13px; padding:40px; margin-bottom:30px;">
-      <!-- Progress Bar Inside Card -->
-      <div style="background:#e5e7eb; height:6px; border-radius:13px; margin-bottom:30px; overflow:hidden;">
-        <div id="quizProgress" style="background:#10b981; height:100%; width:0%; transition:width 0.3s; border-radius:13px;"></div>
-      </div>
-      
-      <h3 id="questionText" style="font-size:20px; font-weight:700; margin-bottom:30px; color:#111827; line-height:1.5;"></h3>
-      <div id="quizOptions" style="display:flex; flex-direction:column; gap:16px;"></div>
-    </div>
-    
-    <div id="quizFeedback" style="padding:20px; border-radius:13px; margin-top:20px; display:none; font-weight:600; font-size:16px; text-align:center;"></div>
-  </div>
-</div>
-      
-    <!-- Stage 4: Welcome -->
-<div id="stage4" style="display:none;">
-  <div style="max-width:700px; margin:0 auto;">
-    
-    <!-- Welcome Card -->
-    <div style="background:#fff; border:2px solid #e5e7eb; border-radius:13px; padding:50px 40px; text-align:center;">
-      <h2 style="color:#1d7fe2; font-size:28px; font-weight:700; margin-bottom:30px;">🎉 Welcome to Monturalearn!</h2>
-      
-      <p style="font-size:16px; line-height:1.8; color:#374151; margin-bottom:30px; text-align:left;">
-        I built this for students who are done wasting time on methods that don't work.<br><br>
-        Same goes for those who work twice as hard and yet doesn't move the needle.<br><br>
-        Or for the ones who don't even know where to start because of all the 'revision' and 'homework'.<br><br>
-        The world is cluttered with overpriced, outdated noise.<br><br>
-        By joining us, you've committed to a future where high-end quality education isn't a luxury—it's a standard.<br><br>
-        We don't hope for success, it is the only option, and now that you are now an official partner of Monturalearn, you ensure your name is etched into the foundation of that shift in the efficient and affordable way of learning that's accessible for all.<br><br>
-        No fluff. No endless hours. Just results.
-      </p>
-      
-      <img src="https://i.postimg.cc/5N186cBw/Anakin.jpg" alt="Anakin" style="max-width:120px; margin:30px auto 20px; display:block; border-radius:13px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-      
-      <p style="font-size:16px; font-weight:700; color:#111827; margin-bottom:40px;">
-        Anakin<br>
-        <span style="font-size:14px; font-weight:400; color:#6b7280;">Founder, Monturalearn</span>
-      </p>
-      
-      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-        <a href="https://discord.gg/wsFPvEhsVj" target="_blank" style="display:inline-block; padding:16px 32px; background:#5865F2; color:#fff; text-decoration:none; border-radius:13px; font-size:16px; font-weight:700;">
-          Join Discord
-        </a>
-        <button onclick="closeOnboarding()" style="padding:16px 32px; background:#1d7fe2; color:#fff; border:none; border-radius:13px; font-size:16px; font-weight:700; cursor:pointer;">
-          Enter Dashboard
-        </button>
+          <h3 id="questionText" style="font-size:20px; font-weight:700; margin-bottom:30px; color:#111827; line-height:1.5;"></h3>
+          <div id="quizOptions" style="display:flex; flex-direction:column; gap:16px;"></div>
+        </div>
+
+        <div id="quizFeedback" style="padding:20px; border-radius:13px; margin-top:20px; display:none; font-weight:600; font-size:16px; text-align:center;"></div>
       </div>
     </div>
-    
-  </div>
-</div>
+
+    <!-- Stage 3: Welcome -->
+    <div id="stageWelcome" style="display:none;">
+      <div style="max-width:700px; margin:0 auto;">
+
+        <div style="background:#fff; border:2px solid #e5e7eb; border-radius:13px; padding:50px 40px; text-align:center;">
+          <h2 style="color:#1d7fe2; font-size:28px; font-weight:700; margin-bottom:30px;">🎉 Welcome to Monturalearn!</h2>
+
+          <p style="font-size:16px; line-height:1.8; color:#374151; margin-bottom:30px; text-align:left;">
+            I built this for students who are done wasting time on methods that don't work.<br><br>
+            Same goes for those who work twice as hard and yet doesn't move the needle.<br><br>
+            Or for the ones who don't even know where to start because of all the 'revision' and 'homework'.<br><br>
+            The world is cluttered with overpriced, outdated noise.<br><br>
+            By joining us, you've committed to a future where high-end quality education isn't a luxury—it's a standard.<br><br>
+            We don't hope for success, it is the only option, and now that you are now an official partner of Monturalearn, you ensure your name is etched into the foundation of that shift in the efficient and affordable way of learning that's accessible for all.<br><br>
+            No fluff. No endless hours. Just results.
+          </p>
+
+          <p style="font-size:16px; font-weight:700; color:#111827; margin-bottom:40px; text-align:left;">
+            Anakin<br>
+            <span style="font-size:14px; font-weight:400; color:#6b7280;">Founder, Monturalearn</span>
+          </p>
+
+          <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+            <a href="https://discord.gg/wsFPvEhsVj" target="_blank" style="display:inline-block; padding:16px 32px; background:#5865F2; color:#fff; text-decoration:none; border-radius:13px; font-size:16px; font-weight:700;">
+              Join Discord
+            </a>
+            <button onclick="advanceFromWelcome()" style="padding:16px 32px; background:#1d7fe2; color:#fff; border:none; border-radius:13px; font-size:16px; font-weight:700; cursor:pointer;">
+              Continue
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Stage 4: Terms & Conditions -->
+    <div id="stageTerms" style="display:none;">
+      <h2 style="color:#1d7fe2; margin-bottom:20px;">Terms & Conditions</h2>
+      <iframe src="https://pdflink.to/a5a88d4b/" style="width:100%; height:500px; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:20px;"></iframe>
+
+      <label class="simple-stage-check">
+        <input type="checkbox" id="termsCheckbox">
+        <span>I comply with these terms and conditions on becoming a content creator with Monturalearn</span>
+      </label>
+
+      <button id="termsSubmit" class="simple-stage-btn" disabled>Continue</button>
+    </div>
+
+    <!-- Stage 5: UGC Guide -->
+    <div id="stageUgc" style="display:none;">
+      <h2 style="color:#1d7fe2; margin-bottom:20px;">UGC Guide — July 2026</h2>
+      <iframe src="https://pdflink.to/72415ba4/" style="width:100%; height:500px; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:20px;"></iframe>
+
+      <label class="simple-stage-check">
+        <input type="checkbox" id="ugcCheckbox">
+        <span>I have read the UGC Guide</span>
+      </label>
+
+      <button id="ugcSubmit" class="simple-stage-btn" disabled>Complete Onboarding</button>
+    </div>
 
   </div>
 </div>
@@ -921,12 +871,12 @@ function changeTiktok(dir) {
 }
 
 // =============================================
-// PDF VIEWER
+// PDF VIEWER (Resources & Guides — dashboard widget, separate from onboarding)
 // =============================================
 const pdfSlides = [
-    '',  // Add PDF URL here
-    '',
-    '',
+    'https://pdflink.to/69209db8/',  // Creator Programme Guide
+    'https://pdflink.to/a5a88d4b/',  // Terms and Conditions
+    'https://pdflink.to/1e497111/',  // UGC Guide
     '',
     '',
     '',
@@ -974,22 +924,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <script>
 let currentReferralCode = null;
 
-// Force show onboarding for testing
-window.addEventListener('load', function() {
-    setTimeout(function() {
-        const modal = document.getElementById('onboardingModal');
-        if (modal) {
-            console.log('Modal found, checking status...');
-            checkOnboardingStatus();
-        } else {
-            console.log('Modal NOT found in DOM!');
-        }
-    }, 2000);
-});
-
-
-        
-        async function loadDashboard() {
+async function loadDashboard() {
     const ambassador = JSON.parse(localStorage.getItem('ambassador'));
 
     if (!ambassador) {
@@ -1025,15 +960,7 @@ window.addEventListener('load', function() {
         document.getElementById('nextPayoutDate').textContent = nextPayout;
 
         // Phase 1
-        document.getElementById('totalSignups').textContent = data.phase1.totalSignups;
         document.getElementById('verifiedSignups').textContent = data.phase1.verifiedSignups;
-        document.getElementById('phase1Earnings').textContent = data.phase1.earnings.toFixed(2);
-        document.getElementById('remainingCap').textContent = data.phase1.remainingCap;
-        document.getElementById('capCount').textContent = data.phase1.cappedSignups;
-
-        // Progress bar
-        const pct = Math.min((data.phase1.verifiedSignups / 100) * 100, 100);
-        document.getElementById('progressBar').style.width = pct + '%';
 
         // Phase 2
         document.getElementById('activeSubscriptions').textContent = data.phase2.activeSubscriptions;
@@ -1042,6 +969,12 @@ window.addEventListener('load', function() {
        // Tables
         renderVerifiedSignupsTable(data.waitlistCommissions);
         renderActiveSubscribersTable(data.phase2.payments || []);
+
+        // Onboarding check happens after we know the ambassador loaded correctly
+        currentAmbassadorId = data.id;
+        if (!data.onboarding_completed) {
+            showOnboarding(data);
+        }
 
     } catch (err) {
         console.error('Network error:', err);
@@ -1160,6 +1093,7 @@ window.addEventListener('load', function() {
 
         function logout() {
             sessionStorage.clear();
+            localStorage.removeItem('ambassador');
             window.location.href = 'index.html';
         }
 
@@ -1173,39 +1107,26 @@ window.addEventListener('load', function() {
 <script>
 let currentAmbassadorId = null;
 
-// Check if onboarding needed on page load
-async function checkOnboardingStatus() {
-  const ambassador = JSON.parse(localStorage.getItem('ambassador'));
-  if (!ambassador) return;
-  
-  // Fetch current status
-  const response = await fetch(`/api/ambassador-dashboard?email=${ambassador.email}&referralCode=${ambassador.referralCode}`);
-  const data = await response.json();
-  
-  if (data.error) {
-    console.error('Failed to load ambassador:', data.error);
-    return;
-  }
-  
-  currentAmbassadorId = data.id;
-  
-  if (!data.onboarding_completed) {
-    showOnboarding(data);
-  }
+function showStage(id) {
+  ['stageGuide','stageQuiz','stageWelcome','stageTerms','stageUgc'].forEach(s => {
+    document.getElementById(s).style.display = (s === id) ? 'block' : 'none';
+  });
 }
 
 function showOnboarding(data) {
   document.getElementById('onboardingModal').style.display = 'block';
-  
+
   if (!data.accepted_guide) {
-    document.getElementById('stage3').style.display = 'block';
+    showStage('stageGuide');
   } else if (!data.accepted_terms) {
-    document.getElementById('stage1').style.display = 'block';
+    // Guide done but terms not yet — resume at the quiz,
+    // since the Welcome screen has no persisted flag of its own
+    showStage('stageQuiz');
+    startQuiz();
   } else if (!data.accepted_consent) {
-    document.getElementById('stage2').style.display = 'block';
-  } else {
-    document.getElementById('stage4').style.display = 'block';
+    showStage('stageUgc');
   }
+  // else: fully onboarded, modal stays hidden
 }
 
 function closeOnboarding() {
@@ -1213,80 +1134,16 @@ function closeOnboarding() {
   location.reload();
 }
 
-// Stage 1: Terms
-document.getElementById('termsCheckbox').addEventListener('change', function() {
-  document.getElementById('termsSubmit').disabled = !this.checked;
-  document.getElementById('termsSubmit').style.background = this.checked ? '#1d7fe2' : '#cbd5e1';
-  document.getElementById('termsSubmit').style.cursor = this.checked ? 'pointer' : 'not-allowed';
-});
+function advanceFromWelcome() {
+  showStage('stageTerms');
+}
 
-document.getElementById('termsForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const formData = new FormData(this);
-  
-  const response = await fetch('/api/ambassador-dashboard', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ambassadorId: currentAmbassadorId,
-      stage: 'terms',
-      formData: {
-        fullName: formData.get('fullName'),
-        parentName: formData.get('parentName'),
-        signature: formData.get('signature'),
-        date: new Date().toISOString().split('T')[0]
-      }
-    })
-  });
-  
-  if (response.ok) {
-    document.getElementById('stage3').style.display = 'none';
-    document.getElementById('stage1').style.display = 'block';
-  }
-});
-
-// Stage 2: Consent
-document.getElementById('consentCheckbox').addEventListener('change', function() {
-  document.getElementById('consentSubmit').disabled = !this.checked;
-  document.getElementById('consentSubmit').style.background = this.checked ? '#1d7fe2' : '#cbd5e1';
-  document.getElementById('consentSubmit').style.cursor = this.checked ? 'pointer' : 'not-allowed';
-});
-
-document.getElementById('consentForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const formData = new FormData(this);
-  
-  const response = await fetch('/api/ambassador-dashboard', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ambassadorId: currentAmbassadorId,
-      stage: 'consent',
-      formData: {
-        parentName: formData.get('parentName'),
-        relationship: formData.get('relationship'),
-        parentEmail: formData.get('parentEmail'),
-        parentPhone: formData.get('parentPhone'),
-        participantName: formData.get('participantName'),
-        participantDob: formData.get('participantDob'),
-        signature: formData.get('signature'),
-        date: new Date().toISOString().split('T')[0]
-      }
-    })
-  });
-  
-  if (response.ok) {
-    document.getElementById('stage2').style.display = 'none';
-    document.getElementById('stageQuiz').style.display = 'block';
-    startQuiz();
-  }
-});
-
-// Stage 3: Guide
+// Stage: Guide
 document.getElementById('guideCheckbox').addEventListener('change', function() {
-  document.getElementById('guideSubmit').disabled = !this.checked;
-  document.getElementById('guideSubmit').style.background = this.checked ? '#1d7fe2' : '#cbd5e1';
-  document.getElementById('guideSubmit').style.cursor = this.checked ? 'pointer' : 'not-allowed';
+  const btn = document.getElementById('guideSubmit');
+  btn.disabled = !this.checked;
+  btn.style.background = this.checked ? '#1d7fe2' : '#cbd5e1';
+  btn.style.cursor = this.checked ? 'pointer' : 'not-allowed';
 });
 
 document.getElementById('guideSubmit').addEventListener('click', async function() {
@@ -1298,69 +1155,100 @@ document.getElementById('guideSubmit').addEventListener('click', async function(
       stage: 'guide'
     })
   });
-  
+
   if (response.ok) {
-  document.getElementById('stage3').style.display = 'none';
-  document.getElementById('stageQuiz').style.display = 'block';
-  startQuiz();
-}
+    showStage('stageQuiz');
+    startQuiz();
+  }
 });
 
-// Run on page load - AFTER DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    checkOnboardingStatus();
+// Stage: Terms
+document.getElementById('termsCheckbox').addEventListener('change', function() {
+  const btn = document.getElementById('termsSubmit');
+  btn.disabled = !this.checked;
+  btn.style.background = this.checked ? '#1d7fe2' : '#cbd5e1';
+  btn.style.cursor = this.checked ? 'pointer' : 'not-allowed';
 });
 
-// Also run after loadDashboard completes
-window.addEventListener('load', function() {
-    setTimeout(checkOnboardingStatus, 1000);
+document.getElementById('termsSubmit').addEventListener('click', async function() {
+  const response = await fetch('/api/ambassador-dashboard', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ambassadorId: currentAmbassadorId,
+      stage: 'terms',
+      formData: {
+        date: new Date().toISOString().split('T')[0]
+      }
+    })
+  });
+
+  if (response.ok) {
+    showStage('stageUgc');
+  }
+});
+
+// Stage: UGC Guide
+document.getElementById('ugcCheckbox').addEventListener('change', function() {
+  const btn = document.getElementById('ugcSubmit');
+  btn.disabled = !this.checked;
+  btn.style.background = this.checked ? '#1d7fe2' : '#cbd5e1';
+  btn.style.cursor = this.checked ? 'pointer' : 'not-allowed';
+});
+
+document.getElementById('ugcSubmit').addEventListener('click', async function() {
+  const response = await fetch('/api/ambassador-dashboard', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ambassadorId: currentAmbassadorId,
+      stage: 'consent',
+      formData: {
+        date: new Date().toISOString().split('T')[0]
+      }
+    })
+  });
+
+  if (response.ok) {
+    closeOnboarding();
+  }
 });
 </script>
 
 
 
 <script>
-// Quiz Data
+// Quiz Data — 3 questions on the Creator Programme (guide + payout mechanics)
 const quizQuestions = [
   {
-    question: "Under the Terms & Conditions, what happens if fraud or fake signups are detected?",
+    question: "According to the Creator Guide, what's the ONE rule that determines whether you get paid?",
     options: [
-      "You get a warning first and a second chance before any action is taken",
-      "You may be removed immediately, unpaid commissions forfeited, and access permanently revoked",
-      "Your commission is reduced by 50% as a penalty",
-      "Nothing happens as long as the signups eventually become real"
+      "You must post at least 3 videos per week",
+      "Your promo code and comment must stay in your TikTok bio at all times — no link in bio means no tracking and no money",
+      "You need at least 500 followers",
+      "You must message Anakin every time you post"
     ],
     correct: 1
   },
   {
-    question: "According to the Terms & Conditions, when do you stop earning commission for a subscriber?",
+    question: "In Phase 1 (now until August 20th), how much do you earn and how often are you paid?",
     options: [
-      "After 12 months regardless of their subscription status",
-      "Only if they request a refund",
-      "If they cancel, their payment fails, they get a refund, or their payment is disputed",
-      "You never stop earning once a subscriber signs up through your link"
+      "£5 for every 10 waitlist signups through your link, paid every Saturday",
+      "£2 per signup, paid monthly",
+      "A flat £50 regardless of how many signups you get",
+      "Nothing until the platform launches"
     ],
-    correct: 2
+    correct: 0
   },
   {
-    question: "According to the Creator Guide, where must your promo code ALWAYS be placed to track signups?",
+    question: "After the August 20th launch (Phase 2), how do you keep earning from the people you've referred?",
     options: [
-      "Only in the comments section of each video",
-      "In your TikTok bio as a clickable link — this is the ONLY way signups are tracked to you",
-      "You can send it directly to followers via DMs instead",
-      "In the video caption only, not the bio"
+      "A one-off £10 bonus per signup and nothing further",
+      "£2/month for every subscriber who signed up through your link, for as long as they stay subscribed",
+      "10% of the platform's total revenue",
+      "You stop earning once the platform launches"
     ],
     correct: 1
-  },
-  {
-    question: "What happens if you post content about Monturalearn but do NOT include your promo code in your bio?",
-    options: [
-      "Monturalearn will manually credit you for any signups from that video",
-      "You still get 50% commission as a goodwill gesture",
-      "You will NOT be tracked and will NOT be paid — no promo code in bio means no commission, period",
-      "You can claim signups later by emailing support with proof"
-    ],
-    correct: 2
   }
 ];
 
@@ -1418,8 +1306,7 @@ function checkQuizAnswer(selected) {
     if (currentQuizQuestion >= quizQuestions.length) {
       // Quiz complete!
       setTimeout(() => {
-        document.getElementById('stageQuiz').style.display = 'none';
-        document.getElementById('stage4').style.display = 'block';
+        showStage('stageWelcome');
       }, 1000);
     } else {
       setTimeout(showQuizQuestion, 1000);
