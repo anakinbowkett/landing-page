@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <style>
 
 
@@ -822,6 +823,17 @@ tbody tr:hover { background: #f9fafb; }
         </div>
     </div>
 
+    <!-- Payout History Chart -->
+    <div class="table-section">
+        <h2 class="table-title">Payout History</h2>
+        <div id="payoutChartWrapper" style="min-height: 280px;">
+            <canvas id="payoutChart" height="90"></canvas>
+        </div>
+        <div id="payoutEmptyState" style="display:none; text-align:center; padding: 2rem; color: #9ca3af;">
+            No payouts yet — your first one lands after the next Saturday payout run.
+        </div>
+    </div>
+
 </div>   
 
       
@@ -969,6 +981,7 @@ async function loadDashboard() {
        // Tables
         renderVerifiedSignupsTable(data.waitlistCommissions);
         renderActiveSubscribersTable(data.phase2.payments || []);
+        renderPayoutChart(data.payoutHistory || []);
 
         // Onboarding check happens after we know the ambassador loaded correctly
         currentAmbassadorId = data.id;
@@ -1055,6 +1068,76 @@ async function loadDashboard() {
             const parts = email.split('@');
             const masked = parts[0].substring(0, 3) + '***';
             return masked + '@' + parts[1];
+        }
+
+        let payoutChartInstance = null;
+
+        function renderPayoutChart(payoutHistory) {
+            const wrapper = document.getElementById('payoutChartWrapper');
+            const emptyState = document.getElementById('payoutEmptyState');
+
+            if (!payoutHistory || payoutHistory.length === 0) {
+                wrapper.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            wrapper.style.display = 'block';
+            emptyState.style.display = 'none';
+
+            const labels = payoutHistory.map(p => new Date(p.payout_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }));
+            const phase1Data = payoutHistory.map(p => parseFloat(p.phase1_amount || 0));
+            const phase2Data = payoutHistory.map(p => parseFloat(p.phase2_amount || 0));
+
+            const ctx = document.getElementById('payoutChart').getContext('2d');
+
+            if (payoutChartInstance) {
+                payoutChartInstance.destroy();
+            }
+
+            payoutChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Phase 1 (Waitlist)',
+                            data: phase1Data,
+                            backgroundColor: '#f59e0b',
+                            stack: 'payout'
+                        },
+                        {
+                            label: 'Phase 2 (Subscribers)',
+                            data: phase2Data,
+                            backgroundColor: '#1d7fe2',
+                            stack: 'payout'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': £' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { stacked: true, title: { display: true, text: 'Week ending (Saturday)' } },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) { return '£' + value; }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         function getNextPayoutDate() {
