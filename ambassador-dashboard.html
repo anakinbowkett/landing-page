@@ -804,6 +804,16 @@ tbody tr:hover { background: #f9fafb; }
                 </div>
             </div>
 
+            <!-- Payout Email -->
+            <div class="referral-section" style="margin-top: 1rem;">
+                <div class="referral-title">Payout Email (PayPal)</div>
+                <div class="referral-link-box">
+                    <input class="referral-link-display" id="payoutEmailDisplay" readonly value="Loading...">
+                    <button class="copy-btn" id="payoutEmailEditBtn" onclick="togglePayoutEmailEdit()">Edit</button>
+                </div>
+                <p class="referral-hint" id="payoutEmailHint">This is where your payments are sent. Only change this if you need payments going to a different PayPal account — for example, a parent or guardian's, if you're under 18.</p>
+            </div>
+
         </div>
     </div>
 
@@ -963,6 +973,9 @@ async function loadDashboard() {
         currentReferralCode = data.referralCode;
         const referralLink = `https://www.monturalearn.co.uk/?ref=${data.referralCode}`;
         document.getElementById('referralLinkDisplay').value = referralLink;
+
+        // Payout email
+        document.getElementById('payoutEmailDisplay').value = data.paypalEmail || '';
 
         // Total payout
         document.getElementById('totalPayout').textContent = data.totalPayout.toFixed(2);
@@ -1164,6 +1177,65 @@ async function loadDashboard() {
                     btn.style.background = '#1d7fe2';
                 }, 2000);
             });
+        }
+
+        let payoutEmailEditing = false;
+
+        function togglePayoutEmailEdit() {
+            const input = document.getElementById('payoutEmailDisplay');
+            const btn = document.getElementById('payoutEmailEditBtn');
+
+            if (!payoutEmailEditing) {
+                // Enter edit mode
+                input.readOnly = false;
+                input.focus();
+                btn.textContent = 'Save';
+                payoutEmailEditing = true;
+            } else {
+                // Save
+                const newEmail = input.value.trim();
+                if (!newEmail || !newEmail.includes('@')) {
+                    alert('Please enter a valid email address.');
+                    return;
+                }
+                savePayoutEmail(newEmail, input, btn);
+            }
+        }
+
+        async function savePayoutEmail(newEmail, input, btn) {
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                const response = await fetch('/api/ambassador-dashboard', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ambassadorId: currentAmbassadorId,
+                        action: 'updatePayoutEmail',
+                        paypalEmail: newEmail
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert(data.error || 'Failed to save payout email');
+                    btn.disabled = false;
+                    btn.textContent = 'Save';
+                    return;
+                }
+
+                input.readOnly = true;
+                btn.disabled = false;
+                btn.textContent = 'Edit';
+                payoutEmailEditing = false;
+
+            } catch (err) {
+                alert('Network error — please try again.');
+                btn.disabled = false;
+                btn.textContent = 'Save';
+            }
         }
 
         function logout() {
