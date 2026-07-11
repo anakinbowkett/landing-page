@@ -656,8 +656,8 @@ tbody tr:hover { background: #f9fafb; }
           </p>
 
           <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-            <a href="https://discord.gg/wsFPvEhsVj" target="_blank" style="display:inline-block; padding:16px 32px; background:#5865F2; color:#fff; text-decoration:none; border-radius:13px; font-size:16px; font-weight:700;">
-              Join Discord
+            <a href="https://tiktok.me/group/ZNRwtaPRb/" target="_blank" style="display:inline-block; padding:16px 32px; background:#5865F2; color:#fff; text-decoration:none; border-radius:13px; font-size:16px; font-weight:700;">
+              Join Group Chat
             </a>
             <button onclick="advanceFromWelcome()" style="padding:16px 32px; background:#1d7fe2; color:#fff; border:none; border-radius:13px; font-size:16px; font-weight:700; cursor:pointer;">
               Continue
@@ -805,7 +805,7 @@ tbody tr:hover { background: #f9fafb; }
             </div>
 
             <!-- Payout Email -->
-            <div class="referral-section" style="margin-top: 1rem;">
+            <div class="referral-section" id="payoutEmailSection" style="margin-top: 1rem; position: relative; z-index: 1;">
                 <div class="referral-title">Payout Email (PayPal)</div>
                 <div class="referral-link-box">
                     <input class="referral-link-display" id="payoutEmailDisplay" readonly value="Loading...">
@@ -1514,5 +1514,81 @@ setTimeout(matchPdfToTiktok, 500);
 
 
     
+
+<!-- Payout Email Spotlight -->
+<div id="payoutEmailSpotlight" style="display:none; position:fixed; inset:0; z-index:9998;">
+  <div id="payoutEmailInfoBox" style="position:absolute; background:#fff; border-radius:13px; padding:24px; max-width:360px; box-shadow:0 20px 40px rgba(0,0,0,0.3); z-index:9999;">
+    <h3 style="color:#1d7fe2; font-size:17px; font-weight:700; margin-bottom:10px;">💳 What's this for?</h3>
+    <p style="font-size:14px; color:#374151; line-height:1.6; margin-bottom:16px;">
+      This is the PayPal email your commission payments actually get sent to. It's set to your signup email by default — only change it if payments need to go somewhere else, like a parent or guardian's PayPal if you're under 18.
+    </p>
+    <button onclick="dismissPayoutEmailSpotlight()" style="width:100%; padding:12px; background:#1d7fe2; color:#fff; border:none; border-radius:10px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif;">Got it</button>
+  </div>
+</div>
+
+<script>
+function positionPayoutEmailSpotlight() {
+    const target = document.getElementById('payoutEmailSection');
+    const spotlight = document.getElementById('payoutEmailSpotlight');
+    const infoBox = document.getElementById('payoutEmailInfoBox');
+    if (!target || !spotlight || !infoBox) return;
+
+    const rect = target.getBoundingClientRect();
+    const padding = 10;
+
+    // Dim everything except a cutout around the target box
+    // (box-shadow spread trick: draw a "hole" via a transparent box
+    // whose shadow covers the rest of the viewport)
+    spotlight.style.background = 'transparent';
+
+    let cutout = document.getElementById('payoutEmailCutout');
+    if (!cutout) {
+        cutout = document.createElement('div');
+        cutout.id = 'payoutEmailCutout';
+        cutout.style.position = 'absolute';
+        cutout.style.borderRadius = '14px';
+        cutout.style.pointerEvents = 'none';
+        spotlight.appendChild(cutout);
+    }
+    cutout.style.top = (rect.top - padding + window.scrollY) + 'px';
+    cutout.style.left = (rect.left - padding + window.scrollX) + 'px';
+    cutout.style.width = (rect.width + padding * 2) + 'px';
+    cutout.style.height = (rect.height + padding * 2) + 'px';
+    cutout.style.boxShadow = '0 0 0 9999px rgba(0,0,0,0.75)';
+
+    // Position the info box just below the highlighted section
+    infoBox.style.top = (rect.bottom + 16 + window.scrollY) + 'px';
+    infoBox.style.left = Math.max(16, rect.left + window.scrollX) + 'px';
+}
+
+function showPayoutEmailSpotlight() {
+    const spotlight = document.getElementById('payoutEmailSpotlight');
+    spotlight.style.display = 'block';
+    positionPayoutEmailSpotlight();
+    window.addEventListener('resize', positionPayoutEmailSpotlight);
+    window.addEventListener('scroll', positionPayoutEmailSpotlight);
+}
+
+function dismissPayoutEmailSpotlight() {
+    document.getElementById('payoutEmailSpotlight').style.display = 'none';
+    window.removeEventListener('resize', positionPayoutEmailSpotlight);
+    window.removeEventListener('scroll', positionPayoutEmailSpotlight);
+    localStorage.setItem('seen_payout_email_spotlight', 'true');
+}
+
+// Show once per browser, the first time the dashboard loads with a
+// payout email already populated (so it lines up correctly on screen).
+document.addEventListener('DOMContentLoaded', function() {
+    if (localStorage.getItem('seen_payout_email_spotlight') === 'true') return;
+    const check = setInterval(function() {
+        const input = document.getElementById('payoutEmailDisplay');
+        if (input && input.value && input.value !== 'Loading...') {
+            clearInterval(check);
+            showPayoutEmailSpotlight();
+        }
+    }, 300);
+});
+</script>
+
 </body>
 </html>
