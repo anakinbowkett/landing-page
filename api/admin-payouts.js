@@ -366,30 +366,45 @@ module.exports = async function handler(req, res) {
       });
     }
 
+    // Pull ALL unpaid commissions in just 2 queries total (not 2 per
+    // ambassador — the old version did a separate round-trip per
+    // ambassador, which times out once you have more than a handful).
+    const { data: allUnpaidCommissions } = await supabase
+      .from('waitlist_commissions')
+      .select('ambassador_id, commission_amount')
+      .eq('status', 'verified')
+      .eq('paid_out', false);
+
+    const { data: allUnpaidSubs } = await supabase
+      .from('monthly_commissions')
+      .select('ambassador_id, commission_amount')
+      .eq('is_active', true)
+      .eq('paid_out', false);
+
+    // Group by ambassador_id in memory
+    const commissionsByAmbassador = {};
+    (allUnpaidCommissions || []).forEach(c => {
+      if (!commissionsByAmbassador[c.ambassador_id]) commissionsByAmbassador[c.ambassador_id] = [];
+      commissionsByAmbassador[c.ambassador_id].push(c);
+    });
+
+    const subsByAmbassador = {};
+    (allUnpaidSubs || []).forEach(s => {
+      if (!subsByAmbassador[s.ambassador_id]) subsByAmbassador[s.ambassador_id] = [];
+      subsByAmbassador[s.ambassador_id].push(s);
+    });
+
     const payoutData = [];
 
     for (const amb of ambassadors) {
-      // Phase 1: verified, not-yet-paid waitlist commissions
-      const { data: unpaidCommissions } = await supabase
-        .from('waitlist_commissions')
-        .select('commission_amount')
-        .eq('ambassador_id', amb.id)
-        .eq('status', 'verified')
-        .eq('paid_out', false);
+      const unpaidCommissions = commissionsByAmbassador[amb.id] || [];
+      const unpaidSubs = subsByAmbassador[amb.id] || [];
 
-      // Phase 2: active, not-yet-paid subscriber commissions
-      const { data: unpaidSubs } = await supabase
-        .from('monthly_commissions')
-        .select('commission_amount')
-        .eq('ambassador_id', amb.id)
-        .eq('is_active', true)
-        .eq('paid_out', false);
-
-      const phase1Count = (unpaidCommissions || []).length;
-      const phase2Count = (unpaidSubs || []).length;
-      const phase1Total = (unpaidCommissions || [])
+      const phase1Count = unpaidCommissions.length;
+      const phase2Count = unpaidSubs.length;
+      const phase1Total = unpaidCommissions
         .reduce((sum, c) => sum + parseFloat(c.commission_amount || 0), 0);
-      const phase2Total = (unpaidSubs || [])
+      const phase2Total = unpaidSubs
         .reduce((sum, s) => sum + parseFloat(s.commission_amount || 0), 0);
       const totalPayout = phase1Total + phase2Total;
 
