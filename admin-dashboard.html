@@ -19,7 +19,6 @@
             min-height: 100vh;
         }
 
-        /* Top Bar */
         .top-bar {
             background: linear-gradient(135deg, #1a1f35 0%, #0f1419 100%);
             border-bottom: 1px solid #1f2937;
@@ -60,7 +59,6 @@
             color: #9ca3af;
         }
 
-        /* Login Modal */
         .login-overlay {
             position: fixed;
             top: 0;
@@ -163,14 +161,12 @@
             display: block;
         }
 
-        /* Container */
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2.5rem 2rem;
         }
 
-        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -220,7 +216,6 @@
             margin-top: 0.5rem;
         }
 
-        /* Payout Table */
         .table-section {
             background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
             border: 1px solid #374151;
@@ -332,6 +327,12 @@
             color: #a855f7;
         }
 
+        .phase-none {
+            background: rgba(107, 114, 128, 0.1);
+            border: 1px solid rgba(107, 114, 128, 0.3);
+            color: #9ca3af;
+        }
+
         .amount {
             font-weight: 700;
             color: #10b981;
@@ -387,7 +388,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Export Button */
         .export-btn {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             border: none;
@@ -406,7 +406,6 @@
             box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
         }
 
-        /* Mobile */
         @media (max-width: 768px) {
             .container {
                 padding: 1.5rem 1rem;
@@ -461,7 +460,7 @@
                 <span class="admin-badge">Admin</span>
             </div>
             <div class="date-display">
-                Next Payout: <span id="nextPayoutDate">—</span>
+                Next Payout (Saturday): <span id="nextPayoutDate">—</span>
             </div>
         </div>
 
@@ -470,24 +469,24 @@
             <!-- Stats Grid -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-label">Total Ambassadors</div>
+                    <div class="stat-label">Ambassadors Owed Money</div>
                     <div class="stat-value" id="totalAmbassadors">0</div>
-                    <div class="stat-sub">With pending payouts</div>
+                    <div class="stat-sub">Currently owed a payout</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Total Payout Amount</div>
+                    <div class="stat-label">Total Currently Owed</div>
                     <div class="stat-value"><span class="stat-currency">£</span><span id="totalPayout">0.00</span></div>
-                    <div class="stat-sub">Due on payout date</div>
+                    <div class="stat-sub">Not yet paid out</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Phase 1 (Waitlist)</div>
                     <div class="stat-value"><span class="stat-currency">£</span><span id="phase1Total">0.00</span></div>
-                    <div class="stat-sub">50p per verified signup</div>
+                    <div class="stat-sub">£0.50 per verified signup, unpaid</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Phase 2 (Subscriptions)</div>
                     <div class="stat-value"><span class="stat-currency">£</span><span id="phase2Total">0.00</span></div>
-                    <div class="stat-sub">£2 per active subscriber</div>
+                    <div class="stat-sub">£2 per active subscriber, unpaid</div>
                 </div>
             </div>
 
@@ -515,7 +514,7 @@
             <!-- Payout Table -->
             <div class="table-section">
                 <div class="table-header">
-                    <h2 class="table-title">Ambassador Payouts</h2>
+                    <h2 class="table-title">Ambassador Payouts — Owed Since Last Payout</h2>
                     <div style="display: flex; gap: 1rem;">
                         <button class="export-btn" onclick="exportToCSV()">Export CSV</button>
                         <button class="refresh-btn" onclick="loadPayouts()">↻ Refresh</button>
@@ -584,7 +583,6 @@
 
                 payoutsData = data;
 
-                // Update stats
                 document.getElementById('totalAmbassadors').textContent = data.totalAmbassadors;
                 document.getElementById('totalPayout').textContent = data.totalPayoutAmount.toFixed(2);
                 document.getElementById('phase1Total').textContent = data.phase1Total.toFixed(2);
@@ -595,7 +593,6 @@
                     year: 'numeric'
                 });
 
-                // Render table
                 renderTable(data.payouts);
 
             } catch (err) {
@@ -611,20 +608,18 @@
                 return;
             }
 
-            // Load paid status from localStorage
-
             container.innerHTML = `
                 <table>
                     <thead>
                         <tr>
                             <th>Ambassador</th>
-                            <th>Email</th>
+                            <th>PayPal Email</th>
                             <th>Referral Code</th>
                             <th>Phase</th>
                             <th>Phase 1</th>
                             <th>Phase 2</th>
-                            <th>Total</th>
-                            <th>Paid</th>
+                            <th>Total Owed</th>
+                            <th>Mark Paid</th>
                             <th>Receipt</th>
                             <th>View</th>
                             <th>PayPal Transaction</th>
@@ -633,19 +628,19 @@
                     </thead>
                     <tbody>
                         ${payouts.map(p => {
-                            const phase = p.phase1Total > 0 && p.phase2Total > 0 ? 'both' : 
-                                        p.phase1Total > 0 ? '1' : '2';
-                            const isPaid = p.paid_status || false;
+                            const phase = p.phase1Total > 0 && p.phase2Total > 0 ? 'both' :
+                                        p.phase1Total > 0 ? '1' :
+                                        p.phase2Total > 0 ? '2' : 'none';
+                            const owesNothing = p.totalPayout <= 0;
 
-                            
                             return `
-                                <tr class="${isPaid ? 'paid' : ''}" data-id="${p.ambassadorId}">
+                                <tr class="${owesNothing ? 'paid' : ''}" data-id="${p.ambassadorId}">
                                     <td><strong>${p.name}</strong></td>
-                                    <td>${p.email}</td>
+                                    <td>${p.paypalEmail}</td>
                                     <td><code>${p.referralCode}</code></td>
                                     <td>
                                         <span class="phase-badge phase-${phase}">
-                                            ${phase === 'both' ? 'Phase 1+2' : 'Phase ' + phase}
+                                            ${phase === 'both' ? 'Phase 1+2' : phase === 'none' ? 'Nothing owed' : 'Phase ' + phase}
                                         </span>
                                     </td>
                                     <td>${p.phase1Signups} signups (£${p.phase1Total.toFixed(2)})</td>
@@ -656,10 +651,10 @@
                                             <input 
                                                 type="checkbox" 
                                                 class="paid-checkbox" 
-                                                ${isPaid ? 'checked' : ''}
-                                                onchange="togglePaid('${p.ambassadorId}')"
+                                                ${owesNothing ? 'checked disabled' : ''}
+                                                onchange="markPaid('${p.ambassadorId}')"
                                             >
-                                            <span class="paid-label">${isPaid ? 'Paid' : 'Pending'}</span>
+                                            <span class="paid-label">${owesNothing ? 'Nothing owed' : 'Pending'}</span>
                                         </div>
                                     </td>
                                     <td>
@@ -699,76 +694,56 @@ Generate Receipt
             `;
         }
 
-        function togglePaid(ambassadorId) {
-            const paidStatus = JSON.parse(localStorage.getItem('paid_ambassadors') || '{}');
-            paidStatus[ambassadorId] = !paidStatus[ambassadorId];
-            localStorage.setItem('paid_ambassadors', JSON.stringify(paidStatus));
-            
-            // Update row styling
-            const row = document.querySelector(`tr[data-id="${ambassadorId}"]`);
-            if (paidStatus[ambassadorId]) {
-                row.classList.add('paid');
-                row.querySelector('.paid-label').textContent = 'Paid';
-            } else {
-                row.classList.remove('paid');
-                row.querySelector('.paid-label').textContent = 'Pending';
+        // Marks the ambassador's currently-owed commissions as paid.
+        // Calls the real backend action, which flips paid_out on the
+        // underlying rows and logs the event to payout_log — it does
+        // NOT just toggle a local checkbox (that's what the old code did).
+        async function markPaid(ambassadorId) {
+            const txnInput = document.getElementById('txn_' + ambassadorId);
+            const paypalTxnId = txnInput ? txnInput.value.trim() : '';
+
+            if (!paypalTxnId) {
+                alert('Please enter the PayPal Transaction ID first.');
+                if (txnInput) txnInput.focus();
+                loadPayouts(); // reset the checkbox, since the change event already fired
+                return;
+            }
+
+            const checkbox = document.querySelector(`tr[data-id="${ambassadorId}"] .paid-checkbox`);
+            if (checkbox) checkbox.disabled = true;
+
+            try {
+                const response = await fetch('/api/admin-payouts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'markPaid',
+                        ambassadorId: ambassadorId,
+                        paypalTxnId: paypalTxnId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert(data.error || 'Failed to mark as paid');
+                    loadPayouts();
+                    return;
+                }
+
+                alert(`Payout saved: £${data.totalAmount.toFixed(2)}`);
+                loadPayouts();
+
+            } catch (error) {
+                alert('Network error');
+                loadPayouts();
             }
         }
-
-       async function togglePaid(ambassadorId) {
-
-    const txnInput = document.getElementById('txn_' + ambassadorId);
-    const paypalTxnId = txnInput ? txnInput.value.trim() : '';
-
-    if (!paypalTxnId) {
-        alert('Please enter the PayPal Transaction ID first.');
-        txnInput.focus();
-        return;
-    }
-
-    const checkbox = document.querySelector(`tr[data-id="${ambassadorId}"] .paid-checkbox`);
-    checkbox.disabled = true;  // disable immediately to prevent double clicks
-
-    try {
-        const response = await fetch('/api/admin-payouts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'markPaid',
-                ambassadorId: ambassadorId,
-                paypalTxnId: paypalTxnId
-            })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            alert(data.error || 'Failed to mark as paid');
-            checkbox.disabled = false;
-            return;
-        }
-
-        const row = document.querySelector(`tr[data-id="${ambassadorId}"]`);
-        row.classList.add('paid');
-        row.querySelector('.paid-label').textContent = 'Paid';
-
-        // Clear PayPal input so you don’t accidentally reuse it
-        if (txnInput) txnInput.value = '';
-
-        alert('Payout saved successfully');
-
-    } catch (error) {
-        alert('Network error');
-        checkbox.disabled = false;
-    }
-}
 
         function exportToCSV() {
             if (!payoutsData || !payoutsData.payouts) return;
 
-            const paidStatus = JSON.parse(localStorage.getItem('paid_ambassadors') || '{}');
-            
-            const headers = ['Name', 'Email', 'Referral Code', 'Phase 1 Signups', 'Phase 1 Total', 'Phase 2 Subscribers', 'Phase 2 Total', 'Total Payout', 'PayPal Email', 'Paid Status'];
+            const headers = ['Name', 'Email', 'Referral Code', 'Phase 1 Signups', 'Phase 1 Owed', 'Phase 2 Subscribers', 'Phase 2 Owed', 'Total Owed', 'PayPal Email'];
             
             const rows = payoutsData.payouts.map(p => [
                 p.name,
@@ -779,8 +754,7 @@ Generate Receipt
                 p.phase2Subscribers,
                 `£${p.phase2Total.toFixed(2)}`,
                 `£${p.totalPayout.toFixed(2)}`,
-                p.paypalEmail,
-                paidStatus[p.ambassadorId] ? 'Paid' : 'Pending'
+                p.paypalEmail
             ]);
 
             const csv = [headers, ...rows]
@@ -795,7 +769,14 @@ Generate Receipt
             a.click();
         }
 
-
+        async function saveAdminNotes() {
+            // Admin notes are per-ambassador in the API, but this panel
+            // is global — left as-is from the original file pending a
+            // decision on which ambassador these should apply to.
+            const status = document.getElementById('saveStatus');
+            status.textContent = 'Not wired up to a specific ambassador yet.';
+            setTimeout(() => { status.textContent = ''; }, 4000);
+        }
 
 async function generateReceipt(ambassadorId, ambassadorName) {
     const btn = event.target;
@@ -878,7 +859,7 @@ async function generateAndEmailReceipt(ambassadorId, ambassadorName, ambassadorE
             btn.style.background = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
             txnInput.value = '';
             
-            alert('Receipt generated and emailed to ' + ambassadorEmail);
+            alert('Receipt generated (note: actual email sending is not wired up yet — see comment in admin-payouts.js)');
             
             setTimeout(() => {
                 btn.textContent = originalText;
@@ -899,7 +880,6 @@ async function generateAndEmailReceipt(ambassadorId, ambassadorName, ambassadorE
 </script>
 
 
-    
     
 </body>
 </html>
