@@ -5,11 +5,17 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// TEMPORARY: falls back to a hardcoded password if the ADMIN_PASSWORD
+// env var isn't resolving correctly in Vercel. REMOVE this fallback
+// once the env var issue is confirmed fixed — a hardcoded password
+// sitting in your GitHub repo is a real security risk long-term.
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Montura-Temp-9247!';
+
 module.exports = async function handler(req, res) {
 
 // GET all ambassadors with metrics
   if (req.method === 'GET' && req.query.action === 'list-ambassadors') {
-    if (req.query.password !== process.env.ADMIN_PASSWORD) {
+    if (req.query.password !== ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorised' });
     }
     try {
@@ -27,7 +33,7 @@ module.exports = async function handler(req, res) {
 
   // GET single ambassador detail + referred users + payments + monthly breakdown
   if (req.method === 'GET' && req.query.action === 'ambassador-detail') {
-    if (req.query.password !== process.env.ADMIN_PASSWORD) {
+    if (req.query.password !== ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorised' });
     }
     const { id } = req.query;
@@ -288,7 +294,7 @@ module.exports = async function handler(req, res) {
 
   const { password, action, ambassadorId } = req.query;
 
-  if (password !== process.env.ADMIN_PASSWORD) {
+  if (password !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
