@@ -751,7 +751,7 @@ tbody tr:hover { background: #f9fafb; }
                 <div class="payout-info">
                     <div class="payout-note">Next payout date</div>
                     <div class="payout-date" id="nextPayoutDate">-</div>
-                    <div class="payout-note">Net-15 rolling commission</div>
+                    <div class="payout-note">Weekly Saturday payout</div>
                 </div>
             </div>
 
@@ -1059,19 +1059,11 @@ async function loadDashboard() {
 
         function getNextPayoutDate() {
             const today = new Date();
-            let payoutMonth = today.getMonth();
-            let payoutYear = today.getFullYear();
-
-            if (today.getDate() >= 15) {
-                payoutMonth += 1;
-                if (payoutMonth > 11) {
-                    payoutMonth = 0;
-                    payoutYear += 1;
-                }
-            }
-
-            const payout = new Date(payoutYear, payoutMonth, 15);
-            return payout.toLocaleDateString('en-GB', { 
+            const dayOfWeek = today.getDay(); // 0 = Sunday ... 6 = Saturday
+            const daysUntilSaturday = (6 - dayOfWeek + 7) % 7;
+            const nextSaturday = new Date(today);
+            nextSaturday.setDate(today.getDate() + daysUntilSaturday);
+            return nextSaturday.toLocaleDateString('en-GB', { 
                 day: 'numeric', 
                 month: 'long', 
                 year: 'numeric' 
