@@ -945,6 +945,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
     <script>
 let currentReferralCode = null;
+let onboardingCheckedThisSession = false;
 
 async function loadDashboard() {
     const ambassador = JSON.parse(localStorage.getItem('ambassador'));
@@ -996,9 +997,15 @@ async function loadDashboard() {
         renderActiveSubscribersTable(data.phase2.payments || []);
         renderPayoutChart(data.payoutHistory || []);
 
-        // Onboarding check happens after we know the ambassador loaded correctly
+        // Onboarding check — only on the FIRST load. Without this guard,
+        // the 30-second auto-refresh below would re-run showOnboarding()
+        // every cycle and yank the user back to an earlier stage (e.g.
+        // resetting the quiz) even while they're mid-flow on a later
+        // stage, since accepted_terms/accepted_consent don't update
+        // until those stages are actually submitted.
         currentAmbassadorId = data.id;
-        if (!data.onboarding_completed) {
+        if (!data.onboarding_completed && !onboardingCheckedThisSession) {
+            onboardingCheckedThisSession = true;
             showOnboarding(data);
         }
 
