@@ -69,9 +69,27 @@ export default async function handler(req, res) {
 
 
   
-  // Handle POST for onboarding saves
+  // Handle POST for onboarding saves and account updates
   if (req.method === 'POST') {
-    const { ambassadorId, stage, formData } = req.body;
+    const { ambassadorId, stage, formData, action, paypalEmail } = req.body;
+
+    // New: update payout email — separate from the onboarding stage flow,
+    // so it doesn't require a 'stage' field.
+    if (action === 'updatePayoutEmail') {
+      if (!ambassadorId || !paypalEmail) {
+        return res.status(400).json({ error: 'ambassadorId and paypalEmail required' });
+      }
+      try {
+        await supabase
+          .from('ambassadors')
+          .update({ paypal_email: paypalEmail })
+          .eq('id', ambassadorId);
+        return res.status(200).json({ success: true });
+      } catch (err) {
+        console.error('updatePayoutEmail error:', err);
+        return res.status(500).json({ error: 'Failed to update payout email' });
+      }
+    }
 
     if (!ambassadorId || !stage) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -209,6 +227,7 @@ export default async function handler(req, res) {
       firstName: ambassador.first_name,
       lastName: ambassador.last_name,
       referralCode: ambassador.referral_code,
+      paypalEmail: ambassador.paypal_email || ambassador.email,
       accepted_terms: ambassador.accepted_terms || false,
       accepted_consent: ambassador.accepted_consent || false,
       accepted_guide: ambassador.accepted_guide || false,
