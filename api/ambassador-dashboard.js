@@ -170,28 +170,39 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'Ambassador not found' });
     }
 
-    // PHASE 1: Fetch waitlist commissions
-    // PHASE 1: Fetch from new waitlist table
-    const { data: waitlistSignups } = await supabase
-      .from('waitlist')
-      .select('email, verified, created_at, referral_code')
+    // PHASE 1: Fetch from waitlist_commissions — the real table linking
+    // signups to an ambassador_id with a verified flag. (The old code
+    // queried 'waitlist', which has no ambassador_id column at all, so
+    // this was always silently returning zero.)
+    const { data: waitlistCommissions } = await supabase
+      .from('waitlist_commissions')
+      .select('waitlist_email, referral_code, verified, verified_at, payable_date')
+      .eq('ambassador_id', ambassador.id)
+      .order('verified_at', { ascending: false });
+
+    const totalWaitlistSignups = waitlistCommissions?.length || 0;
+    const verifiedSignups = (waitlistCommissions || []).filter(w => w.verified).length;
+    const phase1Earnings = verifiedSignups * 0.50; // £5 per 10 signups = £0.50/signup
+
+    // PHASE 2: Fetch from monthly_commissions — same issue, 'payments'
+    // has no ambassador_id link either.
+    const { data: subscriptions } = await supabase
+      .from('monthly_commissions')
+      .select('*')
       .eq('ambassador_id', ambassador.id)
       .order('created_at', { ascending: false });
 
-    const totalWaitlistSignups = ambassador.total_signups || 0;
-    const verifiedSignups = waitlistSignups?.filter(w => w.verified).length || 0;
+    const activeSubscriptions = (subscriptions || []).filter(s => s.is_active).length;
+    const phase2Earnings = activeSubscriptions * 2.00;
 
-    // PHASE 2: Fetch from new payments table
-    const { data: payments } = await supabase
-      .from('payments')
-      .select('email, amount, status, created_at')
+    const totalPayout = phase1Earnings + phase2Earnings;
+
+    // Payout history — for the "weeks you've been paid" graph on the dashboard
+    const { data: payoutHistory } = await supabase
+      .from('payout_log')
+      .select('payout_date, phase1_amount, phase2_amount, total_amount')
       .eq('ambassador_id', ambassador.id)
-      .eq('status', 'paid')
-      .order('created_at', { ascending: false });
-
-    const activeSubscriptions = ambassador.total_conversions || 0;
-    const phase2Earnings = parseFloat(ambassador.total_revenue) || 0;
-    const totalPayout = phase2Earnings;
+      .order('payout_date', { ascending: true });
 
     return res.status(200).json({
       id: ambassador.id,
@@ -208,7 +219,7 @@ export default async function handler(req, res) {
         totalSignups: totalWaitlistSignups,
         verifiedSignups: verifiedSignups,
         cappedSignups: Math.min(verifiedSignups, 100),
-        earnings: 0,
+        earnings: phase1Earnings,
         cap: 100,
         remainingCap: Math.max(0, 100 - verifiedSignups)
       },
@@ -217,18 +228,19 @@ export default async function handler(req, res) {
       phase2: {
         activeSubscriptions: activeSubscriptions,
         earnings: phase2Earnings,
-        payments: payments || []
+        payments: subscriptions || []
       },
 
       // Combined
       totalPayout: totalPayout,
       referrals: [],
-      waitlistCommissions: (waitlistSignups || []).map(w => ({
-        waitlist_email: w.email,
-        created_at: w.created_at,
+      payoutHistory: payoutHistory || [],
+      waitlistCommissions: (waitlistCommissions || []).map(w => ({
+        waitlist_email: w.waitlist_email,
+        created_at: w.verified_at,
         status: w.verified ? 'verified' : 'pending',
-        commission_amount: 0,
-        payable_date: null
+        commission_amount: w.verified ? 0.50 : 0,
+        payable_date: w.payable_date
       }))
     });
 
