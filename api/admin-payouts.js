@@ -7,7 +7,7 @@ const supabase = createClient(
 
 module.exports = async function handler(req, res) {
 
-// NEW: GET all ambassadors with metrics
+// GET all ambassadors with metrics
   if (req.method === 'GET' && req.query.action === 'list-ambassadors') {
     if (req.query.password !== process.env.ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorised' });
@@ -25,7 +25,7 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // NEW: GET single ambassador detail + referred users + payments + monthly breakdown
+  // GET single ambassador detail + referred users + payments + monthly breakdown
   if (req.method === 'GET' && req.query.action === 'ambassador-detail') {
     if (req.query.password !== process.env.ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorised' });
@@ -60,7 +60,6 @@ module.exports = async function handler(req, res) {
 
       if (paymentsError) throw paymentsError;
 
-      // Monthly breakdown
       const monthlyBreakdown = {};
       (payments || []).forEach(p => {
         if (p.status !== 'paid') return;
@@ -85,6 +84,28 @@ module.exports = async function handler(req, res) {
       
     } catch (err) {
       return res.status(500).json({ error: 'Failed to fetch ambassador details' });
+    }
+  }
+
+  // NEW: GET payout history for the creator-facing graph
+  // /api/admin-payouts?action=payout-history&ambassadorId=UUID
+  if (req.method === 'GET' && req.query.action === 'payout-history') {
+    const { ambassadorId } = req.query;
+    if (!ambassadorId) return res.status(400).json({ error: 'ambassadorId required' });
+
+    try {
+      const { data: history, error } = await supabase
+        .from('payout_log')
+        .select('payout_date, phase1_amount, phase2_amount, total_amount')
+        .eq('ambassador_id', ambassadorId)
+        .order('payout_date', { ascending: true });
+
+      if (error) throw error;
+
+      return res.status(200).json({ history: history || [] });
+    } catch (err) {
+      console.error('Payout history error:', err);
+      return res.status(500).json({ error: 'Failed to fetch payout history' });
     }
   }
 
@@ -117,10 +138,14 @@ module.exports = async function handler(req, res) {
         .eq('ambassador_id', ambassadorId)
         .order('created_at', { ascending: false });
 
-      const verifiedSignups = waitlistCommissions?.filter(c => c.verified).length || 0;
-      const phase1Earnings = verifiedSignups * 0.50;
+      const verifiedSignups = waitlistCommissions?.filter(c => c.status === 'verified').length || 0;
+      const phase1Earnings = (waitlistCommissions || [])
+        .filter(c => c.status === 'verified')
+        .reduce((sum, c) => sum + parseFloat(c.commission_amount || 0), 0);
       const activeSubscriptions = subscriptions?.filter(s => s.is_active).length || 0;
-      const phase2Earnings = activeSubscriptions * 2.00;
+      const phase2Earnings = (subscriptions || [])
+        .filter(s => s.is_active)
+        .reduce((sum, s) => sum + parseFloat(s.commission_amount || 0), 0);
       const totalPayout = phase1Earnings + phase2Earnings;
 
       return res.status(200).json({
@@ -171,21 +196,84 @@ module.exports = async function handler(req, res) {
 
     if (action === 'markPaid' && ambassadorId) {
       try {
+        // Find everything currently owed and NOT yet paid out
+        const { data: unpaidCommissions, error: c1Error } = await supabase
+          .from('waitlist_commissions')
+          .select('id, commission_amount')
+          .eq('ambassador_id', ambassadorId)
+          .eq('status', 'verified')
+          .eq('paid_out', false);
+
+        if (c1Error) throw c1Error;
+
+        const { data: unpaidSubs, error: c2Error } = await supabase
+          .from('monthly_commissions')
+          .select('id, commission_amount')
+          .eq('ambassador_id', ambassadorId)
+          .eq('is_active', true)
+          .eq('paid_out', false);
+
+        if (c2Error) throw c2Error;
+
+        const phase1Amount = (unpaidCommissions || [])
+          .reduce((sum, c) => sum + parseFloat(c.commission_amount || 0), 0);
+        const phase2Amount = (unpaidSubs || [])
+          .reduce((sum, s) => sum + parseFloat(s.commission_amount || 0), 0);
+        const totalAmount = phase1Amount + phase2Amount;
+
+        if (totalAmount <= 0) {
+          return res.status(400).json({ error: 'Nothing currently owed for this ambassador' });
+        }
+
+        const nowIso = new Date().toISOString();
+
+        if (unpaidCommissions && unpaidCommissions.length > 0) {
+          await supabase
+            .from('waitlist_commissions')
+            .update({ paid_out: true, payout_date: nowIso })
+            .in('id', unpaidCommissions.map(c => c.id));
+        }
+
+        if (unpaidSubs && unpaidSubs.length > 0) {
+          await supabase
+            .from('monthly_commissions')
+            .update({ paid_out: true, payout_date: nowIso })
+            .in('id', unpaidSubs.map(s => s.id));
+        }
+
+        // Log this payout event (drives the creator-facing history graph)
+        await supabase
+          .from('payout_log')
+          .insert({
+            ambassador_id: ambassadorId,
+            payout_date: nowIso,
+            phase1_amount: phase1Amount,
+            phase2_amount: phase2Amount,
+            total_amount: totalAmount,
+            paypal_txn_id: paypalTxnId || null
+          });
+
+        // Keep the simple lifetime flag on ambassadors too, for quick reference
         await supabase
           .from('ambassadors')
           .update({
             paid_status: true,
-            paypal_txn_id: paypalTxnId,
-            paid_at: new Date().toISOString()
+            paypal_txn_id: paypalTxnId || null,
+            paid_at: nowIso
           })
           .eq('id', ambassadorId);
-        return res.status(200).json({ success: true });
+
+        return res.status(200).json({ success: true, phase1Amount, phase2Amount, totalAmount });
       } catch (error) {
+        console.error('markPaid error:', error);
         return res.status(500).json({ error: error.message });
       }
     }
 
     if (action === 'generateAndEmailReceipt' && ambassadorId) {
+      // NOTE: this still doesn't actually send an email — no email
+      // service is wired up. It returns success so the UI doesn't
+      // break, but nothing is sent. Flagging this as unfinished.
       return res.status(200).json({ success: true });
     }
 
@@ -217,12 +305,31 @@ module.exports = async function handler(req, res) {
         return res.status(404).json({ error: 'Ambassador not found' });
       }
 
-      const today = new Date();
-      const paymentDate = new Date(today.getFullYear(), today.getMonth(), 15);
-      const receiptNumber = 'REC-' + ambassador.referral_code + '-' + Date.now();
-      const amount = '0.50';
+      // Compute the ACTUAL amount currently owed, not a hardcoded figure
+      const { data: unpaidCommissions } = await supabase
+        .from('waitlist_commissions')
+        .select('commission_amount')
+        .eq('ambassador_id', ambassadorId)
+        .eq('status', 'verified')
+        .eq('paid_out', false);
 
-      const receiptHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Payment Receipt</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;padding:60px;max-width:800px;margin:0 auto;background:#fff;color:#1f2937}.header{display:flex;justify-content:space-between;margin-bottom:40px;border-bottom:2px solid #e5e7eb;padding-bottom:30px}.logo h1{font-size:32px;color:#1d7fe2;margin-bottom:8px}.logo p{color:#6b7280;font-size:14px}.badge{background:#10b981;color:#fff;padding:8px 16px;border-radius:6px;font-weight:700;font-size:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:40px}.section h3{font-size:12px;color:#6b7280;margin-bottom:12px;font-weight:700}.section p{line-height:1.8;font-size:15px}.banner{background:linear-gradient(135deg,#1d7fe2,#1e88f5);color:#fff;padding:30px;border-radius:12px;text-align:center;margin-bottom:30px}.banner .label{font-size:14px;opacity:0.9;margin-bottom:8px}.banner .amount{font-size:48px;font-weight:800}table{width:100%;border-collapse:collapse;margin-bottom:30px}thead{background:#f9fafb}th{padding:16px;text-align:left;font-size:12px;color:#6b7280;border-bottom:2px solid #e5e7eb;font-weight:700}td{padding:16px;border-bottom:1px solid #f3f4f6;font-size:15px}.totals{text-align:right;margin-top:30px}.row{display:flex;justify-content:flex-end;gap:60px;padding:12px 0;font-size:15px}.row.final{font-size:20px;font-weight:700;border-top:2px solid #e5e7eb;padding-top:16px;margin-top:16px}.footer{margin-top:50px;padding-top:30px;border-top:1px solid #e5e7eb;text-align:center;color:#6b7280;font-size:13px}</style></head><body><div class="header"><div class="logo"><h1>Monturalearn</h1><p>monturalearn@gmail.com</p></div><div class="badge">PAYMENT RECEIPT</div></div><div class="grid"><div class="section"><h3>RECEIPT DETAILS</h3><p><strong>Receipt Number:</strong> ' + receiptNumber + '<br><strong>Invoice Number:</strong> ' + (ambassador.invoice_number || 'N/A') + '<br><strong>Date Paid:</strong> ' + paymentDate.toLocaleDateString('en-GB',{day:"numeric",month:"long",year:"numeric"}) + '<br><strong>Payment Method:</strong> PayPal</p></div><div class="section"><h3>PAY TO</h3><p><strong>' + ambassador.first_name + ' ' + ambassador.last_name + '</strong><br>' + (ambassador.email || '') + '</p></div></div><div class="banner"><div class="label">Amount Paid on ' + paymentDate.toLocaleDateString('en-GB',{day:"numeric",month:"long",year:"numeric"}) + '</div><div class="amount">£' + amount + '</div></div><table><thead><tr><th>Description</th><th style="text-align:right">To Pay</th></tr></thead><tbody><tr><td><strong>Monturalearn UGC Creator Commission</strong><br><span style="color:#6b7280;font-size:14px">Joined: ' + new Date(ambassador.joined_at).toLocaleDateString('en-GB',{day:"numeric",month:"long",year:"numeric"}) + '</span></td><td style="text-align:right;font-weight:600">£' + amount + '</td></tr></tbody></table><div class="totals"><div class="row"><span>Subtotal:</span><span>£' + amount + '</span></div><div class="row final"><span>Amount Paid:</span><span>£' + amount + '</span></div></div><div class="footer"><p>This receipt confirms payment has been made via PayPal.</p><p>For queries, contact: monturalearn@gmail.com</p></div></body></html>';
+      const { data: unpaidSubs } = await supabase
+        .from('monthly_commissions')
+        .select('commission_amount')
+        .eq('ambassador_id', ambassadorId)
+        .eq('is_active', true)
+        .eq('paid_out', false);
+
+      const phase1Amount = (unpaidCommissions || [])
+        .reduce((sum, c) => sum + parseFloat(c.commission_amount || 0), 0);
+      const phase2Amount = (unpaidSubs || [])
+        .reduce((sum, s) => sum + parseFloat(s.commission_amount || 0), 0);
+      const amount = (phase1Amount + phase2Amount).toFixed(2);
+
+      const paymentDate = getNextSaturday(new Date());
+      const receiptNumber = 'REC-' + ambassador.referral_code + '-' + Date.now();
+
+      const receiptHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Payment Receipt</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;padding:60px;max-width:800px;margin:0 auto;background:#fff;color:#1f2937}.header{display:flex;justify-content:space-between;margin-bottom:40px;border-bottom:2px solid #e5e7eb;padding-bottom:30px}.logo h1{font-size:32px;color:#1d7fe2;margin-bottom:8px}.logo p{color:#6b7280;font-size:14px}.badge{background:#10b981;color:#fff;padding:8px 16px;border-radius:6px;font-weight:700;font-size:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:40px}.section h3{font-size:12px;color:#6b7280;margin-bottom:12px;font-weight:700}.section p{line-height:1.8;font-size:15px}.banner{background:linear-gradient(135deg,#1d7fe2,#1e88f5);color:#fff;padding:30px;border-radius:12px;text-align:center;margin-bottom:30px}.banner .label{font-size:14px;opacity:0.9;margin-bottom:8px}.banner .amount{font-size:48px;font-weight:800}table{width:100%;border-collapse:collapse;margin-bottom:30px}thead{background:#f9fafb}th{padding:16px;text-align:left;font-size:12px;color:#6b7280;border-bottom:2px solid #e5e7eb;font-weight:700}td{padding:16px;border-bottom:1px solid #f3f4f6;font-size:15px}.totals{text-align:right;margin-top:30px}.row{display:flex;justify-content:flex-end;gap:60px;padding:12px 0;font-size:15px}.row.final{font-size:20px;font-weight:700;border-top:2px solid #e5e7eb;padding-top:16px;margin-top:16px}.footer{margin-top:50px;padding-top:30px;border-top:1px solid #e5e7eb;text-align:center;color:#6b7280;font-size:13px}</style></head><body><div class="header"><div class="logo"><h1>Monturalearn</h1><p>monturalearn@gmail.com</p></div><div class="badge">PAYMENT RECEIPT</div></div><div class="grid"><div class="section"><h3>RECEIPT DETAILS</h3><p><strong>Receipt Number:</strong> ' + receiptNumber + '<br><strong>Invoice Number:</strong> ' + (ambassador.invoice_number || 'N/A') + '<br><strong>Date Paid:</strong> ' + paymentDate.toLocaleDateString('en-GB',{day:"numeric",month:"long",year:"numeric"}) + '<br><strong>Payment Method:</strong> PayPal</p></div><div class="section"><h3>PAY TO</h3><p><strong>' + ambassador.first_name + ' ' + ambassador.last_name + '</strong><br>' + (ambassador.paypal_email || ambassador.email || '') + '</p></div></div><div class="banner"><div class="label">Amount Paid on ' + paymentDate.toLocaleDateString('en-GB',{day:"numeric",month:"long",year:"numeric"}) + '</div><div class="amount">£' + amount + '</div></div><table><thead><tr><th>Description</th><th style="text-align:right">To Pay</th></tr></thead><tbody><tr><td><strong>Monturalearn UGC Creator Commission</strong><br><span style="color:#6b7280;font-size:14px">Phase 1: £' + phase1Amount.toFixed(2) + ' &nbsp;|&nbsp; Phase 2: £' + phase2Amount.toFixed(2) + '</span></td><td style="text-align:right;font-weight:600">£' + amount + '</td></tr></tbody></table><div class="totals"><div class="row"><span>Subtotal:</span><span>£' + amount + '</span></div><div class="row final"><span>Amount Paid:</span><span>£' + amount + '</span></div></div><div class="footer"><p>This receipt confirms payment has been made via PayPal.</p><p>For queries, contact: monturalearn@gmail.com</p></div></body></html>';
 
       return res.status(200).json({ success: true, receiptHTML });
     } catch (err) {
@@ -234,13 +341,16 @@ module.exports = async function handler(req, res) {
   try {
     const { data: ambassadors } = await supabase
       .from('ambassadors')
-      .select('id, first_name, last_name, email, referral_code, paid_status, paypal_txn_id, paid_at, joined_at')
+      .select('id, first_name, last_name, email, paypal_email, referral_code, paid_status, paypal_txn_id, paid_at, joined_at')
       .order('joined_at', { ascending: false });
 
     if (!ambassadors || ambassadors.length === 0) {
       return res.status(200).json({
         totalAmbassadors: 0,
         totalPayoutAmount: 0,
+        phase1Total: 0,
+        phase2Total: 0,
+        nextPayoutDate: getNextSaturday(new Date()).toISOString().split('T')[0],
         payouts: []
       });
     }
@@ -248,10 +358,28 @@ module.exports = async function handler(req, res) {
     const payoutData = [];
 
     for (const amb of ambassadors) {
-      const phase1Count = 0;
-      const phase2Count = 0;
-      const phase1Total = phase1Count * 0.50;
-      const phase2Total = phase2Count * 2.00;
+      // Phase 1: verified, not-yet-paid waitlist commissions
+      const { data: unpaidCommissions } = await supabase
+        .from('waitlist_commissions')
+        .select('commission_amount')
+        .eq('ambassador_id', amb.id)
+        .eq('status', 'verified')
+        .eq('paid_out', false);
+
+      // Phase 2: active, not-yet-paid subscriber commissions
+      const { data: unpaidSubs } = await supabase
+        .from('monthly_commissions')
+        .select('commission_amount')
+        .eq('ambassador_id', amb.id)
+        .eq('is_active', true)
+        .eq('paid_out', false);
+
+      const phase1Count = (unpaidCommissions || []).length;
+      const phase2Count = (unpaidSubs || []).length;
+      const phase1Total = (unpaidCommissions || [])
+        .reduce((sum, c) => sum + parseFloat(c.commission_amount || 0), 0);
+      const phase2Total = (unpaidSubs || [])
+        .reduce((sum, s) => sum + parseFloat(s.commission_amount || 0), 0);
       const totalPayout = phase1Total + phase2Total;
 
       payoutData.push({
@@ -265,7 +393,7 @@ module.exports = async function handler(req, res) {
         phase2Total: phase2Total,
         totalPayout: totalPayout,
         payoutMethod: 'PayPal',
-        paypalEmail: amb.email,
+        paypalEmail: amb.paypal_email || amb.email,
         paid_status: amb.paid_status,
         paypal_txn_id: amb.paypal_txn_id,
         paid_at: amb.paid_at
@@ -280,7 +408,7 @@ module.exports = async function handler(req, res) {
       phase1Total: payoutData.reduce((sum, p) => sum + p.phase1Total, 0),
       phase2Total: payoutData.reduce((sum, p) => sum + p.phase2Total, 0),
       generatedAt: new Date().toISOString(),
-      nextPayoutDate: getNextPayoutDate(),
+      nextPayoutDate: getNextSaturday(new Date()).toISOString().split('T')[0],
       payouts: payoutData
     });
 
@@ -290,19 +418,12 @@ module.exports = async function handler(req, res) {
   }
 };
 
-function getNextPayoutDate() {
-  const today = new Date();
-  let payoutMonth = today.getMonth();
-  let payoutYear = today.getFullYear();
-
-  if (today.getDate() >= 15) {
-    payoutMonth += 1;
-    if (payoutMonth > 11) {
-      payoutMonth = 0;
-      payoutYear += 1;
-    }
-  }
-
-  const payout = new Date(payoutYear, payoutMonth, 15);
-  return payout.toISOString().split('T')[0];
+// Always the upcoming Saturday (today, if today IS Saturday) —
+// matches the logic used on the creator dashboard.
+function getNextSaturday(fromDate) {
+  const d = new Date(fromDate);
+  const dayOfWeek = d.getDay(); // 0 = Sunday ... 6 = Saturday
+  const daysUntilSaturday = (6 - dayOfWeek + 7) % 7;
+  d.setDate(d.getDate() + daysUntilSaturday);
+  return d;
 }
