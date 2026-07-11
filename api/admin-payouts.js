@@ -5,17 +5,22 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// TEMPORARY: falls back to a hardcoded password if the ADMIN_PASSWORD
-// env var isn't resolving correctly in Vercel. REMOVE this fallback
-// once the env var issue is confirmed fixed — a hardcoded password
-// sitting in your GitHub repo is a real security risk long-term.
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Montura-Temp-9247!';
+// TEMPORARY: accepts EITHER the env var value OR this hardcoded
+// password — so it works even if ADMIN_PASSWORD in Vercel is set
+// to something unexpected (extra whitespace, wrong value, etc).
+// REMOVE this fallback once the env var issue is confirmed fixed —
+// a hardcoded password sitting in your GitHub repo is a real
+// security risk long-term.
+const FALLBACK_ADMIN_PASSWORD = 'Montura-Temp-9247!';
+function isValidAdminPassword(candidate) {
+  return candidate === process.env.ADMIN_PASSWORD || candidate === FALLBACK_ADMIN_PASSWORD;
+}
 
 module.exports = async function handler(req, res) {
 
 // GET all ambassadors with metrics
   if (req.method === 'GET' && req.query.action === 'list-ambassadors') {
-    if (req.query.password !== ADMIN_PASSWORD) {
+    if (!isValidAdminPassword(req.query.password)) {
       return res.status(401).json({ error: 'Unauthorised' });
     }
     try {
@@ -33,7 +38,7 @@ module.exports = async function handler(req, res) {
 
   // GET single ambassador detail + referred users + payments + monthly breakdown
   if (req.method === 'GET' && req.query.action === 'ambassador-detail') {
-    if (req.query.password !== ADMIN_PASSWORD) {
+    if (!isValidAdminPassword(req.query.password)) {
       return res.status(401).json({ error: 'Unauthorised' });
     }
     const { id } = req.query;
@@ -294,7 +299,7 @@ module.exports = async function handler(req, res) {
 
   const { password, action, ambassadorId } = req.query;
 
-  if (password !== ADMIN_PASSWORD) {
+  if (!isValidAdminPassword(password)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
