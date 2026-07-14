@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A-Level Mastery - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+    .hidden { display: none !important; }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: #ffffff;
+        min-height: 100vh;
+    }
+
+    nav {
+        background: white;
+        border-bottom: 1px solid #e0e4e9;
+        padding: 1.25rem 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .nav-left { display: flex; align-items: center; gap: 1rem; }
+    .nav-left img { height: 45px; width: auto; }
+    .nav-left span { font-size: 1.125rem; font-weight: 600; color: #111827; letter-spacing: -0.02em; }
+
+    .level-pill {
+        background: #eef2ff;
+        color: #4338ca;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        letter-spacing: 0.04em;
+        margin-left: 0.25rem;
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 0; }
+
+    .nav-stats-container {
+        display: flex; align-items: center; gap: 0;
+        border: 1px solid #e0e4e9; border-radius: 10px;
+        background: white; padding: 0.5rem 0; margin-right: 2rem;
+    }
+
+    .streak-badge {
+        display: flex; align-items: center; gap: 0.5rem;
+        padding: 0 1rem; background: transparent;
+        border-right: 1px solid #e0e4e9; color: #111827;
+        font-weight: 600; font-size: 0.875rem;
+    }
+    .streak-badge::before { content: "🔥"; font-size: 1.125rem; }
+
+    .mastery-miles-badge {
+        display: flex; align-items: center; gap: 0.5rem;
+        padding: 0 1rem; background: transparent;
+        color: #111827; font-weight: 600; font-size: 0.875rem;
+    }
+    .mastery-miles-badge img { width: 24px; height: 24px; object-fit: contain; }
+
+    .user-info {
+        display: flex; align-items: center; gap: 0.75rem;
+        padding: 0.5rem 1.25rem; background: #f8f9fa;
+        border-radius: 10px; border: 1px solid #e0e4e9; cursor: pointer;
+    }
+
+    .user-avatar {
+        width: 32px; height: 32px;
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: white; font-weight: 600; font-size: 0.875rem;
+    }
+
+    .user-name { font-size: 0.9375rem; font-weight: 500; color: #111827; }
+    .user-profile-container { position: relative; }
+
+    .user-dropdown {
+        position: absolute; top: calc(100% + 0.5rem); right: 0;
+        background: white; border: 1px solid #e0e4e9; border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px;
+        opacity: 0; visibility: hidden; transform: translateY(-10px);
+        transition: all 0.2s; z-index: 1000;
+    }
+    .user-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+
+    .dropdown-item {
+        padding: 0.75rem 1.25rem; font-size: 0.875rem; font-weight: 500;
+        color: #111827; cursor: pointer; transition: all 0.2s;
+        border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 0.75rem;
+    }
+    .dropdown-item:last-child { border-bottom: none; }
+    .dropdown-item:hover { background: #f8f9fa; }
+    .dropdown-item.signout { color: #ef4444; }
+    .dropdown-item.signout:hover { background: #fef2f2; }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 2rem 3rem; }
+
+    .welcome-box { background: #000000; border-radius: 10px; padding: 2rem 2.5rem; margin-bottom: 1.5rem; }
+    .welcome-box h1 {
+        font-family: 'Crimson Text', serif; font-size: 2.5rem; font-weight: 600;
+        color: #ffffff; letter-spacing: -0.05em; line-height: 1.2;
+    }
+    .welcome-box .highlight { color: #ffffff; }
+
+    .metrics-leaderboard-container {
+        background: white; border: 1px solid #e0e4e9; border-radius: 10px;
+        padding: 2rem; margin-bottom: 1.5rem;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+    }
+
+    @media (max-width: 768px) {
+        .metrics-leaderboard-container { grid-template-columns: 1fr; gap: 2rem; padding: 1.5rem; overflow: hidden; }
+        .metrics-section h2, .leaderboard-section h2 { font-size: 1.125rem; margin-bottom: 1.25rem; }
+        .metrics-section, .leaderboard-section { width: 100%; min-width: 0; }
+        .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; width: 100%; }
+        .metric-item { padding: 0.75rem; min-width: 0; }
+        .metric-number { font-size: 1.5rem; }
+        .metric-label { font-size: 0.75rem; line-height: 1.3; }
+        .leaderboard-list { gap: 0.625rem; width: 100%; }
+        .leaderboard-item { padding: 0.625rem; flex-wrap: nowrap; width: 100%; min-width: 0; overflow: hidden; }
+        .leaderboard-left { gap: 0.5rem; flex-shrink: 1; min-width: 0; overflow: hidden; }
+        .leaderboard-rank { min-width: 20px; font-size: 0.75rem; flex-shrink: 0; }
+        .leaderboard-name { font-size: 0.8125rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; min-width: 0; }
+        .leaderboard-right { gap: 0.5rem; flex-shrink: 0; display: flex; align-items: center; }
+        .leaderboard-miles { gap: 0.25rem; padding-right: 0.5rem; flex-shrink: 0; }
+        .leaderboard-miles img { width: 16px; height: 16px; flex-shrink: 0; }
+        .leaderboard-miles-amount { font-size: 0.75rem; white-space: nowrap; }
+        .leaderboard-actions { flex-shrink: 0; }
+        .steal-btn { padding: 0.375rem 0.625rem; font-size: 0.625rem; white-space: nowrap; }
+    }
+
+    @media (max-width: 480px) {
+        .container { padding: 1.5rem 1rem; }
+        .metrics-leaderboard-container { padding: 1rem; gap: 1.5rem; }
+        .metrics-section h2, .leaderboard-section h2 { font-size: 1rem; margin-bottom: 1rem; }
+        .metrics-grid { gap: 0.625rem; }
+        .metric-item { padding: 0.625rem; }
+        .metric-number { font-size: 1.25rem; margin-bottom: 0.125rem; }
+        .metric-label { font-size: 0.6875rem; }
+        .leaderboard-list { gap: 0.5rem; }
+        .leaderboard-item { padding: 0.5rem; }
+        .leaderboard-left { gap: 0.375rem; max-width: 50%; }
+        .leaderboard-rank { min-width: 18px; font-size: 0.6875rem; }
+        .leaderboard-name { font-size: 0.75rem; }
+        .leaderboard-right { gap: 0.375rem; }
+        .leaderboard-miles { gap: 0.25rem; padding-right: 0.375rem; }
+        .leaderboard-miles img { width: 14px; height: 14px; }
+        .leaderboard-miles-amount { font-size: 0.6875rem; }
+        .steal-btn { padding: 0.3rem 0.5rem; font-size: 0.5625rem; border-radius: 4px; }
+    }
+
+    .metrics-section h2 { font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+    .metric-item { text-align: left; padding: 1rem; background: #f8f9fa; border-radius: 10px; border: 1px solid #e9ecef; }
+    .metric-number { font-size: 2rem; font-weight: 700; color: #111827; letter-spacing: -0.03em; margin-bottom: 0.25rem; }
+    .metric-label { font-size: 0.8125rem; color: #6b7280; font-weight: 500; }
+
+    .leaderboard-section h2 { font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .leaderboard-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .leaderboard-item {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.875rem 1rem; background: #ffffff; border-radius: 10px;
+        border: 1px solid #e9ecef; transition: all 0.2s;
+    }
+    .leaderboard-item:hover { background: #ffffff; transform: translateX(2px); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .leaderboard-left { display: flex; align-items: center; gap: 1rem; }
+    .leaderboard-rank { font-size: 0.875rem; font-weight: 600; color: #6b7280; min-width: 25px; }
+    .leaderboard-name { font-size: 0.9375rem; font-weight: 500; color: #111827; }
+    .leaderboard-right { display: flex; align-items: center; gap: 0.75rem; }
+    .leaderboard-miles { display: flex; align-items: center; gap: 0.375rem; padding-right: 0.75rem; border-right: 1px solid #e0e4e9; }
+    .leaderboard-miles img { width: 20px; height: 20px; object-fit: contain; }
+    .leaderboard-miles-amount { font-size: 0.875rem; font-weight: 600; color: #111827; }
+    .leaderboard-actions { display: flex; gap: 0; }
+    .action-btn { padding: 0.4rem 0.875rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; white-space: nowrap; }
+    .steal-btn { background: #dc143c; color: white; font-family: 'Inter', sans-serif; }
+    .steal-btn:hover { background: #b8112e; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(220, 20, 60, 0.3); }
+    .give-btn { background: #00a86b; color: white; margin-left: 0.5rem; }
+    .give-btn:hover { background: #008c59; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0, 168, 107, 0.3); }
+
+    .learning-goals-container { background: white; border: 1px solid #e0e4e9; border-radius: 10px; margin-bottom: 1.5rem; overflow: hidden; }
+    .learning-goals-header { padding: 1.5rem 2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+    .learning-goals-header:hover { background: #f8f9fa; }
+    .learning-goals-title { font-size: 1.25rem; font-weight: 600; color: #111827; letter-spacing: -0.02em; }
+    .accordion-icon { font-size: 1.5rem; color: #6b7280; transition: transform 0.3s; }
+    .accordion-icon.expanded { transform: rotate(180deg); }
+
+    .learning-goals-filters { padding: 0 2rem 1rem 2rem; display: flex; gap: 0.75rem; opacity: 1; max-height: 100px; overflow: hidden; transition: all 0.3s ease; }
+    .learning-goals-filters.collapsed { opacity: 0; max-height: 0; padding: 0; }
+    .filter-tab { padding: 0.5rem 1.25rem; border: 1px solid #e0e4e9; background: transparent; border-radius: 8px; font-size: 0.875rem; font-weight: 500; color: #6b7280; cursor: pointer; transition: all 0.2s; }
+    .filter-tab:hover { background: #f8f9fa; color: #111827; }
+    .filter-tab.active { background: #000000; color: white; border-color: #000000; }
+
+    .learning-goals-content { padding: 0 2rem 2rem 2rem; display: flex; flex-direction: column; gap: 1rem; opacity: 1; max-height: 2000px; overflow: hidden; transition: all 0.3s ease; }
+    .learning-goals-content.collapsed { opacity: 0; max-height: 0; padding: 0; }
+
+    .journey-card { background: #f8f9fa; border: 1px solid #e0e4e9; border-radius: 10px; padding: 1.5rem; position: relative; transition: all 0.3s; cursor: pointer; }
+    .journey-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); border-color: #000000; }
+    .journey-badge { position: absolute; top: -1px; right: -1px; color: white; padding: 0.375rem 1rem; font-size: 0.75rem; font-weight: 600; border-radius: 0 10px 0 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .journey-badge.quick { background: #54D3AB; }
+    .journey-badge.intermediate { background: #FFB380; }
+    .journey-badge.grind { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+    .journey-badge.comeback { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+    .journey-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .journey-topic { font-size: 1rem; font-weight: 600; color: #111827; }
+    .learners-count { font-size: 0.8125rem; color: #6b7280; }
+    .journey-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e0e4e9; }
+    .go-to-btn { background: #000000; color: white; padding: 0.625rem 1.5rem; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; }
+    .go-to-btn:hover { background: #1a1a1a; transform: translateY(-1px); }
+
+    .subjects-container { background: white; border: 1px solid #e0e4e9; border-radius: 10px; padding: 2rem; }
+    .subjects-header { font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .subjects-header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+
+    .add-subjects-btn {
+        background: #000000; color: white; border: none; padding: 0.625rem 1.25rem;
+        border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+        transition: all 0.2s; font-family: 'Inter', sans-serif;
+    }
+    .add-subjects-btn:hover { background: #1a1a1a; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+    .subject-category { margin-bottom: 2.5rem; }
+    .subject-category:last-child { margin-bottom: 0; }
+    .category-title { font-size: 1.125rem; font-weight: 700; color: #111827; margin-bottom: 1.25rem; letter-spacing: -0.01em; padding-left: 0.25rem; }
+    .subjects-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+
+    .subject-box {
+        background: white; border: 2px solid #e0e4e9; border-radius: 10px; padding: 0;
+        text-align: left; cursor: pointer; transition: all 0.3s; position: relative;
+        overflow: hidden; display: flex; flex-direction: column; min-height: 280px;
+    }
+    .subject-box:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.15); border-color: #000000; }
+
+    .subject-top { background: white; padding: 1.75rem 1.75rem 1rem 1.75rem; flex-shrink: 0; }
+    .subject-name { font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem; line-height: 1.3; letter-spacing: -0.02em; }
+    .subject-exam-board { font-size: 0.8125rem; color: #9ca3af; font-weight: 500; letter-spacing: 0.01em; }
+
+    .subject-bottom { flex: 1; padding: 1.5rem 1.75rem 1.25rem 1.75rem; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
+
+    .subject-box.color-blue .subject-bottom   { background-image: url('https://i.postimg.cc/CMq3Z90y/Maths.png'); background-size: cover; background-position: center; background-repeat: no-repeat; }
+    .subject-box.color-green .subject-bottom  { background-image: url('https://i.postimg.cc/4dTzWKKR/Maths-(2).png'); background-size: cover; background-position: center; background-repeat: no-repeat; }
+    .subject-box.color-orange .subject-bottom { background-image: url('https://i.postimg.cc/KzNgQ0Sy/Maths-(3).png'); background-size: cover; background-position: center; background-repeat: no-repeat; }
+    .subject-box.color-purple .subject-bottom { background-image: url('https://i.postimg.cc/sDBvZjXv/Maths-(4).png'); background-size: cover; background-position: center; background-repeat: no-repeat; }
+    .subject-box.color-pink .subject-bottom   { background-image: url('https://i.postimg.cc/V6ddBmRB/Maths-(6).png'); background-size: cover; background-position: center; background-repeat: no-repeat; }
+    .subject-box.color-yellow .subject-bottom { background-image: url('https://i.postimg.cc/FsQH1j2y/Maths-(7).png'); background-size: cover; background-position: center; background-repeat: no-repeat; }
+    .subject-box.color-red .subject-bottom    { background-image: url('https://i.postimg.cc/Y9cJ8xNy/Maths-(8).png'); background-size: cover; background-position: center; background-repeat: no-repeat; }
+    .subject-box.color-teal .subject-bottom   { background-image: url('https://i.postimg.cc/K8PcnRyK/Maths-(5).png'); background-size: cover; background-position: center; background-repeat: no-repeat; }
+
+    .subject-progress-container { width: 100%; }
+    .progress-bar { width: 100%; height: 7px; background: rgba(255, 255, 255, 0.6); border-radius: 4px; overflow: hidden; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%); border-radius: 4px; transition: width 0.3s ease; position: relative; }
+    .progress-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: shimmer 2s infinite; }
+    @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+    .subject-box::before {
+        content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899); border-radius: 10px;
+        opacity: 0; transition: opacity 0.3s; z-index: -1;
+    }
+    .subject-box:hover::before { opacity: 0.2; }
+
+    @media (max-width: 1200px) { .subjects-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 768px) {
+        .subjects-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .subject-box { min-height: 240px; }
+        .subject-name { font-size: 1.0625rem; }
+        .subject-top { padding: 1.5rem 1.5rem 0.875rem 1.5rem; }
+        .subject-bottom { padding: 1.25rem 1.5rem 1rem 1.5rem; }
+    }
+    @media (max-width: 480px) { .subjects-grid { grid-template-columns: 1fr; } }
+
+    @media (max-width: 768px) {
+        nav { padding: 1rem 1.5rem; flex-wrap: nowrap; }
+        .nav-left { gap: 0.625rem; flex-shrink: 1; min-width: 0; }
+        .nav-left img { height: 24px; }
+        .nav-left span { font-size: 0.9375rem; white-space: nowrap; }
+        .nav-right { gap: 0; flex-shrink: 0; }
+        .nav-stats-container { padding: 0.375rem 0; margin-right: 1rem; gap: 0; }
+        .streak-badge { padding: 0 0.75rem; font-size: 0.75rem; gap: 0.375rem; }
+        .streak-badge::before { font-size: 1rem; }
+        .mastery-miles-badge { padding: 0 0.75rem; font-size: 0.75rem; gap: 0.375rem; }
+        .mastery-miles-badge img { width: 20px; height: 20px; }
+        .user-info { padding: 0.375rem 0.875rem; gap: 0.5rem; }
+        .user-avatar { width: 28px; height: 28px; font-size: 0.8125rem; }
+        .user-name { font-size: 0.8125rem; }
+    }
+
+    @media (max-width: 480px) {
+        nav { padding: 0.875rem 1rem; }
+        .nav-left { gap: 0.5rem; }
+        .nav-left img { height: 22px; }
+        .nav-left span { font-size: 0.875rem; }
+        .nav-stats-container { margin-right: 0.625rem; padding: 0.25rem 0; }
+        .streak-badge { padding: 0 0.5rem; font-size: 0.6875rem; gap: 0.25rem; }
+        .streak-badge::before { font-size: 0.875rem; }
+        .mastery-miles-badge { padding: 0 0.5rem; font-size: 0.6875rem; gap: 0.25rem; }
+        .mastery-miles-badge img { width: 18px; height: 18px; }
+        .user-info { padding: 0.3rem 0.625rem; gap: 0.375rem; }
+        .user-avatar { width: 24px; height: 24px; font-size: 0.75rem; }
+        .user-name { font-size: 0.75rem; }
+    }
+
+    @media (max-width: 375px) {
+        nav { padding: 0.75rem 0.875rem; }
+        .nav-left span { display: none; }
+        .nav-stats-container { margin-right: 0.5rem; }
+        .streak-badge { padding: 0 0.375rem; font-size: 0.625rem; }
+        .mastery-miles-badge { padding: 0 0.375rem; font-size: 0.625rem; }
+        .mastery-miles-badge img { width: 16px; height: 16px; }
+        .user-name { display: none; }
+        .user-info { padding: 0.3rem; }
+    }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="Monturalearn Logo">
+            <span>A-Level <span class="level-pill">Sixth Form</span></span>
+        </div>
+        <div class="nav-right">
+            <div class="nav-stats-container">
+                <div class="streak-badge">12 Day Streak</div>
+                <div class="mastery-miles-badge">
+                    <img src="https://i.postimg.cc/pXSd21QN/Mastery-Miles-currency-removebg-preview.png" alt="Mastery Miles">
+                    <span>1,250</span>
+                </div>
+            </div>
+            <div class="user-profile-container">
+                <div class="user-info" id="user-profile-trigger">
+                    <div class="user-avatar" id="user-avatar">A</div>
+                    <span class="user-name" id="nav-user-name">Anakin</span>
+                </div>
+                <div class="user-dropdown" id="user-dropdown">
+                    <div class="dropdown-item">
+                        <span>👤</span>
+                        <span>My Profile</span>
+                    </div>
+                    <div class="dropdown-item" onclick="window.location.href='../settings.html'">
+                        <span>⚙️</span>
+                        <span>Settings</span>
+                    </div>
+                    <div class="dropdown-item signout" id="signout-btn">
+                        <span>🚪</span>
+                        <span>Sign Out</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+    <div class="welcome-box" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding:2rem 2.5rem;">
+        <div>
+            <div style="font-size:0.75rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">
+                Welcome back
+            </div>
+            <div style="font-family:'Crimson Text',serif;font-size:2.75rem;font-weight:700;color:#ffffff;letter-spacing:-0.04em;line-height:1.1;display:flex;align-items:center;gap:0.5rem;">
+                <span id="welcome-name">Anakin</span>
+                <span id="welcome-verified" style="display:none;color:#1d9bf0;font-size:2rem;vertical-align:middle;">✓</span>
+            </div>
+        </div>
+        <div style="border-left:1px solid rgba(255,255,255,0.15);padding-left:2rem;display:flex;flex-direction:column;gap:0.5rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <span style="font-size:0.8rem;color:#9ca3af;font-weight:500;min-width:120px;">Mastery Miles</span>
+                <span style="font-size:0.875rem;font-weight:700;color:#60a5fa;" id="welcome-miles">0</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <span style="font-size:0.8rem;color:#9ca3af;font-weight:500;min-width:120px;">Leaderboard</span>
+                <span style="font-size:0.875rem;font-weight:700;color:#60a5fa;" id="welcome-rank">#—</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <span style="font-size:0.8rem;color:#9ca3af;font-weight:500;min-width:120px;">Day Streak</span>
+                <span style="font-size:0.875rem;font-weight:700;color:#60a5fa;" id="welcome-streak">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="trial-banner" onclick="window.location.href='../pricing.html'" style="
+        position: fixed; top: 0; left: 0; right: 0; width: 100%;
+        background: linear-gradient(135deg, #1d7fe2 0%, #1a5fb8 100%);
+        padding: 0.75rem 2rem; display: flex; justify-content: space-between; align-items: center;
+        box-shadow: 0 2px 8px rgba(29, 127, 226, 0.3); z-index: 999; cursor: pointer;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    ">
+        <span style="color: white; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em;">
+            ⏳ Free Trial Active - Upgrade to Monturalearn Pro to keep your progress and unlock all features after trial ends!
+        </span>
+        <button style="
+            background: white; color: #1d7fe2; border: none; padding: 0.5rem 1.25rem;
+            border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+            font-family: 'Inter', sans-serif; white-space: nowrap; margin-left: 1.5rem; flex-shrink: 0;
+            transition: all 0.2s;
+        " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(29, 127, 226, 0.3)';"
+           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+            Upgrade Now →
+        </button>
+    </div>
+
+    <style>body { padding-top: 3.5rem; }</style>
+
+    <div class="metrics-leaderboard-container">
+        <div class="metrics-section">
+            <h2>Your Metrics</h2>
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <div class="metric-number">24</div>
+                    <div class="metric-label">Lessons Completed</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-number">487</div>
+                    <div class="metric-label">Questions Answered</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-number">87%</div>
+                    <div class="metric-label">Average Score</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-number" id="streak-metric">12</div>
+                    <div class="metric-label">Day Streak</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="leaderboard-section">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                <h2 style="font-size:1.25rem;font-weight:600;color:#111827;letter-spacing:-0.02em;margin:0;display:flex;align-items:center;gap:0.75rem;">
+                    Leaderboard
+                    <span id="steal-cooldown-timer" style="display:none;font-size:0.7rem;font-weight:600;color:#dc143c;background:#fef2f2;padding:2px 8px;border-radius:20px;border:1px solid #fecaca;">⏳ 60s</span>
+                </h2>
+                <button onclick="scrollToRival()" style="
+                    background:#000;color:white;border:none;padding:0.45rem 1rem;border-radius:8px;
+                    font-size:0.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+                    display:flex;align-items:center;gap:0.375rem;">
+                    🎯 Find Rival
+                </button>
+            </div>
+            <div id="lb-list" style="max-height:520px;overflow-y:auto;padding-right:4px;scrollbar-width:thin;scrollbar-color:#e0e4e9 transparent;">
+                <div style="text-align:center;padding:2rem;color:#9ca3af;font-size:0.875rem;">
+                    Loading leaderboard...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="background:white;border:1px solid #e0e4e9;border-radius:10px;margin-bottom:1.5rem;overflow:hidden;">
+        <div style="padding:1rem 1.5rem;border-bottom:1px solid #f3f4f6;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:1rem;font-weight:600;color:#111827;">⚔️ Battle Feed</span>
+            <span style="font-size:0.75rem;color:#9ca3af;font-weight:500;">Live</span>
+        </div>
+        <div id="battle-feed-list" style="max-height:200px;overflow-y:auto;">
+            <div style="padding:1rem;text-align:center;color:#9ca3af;font-size:0.8rem;">
+                No battles yet today...
+            </div>
+        </div>
+    </div>
+
+    <div style="background:white;border:1px solid #e0e4e9;border-radius:10px;padding:1.75rem 2rem;margin-bottom:1.5rem;">
+        <div style="font-size:0.75rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.875rem;">
+            ✍️ Quote of the Day
+        </div>
+        <div id="quote-of-day-box">
+            <div style="font-family:'Crimson Text',serif;font-size:1.1rem;color:#9ca3af;text-align:center;">
+                Loading...
+            </div>
+        </div>
+    </div>
+
+    <div class="learning-goals-container">
+        <div class="learning-goals-header" id="learning-goals-toggle">
+            <h2 class="learning-goals-title">Learning Goals</h2>
+            <span class="accordion-icon">▼</span>
+        </div>
+
+        <div class="learning-goals-filters collapsed" id="learning-goals-filters">
+            <button class="filter-tab active" data-mode="lectures">Lectures & Quiz</button>
+            <button class="filter-tab" data-mode="flashtiles">Flashtiles</button>
+            <button class="filter-tab" data-mode="papers">Past Papers</button>
+            <button class="filter-tab" data-mode="coursework">Coursework</button>
+        </div>
+
+        <div class="learning-goals-content collapsed" id="learning-goals-content">
+            <div class="journey-card">
+                <div class="journey-badge quick">Best for a quick study</div>
+                <div class="journey-header">
+                    <div class="journey-topic" data-dynamic-topic>Pick 2 topics in your weakest subject</div>
+                    <div class="learners-count">👥 1.2k learning</div>
+                </div>
+                <div class="journey-footer">
+                    <div>Est. completion: 85%</div>
+                    <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
+                    <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
+                    <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
+                    <button class="go-to-btn hidden" data-journey-mode="coursework">Go to Coursework</button>
+                </div>
+            </div>
+
+            <div class="journey-card">
+                <div class="journey-badge intermediate">Best for an intermediate study</div>
+                <div class="journey-header">
+                    <div class="journey-topic" data-dynamic-topic>Pick 3 topics in your weakest subject</div>
+                    <div class="learners-count">👥 892 learning</div>
+                </div>
+                <div class="journey-footer">
+                    <div>Success rate: 92%</div>
+                    <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
+                    <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
+                    <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
+                    <button class="go-to-btn hidden" data-journey-mode="coursework">Go to Coursework</button>
+                </div>
+            </div>
+
+            <div class="journey-card">
+                <div class="journey-badge grind">Best for the study grind</div>
+                <div class="journey-header">
+                    <div class="journey-topic" data-dynamic-topic>Pick 4 topics in your weakest subject</div>
+                    <div class="learners-count">👥 654 learning</div>
+                </div>
+                <div class="journey-footer">
+                    <div>Avg. grade boost: +1 grade</div>
+                    <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
+                    <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
+                    <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
+                    <button class="go-to-btn hidden" data-journey-mode="coursework">Go to Coursework</button>
+                </div>
+            </div>
+
+            <div class="journey-card">
+                <div class="journey-badge comeback">Best for an academic comeback</div>
+                <div class="journey-header">
+                    <div class="journey-topic" data-dynamic-topic>Pick 6 topics in your weakest subject</div>
+                    <div class="learners-count">👥 423 learning</div>
+                </div>
+                <div class="journey-footer">
+                    <div>Mastery level: Advanced</div>
+                    <button class="go-to-btn" data-journey-mode="lectures">Go to Lectures & Quiz</button>
+                    <button class="go-to-btn hidden" data-journey-mode="flashtiles">Go to Flashtiles</button>
+                    <button class="go-to-btn hidden" data-journey-mode="papers">Go to Past Papers</button>
+                    <button class="go-to-btn hidden" data-journey-mode="coursework">Go to Coursework</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="subjects-container">
+        <div class="subjects-header-container">
+            <h2 class="subjects-header">Your Subjects</h2>
+            <button class="add-subjects-btn">+ Subjects</button>
+        </div>
+        <div style="text-align:center;padding:2rem;color:#9ca3af;font-size:0.875rem;">Loading your subjects...</div>
+    </div>
+    </div>
+
+   <script>
+const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+if (!window.sbClient) {
+    window.sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+const sbClient = window.sbClient;
+
+let userData = {
+    name: "Student",
+    userId: "00000000",
+    streak: 0,
+    miles: 0,
+    trialStatus: 'trial',
+    trialEndDate: null,
+    subscriptionStatus: 'trial'
+};
+
+// A-Level subject -> category mapping (mirrors the GCSE dashboard pattern)
+const subjectCategories = {
+    'Mathematics': 'STEM',
+    'Computer Science': 'STEM',
+    'Biology': 'Science',
+    'Chemistry': 'Science',
+    'Physics': 'Science',
+    'Psychology': 'Social Sciences',
+    'Sociology': 'Social Sciences',
+    'Business': 'Business & Economics',
+    'Economics': 'Business & Economics',
+    'History': 'Humanities',
+    'Geography': 'Humanities',
+    'Politics': 'Humanities',
+    'English Literature': 'English'
+};
+
+async function updateStreak(userId) {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const { data: existingStreak, error: fetchError } = await sbClient
+            .from('user_streaks')
+            .select('*')
+            .eq('user_id', userId)
+            .single();
+
+        if (fetchError && fetchError.code !== 'PGRST116') throw fetchError;
+
+        if (!existingStreak) {
+            const { data: newStreak, error: insertError } = await sbClient
+                .from('user_streaks')
+                .insert([{ user_id: userId, current_streak: 1, last_login_date: today }])
+                .select()
+                .single();
+            if (insertError) throw insertError;
+            return 1;
+        }
+
+        if (existingStreak.last_login_date === today) {
+            return existingStreak.current_streak;
+        }
+
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+        let newStreak = existingStreak.last_login_date === yesterdayStr
+            ? existingStreak.current_streak + 1
+            : 1;
+
+        const { data: updatedStreak, error: updateError } = await sbClient
+            .from('user_streaks')
+            .update({
+                current_streak: newStreak,
+                last_login_date: today,
+                updated_at: new Date().toISOString()
+            })
+            .eq('user_id', userId)
+            .select()
+            .single();
+
+        if (updateError) throw updateError;
+        return newStreak;
+    } catch (error) {
+        console.error('Streak update error:', error);
+        return 0;
+    }
+}
+
+async function loadUserSubjects(userId) {
+    try {
+        const { data: subjects, error } = await sbClient
+            .from('user_subjects')
+            .select('*')
+            .eq('user_id', userId)
+            .eq('course_level', 'A-Level')
+            .order('created_at', { ascending: true });
+        if (error) throw error;
+        return subjects || [];
+    } catch (error) {
+        console.error('Error loading subjects:', error);
+        return [];
+    }
+}
+
+function renderSubjects(subjects) {
+    const subjectsContainer = document.querySelector('.subjects-container');
+    const groupedSubjects = {};
+
+    subjects.forEach(subject => {
+        const category = subjectCategories[subject.subject_name] || 'Other';
+        if (!groupedSubjects[category]) groupedSubjects[category] = [];
+        groupedSubjects[category].push(subject);
+    });
+
+    subjectsContainer.innerHTML = `
+        <div class="subjects-header-container">
+            <h2 class="subjects-header">Your Subjects</h2>
+            <button class="add-subjects-btn" onclick="handleAddSubjectsClick()">+ Subjects</button>
+        </div>
+    `;
+
+    Object.keys(groupedSubjects).forEach(category => {
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'subject-category';
+
+        const categoryTitle = document.createElement('h3');
+        categoryTitle.className = 'category-title';
+        categoryTitle.textContent = category;
+
+        const subjectsGrid = document.createElement('div');
+        subjectsGrid.className = 'subjects-grid';
+
+        groupedSubjects[category].forEach(subject => {
+            const subjectBox = createSubjectCard(subject);
+            subjectsGrid.appendChild(subjectBox);
+        });
+
+        categoryDiv.appendChild(categoryTitle);
+        categoryDiv.appendChild(subjectsGrid);
+        subjectsContainer.appendChild(categoryDiv);
+    });
+}
+
+function createSubjectCard(subject) {
+    const subjectBox = document.createElement('div');
+    subjectBox.className = `subject-box ${subject.color_variant}`;
+    subjectBox.dataset.subject = subject.subject_name.toLowerCase().replace(/\s+/g, '-');
+
+    const isLocked = shouldSubjectBeLocked(subject);
+
+    subjectBox.innerHTML = `
+        <div class="subject-top">
+            <div class="subject-name">${subject.subject_name}</div>
+            <div class="subject-exam-board">${subject.exam_board} A-Level</div>
+        </div>
+        <div class="subject-bottom">
+            <div class="subject-progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${subject.progress_percentage || 0}%"></div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    subjectBox.addEventListener('click', () => {
+        if (isLocked) {
+            showPaywall();
+        } else {
+            // A-Level static lecture folders live under alevel-lectures/, kept
+            // separate from the GCSE lectures/ tree
+            const staticRoutes = {
+                'English Literature': 'aqa-a-level-english-literature'
+            };
+
+            const boardSlug = (subject.exam_board || 'AQA').toLowerCase().replace(/\s+/g, '-');
+            const autoRoute = boardSlug + '-a-level';
+            const route = staticRoutes[subject.subject_name] || autoRoute;
+
+            fetch(`../alevel-lectures/${route}/lectures.html`, { method: 'HEAD' })
+                .then(res => {
+                    if (res.ok) {
+                        window.location.href = `../alevel-lectures/${route}/lectures.html`;
+                    } else {
+                        alert(`${subject.subject_name} (${subject.exam_board}) is not yet available.`);
+                    }
+                })
+                .catch(() => window.location.href = `../alevel-lectures/${route}/lectures.html`);
+        }
+    });
+
+    if (isLocked) {
+        subjectBox.style.opacity = '0.6';
+        subjectBox.style.cursor = 'not-allowed';
+        subjectBox.style.filter = 'grayscale(50%)';
+        subjectBox.style.position = 'relative';
+
+        const lockOverlay = document.createElement('div');
+        lockOverlay.style.cssText = `
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); font-size: 3rem;
+            z-index: 10; pointer-events: none;
+        `;
+        lockOverlay.textContent = '🔒';
+        subjectBox.appendChild(lockOverlay);
+    } else {
+        subjectBox.style.opacity = '1';
+        subjectBox.style.cursor = 'pointer';
+        subjectBox.style.filter = 'none';
+    }
+
+    return subjectBox;
+}
+
+function shouldSubjectBeLocked(subject) {
+    if (userData.subscriptionStatus === 'active') return false;
+    if (userData.trialStatus === 'trial') return false;
+    if (userData.trialStatus === 'expired') return true;
+    return false;
+}
+
+function checkTrialStatus(profile) {
+    return 'active'; // TEMPORARY: Unlock all subjects
+
+    const now = new Date();
+    if (profile.subscription_status === 'active') return 'active';
+
+    if (profile.subscription_status === 'trial') {
+        const trialStart = new Date(profile.trial_start_date);
+        const trialEnd = new Date(trialStart.getTime() + 20 * 1000);
+        userData.trialEndDate = trialEnd.toISOString();
+        return now > trialEnd ? 'expired' : 'trial';
+    }
+
+    return 'expired';
+}
+
+function showPaywall() {
+    let paywall = document.getElementById('paywall-overlay');
+
+    if (!paywall) {
+        let timeRemaining = '';
+        if (userData.trialStatus === 'trial' && userData.trialEndDate) {
+            const now = new Date();
+            const trialEnd = new Date(userData.trialEndDate);
+            const hoursLeft = Math.max(0, Math.ceil((trialEnd - now) / (1000 * 60 * 60)));
+            timeRemaining = hoursLeft > 0 ? `(${hoursLeft} hours remaining)` : '';
+        }
+
+        paywall = document.createElement('div');
+        paywall.id = 'paywall-overlay';
+        paywall.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(4px);
+        `;
+
+        paywall.innerHTML = `
+            <div style="background: white; border-radius: 16px; padding: 3rem; max-width: 500px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔒</div>
+                <h2 style="font-size: 2rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem;">
+                    Free Trial Ended
+                </h2>
+                <p style="font-size: 1rem; color: #6b7280; margin-bottom: 0.5rem;">
+                    Unlock all subjects and save your progress
+                </p>
+                <p style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 2rem;">
+                    Upgrade to Monturalearn Pro for £5.99/month ${timeRemaining}
+                </p>
+                <button onclick="window.location.href='../pricing.html'" style="
+                    background: #1d7fe2; color: white; border: none;
+                    padding: 1rem 2rem; border-radius: 8px; font-size: 1.125rem;
+                    font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
+                    margin-bottom: 0.75rem; width: 100%; transition: all 0.2s;
+                ">✨ Upgrade to Pro!</button>
+                <button onclick="document.getElementById('paywall-overlay').remove()" style="
+                    background: transparent; color: #6b7280; border: 1px solid #e0e4e9;
+                    padding: 0.75rem; font-size: 0.875rem; cursor: pointer;
+                    font-family: 'Inter', sans-serif; border-radius: 8px;
+                    width: 100%; transition: all 0.2s;
+                ">Maybe Later</button>
+            </div>
+        `;
+        document.body.appendChild(paywall);
+    }
+    paywall.style.display = 'flex';
+}
+
+function showTrialBanner(trialStartDate) {
+    const now = new Date();
+    const trialStart = new Date(trialStartDate);
+    const trialEnd = new Date(trialStart.getTime() + 48 * 60 * 60 * 1000);
+    const hoursLeft = Math.floor((trialEnd - now) / (1000 * 60 * 60));
+
+    if (hoursLeft <= 0) return;
+
+    const banner = document.createElement('div');
+    banner.style.cssText = `
+        background: linear-gradient(135deg, #1d7fe2 0%, #1a5fb8 100%);
+        border-radius: 10px; padding: 1.5rem;
+        margin-bottom: 1.5rem; display: flex;
+        justify-content: space-between; align-items: center;
+        box-shadow: 0 4px 12px rgba(29, 127, 226, 0.2);
+    `;
+
+    banner.innerHTML = `
+        <div>
+            <strong style="color: white; font-size: 1.125rem;">⏳ Free Trial: ${hoursLeft} hours remaining</strong>
+            <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem; margin-top: 0.5rem;">
+                Upgrade to Monturalearn Pro to keep your progress and unlock all subjects
+            </p>
+        </div>
+        <button onclick="window.location.href='../pricing.html'" style="
+            background: white; color: #1d7fe2; border: none;
+            padding: 0.75rem 1.75rem; border-radius: 8px; font-size: 0.875rem;
+            font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
+            white-space: nowrap; margin-left: 1rem; transition: all 0.2s;
+        ">Upgrade Now →</button>
+    `;
+
+    const container = document.querySelector('.container');
+    const welcomeBox = document.querySelector('.welcome-box');
+    container.insertBefore(banner, welcomeBox.nextSibling);
+}
+
+function handleAddSubjectsClick() {
+    if (userData.trialStatus === 'expired') {
+        showPaywall();
+    } else {
+        window.location.href = 'add-subjects.html';
+    }
+}
+
+async function checkAuth() {
+    try {
+        const { data: { session }, error } = await sbClient.auth.getSession();
+        if (error) throw error;
+        if (!session) {
+            window.location.href = 'signup.html';
+            return;
+        }
+
+        const user = session.user;
+        const userId = user.id;
+
+        const { data: profile, error: profileError } = await sbClient
+            .from('user_profiles')
+            .select('*')
+            .eq('id', userId)
+            .eq('course_level', 'A-Level')
+            .single();
+
+        if (profileError) {
+            console.error('Profile error:', profileError);
+            if (profileError.code === 'PGRST116') {
+                window.location.href = 'onboarding-step1.html';
+            }
+            return;
+        }
+
+        const firstName = profile.first_name || user.user_metadata.first_name || 'Student';
+        const currentStreak = await updateStreak(userId);
+
+        userData.name = firstName;
+        userData.userId = userId.slice(0, 8);
+        userData.streak = currentStreak;
+        userData.miles = profile.mastery_miles || 0;
+        userData.trialStatus = checkTrialStatus(profile);
+        userData.subscriptionStatus = profile.subscription_status;
+
+        updateUserData();
+
+        await syncMilesToLeaderboard(userId, profile.mastery_miles || 0);
+
+        if (typeof initLeaderboard === 'function') {
+            initLeaderboard(user, profile);
+        }
+
+        const subjects = await loadUserSubjects(userId);
+
+        if (userData.trialStatus === 'trial' && userData.trialEndDate) {
+            const trialEnd = new Date(userData.trialEndDate);
+            const trialStart = new Date(trialEnd.getTime() - 48 * 60 * 60 * 1000);
+            showTrialBanner(trialStart.toISOString());
+        }
+
+        if (subjects.length === 0) {
+            document.querySelector('.subjects-container').innerHTML = `
+                <div class="subjects-header-container">
+                    <h2 class="subjects-header">Your Subjects</h2>
+                    <button class="add-subjects-btn" onclick="window.location.href='add-subjects.html'">+ Subjects</button>
+                </div>
+                <div style="text-align: center; padding: 3rem; color: #6b7280;">
+                    <p style="font-size: 1.125rem; margin-bottom: 1rem;">No subjects added yet</p>
+                    <p style="font-size: 0.875rem;">Click "+ Subjects" to get started!</p>
+                </div>
+            `;
+        } else {
+            renderSubjects(subjects);
+        }
+    } catch (error) {
+        console.error('Auth check error:', error);
+        window.location.href = 'signup.html';
+    }
+}
+
+function updateUserData() {
+    document.getElementById('welcome-name').textContent = userData.name;
+    document.getElementById('nav-user-name').textContent = userData.name;
+    document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
+    document.querySelector('.streak-badge').textContent = `🔥 ${userData.streak} Day Streak`;
+    document.getElementById('streak-metric').textContent = userData.streak;
+
+    const welcomeStreak = document.getElementById('welcome-streak');
+    const welcomeMiles = document.getElementById('welcome-miles');
+    const verifiedBadge = document.getElementById('welcome-verified');
+
+    if (welcomeStreak) welcomeStreak.textContent = userData.streak;
+    if (welcomeMiles && userData.miles !== undefined) {
+        welcomeMiles.textContent = Number(userData.miles).toLocaleString();
+    }
+    if (verifiedBadge) {
+        verifiedBadge.style.display = userData.miles >= 250000 ? 'inline' : 'none';
+    }
+
+    const milesBadge = document.querySelector('.mastery-miles-badge span');
+    if (milesBadge && userData.miles !== undefined) {
+        milesBadge.textContent = Number(userData.miles).toLocaleString();
+    }
+}
+
+const userProfileTrigger = document.getElementById('user-profile-trigger');
+const userDropdown = document.getElementById('user-dropdown');
+const signoutBtn = document.getElementById('signout-btn');
+
+if (userProfileTrigger && userDropdown) {
+    userProfileTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userDropdown.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!userProfileTrigger.contains(e.target) && !userDropdown.contains(e.target)) {
+            userDropdown.classList.remove('active');
+        }
+    });
+}
+
+if (signoutBtn) {
+    signoutBtn.addEventListener('click', async () => {
+        try {
+            const { error } = await sbClient.auth.signOut();
+            if (error) throw error;
+            localStorage.clear();
+            window.location.href = '../index.html';
+        } catch (error) {
+            console.error('Sign out error:', error);
+            alert('Error signing out. Please try again.');
+        }
+    });
+}
+
+const learningGoalsToggle = document.getElementById('learning-goals-toggle');
+const learningGoalsFilters = document.getElementById('learning-goals-filters');
+const learningGoalsContent = document.getElementById('learning-goals-content');
+const accordionIcon = document.querySelector('.accordion-icon');
+
+if (learningGoalsToggle) {
+    let accordionExpanded = false;
+    learningGoalsToggle.addEventListener('click', () => {
+        accordionExpanded = !accordionExpanded;
+        if (accordionExpanded) {
+            learningGoalsFilters.classList.remove('collapsed');
+            learningGoalsContent.classList.remove('collapsed');
+            accordionIcon.classList.add('expanded');
+        } else {
+            learningGoalsFilters.classList.add('collapsed');
+            learningGoalsContent.classList.add('collapsed');
+            accordionIcon.classList.remove('expanded');
+        }
+    });
+}
+
+const filterTabs = document.querySelectorAll('.filter-tab');
+const journeyCards = document.querySelectorAll('.journey-card');
+
+filterTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        filterTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const selectedMode = tab.dataset.mode;
+        journeyCards.forEach(card => {
+            const buttons = card.querySelectorAll('.go-to-btn');
+            buttons.forEach(btn => {
+                if (btn.dataset.journeyMode === selectedMode) {
+                    btn.classList.remove('hidden');
+                } else {
+                    btn.classList.add('hidden');
+                }
+            });
+        });
+    });
+});
+
+async function syncMilesToLeaderboard(userId, miles) {
+    await sbClient.from('leaderboard_presence').upsert({
+        user_id: userId,
+        mastery_miles: miles,
+        is_online: true,
+        last_seen: new Date().toISOString()
+    }, { onConflict: 'user_id' });
+}
+
+checkAuth();
+
+function showTrialBannerIfNeeded() {
+    const banner = document.getElementById('trial-banner');
+    if (banner) {
+        if (userData && userData.subscriptionStatus === 'trial') {
+            banner.style.display = 'flex';
+        } else {
+            banner.style.display = 'none';
+        }
+    }
+}
+
+setInterval(() => {
+    if (userData && userData.subscriptionStatus !== 'trial') {
+        const banner = document.getElementById('trial-banner');
+        if (banner) banner.style.display = 'none';
+    }
+}, 1000);
+
+setTimeout(() => { showTrialBannerIfNeeded(); }, 500);
+</script>
+<script src="../leaderboard.js"></script>
+<script src="../auth-check.js"></script>
+</body>
+</html>
