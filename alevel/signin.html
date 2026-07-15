@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Monturalearn A-Level</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 440px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo img { height: 36px; width: auto; }
+        .logo-text { font-size: 1.25rem; font-weight: 700; color: #111827; }
+
+        .level-badge {
+            display: inline-block;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
+            margin-left: 0.25rem;
+        }
+
+        .form-header { margin-bottom: 2rem; text-align: center; }
+        .form-header h1 { font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem; }
+        .form-header p { font-size: 0.9375rem; color: #6b7280; }
+
+        .signup-link { margin-top: 0.75rem; font-size: 0.9375rem; color: #6b7280; }
+        .signup-link a { color: #3b82f6; text-decoration: none; font-weight: 500; }
+        .signup-link a:hover { text-decoration: underline; }
+
+        .form-group { margin-bottom: 1.25rem; }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 0.9375rem;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            background: #f9fafb;
+        }
+
+        input:focus { outline: none; border-color: #3b82f6; background: white; }
+        input::placeholder { color: #9ca3af; }
+
+        .signin-btn {
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            padding: 0.875rem 1rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .signin-btn:hover { background: #2563eb; }
+        .signin-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .forgot-password { text-align: center; margin-top: 1.25rem; }
+        .forgot-password a { color: #6b7280; text-decoration: underline; font-size: 0.875rem; }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .error-message.show { display: block; }
+
+        @media (max-width: 480px) {
+            .container { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="Monturalearn Logo">
+            <span class="logo-text">Monturalearn <span class="level-badge">A-Level</span></span>
+        </div>
+
+        <div class="form-header">
+            <h1>Welcome back</h1>
+            <p>Sign in to continue your A-Level revision</p>
+            <div class="signup-link">
+                Don't have an account? <a href="signup.html">Sign up</a>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <form id="signinForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+            </div>
+
+            <button type="submit" class="signin-btn" id="signinBtn">Sign in</button>
+
+            <div class="forgot-password">
+                <a href="#">Forgot your password?</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+        const sbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            setTimeout(() => errorDiv.classList.remove('show'), 5000);
+        }
+
+        document.getElementById('signinForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const submitBtn = document.getElementById('signinBtn');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Signing in...';
+
+            try {
+                const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+
+                // Check whether this account has an A-Level profile and whether
+                // onboarding is done, so we land in the right place
+                const { data: profile } = await sbClient
+                    .from('user_profiles')
+                    .select('onboarding_completed, course_level')
+                    .eq('id', data.user.id)
+                    .maybeSingle();
+
+                if (!profile || profile.course_level !== 'A-Level') {
+                    // No A-Level profile on this account yet — start onboarding
+                    window.location.href = 'onboarding-step1.html';
+                } else if (!profile.onboarding_completed) {
+                    window.location.href = 'onboarding-step1.html';
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
+
+            } catch (error) {
+                showError(error.message || 'Invalid email or password');
+                console.error('Sign in error:', error);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign in';
+            }
+        });
+    </script>
+</body>
+</html>
