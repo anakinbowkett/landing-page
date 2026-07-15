@@ -404,11 +404,18 @@
             <div class="slot-container">
                 <div id="carousel"><span id="carouselText">For the home learners</span></div>
             </div>
-            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:0.5rem;">
-                <a href="signup.html" class="hero-cta">
-                    <span>Try now for free</span>
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                </a>
+            <div style="display:flex;flex-direction:column;gap:1rem;margin-top:0.5rem;max-width:640px;">
+                <p style="font-size:0.9375rem;font-weight:600;color:#374151;margin:0;">What are you studying for?</p>
+                <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                    <a href="signup.html" style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:0.35rem;background:white;border:2px solid #e5e7eb;border-radius:16px;padding:1.5rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 8px 24px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
+                        <span style="font-size:1.0625rem;font-weight:700;color:#111827;">I'm studying for my GCSEs</span>
+                        <span style="font-size:0.8125rem;color:#6b7280;">Years 7–11 &middot; AQA, Edexcel, OCR</span>
+                    </a>
+                    <a href="alevel/signup.html" style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:0.35rem;background:white;border:2px solid #e5e7eb;border-radius:16px;padding:1.5rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 8px 24px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
+                        <span style="font-size:1.0625rem;font-weight:700;color:#111827;">I'm studying for my A-Levels</span>
+                        <span style="font-size:0.8125rem;color:#6b7280;">Year 12&ndash;13 &middot; AQA, Edexcel, OCR</span>
+                    </a>
+                </div>
                 <span style="font-size:0.875rem;color:#9ca3af;">No credit card. No commitment.</span>
             </div>
         </div>
