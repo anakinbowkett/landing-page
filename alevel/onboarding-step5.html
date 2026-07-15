@@ -438,8 +438,6 @@
                 .from('user_profiles')
                 .update({
                     grade_goals: gradeGoals,
-                    current_grade: firstSubject.currentGrade,
-                    target_grade: firstSubject.targetGrade,
                     onboarding_completed: true,
                     updated_at: new Date().toISOString()
                 })
