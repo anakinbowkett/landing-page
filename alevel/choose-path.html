@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started - Monturalearn</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 640px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 3rem;
+        }
+
+        .logo img { height: 40px; width: auto; }
+        .logo-text { font-size: 1.375rem; font-weight: 700; color: #111827; }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.0625rem;
+            color: #6b7280;
+            margin-bottom: 2.5rem;
+        }
+
+        .path-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .path-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 2rem 1.75rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .path-card:hover {
+            border-color: #1d7fe2;
+            box-shadow: 0 8px 28px rgba(29,127,226,0.15);
+            transform: translateY(-3px);
+        }
+
+        .path-name {
+            font-size: 1.1875rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .path-detail {
+            font-size: 0.8125rem;
+            color: #6b7280;
+        }
+
+        .path-arrow {
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1d7fe2;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2.5rem;
+            font-size: 0.875rem;
+            color: #9ca3af;
+            text-decoration: none;
+        }
+        .back-link:hover { color: #6b7280; }
+
+        @media (max-width: 560px) {
+            .path-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="Monturalearn Logo">
+            <span class="logo-text">Monturalearn</span>
+        </div>
+
+        <h1>What are you studying for?</h1>
+        <p class="subtitle">Pick your pathway to get started — it takes two minutes.</p>
+
+        <div class="path-grid">
+            <a href="signup.html" class="path-card">
+                <span class="path-name">GCSEs</span>
+                <span class="path-detail">Years 7&ndash;11 &middot; AQA, Edexcel, OCR</span>
+                <span class="path-arrow">Start free &rarr;</span>
+            </a>
+            <a href="alevel/signup.html" class="path-card">
+                <span class="path-name">A-Levels</span>
+                <span class="path-detail">Year 12&ndash;13 &middot; AQA, Edexcel, OCR</span>
+                <span class="path-arrow">Start free &rarr;</span>
+            </a>
+        </div>
+
+        <a href="index.html" class="back-link">&larr; Back to home</a>
+    </div>
+</body>
+</html>
