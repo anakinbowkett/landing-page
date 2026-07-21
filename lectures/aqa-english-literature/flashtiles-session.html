@@ -44,39 +44,64 @@
         }
         .session-header-spacer { width: 70px; }
 
+        /* ── Topic progress bar in header — reuses shared.css's
+           .topic-progress-bar/.topic-progress-fill component for visual
+           consistency with the rest of the platform ── */
+        .session-progress-strip {
+            width: 100%;
+            background: white;
+            padding: 14px 32px 18px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .session-progress-row {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        .session-topic-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+        .session-topic-name {
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: #111827;
+        }
+        .session-topic-counter {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #9ca3af;
+        }
+        .session-round-note {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--accent-1);
+            margin-top: 6px;
+        }
+
         .session-wrap {
             width: 100%;
-            max-width: 680px;
-            padding: 40px 24px 60px;
+            max-width: 800px;
+            padding: 36px 24px 60px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        .session-round-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            color: var(--accent-1);
-            margin-bottom: 6px;
-        }
-
-        .session-deck-label {
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: #9ca3af;
-            margin: 0 0 20px;
-            text-align: center;
-        }
-
+        /* ── Flip card — deliberately large ── */
         .flip-scene {
             width: 100%;
-            max-width: 640px;
-            height: 340px;
-            perspective: 1400px;
-            margin-bottom: 24px;
+            max-width: 760px;
+            height: 460px;
+            perspective: 1600px;
+            margin-bottom: 28px;
             cursor: pointer;
+        }
+        @media (max-width: 820px) {
+            .flip-scene { height: 400px; }
         }
 
         .flip-card {
@@ -92,10 +117,10 @@
             position: absolute;
             inset: 0;
             backface-visibility: hidden;
-            border-radius: 16px;
+            border-radius: 20px;
             border: 1px solid #d4d4d4;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            padding: 32px 36px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            padding: 44px 52px;
             display: flex;
             flex-direction: column;
             background: white;
@@ -109,60 +134,69 @@
 
         .flip-face-top { display: flex; align-items: center; justify-content: space-between; }
         .flip-face-tag {
-            font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+            font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
             color: var(--accent-soft-text); background: var(--accent-soft-bg);
-            padding: 4px 10px; border-radius: 999px;
+            padding: 5px 12px; border-radius: 999px;
         }
-        .flip-face-marks { font-size: 11px; font-weight: 600; color: #9ca3af; }
+        .flip-face-marks { font-size: 12px; font-weight: 600; color: #9ca3af; }
 
         .flip-face-body {
             flex: 1; display: flex; align-items: center; justify-content: center; text-align: center;
-            font-family: 'Crimson Text', Georgia, serif; font-size: 1.5rem; line-height: 1.5;
-            color: #111827; padding: 0 4px; overflow-y: auto;
+            font-family: 'Crimson Text', Georgia, serif; font-size: 2rem; line-height: 1.5;
+            color: #111827; padding: 0 8px; overflow-y: auto;
         }
-        .flip-face-back .flip-face-body { font-size: 1.2rem; }
+        .flip-face-back .flip-face-body { font-size: 1.5rem; }
 
-        .answer-pairs { display: flex; flex-direction: column; gap: 10px; width: 100%; text-align: left; }
-        .answer-pair { display: flex; align-items: baseline; gap: 10px; font-size: 1rem; font-family: 'Inter', sans-serif; }
-        .answer-pair-left { color: #6b7280; font-weight: 500; min-width: 140px; }
+        .answer-pairs { display: flex; flex-direction: column; gap: 14px; width: 100%; text-align: left; }
+        .answer-pair { display: flex; align-items: baseline; gap: 12px; font-size: 1.125rem; font-family: 'Inter', sans-serif; }
+        .answer-pair-left { color: #6b7280; font-weight: 500; min-width: 160px; }
         .answer-pair-arrow { color: var(--accent-1); flex-shrink: 0; }
         .answer-pair-right { color: #111827; font-weight: 600; }
 
-        .flip-face-hint { font-size: 0.75rem; color: #9ca3af; text-align: center; }
+        .flip-face-hint { font-size: 0.8125rem; color: #9ca3af; text-align: center; }
 
+        /* ── Rating buttons — A / S / D order, left to right ── */
         .rating-row {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             width: 100%;
-            max-width: 640px;
+            max-width: 760px;
             margin-bottom: 20px;
         }
         .rating-btn {
             flex: 1;
             border: none;
-            border-radius: 12px;
-            padding: 16px 12px;
-            font-size: 0.9375rem;
+            border-radius: 14px;
+            padding: 20px 14px;
+            font-size: 1rem;
             font-weight: 700;
             font-family: 'Inter', sans-serif;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             transition: transform 0.12s ease, box-shadow 0.12s ease;
             color: white;
         }
         .rating-btn:hover { transform: translateY(-2px); }
         .rating-btn:active { transform: translateY(0); }
-        .rating-btn-sub { font-size: 0.6875rem; font-weight: 500; opacity: 0.85; }
+        .rating-btn-sub { font-size: 0.75rem; font-weight: 500; opacity: 0.85; }
+        .rating-btn-key {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            background: rgba(255,255,255,0.25);
+            padding: 1px 7px;
+            border-radius: 4px;
+            letter-spacing: 0.05em;
+        }
 
-        .rating-btn.forgot { background: #E16280; }
-        .rating-btn.forgot:hover { box-shadow: 0 6px 16px rgba(225, 98, 128, 0.35); }
-        .rating-btn.notsure { background: #f59e0b; }
-        .rating-btn.notsure:hover { box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35); }
         .rating-btn.gotit { background: #54D3AB; }
         .rating-btn.gotit:hover { box-shadow: 0 6px 16px rgba(84, 211, 171, 0.35); }
+        .rating-btn.notsure { background: #f59e0b; }
+        .rating-btn.notsure:hover { box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35); }
+        .rating-btn.forgot { background: #E16280; }
+        .rating-btn.forgot:hover { box-shadow: 0 6px 16px rgba(225, 98, 128, 0.35); }
 
         .rating-saving-note {
             font-size: 0.75rem;
@@ -171,8 +205,9 @@
             margin-bottom: 4px;
         }
 
+        /* ── Status cards (loading / empty / no cards) ── */
         .session-status-card {
-            max-width: 500px; width: 100%; background: white; border: 1px solid #e5e7eb;
+            max-width: 520px; width: 100%; background: white; border: 1px solid #e5e7eb;
             border-radius: 16px; padding: 48px 40px; text-align: center;
         }
         .session-status-icon { font-size: 2.5rem; margin-bottom: 16px; }
@@ -184,6 +219,92 @@
             text-decoration: none; border: none; cursor: pointer;
         }
 
+        /* ── Topic results screen ── */
+        .results-card {
+            max-width: 620px; width: 100%; background: white; border: 1px solid #e5e7eb;
+            border-radius: 16px; padding: 40px 44px;
+        }
+        .results-title { font-size: 1.375rem; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .results-subtitle { font-size: 0.875rem; color: #6b7280; margin-bottom: 28px; }
+
+        .results-segbar {
+            width: 100%; height: 14px; border-radius: 999px; overflow: hidden;
+            display: flex; background: #f3f4f6; margin-bottom: 10px;
+        }
+        .results-seg { height: 100%; }
+        .results-seg.green { background: #54D3AB; }
+        .results-seg.amber { background: #f59e0b; }
+        .results-seg.red { background: #E16280; }
+
+        .results-legend { display: flex; gap: 18px; margin-bottom: 28px; flex-wrap: wrap; }
+        .results-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.8125rem; color: #374151; }
+        .results-legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+        .results-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .results-metric {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+        .results-metric-num { font-size: 1.5rem; font-weight: 700; color: #111827; }
+        .results-metric-label { font-size: 0.75rem; color: #6b7280; margin-top: 2px; }
+
+        .results-lecture-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+        }
+        .results-lecture-label { font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .results-lecture-row { display: flex; align-items: center; gap: 10px; }
+        .results-lecture-url {
+            flex: 1;
+            font-size: 0.8125rem;
+            color: #374151;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 8px 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .results-copy-btn {
+            flex-shrink: 0;
+            background: #111827;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .results-actions { display: flex; gap: 12px; }
+        .results-next-btn {
+            flex: 1;
+            background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+            color: white; border: none; padding: 14px; border-radius: 10px;
+            font-size: 0.9375rem; font-weight: 700; cursor: pointer;
+        }
+
+        /* ── Final summary screen ── */
+        .summary-topic-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 0; border-bottom: 1px solid #f3f4f6;
+        }
+        .summary-topic-row:last-child { border-bottom: none; }
+        .summary-topic-name { font-size: 0.875rem; font-weight: 600; color: #111827; }
+        .summary-topic-stat { font-size: 0.75rem; color: #6b7280; }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -194,6 +315,19 @@
         <a href="flashtiles.html" class="session-exit">✕ Exit</a>
         <span class="session-header-title" id="deckLabel">Flashcards</span>
         <span class="session-header-spacer"></span>
+    </div>
+
+    <div class="session-progress-strip hidden" id="progressStrip">
+        <div class="session-progress-row">
+            <div class="session-topic-label">
+                <span class="session-topic-name" id="topicName">—</span>
+                <span class="session-topic-counter" id="topicCounter">Topic 1 of 1</span>
+            </div>
+            <div class="topic-progress-bar">
+                <div class="topic-progress-fill" id="topicProgressFill" style="width:0%"></div>
+            </div>
+            <div class="session-round-note" id="roundNote"></div>
+        </div>
     </div>
 
     <div class="session-wrap">
@@ -218,13 +352,6 @@
         </div>
 
         <div id="sessionActive" class="hidden" style="width:100%; display:flex; flex-direction:column; align-items:center;">
-            <div class="session-round-label" id="roundLabel"></div>
-            <div class="session-topbar" style="width:100%; max-width:640px; border-bottom:none; padding:0 0 16px 0;">
-                <button class="session-nav-btn" id="prevBtn" disabled>← Previous</button>
-                <span class="session-progress-label" id="progressLabel">Card 1 of 1</span>
-                <button class="session-nav-btn" id="nextBtn">Skip →</button>
-            </div>
-
             <div class="flip-scene" id="flipScene">
                 <div class="flip-card">
                     <div class="flip-face flip-face-front">
@@ -248,31 +375,79 @@
 
             <div class="rating-saving-note" id="ratingSavingNote"></div>
             <div class="rating-row hidden" id="ratingRow">
-                <button class="rating-btn forgot" data-rating="1">
-                    <span>😵 Forgot it</span>
-                    <span class="rating-btn-sub">back tomorrow</span>
+                <button class="rating-btn gotit" data-rating="5">
+                    <span>✅ Got it</span>
+                    <span class="rating-btn-sub">much later</span>
+                    <span class="rating-btn-key">A</span>
                 </button>
                 <button class="rating-btn notsure" data-rating="3">
                     <span>🤔 Not sure</span>
                     <span class="rating-btn-sub">a few days</span>
+                    <span class="rating-btn-key">S</span>
                 </button>
-                <button class="rating-btn gotit" data-rating="5">
-                    <span>✅ Got it</span>
-                    <span class="rating-btn-sub">much later</span>
+                <button class="rating-btn forgot" data-rating="1">
+                    <span>😵 Forgot it</span>
+                    <span class="rating-btn-sub">back tomorrow</span>
+                    <span class="rating-btn-key">D</span>
                 </button>
             </div>
         </div>
 
-        <div id="completeState" class="session-status-card hidden">
-            <div class="session-status-icon">🎉</div>
-            <div class="session-status-title">Deck complete</div>
-            <div class="session-status-desc" id="completeDesc"></div>
-            <button class="session-status-btn" id="studyAgainBtn" style="margin-right:8px;">Study Again</button>
-            <a href="flashtiles.html" class="session-status-btn" style="background:#111827; background-image:none;">Back to Flashtiles</a>
+        <!-- Per-topic results screen -->
+        <div id="topicResultsState" class="results-card hidden">
+            <div class="results-title" id="resultsTitle">Topic complete</div>
+            <div class="results-subtitle" id="resultsSubtitle"></div>
+
+            <div class="results-segbar" id="resultsSegbar"></div>
+            <div class="results-legend">
+                <div class="results-legend-item"><span class="results-legend-dot" style="background:#54D3AB;"></span>Got it</div>
+                <div class="results-legend-item"><span class="results-legend-dot" style="background:#f59e0b;"></span>Not sure</div>
+                <div class="results-legend-item"><span class="results-legend-dot" style="background:#E16280;"></span>Needed extra rounds</div>
+            </div>
+
+            <div class="results-metrics">
+                <div class="results-metric"><div class="results-metric-num" id="metricTotal">0</div><div class="results-metric-label">Cards studied</div></div>
+                <div class="results-metric"><div class="results-metric-num" id="metricRounds">1</div><div class="results-metric-label">Round(s) needed</div></div>
+                <div class="results-metric"><div class="results-metric-num" id="metricForgot">0</div><div class="results-metric-label">Forgotten at least once</div></div>
+            </div>
+
+            <div class="results-lecture-box">
+                <div class="results-lecture-label">Want to revisit this lecture?</div>
+                <div class="results-lecture-row">
+                    <span class="results-lecture-url" id="resultsLectureUrl"></span>
+                    <button class="results-copy-btn" id="resultsCopyBtn">Copy link</button>
+                </div>
+            </div>
+
+            <div class="results-actions">
+                <button class="results-next-btn" id="nextTopicBtn">Next Topic →</button>
+            </div>
+        </div>
+
+        <!-- Final summary screen -->
+        <div id="finalSummaryState" class="results-card hidden">
+            <div class="results-title">Session complete 🎉</div>
+            <div class="results-subtitle" id="finalSubtitle"></div>
+
+            <div class="results-metrics">
+                <div class="results-metric"><div class="results-metric-num" id="finalTopics">0</div><div class="results-metric-label">Topics studied</div></div>
+                <div class="results-metric"><div class="results-metric-num" id="finalCards">0</div><div class="results-metric-label">Total cards</div></div>
+                <div class="results-metric"><div class="results-metric-num" id="finalForgot">0</div><div class="results-metric-label">Cards to revisit</div></div>
+            </div>
+
+            <div style="margin-bottom:24px;">
+                <div class="results-lecture-label" style="margin-bottom:10px;">Per-topic breakdown</div>
+                <div id="finalTopicList"></div>
+            </div>
+
+            <div class="results-actions">
+                <a href="flashtiles.html" class="results-next-btn" style="text-align:center; text-decoration:none; display:block;">Back to Flashtiles</a>
+            </div>
         </div>
     </div>
 </div>
 
+<script src="lectures-data.js"></script>
 <script>
 const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
@@ -282,15 +457,26 @@ if (!window.sbClient) {
 const sbClient = window.sbClient;
 
 let currentUserId = null;
+
+/* ── Multi-topic state ── */
+let topicOrder = [];        // ordered lecture slugs, one "topic" = one lecture
+let cardsByTopic = {};      // slug -> array of question rows
+let currentTopicIdx = 0;
+let allTopicResults = [];   // collected stats per finished topic
+
+/* ── Per-topic session state (reset every startTopic()) ── */
 let mainQueue = [];
 let missedQueue = [];
 let currentCard = null;
 let roundNumber = 1;
-let totalUniqueCards = 0;
+let clearedIds = new Set();     // card ids no longer needing review this topic
+let finalRatings = {};          // card id -> last rating given, for the results tally
+let topicTotalCards = 0;
 
 function showState(id) {
-    ['loadingState', 'emptySelectionState', 'noCardsState', 'sessionActive', 'completeState']
+    ['loadingState', 'emptySelectionState', 'noCardsState', 'sessionActive', 'topicResultsState', 'finalSummaryState']
         .forEach(s => document.getElementById(s).classList.toggle('hidden', s !== id));
+    document.getElementById('progressStrip').classList.toggle('hidden', id !== 'sessionActive');
 }
 
 function escapeHtml(str) {
@@ -306,6 +492,10 @@ function shuffle(arr) {
         [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
+}
+
+function buildLectureUrl(slug) {
+    return window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + slug + '.html';
 }
 
 function renderAnswerBody(correctAnswerRaw) {
@@ -326,6 +516,34 @@ function renderAnswerBody(correctAnswerRaw) {
     return escapeHtml(correctAnswerRaw);
 }
 
+/* ════════════════════════════════════════════
+   TOPIC LIFECYCLE
+════════════════════════════════════════════ */
+function startTopic(idx) {
+    currentTopicIdx = idx;
+    const slug = topicOrder[idx];
+    const cards = cardsByTopic[slug] || [];
+
+    mainQueue = shuffle(cards);
+    missedQueue = [];
+    roundNumber = 1;
+    clearedIds = new Set();
+    finalRatings = {};
+    topicTotalCards = cards.length;
+
+    document.getElementById('topicName').textContent = typeof slugToTitle === 'function' ? slugToTitle(slug) : slug;
+    document.getElementById('topicCounter').textContent = `Topic ${idx + 1} of ${topicOrder.length}`;
+
+    renderCard();
+    showState('sessionActive');
+}
+
+function updateProgressBar() {
+    const pct = topicTotalCards > 0 ? Math.round((clearedIds.size / topicTotalCards) * 100) : 0;
+    document.getElementById('topicProgressFill').style.width = pct + '%';
+    document.getElementById('roundNote').textContent = roundNumber === 1 ? '' : `Round ${roundNumber} — clearing forgotten cards`;
+}
+
 function renderCard() {
     const flipScene = document.getElementById('flipScene');
     flipScene.classList.remove('flipped');
@@ -338,9 +556,101 @@ function renderCard() {
     document.getElementById('frontBody').textContent = currentCard.prompt_text || '(no prompt text)';
     document.getElementById('backBody').innerHTML = renderAnswerBody(currentCard.correct_answer);
 
-    document.getElementById('progressLabel').textContent = `Card 1 of ${mainQueue.length} this round`;
-    document.getElementById('roundLabel').textContent = roundNumber === 1 ? '' : `Round ${roundNumber} — clearing forgotten cards`;
+    updateProgressBar();
 }
+
+function finishTopic() {
+    let gotIt = 0, notSure = 0, everForgot = 0;
+    Object.values(finalRatings).forEach(r => {
+        if (r === 5) gotIt++;
+        else if (r === 3) notSure++;
+    });
+    // "everForgot" = cards that were rated 1 at least once this topic,
+    // even if they ended up rated well in a later round
+    const forgotIds = new Set();
+    Object.keys(finalRatings).forEach(id => {
+        // tracked separately below via missedIdsThisTopic
+    });
+    everForgot = missedIdsThisTopic.size;
+
+    const result = {
+        slug: topicOrder[currentTopicIdx],
+        title: document.getElementById('topicName').textContent,
+        total: topicTotalCards,
+        gotIt, notSure, everForgot,
+        rounds: roundNumber
+    };
+    allTopicResults.push(result);
+    showTopicResults(result);
+}
+
+function showTopicResults(result) {
+    document.getElementById('resultsTitle').textContent = `${result.title} — complete`;
+    document.getElementById('resultsSubtitle').textContent =
+        `${result.total} card${result.total !== 1 ? 's' : ''} studied across ${result.rounds} round${result.rounds !== 1 ? 's' : ''}.`;
+
+    const total = result.total || 1;
+    const segbar = document.getElementById('resultsSegbar');
+    segbar.innerHTML = `
+        <div class="results-seg green" style="width:${(result.gotIt/total)*100}%"></div>
+        <div class="results-seg amber" style="width:${(result.notSure/total)*100}%"></div>
+        <div class="results-seg red" style="width:${(result.everForgot/total)*100}%"></div>
+    `;
+
+    document.getElementById('metricTotal').textContent = result.total;
+    document.getElementById('metricRounds').textContent = result.rounds;
+    document.getElementById('metricForgot').textContent = result.everForgot;
+
+    const url = buildLectureUrl(result.slug);
+    document.getElementById('resultsLectureUrl').textContent = url;
+
+    const copyBtn = document.getElementById('resultsCopyBtn');
+    copyBtn.textContent = 'Copy link';
+    copyBtn.onclick = () => {
+        navigator.clipboard.writeText(url).then(() => {
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => { copyBtn.textContent = 'Copy link'; }, 1500);
+        });
+    };
+
+    const nextBtn = document.getElementById('nextTopicBtn');
+    const isLastTopic = currentTopicIdx === topicOrder.length - 1;
+    nextBtn.textContent = isLastTopic ? 'See Overall Summary →' : 'Next Topic →';
+    nextBtn.onclick = isLastTopic ? showFinalSummary : () => startTopic(currentTopicIdx + 1);
+
+    showState('topicResultsState');
+}
+
+function showFinalSummary() {
+    const totalCards = allTopicResults.reduce((sum, r) => sum + r.total, 0);
+    const totalForgot = allTopicResults.reduce((sum, r) => sum + r.everForgot, 0);
+
+    document.getElementById('finalSubtitle').textContent =
+        `You worked through ${topicOrder.length} topic${topicOrder.length !== 1 ? 's' : ''} in this basket.`;
+    document.getElementById('finalTopics').textContent = topicOrder.length;
+    document.getElementById('finalCards').textContent = totalCards;
+    document.getElementById('finalForgot').textContent = totalForgot;
+
+    const listEl = document.getElementById('finalTopicList');
+    listEl.innerHTML = allTopicResults.map(r => {
+        const url = buildLectureUrl(r.slug);
+        return `
+            <div class="summary-topic-row">
+                <span class="summary-topic-name">${escapeHtml(r.title)}</span>
+                <span class="summary-topic-stat">
+                    ${r.gotIt}/${r.total} got it
+                    ${r.everForgot > 0 ? ` · <a href="#" onclick="navigator.clipboard.writeText('${url}');this.textContent='Copied!';return false;" style="color:var(--accent-1);">Copy revisit link</a>` : ''}
+                </span>
+            </div>`;
+    }).join('');
+
+    showState('finalSummaryState');
+}
+
+/* ════════════════════════════════════════════
+   QUEUE ADVANCEMENT (within a topic)
+════════════════════════════════════════════ */
+let missedIdsThisTopic = new Set();
 
 function advanceQueueAfterRating() {
     mainQueue.shift();
@@ -356,10 +666,7 @@ function advanceQueueAfterRating() {
         roundNumber++;
         renderCard();
     } else {
-        document.getElementById('completeDesc').textContent =
-            `You cleared all ${totalUniqueCards} card${totalUniqueCards !== 1 ? 's' : ''}` +
-            (roundNumber > 1 ? ` across ${roundNumber} rounds.` : '.');
-        showState('completeState');
+        finishTopic();
     }
 }
 
@@ -369,20 +676,13 @@ document.getElementById('flipScene').addEventListener('click', () => {
     document.getElementById('ratingRow').classList.toggle('hidden', !scene.classList.contains('flipped'));
 });
 
-document.getElementById('nextBtn').addEventListener('click', () => {
-    advanceQueueAfterRating();
-});
-
-document.getElementById('studyAgainBtn').addEventListener('click', () => {
-    init(true);
-});
-
 document.addEventListener('keydown', (e) => {
     if (document.getElementById('sessionActive').classList.contains('hidden')) return;
+    const key = e.key.toLowerCase();
     if (e.key === ' ') { e.preventDefault(); document.getElementById('flipScene').click(); }
-    else if (e.key === '1') { submitRating(1); }
-    else if (e.key === '3') { submitRating(3); }
-    else if (e.key === '5') { submitRating(5); }
+    else if (key === 'a') { submitRating(5); }
+    else if (key === 's') { submitRating(3); }
+    else if (key === 'd') { submitRating(1); }
 });
 
 /* ════════════════════════════════════════════
@@ -456,7 +756,14 @@ async function submitRating(rating) {
     if (!currentCard) return;
     const skillTag = currentCard.skill_tag || currentCard.lecture_slug || 'general';
 
-    if (rating === 1) missedQueue.push(currentCard);
+    finalRatings[currentCard.id] = rating;
+
+    if (rating === 1) {
+        missedQueue.push(currentCard);
+        missedIdsThisTopic.add(currentCard.id);
+    } else {
+        clearedIds.add(currentCard.id);
+    }
 
     if (!currentUserId) {
         console.warn('No authenticated user — skipping FSRS write, advancing anyway.');
@@ -484,23 +791,19 @@ document.querySelectorAll('.rating-btn').forEach(btn => {
     btn.addEventListener('click', () => submitRating(Number(btn.dataset.rating)));
 });
 
-async function init(isRestart) {
+/* ════════════════════════════════════════════
+   LOAD — fetch all cards for the whole selection
+   once, then group them into per-topic batches
+   and start the first topic.
+════════════════════════════════════════════ */
+async function init() {
     showState('loadingState');
-    roundNumber = 1;
-    missedQueue = [];
 
     const label = localStorage.getItem('flashtile_session_label');
     if (label) document.getElementById('deckLabel').textContent = label;
 
     const { data: { session } } = await sbClient.auth.getSession();
     currentUserId = session ? session.user.id : null;
-
-    if (isRestart && totalUniqueCards > 0) {
-        mainQueue = shuffle(window.__lastFetchedCards || []);
-        renderCard();
-        showState('sessionActive');
-        return;
-    }
 
     const rawSlugs = localStorage.getItem('flashtile_session_slugs');
     let slugs = [];
@@ -524,11 +827,23 @@ async function init(isRestart) {
             return;
         }
 
-        window.__lastFetchedCards = data;
-        totalUniqueCards = data.length;
-        mainQueue = shuffle(data);
-        renderCard();
-        showState('sessionActive');
+        // Group by lecture_slug, preserving the original selection order
+        // (not Supabase's return order) so topics appear in the sequence
+        // the student actually picked them.
+        cardsByTopic = {};
+        data.forEach(card => {
+            if (!cardsByTopic[card.lecture_slug]) cardsByTopic[card.lecture_slug] = [];
+            cardsByTopic[card.lecture_slug].push(card);
+        });
+        topicOrder = slugs.filter(s => cardsByTopic[s] && cardsByTopic[s].length > 0);
+
+        if (topicOrder.length === 0) {
+            showState('noCardsState');
+            return;
+        }
+
+        allTopicResults = [];
+        startTopic(0);
 
     } catch (err) {
         console.error('Failed to load flashcards:', err);
@@ -536,7 +851,7 @@ async function init(isRestart) {
     }
 }
 
-init(false);
+init();
 </script>
 </body>
 </html>
