@@ -4,33 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AQA English Literature - Flashcard Session</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
     <link href="theme.css" rel="stylesheet">
     <link href="shared.css" rel="stylesheet">
     <style>
-        /* ── Session shell ── */
-        .session-wrap {
-            padding: 0 3rem 3rem 3rem;
+        body { display: block !important; background: #fafafa; }
+
+        .session-shell {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        .session-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 32px;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+        }
+        .session-exit {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .session-exit:hover { color: #111827; }
+        .session-header-title {
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: #111827;
+        }
+        .session-header-spacer { width: 70px; }
+
+        .session-wrap {
+            width: 100%;
+            max-width: 680px;
+            padding: 40px 24px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .session-round-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--accent-1);
+            margin-bottom: 6px;
         }
 
         .session-deck-label {
             font-size: 0.8125rem;
             font-weight: 600;
             color: #9ca3af;
-            margin: 4px 0 20px;
+            margin: 0 0 20px;
             text-align: center;
         }
 
-        /* ── Flip card ── */
         .flip-scene {
             width: 100%;
             max-width: 640px;
             height: 340px;
             perspective: 1400px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             cursor: pointer;
         }
 
@@ -41,9 +86,7 @@
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
         }
-        .flip-scene.flipped .flip-card {
-            transform: rotateY(180deg);
-        }
+        .flip-scene.flipped .flip-card { transform: rotateY(180deg); }
 
         .flip-face {
             position: absolute;
@@ -52,111 +95,93 @@
             border-radius: 16px;
             border: 1px solid #d4d4d4;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            padding: 36px 40px;
+            padding: 32px 36px;
             display: flex;
             flex-direction: column;
             background: white;
         }
-
-        .flip-face-front {
-            justify-content: space-between;
-        }
-
+        .flip-face-front { justify-content: space-between; }
         .flip-face-back {
             transform: rotateY(180deg);
             justify-content: space-between;
             background: linear-gradient(135deg, var(--accent-soft-bg) 0%, #ffffff 100%);
         }
 
-        .flip-face-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
+        .flip-face-top { display: flex; align-items: center; justify-content: space-between; }
         .flip-face-tag {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--accent-soft-text);
-            background: var(--accent-soft-bg);
-            padding: 4px 10px;
-            border-radius: 999px;
+            font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--accent-soft-text); background: var(--accent-soft-bg);
+            padding: 4px 10px; border-radius: 999px;
         }
-
-        .flip-face-marks {
-            font-size: 11px;
-            font-weight: 600;
-            color: #9ca3af;
-        }
+        .flip-face-marks { font-size: 11px; font-weight: 600; color: #9ca3af; }
 
         .flip-face-body {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-family: 'Crimson Text', Georgia, serif;
-            font-size: 1.5rem;
-            line-height: 1.5;
-            color: #111827;
-            padding: 0 8px;
-            overflow-y: auto;
+            flex: 1; display: flex; align-items: center; justify-content: center; text-align: center;
+            font-family: 'Crimson Text', Georgia, serif; font-size: 1.5rem; line-height: 1.5;
+            color: #111827; padding: 0 4px; overflow-y: auto;
         }
+        .flip-face-back .flip-face-body { font-size: 1.2rem; }
 
-        .flip-face-back .flip-face-body {
-            font-size: 1.25rem;
-        }
-
-        .answer-pairs {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-            text-align: left;
-        }
-        .answer-pair {
-            display: flex;
-            align-items: baseline;
-            gap: 10px;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-        }
+        .answer-pairs { display: flex; flex-direction: column; gap: 10px; width: 100%; text-align: left; }
+        .answer-pair { display: flex; align-items: baseline; gap: 10px; font-size: 1rem; font-family: 'Inter', sans-serif; }
         .answer-pair-left { color: #6b7280; font-weight: 500; min-width: 140px; }
         .answer-pair-arrow { color: var(--accent-1); flex-shrink: 0; }
         .answer-pair-right { color: #111827; font-weight: 600; }
 
-        .flip-face-hint {
+        .flip-face-hint { font-size: 0.75rem; color: #9ca3af; text-align: center; }
+
+        .rating-row {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            max-width: 640px;
+            margin-bottom: 20px;
+        }
+        .rating-btn {
+            flex: 1;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 12px;
+            font-size: 0.9375rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+            color: white;
+        }
+        .rating-btn:hover { transform: translateY(-2px); }
+        .rating-btn:active { transform: translateY(0); }
+        .rating-btn-sub { font-size: 0.6875rem; font-weight: 500; opacity: 0.85; }
+
+        .rating-btn.forgot { background: #E16280; }
+        .rating-btn.forgot:hover { box-shadow: 0 6px 16px rgba(225, 98, 128, 0.35); }
+        .rating-btn.notsure { background: #f59e0b; }
+        .rating-btn.notsure:hover { box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35); }
+        .rating-btn.gotit { background: #54D3AB; }
+        .rating-btn.gotit:hover { box-shadow: 0 6px 16px rgba(84, 211, 171, 0.35); }
+
+        .rating-saving-note {
             font-size: 0.75rem;
             color: #9ca3af;
-            text-align: center;
+            height: 16px;
+            margin-bottom: 4px;
         }
 
-        /* ── Empty / error / complete states ── */
         .session-status-card {
-            max-width: 500px;
-            width: 100%;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 48px 40px;
-            text-align: center;
+            max-width: 500px; width: 100%; background: white; border: 1px solid #e5e7eb;
+            border-radius: 16px; padding: 48px 40px; text-align: center;
         }
         .session-status-icon { font-size: 2.5rem; margin-bottom: 16px; }
         .session-status-title { font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 8px; }
         .session-status-desc { font-size: 0.9375rem; color: #6b7280; margin-bottom: 24px; line-height: 1.6; }
         .session-status-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
-            color: white;
-            font-size: 0.875rem;
-            font-weight: 600;
-            padding: 10px 22px;
-            border-radius: 8px;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
+            display: inline-block; background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+            color: white; font-size: 0.875rem; font-weight: 600; padding: 10px 22px; border-radius: 8px;
+            text-decoration: none; border: none; cursor: pointer;
         }
 
         .hidden { display: none !important; }
@@ -164,38 +189,20 @@
 </head>
 <body>
 
-<aside class="sidebar">
-    <div class="logo">Montura Learn</div>
-    <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
-    <a href="lectures.html"        class="nav-item"><span class="nav-icon">∞</span><span>Lectures</span></a>
-    <a href="flashtiles.html"      class="nav-item active"><span class="nav-icon">⚡</span><span>Flashtiles</span></a>
-    <a href="quick-test.html"      class="nav-item"><span class="nav-icon">🕐</span><span>Quiz</span></a>
-    <a href="past-papers.html"     class="nav-item"><span class="nav-icon">📄</span><span>Past Papers</span></a>
-    <div class="nav-spacer"></div>
-    <button class="live-study-btn">Allow Live Study</button>
-</aside>
-
-<main class="main-content">
-    <div class="content-wrapper compact">
-        <div class="subject-header">
-            <div class="subject-line-left"></div>
-            <h1 class="subject-name" id="sessionTitle">Flashcards</h1>
-            <div class="subject-line-right"></div>
-        </div>
+<div class="session-shell">
+    <div class="session-header">
+        <a href="flashtiles.html" class="session-exit">✕ Exit</a>
+        <span class="session-header-title" id="deckLabel">Flashcards</span>
+        <span class="session-header-spacer"></span>
     </div>
 
-    <a href="flashtiles.html" class="crumb-back">← Flashtiles</a>
-
     <div class="session-wrap">
-        <div class="session-deck-label" id="deckLabel"></div>
 
-        <!-- Loading -->
         <div id="loadingState" class="session-status-card">
             <div class="session-status-icon">⏳</div>
             <div class="session-status-title">Loading your cards…</div>
         </div>
 
-        <!-- No selection at all -->
         <div id="emptySelectionState" class="session-status-card hidden">
             <div class="session-status-icon">🗂️</div>
             <div class="session-status-title">No deck selected</div>
@@ -203,20 +210,19 @@
             <a href="flashtiles.html" class="session-status-btn">Back to Flashtiles</a>
         </div>
 
-        <!-- Selection exists but no questions came back -->
         <div id="noCardsState" class="session-status-card hidden">
             <div class="session-status-icon">😕</div>
             <div class="session-status-title">No flashcards found for this selection</div>
-            <div class="session-status-desc">These lectures may not have been populated into the question bank yet, or only had essay-style questions (which don't work as flip-cards).</div>
+            <div class="session-status-desc">These lectures may not have been populated into the question bank yet.</div>
             <a href="flashtiles.html" class="session-status-btn">Back to Flashtiles</a>
         </div>
 
-        <!-- Active session -->
-        <div id="sessionActive" class="hidden" style="width:100%; max-width:640px; display:flex; flex-direction:column; align-items:center;">
-            <div class="session-topbar" style="width:100%; border-bottom:none; padding:0 0 20px 0;">
-                <button class="session-nav-btn" id="prevBtn">← Previous</button>
+        <div id="sessionActive" class="hidden" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+            <div class="session-round-label" id="roundLabel"></div>
+            <div class="session-topbar" style="width:100%; max-width:640px; border-bottom:none; padding:0 0 16px 0;">
+                <button class="session-nav-btn" id="prevBtn" disabled>← Previous</button>
                 <span class="session-progress-label" id="progressLabel">Card 1 of 1</span>
-                <button class="session-nav-btn" id="nextBtn">Next →</button>
+                <button class="session-nav-btn" id="nextBtn">Skip →</button>
             </div>
 
             <div class="flip-scene" id="flipScene">
@@ -235,13 +241,28 @@
                             <span></span>
                         </div>
                         <div class="flip-face-body" id="backBody"></div>
-                        <div class="flip-face-hint">Tap card to flip back</div>
+                        <div class="flip-face-hint">How well did you know this?</div>
                     </div>
                 </div>
             </div>
+
+            <div class="rating-saving-note" id="ratingSavingNote"></div>
+            <div class="rating-row hidden" id="ratingRow">
+                <button class="rating-btn forgot" data-rating="1">
+                    <span>😵 Forgot it</span>
+                    <span class="rating-btn-sub">back tomorrow</span>
+                </button>
+                <button class="rating-btn notsure" data-rating="3">
+                    <span>🤔 Not sure</span>
+                    <span class="rating-btn-sub">a few days</span>
+                </button>
+                <button class="rating-btn gotit" data-rating="5">
+                    <span>✅ Got it</span>
+                    <span class="rating-btn-sub">much later</span>
+                </button>
+            </div>
         </div>
 
-        <!-- Session complete -->
         <div id="completeState" class="session-status-card hidden">
             <div class="session-status-icon">🎉</div>
             <div class="session-status-title">Deck complete</div>
@@ -250,14 +271,22 @@
             <a href="flashtiles.html" class="session-status-btn" style="background:#111827; background-image:none;">Back to Flashtiles</a>
         </div>
     </div>
-</main>
+</div>
 
 <script>
 const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+if (!window.sbClient) {
+    window.sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+const sbClient = window.sbClient;
 
-let cards = [];
-let currentIndex = 0;
+let currentUserId = null;
+let mainQueue = [];
+let missedQueue = [];
+let currentCard = null;
+let roundNumber = 1;
+let totalUniqueCards = 0;
 
 function showState(id) {
     ['loadingState', 'emptySelectionState', 'noCardsState', 'sessionActive', 'completeState']
@@ -279,14 +308,8 @@ function shuffle(arr) {
     return a;
 }
 
-/* correct_answer is stored as a plain string for most types, but as a
-   JSON-stringified object for 'match' type questions (see
-   populate_questions.py). Try to parse it back into pairs; fall back to
-   plain text for everything else. */
 function renderAnswerBody(correctAnswerRaw) {
-    if (!correctAnswerRaw) {
-        return '<span style="color:#9ca3af;font-style:italic;">No answer recorded</span>';
-    }
+    if (!correctAnswerRaw) return '<span style="color:#9ca3af;font-style:italic;">No answer recorded</span>';
     try {
         const parsed = JSON.parse(correctAnswerRaw);
         if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
@@ -299,76 +322,185 @@ function renderAnswerBody(correctAnswerRaw) {
             ).join('');
             return `<div class="answer-pairs">${pairs}</div>`;
         }
-    } catch (e) {
-        // not JSON — plain string answer, fall through
-    }
+    } catch (e) { /* plain string answer */ }
     return escapeHtml(correctAnswerRaw);
 }
 
 function renderCard() {
     const flipScene = document.getElementById('flipScene');
     flipScene.classList.remove('flipped');
+    document.getElementById('ratingRow').classList.add('hidden');
+    document.getElementById('ratingSavingNote').textContent = '';
 
-    const card = cards[currentIndex];
-    document.getElementById('frontTag').textContent = card.skill_tag || card.question_type || '';
-    document.getElementById('frontMarks').textContent = card.marks_available ? `${card.marks_available} mark${card.marks_available > 1 ? 's' : ''}` : '';
-    document.getElementById('frontBody').textContent = card.prompt_text || '(no prompt text)';
-    document.getElementById('backBody').innerHTML = renderAnswerBody(card.correct_answer);
+    currentCard = mainQueue[0];
+    document.getElementById('frontTag').textContent = currentCard.skill_tag || currentCard.question_type || '';
+    document.getElementById('frontMarks').textContent = currentCard.marks_available ? `${currentCard.marks_available} mark${currentCard.marks_available > 1 ? 's' : ''}` : '';
+    document.getElementById('frontBody').textContent = currentCard.prompt_text || '(no prompt text)';
+    document.getElementById('backBody').innerHTML = renderAnswerBody(currentCard.correct_answer);
 
-    document.getElementById('progressLabel').textContent = `Card ${currentIndex + 1} of ${cards.length}`;
-    document.getElementById('prevBtn').disabled = currentIndex === 0;
-    document.getElementById('nextBtn').textContent = currentIndex === cards.length - 1 ? 'Finish →' : 'Next →';
+    document.getElementById('progressLabel').textContent = `Card 1 of ${mainQueue.length} this round`;
+    document.getElementById('roundLabel').textContent = roundNumber === 1 ? '' : `Round ${roundNumber} — clearing forgotten cards`;
 }
 
-function goNext() {
-    if (currentIndex < cards.length - 1) {
-        currentIndex++;
+function advanceQueueAfterRating() {
+    mainQueue.shift();
+
+    if (mainQueue.length > 0) {
+        renderCard();
+        return;
+    }
+
+    if (missedQueue.length > 0) {
+        mainQueue = shuffle(missedQueue);
+        missedQueue = [];
+        roundNumber++;
         renderCard();
     } else {
         document.getElementById('completeDesc').textContent =
-            `You've been through all ${cards.length} card${cards.length !== 1 ? 's' : ''} in this deck.`;
+            `You cleared all ${totalUniqueCards} card${totalUniqueCards !== 1 ? 's' : ''}` +
+            (roundNumber > 1 ? ` across ${roundNumber} rounds.` : '.');
         showState('completeState');
     }
 }
 
-function goPrev() {
-    if (currentIndex > 0) {
-        currentIndex--;
-        renderCard();
-    }
-}
-
 document.getElementById('flipScene').addEventListener('click', () => {
-    document.getElementById('flipScene').classList.toggle('flipped');
+    const scene = document.getElementById('flipScene');
+    scene.classList.toggle('flipped');
+    document.getElementById('ratingRow').classList.toggle('hidden', !scene.classList.contains('flipped'));
 });
 
-document.getElementById('nextBtn').addEventListener('click', goNext);
-document.getElementById('prevBtn').addEventListener('click', goPrev);
+document.getElementById('nextBtn').addEventListener('click', () => {
+    advanceQueueAfterRating();
+});
 
 document.getElementById('studyAgainBtn').addEventListener('click', () => {
-    cards = shuffle(cards);
-    currentIndex = 0;
-    renderCard();
-    showState('sessionActive');
+    init(true);
 });
 
 document.addEventListener('keydown', (e) => {
     if (document.getElementById('sessionActive').classList.contains('hidden')) return;
-    if (e.key === 'ArrowRight') goNext();
-    else if (e.key === 'ArrowLeft') goPrev();
-    else if (e.key === ' ') { e.preventDefault(); document.getElementById('flipScene').classList.toggle('flipped'); }
+    if (e.key === ' ') { e.preventDefault(); document.getElementById('flipScene').click(); }
+    else if (e.key === '1') { submitRating(1); }
+    else if (e.key === '3') { submitRating(3); }
+    else if (e.key === '5') { submitRating(5); }
 });
 
 /* ════════════════════════════════════════════
-   LOAD — read the slug list from localStorage
-   (set by Pillar Decks / My Decks "Start Deck"),
-   then query Supabase for their questions.
+   FSRS-INSPIRED RATING + SUPABASE WRITE
+
+   Simplified scheduler matching the 3-bucket spec (green/amber/red ->
+   ratings 5/3/1) — NOT the literal published FSRS-4.5 algorithm with its
+   17 fitted weight parameters. Swap computeFsrsUpdate() out for that later
+   if research-grade accuracy is wanted; nothing else needs to change.
 ════════════════════════════════════════════ */
-async function init() {
+function computeFsrsUpdate(existing, rating) {
+    const now = new Date();
+    const prevStability = existing ? Number(existing.stability) : null;
+    const prevDifficulty = existing ? Number(existing.difficulty) : null;
+    const prevReviewCount = existing ? Number(existing.review_count) || 0 : 0;
+
+    let stability, difficulty;
+
+    if (rating === 1) {
+        stability = 1;
+        difficulty = Math.min(10, (prevDifficulty ?? 5) + 1.5);
+    } else if (rating === 3) {
+        stability = prevStability === null ? 2 : Math.min(365, prevStability * 1.3);
+        difficulty = prevDifficulty === null ? 5 : Math.max(1, prevDifficulty - 0.1);
+    } else {
+        stability = prevStability === null ? 4 : Math.min(365, prevStability * 2.2);
+        difficulty = prevDifficulty === null ? 4 : Math.max(1, prevDifficulty - 0.8);
+    }
+
+    const intervalDays = rating === 1 ? 1 : Math.max(1, Math.round(stability));
+    const nextReview = new Date(now.getTime() + intervalDays * 24 * 60 * 60 * 1000);
+
+    return {
+        stability: Math.round(stability * 100) / 100,
+        difficulty: Math.round(difficulty * 100) / 100,
+        last_review: now.toISOString(),
+        next_review: nextReview.toISOString(),
+        review_count: prevReviewCount + 1
+    };
+}
+
+async function fetchExistingFsrsState(userId, skillTag) {
+    const url = `${SUPABASE_URL}/rest/v1/fsrs_skill_state?user_id=eq.${encodeURIComponent(userId)}&skill_tag=eq.${encodeURIComponent(skillTag)}&select=*`;
+    const res = await fetch(url, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } });
+    if (!res.ok) return null;
+    const rows = await res.json();
+    return rows && rows.length ? rows[0] : null;
+}
+
+async function upsertFsrsState(userId, skillTag, update) {
+    const url = `${SUPABASE_URL}/rest/v1/fsrs_skill_state?on_conflict=user_id,skill_tag`;
+    const body = [{ user_id: userId, skill_tag: skillTag, ...update }];
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'resolution=merge-duplicates,return=minimal'
+        },
+        body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+        console.error('FSRS upsert failed:', res.status, await res.text());
+        return false;
+    }
+    return true;
+}
+
+async function submitRating(rating) {
+    if (!currentCard) return;
+    const skillTag = currentCard.skill_tag || currentCard.lecture_slug || 'general';
+
+    if (rating === 1) missedQueue.push(currentCard);
+
+    if (!currentUserId) {
+        console.warn('No authenticated user — skipping FSRS write, advancing anyway.');
+        advanceQueueAfterRating();
+        return;
+    }
+
+    const savingNote = document.getElementById('ratingSavingNote');
+    savingNote.textContent = 'Saving progress…';
+
+    try {
+        const existing = await fetchExistingFsrsState(currentUserId, skillTag);
+        const update = computeFsrsUpdate(existing, rating);
+        const ok = await upsertFsrsState(currentUserId, skillTag, update);
+        savingNote.textContent = ok ? '' : 'Could not save progress for this card.';
+    } catch (err) {
+        console.error('FSRS write error:', err);
+        savingNote.textContent = 'Could not save progress for this card.';
+    }
+
+    advanceQueueAfterRating();
+}
+
+document.querySelectorAll('.rating-btn').forEach(btn => {
+    btn.addEventListener('click', () => submitRating(Number(btn.dataset.rating)));
+});
+
+async function init(isRestart) {
     showState('loadingState');
+    roundNumber = 1;
+    missedQueue = [];
 
     const label = localStorage.getItem('flashtile_session_label');
     if (label) document.getElementById('deckLabel').textContent = label;
+
+    const { data: { session } } = await sbClient.auth.getSession();
+    currentUserId = session ? session.user.id : null;
+
+    if (isRestart && totalUniqueCards > 0) {
+        mainQueue = shuffle(window.__lastFetchedCards || []);
+        renderCard();
+        showState('sessionActive');
+        return;
+    }
 
     const rawSlugs = localStorage.getItem('flashtile_session_slugs');
     let slugs = [];
@@ -379,17 +511,11 @@ async function init() {
         return;
     }
 
-    // PostgREST 'in' filter: lecture_slug=in.(slug-a,slug-b,...)
     const inList = slugs.map(s => `"${s}"`).join(',');
     const url = `${SUPABASE_URL}/rest/v1/questions?lecture_slug=in.(${inList})&select=*`;
 
     try {
-        const res = await fetch(url, {
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-            }
-        });
+        const res = await fetch(url, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } });
         if (!res.ok) throw new Error(`Supabase returned ${res.status}`);
         const data = await res.json();
 
@@ -398,20 +524,19 @@ async function init() {
             return;
         }
 
-        cards = shuffle(data);
-        currentIndex = 0;
+        window.__lastFetchedCards = data;
+        totalUniqueCards = data.length;
+        mainQueue = shuffle(data);
         renderCard();
         showState('sessionActive');
 
     } catch (err) {
         console.error('Failed to load flashcards:', err);
-        document.getElementById('noCardsState').querySelector('.session-status-desc').textContent =
-            'Something went wrong loading these cards. Check the browser console for details.';
         showState('noCardsState');
     }
 }
 
-init();
+init(false);
 </script>
 </body>
 </html>
