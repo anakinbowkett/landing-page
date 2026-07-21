@@ -167,14 +167,25 @@
     <script>
         /* ════════════════════════════════════════════
            DECK WALL — home state of My Decks
+
+           NOTE: this array is in-memory only — it resets
+           on page reload. Real persistence (a Supabase
+           table for saved decks) is a deliberately separate
+           follow-up, not built here. Each deck now carries
+           a real `slugs` array (not just display titles) so
+           studying it can actually query Supabase.
         ════════════════════════════════════════════ */
         let decks = [
-            { name: 'Tragic Heroes Deck', topics: ['Macbeth Themes', 'Carol Context', 'Frankenstein Techniques'], cardCount: 34, strength: 'strong', lastStudied: 'today' },
-            { name: 'Character Studies', topics: ['Romeo & Juliet Characters', 'Blood Brothers Themes'], cardCount: 28, strength: 'fading', lastStudied: '4 days ago' },
-            { name: 'Exam Skills Deck', topics: ['AQA Exam Writing Skills', 'Close Reading'], cardCount: 19, strength: 'due', lastStudied: '9 days ago' },
-            { name: 'Power & Conflict Collection', topics: ['Ozymandias', 'London', 'Exposure'], cardCount: 41, strength: 'strong', lastStudied: '2 days ago' },
-            { name: 'Modern Text Round-up', topics: ['Inspector Calls Themes', 'DNA Characters'], cardCount: 22, strength: null, lastStudied: null }
+            { name: 'Tragic Heroes Deck', topics: ['Macbeth Themes', 'Carol Context', 'Frankenstein Techniques'], slugs: [], cardCount: 34, strength: 'strong', lastStudied: 'today' },
+            { name: 'Character Studies', topics: ['Romeo & Juliet Characters', 'Blood Brothers Themes'], slugs: [], cardCount: 28, strength: 'fading', lastStudied: '4 days ago' },
+            { name: 'Exam Skills Deck', topics: ['AQA Exam Writing Skills', 'Close Reading'], slugs: [], cardCount: 19, strength: 'due', lastStudied: '9 days ago' },
+            { name: 'Power & Conflict Collection', topics: ['Ozymandias', 'London', 'Exposure'], slugs: [], cardCount: 41, strength: 'strong', lastStudied: '2 days ago' },
+            { name: 'Modern Text Round-up', topics: ['Inspector Calls Themes', 'DNA Characters'], slugs: [], cardCount: 22, strength: null, lastStudied: null }
         ];
+        // The 5 seed decks above are placeholder/demo data carried over from
+        // the original mockup — they have no real slugs, so studying them
+        // shows an empty-state rather than fake cards. Only decks created
+        // through the accordion below (real lecture selections) are studyable.
 
         function buildPillsHtml(topics) {
             const shown = topics.slice(0, 3);
@@ -263,7 +274,13 @@
 
             renderActions();
             card.addEventListener('click', () => {
-                // navigates to the deck start page — no real destination yet
+                if (!deck.slugs || deck.slugs.length === 0) {
+                    alert('This deck has no studyable cards yet (demo deck, or created before slugs were tracked). Create a new deck from the "+" tile to study real cards.');
+                    return;
+                }
+                localStorage.setItem('flashtile_session_slugs', JSON.stringify(deck.slugs));
+                localStorage.setItem('flashtile_session_label', deck.name);
+                window.location.href = 'flashtiles-session.html';
             });
             return card;
         }
@@ -299,17 +316,18 @@
         /* ════════════════════════════════════════════
            SELECTION STATE — same system as Pillar Decks,
            shared across every open paper/pillar on the page.
+           Maps key -> real lecture slug.
         ════════════════════════════════════════════ */
-        const selected = new Set();
+        const selected = new Map();
         const basketBar = document.getElementById('basketBar');
         const basketCount = document.getElementById('basketCount');
 
-        function toggleSelection(key, row) {
+        function toggleSelection(key, slug, row) {
             if (selected.has(key)) {
                 selected.delete(key);
                 row.classList.remove('selected');
             } else {
-                selected.add(key);
+                selected.set(key, slug);
                 row.classList.add('selected');
             }
             basketBar.style.display = selected.size ? 'flex' : 'none';
@@ -324,22 +342,33 @@
             basketBar.style.display = 'none';
         });
 
-        // Saving a deck returns to the wall with the new deck added
+        // Creating a new deck: save it to the wall (so it's there next time
+        // you look, for this browser session) AND jump straight into
+        // studying it, since that's almost always what you want right after
+        // building one.
         document.getElementById('startDeckBtn').addEventListener('click', () => {
             const selectedRows = document.querySelectorAll('.lec-sub-row.selectable.selected');
             if (selectedRows.length === 0) return;
             const topics = Array.from(selectedRows).map(r => r.querySelector('.lec-sub-name').textContent);
-            decks.unshift({
+            const slugs = Array.from(selectedRows).map(r => r.dataset.slug);
+
+            const newDeck = {
                 name: `New Deck ${decks.length + 1}`,
                 topics: topics,
-                cardCount: topics.length * 3,
+                slugs: slugs,
+                cardCount: null, // unknown until the session page fetches real question counts
                 strength: null,
                 lastStudied: null
-            });
+            };
+            decks.unshift(newDeck);
+
             selected.clear();
             selectedRows.forEach(r => r.classList.remove('selected'));
             basketBar.style.display = 'none';
-            showWall();
+
+            localStorage.setItem('flashtile_session_slugs', JSON.stringify(slugs));
+            localStorage.setItem('flashtile_session_label', newDeck.name);
+            window.location.href = 'flashtiles-session.html';
         });
 
         /* ════════════════════════════════════════════
@@ -379,10 +408,11 @@
             papersList.appendChild(item);
         });
 
-        function makeLectureRow(li, title, key) {
+        function makeLectureRow(li, title, key, slug) {
             const checkSvg = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L4.5 8.5L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
             const row = document.createElement('div');
             row.className = 'lec-sub-row selectable';
+            row.dataset.slug = slug;
             row.innerHTML = `
                 <div class="lec-sub-left">
                     <span class="lecture-checkbox">${checkSvg}</span>
@@ -390,7 +420,7 @@
                 </div>`;
             row.addEventListener('click', e => {
                 e.stopPropagation();
-                toggleSelection(key, row);
+                toggleSelection(key, slug, row);
             });
             return row;
         }
@@ -439,7 +469,7 @@
                     pillar.lectures.forEach((slug, li) => {
                         const title = slugToTitle(slug);
                         const key = `${paperIdx}-${text.id}-${pi}-${li}`;
-                        bdy.appendChild(makeLectureRow(li, title, key));
+                        bdy.appendChild(makeLectureRow(li, title, key, slug));
                     });
 
                     box.appendChild(hdr); box.appendChild(bdy);
@@ -481,9 +511,10 @@
                 bdy.className = 'lec-pillar-body';
 
                 pillar.lectures.forEach((lec, li) => {
+                    const slug = typeof lec === 'string' ? lec : lec.slug;
                     const title = typeof lec === 'string' ? slugToTitle(lec) : lec.title;
                     const key = `${paperIdx}-x-${pi}-${li}`;
-                    bdy.appendChild(makeLectureRow(li, title, key));
+                    bdy.appendChild(makeLectureRow(li, title, key, slug));
                 });
 
                 box.appendChild(hdr); box.appendChild(bdy);

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQA English Literature - Flashcard Session</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+    <link href="shared.css" rel="stylesheet">
+    <style>
+        /* ── Session shell ── */
+        .session-wrap {
+            padding: 0 3rem 3rem 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .session-deck-label {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #9ca3af;
+            margin: 4px 0 20px;
+            text-align: center;
+        }
+
+        /* ── Flip card ── */
+        .flip-scene {
+            width: 100%;
+            max-width: 640px;
+            height: 340px;
+            perspective: 1400px;
+            margin-bottom: 28px;
+            cursor: pointer;
+        }
+
+        .flip-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-scene.flipped .flip-card {
+            transform: rotateY(180deg);
+        }
+
+        .flip-face {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            border: 1px solid #d4d4d4;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            padding: 36px 40px;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .flip-face-front {
+            justify-content: space-between;
+        }
+
+        .flip-face-back {
+            transform: rotateY(180deg);
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--accent-soft-bg) 0%, #ffffff 100%);
+        }
+
+        .flip-face-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .flip-face-tag {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent-soft-text);
+            background: var(--accent-soft-bg);
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .flip-face-marks {
+            font-size: 11px;
+            font-weight: 600;
+            color: #9ca3af;
+        }
+
+        .flip-face-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-family: 'Crimson Text', Georgia, serif;
+            font-size: 1.5rem;
+            line-height: 1.5;
+            color: #111827;
+            padding: 0 8px;
+            overflow-y: auto;
+        }
+
+        .flip-face-back .flip-face-body {
+            font-size: 1.25rem;
+        }
+
+        .answer-pairs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            text-align: left;
+        }
+        .answer-pair {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .answer-pair-left { color: #6b7280; font-weight: 500; min-width: 140px; }
+        .answer-pair-arrow { color: var(--accent-1); flex-shrink: 0; }
+        .answer-pair-right { color: #111827; font-weight: 600; }
+
+        .flip-face-hint {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            text-align: center;
+        }
+
+        /* ── Empty / error / complete states ── */
+        .session-status-card {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 48px 40px;
+            text-align: center;
+        }
+        .session-status-icon { font-size: 2.5rem; margin-bottom: 16px; }
+        .session-status-title { font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 8px; }
+        .session-status-desc { font-size: 0.9375rem; color: #6b7280; margin-bottom: 24px; line-height: 1.6; }
+        .session-status-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 10px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="logo">Montura Learn</div>
+    <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
+    <a href="lectures.html"        class="nav-item"><span class="nav-icon">∞</span><span>Lectures</span></a>
+    <a href="flashtiles.html"      class="nav-item active"><span class="nav-icon">⚡</span><span>Flashtiles</span></a>
+    <a href="quick-test.html"      class="nav-item"><span class="nav-icon">🕐</span><span>Quiz</span></a>
+    <a href="past-papers.html"     class="nav-item"><span class="nav-icon">📄</span><span>Past Papers</span></a>
+    <div class="nav-spacer"></div>
+    <button class="live-study-btn">Allow Live Study</button>
+</aside>
+
+<main class="main-content">
+    <div class="content-wrapper compact">
+        <div class="subject-header">
+            <div class="subject-line-left"></div>
+            <h1 class="subject-name" id="sessionTitle">Flashcards</h1>
+            <div class="subject-line-right"></div>
+        </div>
+    </div>
+
+    <a href="flashtiles.html" class="crumb-back">← Flashtiles</a>
+
+    <div class="session-wrap">
+        <div class="session-deck-label" id="deckLabel"></div>
+
+        <!-- Loading -->
+        <div id="loadingState" class="session-status-card">
+            <div class="session-status-icon">⏳</div>
+            <div class="session-status-title">Loading your cards…</div>
+        </div>
+
+        <!-- No selection at all -->
+        <div id="emptySelectionState" class="session-status-card hidden">
+            <div class="session-status-icon">🗂️</div>
+            <div class="session-status-title">No deck selected</div>
+            <div class="session-status-desc">Go back and pick some lectures from Pillar Decks or My Decks first.</div>
+            <a href="flashtiles.html" class="session-status-btn">Back to Flashtiles</a>
+        </div>
+
+        <!-- Selection exists but no questions came back -->
+        <div id="noCardsState" class="session-status-card hidden">
+            <div class="session-status-icon">😕</div>
+            <div class="session-status-title">No flashcards found for this selection</div>
+            <div class="session-status-desc">These lectures may not have been populated into the question bank yet, or only had essay-style questions (which don't work as flip-cards).</div>
+            <a href="flashtiles.html" class="session-status-btn">Back to Flashtiles</a>
+        </div>
+
+        <!-- Active session -->
+        <div id="sessionActive" class="hidden" style="width:100%; max-width:640px; display:flex; flex-direction:column; align-items:center;">
+            <div class="session-topbar" style="width:100%; border-bottom:none; padding:0 0 20px 0;">
+                <button class="session-nav-btn" id="prevBtn">← Previous</button>
+                <span class="session-progress-label" id="progressLabel">Card 1 of 1</span>
+                <button class="session-nav-btn" id="nextBtn">Next →</button>
+            </div>
+
+            <div class="flip-scene" id="flipScene">
+                <div class="flip-card">
+                    <div class="flip-face flip-face-front">
+                        <div class="flip-face-top">
+                            <span class="flip-face-tag" id="frontTag"></span>
+                            <span class="flip-face-marks" id="frontMarks"></span>
+                        </div>
+                        <div class="flip-face-body" id="frontBody"></div>
+                        <div class="flip-face-hint">Tap card to reveal answer</div>
+                    </div>
+                    <div class="flip-face flip-face-back">
+                        <div class="flip-face-top">
+                            <span class="flip-face-tag" id="backTag">Answer</span>
+                            <span></span>
+                        </div>
+                        <div class="flip-face-body" id="backBody"></div>
+                        <div class="flip-face-hint">Tap card to flip back</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Session complete -->
+        <div id="completeState" class="session-status-card hidden">
+            <div class="session-status-icon">🎉</div>
+            <div class="session-status-title">Deck complete</div>
+            <div class="session-status-desc" id="completeDesc"></div>
+            <button class="session-status-btn" id="studyAgainBtn" style="margin-right:8px;">Study Again</button>
+            <a href="flashtiles.html" class="session-status-btn" style="background:#111827; background-image:none;">Back to Flashtiles</a>
+        </div>
+    </div>
+</main>
+
+<script>
+const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+
+let cards = [];
+let currentIndex = 0;
+
+function showState(id) {
+    ['loadingState', 'emptySelectionState', 'noCardsState', 'sessionActive', 'completeState']
+        .forEach(s => document.getElementById(s).classList.toggle('hidden', s !== id));
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+}
+
+function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+/* correct_answer is stored as a plain string for most types, but as a
+   JSON-stringified object for 'match' type questions (see
+   populate_questions.py). Try to parse it back into pairs; fall back to
+   plain text for everything else. */
+function renderAnswerBody(correctAnswerRaw) {
+    if (!correctAnswerRaw) {
+        return '<span style="color:#9ca3af;font-style:italic;">No answer recorded</span>';
+    }
+    try {
+        const parsed = JSON.parse(correctAnswerRaw);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            const pairs = Object.entries(parsed).map(([k, v]) =>
+                `<div class="answer-pair">
+                    <span class="answer-pair-left">${escapeHtml(k)}</span>
+                    <span class="answer-pair-arrow">→</span>
+                    <span class="answer-pair-right">${escapeHtml(v)}</span>
+                 </div>`
+            ).join('');
+            return `<div class="answer-pairs">${pairs}</div>`;
+        }
+    } catch (e) {
+        // not JSON — plain string answer, fall through
+    }
+    return escapeHtml(correctAnswerRaw);
+}
+
+function renderCard() {
+    const flipScene = document.getElementById('flipScene');
+    flipScene.classList.remove('flipped');
+
+    const card = cards[currentIndex];
+    document.getElementById('frontTag').textContent = card.skill_tag || card.question_type || '';
+    document.getElementById('frontMarks').textContent = card.marks_available ? `${card.marks_available} mark${card.marks_available > 1 ? 's' : ''}` : '';
+    document.getElementById('frontBody').textContent = card.prompt_text || '(no prompt text)';
+    document.getElementById('backBody').innerHTML = renderAnswerBody(card.correct_answer);
+
+    document.getElementById('progressLabel').textContent = `Card ${currentIndex + 1} of ${cards.length}`;
+    document.getElementById('prevBtn').disabled = currentIndex === 0;
+    document.getElementById('nextBtn').textContent = currentIndex === cards.length - 1 ? 'Finish →' : 'Next →';
+}
+
+function goNext() {
+    if (currentIndex < cards.length - 1) {
+        currentIndex++;
+        renderCard();
+    } else {
+        document.getElementById('completeDesc').textContent =
+            `You've been through all ${cards.length} card${cards.length !== 1 ? 's' : ''} in this deck.`;
+        showState('completeState');
+    }
+}
+
+function goPrev() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        renderCard();
+    }
+}
+
+document.getElementById('flipScene').addEventListener('click', () => {
+    document.getElementById('flipScene').classList.toggle('flipped');
+});
+
+document.getElementById('nextBtn').addEventListener('click', goNext);
+document.getElementById('prevBtn').addEventListener('click', goPrev);
+
+document.getElementById('studyAgainBtn').addEventListener('click', () => {
+    cards = shuffle(cards);
+    currentIndex = 0;
+    renderCard();
+    showState('sessionActive');
+});
+
+document.addEventListener('keydown', (e) => {
+    if (document.getElementById('sessionActive').classList.contains('hidden')) return;
+    if (e.key === 'ArrowRight') goNext();
+    else if (e.key === 'ArrowLeft') goPrev();
+    else if (e.key === ' ') { e.preventDefault(); document.getElementById('flipScene').classList.toggle('flipped'); }
+});
+
+/* ════════════════════════════════════════════
+   LOAD — read the slug list from localStorage
+   (set by Pillar Decks / My Decks "Start Deck"),
+   then query Supabase for their questions.
+════════════════════════════════════════════ */
+async function init() {
+    showState('loadingState');
+
+    const label = localStorage.getItem('flashtile_session_label');
+    if (label) document.getElementById('deckLabel').textContent = label;
+
+    const rawSlugs = localStorage.getItem('flashtile_session_slugs');
+    let slugs = [];
+    try { slugs = JSON.parse(rawSlugs) || []; } catch (e) { slugs = []; }
+
+    if (!slugs.length) {
+        showState('emptySelectionState');
+        return;
+    }
+
+    // PostgREST 'in' filter: lecture_slug=in.(slug-a,slug-b,...)
+    const inList = slugs.map(s => `"${s}"`).join(',');
+    const url = `${SUPABASE_URL}/rest/v1/questions?lecture_slug=in.(${inList})&select=*`;
+
+    try {
+        const res = await fetch(url, {
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            }
+        });
+        if (!res.ok) throw new Error(`Supabase returned ${res.status}`);
+        const data = await res.json();
+
+        if (!data || data.length === 0) {
+            showState('noCardsState');
+            return;
+        }
+
+        cards = shuffle(data);
+        currentIndex = 0;
+        renderCard();
+        showState('sessionActive');
+
+    } catch (err) {
+        console.error('Failed to load flashcards:', err);
+        document.getElementById('noCardsState').querySelector('.session-status-desc').textContent =
+            'Something went wrong loading these cards. Check the browser console for details.';
+        showState('noCardsState');
+    }
+}
+
+init();
+</script>
+</body>
+</html>
