@@ -414,11 +414,12 @@ let finalRatings = {};
 let topicTotalCards = 0;
 let missedIdsThisTopic = new Set();
 
-// blockStates[i] = 'pending' | 'green' | 'amber' | 'red' — one entry per
-// card in the current topic, indexed by that card's stable _blockIndex
-// (assigned once at topic start, NOT the shuffled queue position), so the
-// block row never visually reshuffles — only individual colors update.
-let blockStates = [];
+// roundBlockStates[i] = 'pending' | 'green' | 'amber' | 'red' — one entry
+// per card in the CURRENT ROUND's queue only. Reset fresh every round
+// (including round 1), sized to exactly how many cards are in that round —
+// so round 2's row has as many blocks as cards were forgotten in round 1,
+// round 3 as many as forgotten in round 2, and so on.
+let roundBlockStates = [];
 
 const ALL_STATE_IDS = ['loadingState', 'emptySelectionState', 'noCardsState', 'topicResultsState', 'finalSummaryState'];
 
@@ -468,12 +469,17 @@ function renderAnswerBody(correctAnswerRaw) {
 }
 
 /* ════════════════════════════════════════════
-   TRAFFIC-LIGHT BLOCK ROW
+   TRAFFIC-LIGHT BLOCK ROW — one fresh row per round
 ════════════════════════════════════════════ */
+function assignRoundBlockIndices(queue) {
+    queue.forEach((c, i) => { c._roundBlockIndex = i; });
+    roundBlockStates = new Array(queue.length).fill('pending');
+}
+
 function renderProgressBlocks() {
     const row = document.getElementById('progressBlocksRow');
-    row.innerHTML = blockStates.map((state, i) => {
-        const isCurrent = currentCard && currentCard._blockIndex === i;
+    row.innerHTML = roundBlockStates.map((state, i) => {
+        const isCurrent = currentCard && currentCard._roundBlockIndex === i;
         const cls = ['progress-block', state !== 'pending' ? state : '', isCurrent ? 'current' : ''].filter(Boolean).join(' ');
         return `<div class="${cls}"></div>`;
     }).join('');
@@ -486,7 +492,6 @@ function startTopic(idx) {
     currentTopicIdx = idx;
     const slug = topicOrder[idx];
     const cards = cardsByTopic[slug] || [];
-    cards.forEach((c, i) => { c._blockIndex = i; });
 
     mainQueue = shuffle(cards);
     missedQueue = [];
@@ -494,7 +499,7 @@ function startTopic(idx) {
     finalRatings = {};
     topicTotalCards = cards.length;
     missedIdsThisTopic = new Set();
-    blockStates = new Array(cards.length).fill('pending');
+    assignRoundBlockIndices(mainQueue); // round 1's block row = the full topic
 
     document.getElementById('topicName').textContent = typeof slugToTitle === 'function' ? slugToTitle(slug) : slug;
     document.getElementById('topicCounter').textContent = `Topic ${idx + 1} of ${topicOrder.length}`;
@@ -525,14 +530,25 @@ function finishTopic() {
         else if (r === 3) notSure++;
     });
 
+    // Results screen shows one block per card in the WHOLE topic, colored
+    // by its final rating (even if it took a couple of rounds to get
+    // there) — separate concept from the live per-round rows shown during
+    // the session itself.
+    const slug = topicOrder[currentTopicIdx];
+    const topicCards = cardsByTopic[slug] || [];
+    const finalBlockStates = topicCards.map(c => {
+        const r = finalRatings[c.id];
+        return r === 5 ? 'green' : r === 3 ? 'amber' : 'pending';
+    });
+
     const result = {
-        slug: topicOrder[currentTopicIdx],
+        slug,
         title: document.getElementById('topicName').textContent,
         total: topicTotalCards,
         gotIt, notSure,
         everForgot: missedIdsThisTopic.size,
         rounds: roundNumber,
-        blockStatesSnapshot: blockStates.slice()
+        blockStatesSnapshot: finalBlockStates
     };
     allTopicResults.push(result);
     showTopicResults(result);
@@ -613,6 +629,7 @@ function advanceQueueAfterRating() {
         mainQueue = shuffle(missedQueue);
         missedQueue = [];
         roundNumber++;
+        assignRoundBlockIndices(mainQueue); // fresh row, sized to this round's forgotten-card count
         renderCard();
     } else {
         finishTopic();
@@ -699,7 +716,7 @@ async function submitRating(rating) {
     const skillTag = currentCard.skill_tag || currentCard.lecture_slug || 'general';
 
     finalRatings[currentCard.id] = rating;
-    blockStates[currentCard._blockIndex] = rating === 5 ? 'green' : rating === 3 ? 'amber' : 'red';
+    roundBlockStates[currentCard._roundBlockIndex] = rating === 5 ? 'green' : rating === 3 ? 'amber' : 'red';
     renderProgressBlocks();
 
     if (rating === 1) {
