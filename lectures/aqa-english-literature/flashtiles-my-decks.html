@@ -166,26 +166,122 @@
     <script src="lectures-data.js"></script>
     <script>
         /* ════════════════════════════════════════════
-           DECK WALL — home state of My Decks
-
-           NOTE: this array is in-memory only — it resets
-           on page reload. Real persistence (a Supabase
-           table for saved decks) is a deliberately separate
-           follow-up, not built here. Each deck now carries
-           a real `slugs` array (not just display titles) so
-           studying it can actually query Supabase.
+           SUPABASE-BACKED DECKS — replaces the earlier
+           in-memory mock array entirely. Decks now persist
+           per-student in the flashtile_decks table.
         ════════════════════════════════════════════ */
-        let decks = [
-            { name: 'Tragic Heroes Deck', topics: ['Macbeth Themes', 'Carol Context', 'Frankenstein Techniques'], slugs: [], cardCount: 34, strength: 'strong', lastStudied: 'today' },
-            { name: 'Character Studies', topics: ['Romeo & Juliet Characters', 'Blood Brothers Themes'], slugs: [], cardCount: 28, strength: 'fading', lastStudied: '4 days ago' },
-            { name: 'Exam Skills Deck', topics: ['AQA Exam Writing Skills', 'Close Reading'], slugs: [], cardCount: 19, strength: 'due', lastStudied: '9 days ago' },
-            { name: 'Power & Conflict Collection', topics: ['Ozymandias', 'London', 'Exposure'], slugs: [], cardCount: 41, strength: 'strong', lastStudied: '2 days ago' },
-            { name: 'Modern Text Round-up', topics: ['Inspector Calls Themes', 'DNA Characters'], slugs: [], cardCount: 22, strength: null, lastStudied: null }
-        ];
-        // The 5 seed decks above are placeholder/demo data carried over from
-        // the original mockup — they have no real slugs, so studying them
-        // shows an empty-state rather than fake cards. Only decks created
-        // through the accordion below (real lecture selections) are studyable.
+        const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+        if (!window.sbClient) {
+            window.sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        const sbClient = window.sbClient;
+
+        let currentUserId = null;
+        let decks = [];
+
+        function formatRelativeDate(isoString) {
+            if (!isoString) return null;
+            const then = new Date(isoString);
+            const now = new Date();
+            const diffDays = Math.floor((now - then) / (1000 * 60 * 60 * 24));
+            if (diffDays <= 0) return 'today';
+            if (diffDays === 1) return 'yesterday';
+            return `${diffDays} days ago`;
+        }
+
+        function mapRowToDeck(row) {
+            return {
+                id: row.id,
+                name: row.name,
+                topics: row.topic_titles || [],
+                slugs: row.lecture_slugs || [],
+                lastStudied: formatRelativeDate(row.last_studied_at)
+            };
+        }
+
+        async function checkAuthAndLoadDecks() {
+            const { data: { session } } = await sbClient.auth.getSession();
+            if (!session) {
+                window.location.href = 'signin.html';
+                return;
+            }
+            currentUserId = session.user.id;
+            await loadDecks();
+        }
+
+        async function loadDecks() {
+            const url = `${SUPABASE_URL}/rest/v1/flashtile_decks?user_id=eq.${encodeURIComponent(currentUserId)}&select=*&order=updated_at.desc`;
+            try {
+                const res = await fetch(url, {
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+                });
+                if (!res.ok) throw new Error(`Supabase returned ${res.status}`);
+                const rows = await res.json();
+                decks = rows.map(mapRowToDeck);
+            } catch (err) {
+                console.error('Failed to load decks:', err);
+                decks = [];
+            }
+            renderDeckWall();
+        }
+
+        async function createDeckInSupabase(name, slugs, titles) {
+            const url = `${SUPABASE_URL}/rest/v1/flashtile_decks`;
+            const body = [{ user_id: currentUserId, name, lecture_slugs: slugs, topic_titles: titles }];
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify(body)
+                });
+                if (!res.ok) throw new Error(`Supabase returned ${res.status}: ${await res.text()}`);
+                const rows = await res.json();
+                return rows[0];
+            } catch (err) {
+                console.error('Failed to create deck:', err);
+                return null;
+            }
+        }
+
+        async function renameDeckInSupabase(deckId, newName) {
+            const url = `${SUPABASE_URL}/rest/v1/flashtile_decks?id=eq.${encodeURIComponent(deckId)}`;
+            try {
+                const res = await fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({ name: newName, updated_at: new Date().toISOString() })
+                });
+                return res.ok;
+            } catch (err) {
+                console.error('Failed to rename deck:', err);
+                return false;
+            }
+        }
+
+        async function deleteDeckInSupabase(deckId) {
+            const url = `${SUPABASE_URL}/rest/v1/flashtile_decks?id=eq.${encodeURIComponent(deckId)}`;
+            try {
+                const res = await fetch(url, {
+                    method: 'DELETE',
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+                });
+                return res.ok;
+            } catch (err) {
+                console.error('Failed to delete deck:', err);
+                return false;
+            }
+        }
 
         function buildPillsHtml(topics) {
             const shown = topics.slice(0, 3);
@@ -198,14 +294,12 @@
             const card = document.createElement('div');
             card.className = 'deck-card';
 
-            const badgeLabel = deck.strength === 'strong' ? 'Strong' : deck.strength === 'fading' ? 'Fading' : deck.strength === 'due' ? 'Due' : '';
-
             card.innerHTML = `
                 <div class="deck-card-name">${deck.name}</div>
                 <div class="deck-pills">${buildPillsHtml(deck.topics)}</div>
                 <div class="deck-meta-row">
-                    <span class="deck-card-count">${deck.cardCount} cards</span>
-                    ${badgeLabel ? `<span class="deck-badge ${deck.strength}">${badgeLabel}</span>` : '<span></span>'}
+                    <span class="deck-card-count">${deck.topics.length} lecture${deck.topics.length !== 1 ? 's' : ''}</span>
+                    <span></span>
                 </div>
                 <div class="deck-last-studied">${deck.lastStudied ? 'Last studied ' + deck.lastStudied : 'Not started yet'}</div>
                 <div class="deck-divider"></div>
@@ -234,14 +328,23 @@
                 input.addEventListener('click', e => e.stopPropagation());
 
                 let done = false;
-                function finish(save) {
+                async function finish(save) {
                     if (done) return;
                     done = true;
-                    if (save) deck.name = input.value.trim() || original;
+                    const newName = save ? (input.value.trim() || original) : original;
                     const newNameEl = document.createElement('div');
                     newNameEl.className = 'deck-card-name';
-                    newNameEl.textContent = deck.name;
+                    newNameEl.textContent = newName;
                     input.replaceWith(newNameEl);
+
+                    if (save && newName !== original) {
+                        deck.name = newName; // optimistic update
+                        const ok = await renameDeckInSupabase(deck.id, newName);
+                        if (!ok) {
+                            newNameEl.textContent = original;
+                            deck.name = original;
+                        }
+                    }
                 }
                 input.addEventListener('keydown', e => {
                     if (e.key === 'Enter') { e.preventDefault(); finish(true); }
@@ -257,12 +360,17 @@
                         <button class="yes-btn">Yes, delete</button>
                         <button class="cancel-btn">Cancel</button>
                     </div>`;
-                actionsEl.querySelector('.yes-btn').addEventListener('click', e => {
+                actionsEl.querySelector('.yes-btn').addEventListener('click', async e => {
                     e.stopPropagation();
                     card.classList.add('fading-out');
+                    const ok = await deleteDeckInSupabase(deck.id);
                     setTimeout(() => {
-                        const i = decks.indexOf(deck);
-                        if (i > -1) decks.splice(i, 1);
+                        if (ok) {
+                            const i = decks.indexOf(deck);
+                            if (i > -1) decks.splice(i, 1);
+                        } else {
+                            console.error('Delete failed on the server — leaving deck in place.');
+                        }
                         renderDeckWall();
                     }, 300);
                 });
@@ -275,11 +383,12 @@
             renderActions();
             card.addEventListener('click', () => {
                 if (!deck.slugs || deck.slugs.length === 0) {
-                    alert('This deck has no studyable cards yet (demo deck, or created before slugs were tracked). Create a new deck from the "+" tile to study real cards.');
+                    alert('This deck has no lectures in it yet.');
                     return;
                 }
                 localStorage.setItem('flashtile_session_slugs', JSON.stringify(deck.slugs));
                 localStorage.setItem('flashtile_session_label', deck.name);
+                localStorage.setItem('flashtile_session_deck_id', deck.id);
                 window.location.href = 'flashtiles-session.html';
             });
             return card;
@@ -311,7 +420,7 @@
         }
 
         document.getElementById('backToWallBtn').addEventListener('click', showWall);
-        renderDeckWall();
+        checkAuthAndLoadDecks();
 
         /* ════════════════════════════════════════════
            SELECTION STATE — same system as Pillar Decks,
@@ -342,24 +451,30 @@
             basketBar.style.display = 'none';
         });
 
-        // Creating a new deck: save it to the wall (so it's there next time
-        // you look, for this browser session) AND jump straight into
-        // studying it, since that's almost always what you want right after
-        // building one.
-        document.getElementById('startDeckBtn').addEventListener('click', () => {
+        // Creating a new deck: save it to Supabase (so it's really there next
+        // time you look, on any device) AND jump straight into studying it.
+        document.getElementById('startDeckBtn').addEventListener('click', async () => {
             const selectedRows = document.querySelectorAll('.lec-sub-row.selectable.selected');
             if (selectedRows.length === 0) return;
             const topics = Array.from(selectedRows).map(r => r.querySelector('.lec-sub-name').textContent);
             const slugs = Array.from(selectedRows).map(r => r.dataset.slug);
+            const name = `New Deck ${decks.length + 1}`;
 
-            const newDeck = {
-                name: `New Deck ${decks.length + 1}`,
-                topics: topics,
-                slugs: slugs,
-                cardCount: null, // unknown until the session page fetches real question counts
-                strength: null,
-                lastStudied: null
-            };
+            const startBtn = document.getElementById('startDeckBtn');
+            startBtn.disabled = true;
+            startBtn.textContent = 'Saving...';
+
+            const savedRow = await createDeckInSupabase(name, slugs, topics);
+
+            startBtn.disabled = false;
+            startBtn.textContent = 'Start Deck →';
+
+            if (!savedRow) {
+                alert('Could not save this deck. Check your connection and try again.');
+                return;
+            }
+
+            const newDeck = mapRowToDeck(savedRow);
             decks.unshift(newDeck);
 
             selected.clear();
@@ -368,6 +483,7 @@
 
             localStorage.setItem('flashtile_session_slugs', JSON.stringify(slugs));
             localStorage.setItem('flashtile_session_label', newDeck.name);
+            localStorage.setItem('flashtile_session_deck_id', newDeck.id);
             window.location.href = 'flashtiles-session.html';
         });
 
