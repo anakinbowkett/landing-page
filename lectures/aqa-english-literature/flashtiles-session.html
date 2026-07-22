@@ -299,6 +299,13 @@
             <div class="session-status-desc">These lectures may not have been populated into the question bank yet.</div>
             <a href="flashtiles.html" class="session-status-btn">Back to Flashtiles</a>
         </div>
+        <div id="nothingDueState" class="session-status-card hidden">
+            <div class="session-status-icon">✨</div>
+            <div class="session-status-title">Nothing due for this topic yet</div>
+            <div class="session-status-desc" id="nothingDueDesc"></div>
+            <button class="session-status-btn" id="studyAnywayBtn" style="margin-right:8px;">Study Anyway</button>
+            <button class="session-status-btn" id="skipTopicBtn" style="background:#111827; background-image:none;">Next Topic →</button>
+        </div>
         <div id="topicResultsState" class="results-card hidden">
             <div class="results-title" id="resultsTitle">Topic complete</div>
             <div class="results-subtitle" id="resultsSubtitle"></div>
@@ -414,6 +421,45 @@ let finalRatings = {};
 let topicTotalCards = 0;
 let missedIdsThisTopic = new Set();
 
+// FSRS-based scheduling: skillStateMap[skill_tag] -> that skill's current
+// fsrs_skill_state row (or absent = never studied = always due). Fetched
+// once for the whole selection in init(), not per-topic.
+let skillStateMap = {};
+let notDueCardsForCurrentTopic = []; // stashed so "Study Anyway" can use them
+
+function splitByDue(cards, now) {
+    const due = [], notDue = [];
+    cards.forEach(card => {
+        const tag = card.skill_tag || card.lecture_slug || 'general';
+        const state = skillStateMap[tag];
+        if (!state || !state.next_review) {
+            due.push(card); // never studied -> always due
+        } else if (new Date(state.next_review) <= now) {
+            due.push(card);
+        } else {
+            notDue.push(card);
+        }
+    });
+    return { due, notDue };
+}
+
+async function fetchSkillStates(userId, skillTags) {
+    if (!userId || skillTags.length === 0) return {};
+    const inList = skillTags.map(t => `"${t}"`).join(',');
+    const url = `${SUPABASE_URL}/rest/v1/fsrs_skill_state?user_id=eq.${encodeURIComponent(userId)}&skill_tag=in.(${inList})&select=*`;
+    try {
+        const res = await fetch(url, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } });
+        if (!res.ok) return {};
+        const rows = await res.json();
+        const map = {};
+        rows.forEach(r => { map[r.skill_tag] = r; });
+        return map;
+    } catch (e) {
+        console.error('Failed to fetch FSRS skill states:', e);
+        return {};
+    }
+}
+
 // roundBlockStates[i] = 'pending' | 'green' | 'amber' | 'red' — one entry
 // per card in the CURRENT ROUND's queue only. Reset fresh every round
 // (including round 1), sized to exactly how many cards are in that round —
@@ -421,7 +467,7 @@ let missedIdsThisTopic = new Set();
 // round 3 as many as forgotten in round 2, and so on.
 let roundBlockStates = [];
 
-const ALL_STATE_IDS = ['loadingState', 'emptySelectionState', 'noCardsState', 'topicResultsState', 'finalSummaryState'];
+const ALL_STATE_IDS = ['loadingState', 'emptySelectionState', 'noCardsState', 'nothingDueState', 'topicResultsState', 'finalSummaryState'];
 
 function showState(id) {
     const isScrollState = ALL_STATE_IDS.includes(id);
@@ -491,22 +537,53 @@ function renderProgressBlocks() {
 function startTopic(idx) {
     currentTopicIdx = idx;
     const slug = topicOrder[idx];
-    const cards = cardsByTopic[slug] || [];
+    const allCards = cardsByTopic[slug] || [];
 
+    document.getElementById('topicName').textContent = typeof slugToTitle === 'function' ? slugToTitle(slug) : slug;
+    document.getElementById('topicCounter').textContent = `Topic ${idx + 1} of ${topicOrder.length}`;
+
+    const { due, notDue } = splitByDue(allCards, new Date());
+    notDueCardsForCurrentTopic = notDue;
+
+    if (due.length === 0 && notDue.length > 0) {
+        // Every card in this topic has already been reviewed recently and
+        // isn't due again yet — don't force a pointless review, but don't
+        // hard-block either.
+        showNothingDueScreen(notDue.length);
+        return;
+    }
+
+    beginStudyingCards(due.length > 0 ? due : allCards);
+}
+
+function beginStudyingCards(cards) {
     mainQueue = shuffle(cards);
     missedQueue = [];
     roundNumber = 1;
     finalRatings = {};
     topicTotalCards = cards.length;
     missedIdsThisTopic = new Set();
-    assignRoundBlockIndices(mainQueue); // round 1's block row = the full topic
-
-    document.getElementById('topicName').textContent = typeof slugToTitle === 'function' ? slugToTitle(slug) : slug;
-    document.getElementById('topicCounter').textContent = `Topic ${idx + 1} of ${topicOrder.length}`;
+    assignRoundBlockIndices(mainQueue); // round 1's block row = this session's card set
 
     renderCard();
     showState('sessionActive');
 }
+
+function showNothingDueScreen(notDueCount) {
+    document.getElementById('nothingDueDesc').textContent =
+        `${notDueCount} card${notDueCount !== 1 ? 's' : ''} in this topic ${notDueCount !== 1 ? 'are' : 'is'} already scheduled for later based on how well you knew ${notDueCount !== 1 ? 'them' : 'it'} last time. You can study anyway if you want extra practice.`;
+    showState('nothingDueState');
+}
+
+document.getElementById('studyAnywayBtn').addEventListener('click', () => {
+    beginStudyingCards(notDueCardsForCurrentTopic);
+});
+
+document.getElementById('skipTopicBtn').addEventListener('click', () => {
+    const isLastTopic = currentTopicIdx === topicOrder.length - 1;
+    if (isLastTopic) showFinalSummary();
+    else startTopic(currentTopicIdx + 1);
+});
 
 function renderCard() {
     const flipScene = document.getElementById('flipScene');
@@ -795,6 +872,12 @@ async function init() {
             showState('noCardsState');
             return;
         }
+
+        // Fetch this student's FSRS state for every skill_tag in this
+        // selection, once, up front — used by startTopic() to decide
+        // what's actually due vs already scheduled for later.
+        const allSkillTags = [...new Set(data.map(c => c.skill_tag || c.lecture_slug || 'general'))];
+        skillStateMap = await fetchSkillStates(currentUserId, allSkillTags);
 
         allTopicResults = [];
         startTopic(0);
