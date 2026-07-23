@@ -407,6 +407,7 @@ if (!window.sbClient) {
 const sbClient = window.sbClient;
 
 let currentUserId = null;
+let currentAccessToken = null;
 
 let topicOrder = [];
 let cardsByTopic = {};
@@ -448,7 +449,7 @@ async function fetchSkillStates(userId, skillTags) {
     const inList = skillTags.map(t => `"${t}"`).join(',');
     const url = `${SUPABASE_URL}/rest/v1/fsrs_skill_state?user_id=eq.${encodeURIComponent(userId)}&skill_tag=in.(${inList})&select=*`;
     try {
-        const res = await fetch(url, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } });
+        const res = await fetch(url, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` } });
         if (!res.ok) return {};
         const rows = await res.json();
         const map = {};
@@ -762,7 +763,7 @@ function computeFsrsUpdate(existing, rating) {
 
 async function fetchExistingFsrsState(userId, skillTag) {
     const url = `${SUPABASE_URL}/rest/v1/fsrs_skill_state?user_id=eq.${encodeURIComponent(userId)}&skill_tag=eq.${encodeURIComponent(skillTag)}&select=*`;
-    const res = await fetch(url, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } });
+    const res = await fetch(url, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` } });
     if (!res.ok) return null;
     const rows = await res.json();
     return rows && rows.length ? rows[0] : null;
@@ -775,7 +776,7 @@ async function upsertFsrsState(userId, skillTag, update) {
         method: 'POST',
         headers: {
             'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Authorization': `Bearer ${currentAccessToken}`,
             'Content-Type': 'application/json',
             'Prefer': 'resolution=merge-duplicates,return=minimal'
         },
@@ -838,6 +839,7 @@ async function init() {
 
     const { data: { session } } = await sbClient.auth.getSession();
     currentUserId = session ? session.user.id : null;
+    currentAccessToken = session ? session.access_token : null;
 
     const rawSlugs = localStorage.getItem('flashtile_session_slugs');
     let slugs = [];
