@@ -178,6 +178,7 @@
         const sbClient = window.sbClient;
 
         let currentUserId = null;
+        let currentAccessToken = null;
         let decks = [];
 
         function formatRelativeDate(isoString) {
@@ -207,6 +208,7 @@
                 return;
             }
             currentUserId = session.user.id;
+            currentAccessToken = session.access_token;
             await loadDecks();
         }
 
@@ -214,7 +216,7 @@
             const url = `${SUPABASE_URL}/rest/v1/flashtile_decks?user_id=eq.${encodeURIComponent(currentUserId)}&select=*&order=updated_at.desc`;
             try {
                 const res = await fetch(url, {
-                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` }
                 });
                 if (!res.ok) throw new Error(`Supabase returned ${res.status}`);
                 const rows = await res.json();
@@ -234,7 +236,7 @@
                     method: 'POST',
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Authorization': `Bearer ${currentAccessToken}`,
                         'Content-Type': 'application/json',
                         'Prefer': 'return=representation'
                     },
@@ -256,7 +258,7 @@
                     method: 'PATCH',
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Authorization': `Bearer ${currentAccessToken}`,
                         'Content-Type': 'application/json',
                         'Prefer': 'return=minimal'
                     },
@@ -274,7 +276,7 @@
             try {
                 const res = await fetch(url, {
                     method: 'DELETE',
-                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${currentAccessToken}` }
                 });
                 return res.ok;
             } catch (err) {
