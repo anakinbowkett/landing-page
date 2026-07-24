@@ -7,6 +7,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="theme.css" rel="stylesheet">
     <link href="shared.css" rel="stylesheet">
+    <style>
+        /* Wider, shorter cards specifically for this 3-card grid — icon sits
+           beside the text instead of stacked above it, tag becomes a corner
+           badge instead of its own row. */
+        .mode-grid { max-width: 1020px; }
+        .mode-card {
+            flex-direction: row;
+            align-items: center;
+            gap: 18px;
+            padding: 20px 24px;
+        }
+        .mode-card-icon { flex-shrink: 0; margin: 0; }
+        .mode-card-tag {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+        }
+        .mode-card-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .mode-card-title { font-size: 18px; }
+        .mode-card-desc { font-size: 0.8125rem; line-height: 1.4; }
+        .mode-card-cta { margin-top: 6px; }
+    </style>
 </head>
 <body>
     <aside class="sidebar">
@@ -29,28 +51,36 @@
             </div>
         </div>
 
+        <a href="../../dashboard.html" class="crumb-back">← Dashboard</a>
+
         <section class="mode-section">
             <div class="mode-grid" style="--mode-count: 3;">
                 <a href="past-papers-worked.html" class="mode-card">
                     <span class="mode-card-tag">Guided</span>
                     <div class="mode-card-icon">📝</div>
-                    <div class="mode-card-title">Worked</div>
-                    <p class="mode-card-desc">Real past questions with full worked answers alongside — see exactly what earns the marks.</p>
-                    <div class="mode-card-cta">Start worked papers →</div>
+                    <div class="mode-card-body">
+                        <div class="mode-card-title">Worked</div>
+                        <p class="mode-card-desc">Real past questions with full worked answers alongside — see exactly what earns the marks.</p>
+                        <div class="mode-card-cta">Start worked papers →</div>
+                    </div>
                 </a>
                 <a href="past-papers-create.html" class="mode-card">
                     <span class="mode-card-tag">Custom</span>
                     <div class="mode-card-icon">🧩</div>
-                    <div class="mode-card-title">Create</div>
-                    <p class="mode-card-desc">Build your own paper by picking the topics and question types you want. Good for last-minute drilling.</p>
-                    <div class="mode-card-cta">Build a paper →</div>
+                    <div class="mode-card-body">
+                        <div class="mode-card-title">Create</div>
+                        <p class="mode-card-desc">Build your own paper by picking the topics and question types you want. Good for last-minute drilling.</p>
+                        <div class="mode-card-cta">Build a paper →</div>
+                    </div>
                 </a>
                 <a href="past-papers-official.html" class="mode-card">
                     <span class="mode-card-tag">Timed</span>
                     <div class="mode-card-icon">📄</div>
-                    <div class="mode-card-title">Official</div>
-                    <p class="mode-card-desc">Full official AQA past papers, sat under real exam conditions with a timer running.</p>
-                    <div class="mode-card-cta">Sit a paper →</div>
+                    <div class="mode-card-body">
+                        <div class="mode-card-title">Official</div>
+                        <p class="mode-card-desc">Full official AQA past papers, sat under real exam conditions with a timer running.</p>
+                        <div class="mode-card-cta">Sit a paper →</div>
+                    </div>
                 </a>
             </div>
         </section>
