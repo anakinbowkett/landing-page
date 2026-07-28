@@ -96,6 +96,13 @@ html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter',
 .session-namebar:focus { border-color: var(--accent); background: #fff; }
 .session-namebar[readonly] { cursor: default; color: var(--text-primary); }
 
+#sessionCardArea {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .session-progress-wrap {
     display: flex; align-items: center; gap: 16px;
     max-width: 1000px; width: 100%; margin-bottom: 28px;
@@ -131,7 +138,12 @@ html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter',
 .session-nav-arrow:hover:not(:disabled) { border-color: #c7c7c7; background: #fafafa; }
 .session-nav-arrow:disabled { opacity: 0.3; cursor: default; }
 
-.flashcard { perspective: 1800px; width: 100%; max-width: 1000px; height: 560px; }
+.flashcard {
+    perspective: 1800px;
+    width: min(1000px, calc(100vw - 320px));
+    height: min(560px, 65vh);
+    flex-shrink: 0;
+}
 .flashcard-inner {
     position: relative; width: 100%; height: 100%;
     transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
