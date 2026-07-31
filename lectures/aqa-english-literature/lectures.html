@@ -42,6 +42,52 @@
 ════════════════════════════════════════════ */
 const list = document.getElementById('papersList');
 
+/* ── QUESTION COUNT — read live from each lecture file, cached locally ── */
+function parseQuestionCount(html) {
+    const m = /var\s+questionAnswers\s*=\s*\{/.exec(html);
+    if (!m) return null;
+    let i = m.index + m[0].length - 1;
+    let depth = 0;
+    const start = i;
+    for (; i < html.length; i++) {
+        const c = html[i];
+        if (c === '{' || c === '[') depth++;
+        else if (c === '}' || c === ']') { depth--; if (depth === 0) break; }
+    }
+    const body = html.slice(start + 1, i);
+    const keys = new Set();
+    let d = 0, j = 0;
+    while (j < body.length) {
+        const c = body[j];
+        if (c === '{' || c === '[') { d++; j++; continue; }
+        if (c === '}' || c === ']') { d--; j++; continue; }
+        if (d === 0 && c >= '0' && c <= '9') {
+            let k = j;
+            while (k < body.length && body[k] >= '0' && body[k] <= '9') k++;
+            let look = k;
+            while (look < body.length && /\s/.test(body[look])) look++;
+            if (body[look] === ':') { keys.add(body.slice(j, k)); j = look + 1; continue; }
+        }
+        j++;
+    }
+    return keys.size || null;
+}
+
+async function fetchQuestionCount(slug) {
+    const cacheKey = 'lecQCount_v1_' + slug;
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) return parseInt(cached, 10);
+    try {
+        const res = await fetch(`lectures/${slug}.html`);
+        const html = await res.text();
+        const count = parseQuestionCount(html) || 6;
+        localStorage.setItem(cacheKey, count);
+        return count;
+    } catch (e) {
+        return 6;
+    }
+}    
+
 papersData.forEach((paper) => {
     const item = document.createElement('div');
     item.className = 'paper-item';
