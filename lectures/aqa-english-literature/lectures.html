@@ -273,9 +273,13 @@ function buildSinglePanel(pillars) {
                     <span class="lec-sub-name">${title}</span>
                 </div>
                 <div class="lec-sub-right">
-                    <div class="lec-blocks">${Array(6).fill('<div class="lec-block"></div>').join('')}</div>
+                    <div class="lec-blocks" id="blocks-${slug}"></div>
                     <span class="lec-sub-arrow">→</span>
                 </div>`;
+            fetchQuestionCount(slug).then(n => {
+                const el = document.getElementById(`blocks-${slug}`);
+                if (el) el.innerHTML = Array(n).fill('<div class="lec-block"></div>').join('');
+            });
             row.addEventListener('click', e => {
                 e.stopPropagation();
                 window.location.href = `lectures/${slug}.html`;
