@@ -42,6 +42,12 @@
 ════════════════════════════════════════════ */
 const list = document.getElementById('papersList');
 
+/* pillar.lectures entries are sometimes plain slug strings, sometimes
+   {slug, title} objects — this normalises either to just the slug. */
+function lectureSlug(lec) {
+    return typeof lec === 'string' ? lec : lec.slug;
+}
+
 /* ── QUESTION COUNT — read live from each lecture file, cached locally ── */
 function parseQuestionCount(html) {
     const m = /var\s+questionAnswers\s*=\s*\{/.exec(html);
@@ -133,10 +139,10 @@ async function loadStudentProgress() {
     return progress;
 }
 
-// Fetched once on page load, shared by every lecture row
+// Fetched once on page load, shared by every lecture row and every pillar
 const studentProgressPromise = loadStudentProgress();
 
-/* ── Shared renderer: fills in a lecture row's blocks once count + progress are known ── */
+/* ── Per-lecture row: fills in a lecture's own blocks once count + progress are known ── */
 function renderLectureBlocks(slug) {
     Promise.all([fetchQuestionCount(slug), studentProgressPromise]).then(([n, progress]) => {
         const el = document.getElementById(`blocks-${slug}`);
@@ -148,6 +154,32 @@ function renderLectureBlocks(slug) {
             html += `<div class="lec-block${r ? ' ' + r : ''}"></div>`;
         }
         el.innerHTML = html;
+    });
+}
+
+/* ── Pillar aggregate strip: one block per lecture, summarising that lecture's state ──
+   Blank  = lecture not fully attempted yet
+   Green  = fully attempted, all correct
+   Amber  = fully attempted, some partial credit, no outright wrongs
+   Red    = fully attempted, at least one wrong */
+function aggBlocksHTML(pillar) {
+    return pillar.lectures.map(lec => {
+        const slug = lectureSlug(lec);
+        return `<div class="lec-agg-block" id="agg-${slug}"></div>`;
+    }).join('');
+}
+
+function renderAggBlock(slug) {
+    Promise.all([fetchQuestionCount(slug), studentProgressPromise]).then(([n, progress]) => {
+        const el = document.getElementById(`agg-${slug}`);
+        if (!el) return;
+        const results = progress[slug] || {};
+        const answered = Object.keys(results).length;
+        if (answered < n) return; // not fully attempted — leave blank, not "done"
+        const values = Object.values(results);
+        const hasWrong   = values.some(r => r === 'wrong');
+        const hasPartial = values.some(r => r === 'partial');
+        el.classList.add(hasWrong ? 'wrong' : hasPartial ? 'partial' : 'correct');
     });
 }
 
@@ -195,29 +227,8 @@ function buildMultiTextPanel(texts) {
     panel.className = 'lec-panel';
 
     let activeIdx = 0;
-    const states = {};
-
-    function ensureStates(tIdx) {
-        texts[tIdx].pillars.forEach((p, pi) => {
-            p.lectures.forEach((_, li) => {
-                const k = `${tIdx}-${pi}-${li}`;
-                if (!states[k]) states[k] = Array(6).fill(null);
-            });
-        });
-    }
-
-    function aggBlocks(tIdx, pi, pillar) {
-        return pillar.lectures.map((_, li) => {
-            const s = states[`${tIdx}-${pi}-${li}`] || [];
-            const c = s.filter(x => x==='correct').length;
-            const w = s.filter(x => x==='wrong').length;
-            const cls = (c+w)===6 ? (w>0?'wrong':'correct') : ((c+w)>0?'correct':'');
-            return `<div class="lec-agg-block ${cls}"></div>`;
-        }).join('');
-    }
 
     function render() {
-        ensureStates(activeIdx);
         panel.innerHTML = '';
 
         /* Text selector — same catalogue grid used on the Flashtiles side */
@@ -239,7 +250,7 @@ function buildMultiTextPanel(texts) {
         pillarsDiv.className = 'lec-pillars';
         const text = texts[activeIdx];
 
-        text.pillars.forEach((pillar, pi) => {
+        text.pillars.forEach((pillar) => {
             const box = document.createElement('div');
             box.className = 'lec-pillar-box';
             const hdr = document.createElement('div');
@@ -250,10 +261,11 @@ function buildMultiTextPanel(texts) {
                     <span class="lec-pillar-name">${pillar.title}</span>
                 </div>
                 <div class="lec-pillar-header-right">
-                    <div class="lec-aggregate-blocks">${aggBlocks(activeIdx,pi,pillar)}</div>
+                    <div class="lec-aggregate-blocks">${aggBlocksHTML(pillar)}</div>
                     <span class="lec-pillar-chevron">›</span>
                 </div>`;
             hdr.addEventListener('click', e => { e.stopPropagation(); box.classList.toggle('open'); });
+            pillar.lectures.forEach(lec => renderAggBlock(lectureSlug(lec)));
 
             const bdy = document.createElement('div');
             bdy.className = 'lec-pillar-body';
@@ -303,7 +315,7 @@ function buildSinglePanel(pillars) {
     pillarsDiv.className = 'lec-pillars';
     pillarsDiv.style.padding = '16px';
 
-    pillars.forEach((pillar, pi) => {
+    pillars.forEach((pillar) => {
         const box = document.createElement('div');
         box.className = 'lec-pillar-box';
 
@@ -315,16 +327,17 @@ function buildSinglePanel(pillars) {
                 <span class="lec-pillar-name">${pillar.title}</span>
             </div>
             <div class="lec-pillar-header-right">
-                <div class="lec-aggregate-blocks">${pillar.lectures.map(()=>'<div class="lec-agg-block"></div>').join('')}</div>
+                <div class="lec-aggregate-blocks">${aggBlocksHTML(pillar)}</div>
                 <span class="lec-pillar-chevron">›</span>
             </div>`;
         hdr.addEventListener('click', e => { e.stopPropagation(); box.classList.toggle('open'); });
+        pillar.lectures.forEach(lec => renderAggBlock(lectureSlug(lec)));
 
         const bdy = document.createElement('div');
         bdy.className = 'lec-pillar-body';
 
         pillar.lectures.forEach((lec, li) => {
-            const slug  = typeof lec === 'string' ? lec : lec.slug;
+            const slug  = lectureSlug(lec);
             const title = typeof lec === 'string'
                 ? slugToTitle(slug)
                 : lec.title;
