@@ -98,12 +98,31 @@ async function fetchQuestionCount(slug) {
 const LP_SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 const LP_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
 
-function lpGetJWT() {
+async function lpGetJWT() {
     try {
         const raw = localStorage.getItem('sb-bdoesoqpjhpxkwsjauwo-auth-token');
         const s = raw ? JSON.parse(raw) : null;
-        return (s && s.access_token) ? s.access_token : LP_SUPABASE_KEY;
-    } catch (e) { return LP_SUPABASE_KEY; }
+        if (!s || !s.access_token) { console.warn('[progress] no session token in localStorage — treating as logged out'); return LP_SUPABASE_KEY; }
+
+        const isExpired = s.expires_at && (Date.now() / 1000) > (s.expires_at - 60);
+        if (!isExpired) return s.access_token;
+
+        console.log('[progress] cached token expired, attempting refresh…');
+        if (!s.refresh_token) { console.warn('[progress] no refresh_token available, using stale token'); return s.access_token; }
+
+        const res = await fetch(`${LP_SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+            method: 'POST',
+            headers: { 'apikey': LP_SUPABASE_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: s.refresh_token })
+        });
+        if (!res.ok) { console.warn('[progress] token refresh failed, status', res.status); return s.access_token; }
+
+        const refreshed = await res.json();
+        const updated = Object.assign({}, s, refreshed);
+        localStorage.setItem('sb-bdoesoqpjhpxkwsjauwo-auth-token', JSON.stringify(updated));
+        console.log('[progress] token refreshed successfully');
+        return updated.access_token;
+    } catch (e) { console.error('[progress] lpGetJWT threw:', e); return LP_SUPABASE_KEY; }
 }
 
 // Resolves to: { [lecture_slug]: { [question_index]: 'correct'|'partial'|'wrong' } }
@@ -111,19 +130,30 @@ function lpGetJWT() {
 async function loadStudentProgress() {
     const progress = {};
     try {
+        const jwt = await lpGetJWT();
         const userRes = await fetch(`${LP_SUPABASE_URL}/auth/v1/user`, {
-            headers: { 'apikey': LP_SUPABASE_KEY, 'Authorization': 'Bearer ' + lpGetJWT() }
+            headers: { 'apikey': LP_SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt }
         });
+        if (!userRes.ok) {
+            console.error('[progress] /auth/v1/user rejected:', userRes.status, await userRes.text());
+            return progress;
+        }
         const user = await userRes.json();
-        if (!user || !user.id) return progress; // not logged in — blocks just stay empty
+        if (!user || !user.id) { console.warn('[progress] no user.id resolved — not logged in?', user); return progress; }
+        console.log('[progress] resolved user:', user.id);
 
         const res = await fetch(
             `${LP_SUPABASE_URL}/rest/v1/question_attempts?user_id=eq.${user.id}` +
             `&select=lecture_slug,question_index,marks_awarded,marks_available,attempt_number` +
             `&order=lecture_slug.asc,question_index.asc,attempt_number.desc`,
-            { headers: { 'apikey': LP_SUPABASE_KEY, 'Authorization': 'Bearer ' + lpGetJWT() } }
+            { headers: { 'apikey': LP_SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt } }
         );
+        if (!res.ok) {
+            console.error('[progress] question_attempts fetch rejected:', res.status, await res.text());
+            return progress;
+        }
         const rows = await res.json();
+        console.log('[progress] fetched', Array.isArray(rows) ? rows.length : 0, 'question_attempts rows');
         if (!Array.isArray(rows)) return progress;
 
         rows.forEach(r => {
@@ -135,7 +165,8 @@ async function loadStudentProgress() {
                 : r.marks_awarded > 0 ? 'partial'
                 : 'wrong';
         });
-    } catch (e) { /* silent — page still works, just shows no progress */ }
+        console.log('[progress] built progress map for', Object.keys(progress).length, 'lecture(s)');
+    } catch (e) { console.error('[progress] loadStudentProgress threw:', e); }
     return progress;
 }
 
