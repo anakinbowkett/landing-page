@@ -3820,7 +3820,7 @@ async function emitSkillData(qNum, skillTag, awarded, available){
     var timeMs = questionRenderTime[qNum]
       ? Math.round(Date.now() - questionRenderTime[qNum])
       : null;
-    await fetch(SUPABASE_URL + '/rest/v1/question_attempts', {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/question_attempts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -3841,7 +3841,12 @@ async function emitSkillData(qNum, skillTag, awarded, available){
         hint_used: !!(questionHintUsed[qNum])
       })
     });
-  } catch(e){ /* silent — never block the student */ }
+    // Never blocks the student either way — but a failed insert used to be
+    // completely invisible. Now it's at least visible in the console.
+    if (!res.ok) {
+      console.error('[progress] question_attempts insert rejected:', res.status, await res.text());
+    }
+  } catch(e){ console.error('[progress] emitSkillData threw:', e); }
 }
 
 // ── THE PLAN INITIALISER ──────────────────────────────────────────────────────
