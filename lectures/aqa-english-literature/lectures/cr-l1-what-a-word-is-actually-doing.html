@@ -3808,7 +3808,7 @@ async function emitSkillData(qNum, skillTag, awarded, available){
         'Prefer': 'return=minimal'
       },
       body: JSON.stringify({
-        user_id: currentUser ? currentUser.id : null,
+        user_id: (currentUser && currentUser.id) || (await getCurrentUserId()),
         lecture_slug: topicSlug,
         question_index: qNum,
         question_type: (questionAnswers && questionAnswers[qNum] && questionAnswers[qNum].type) || 'unknown',
