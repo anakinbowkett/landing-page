@@ -3795,11 +3795,12 @@ function showChainDiagnostic(diagDiv, state){
 
 // ── SKILL DATA EMITTER (Supabase) ─────────────────────────────────────────────
 async function emitSkillData(qNum, skillTag, awarded, available){
+  console.log('[emitSkillData] CALLED', {qNum, skillTag, awarded, available, user_id: currentUser ? currentUser.id : null, lecture_slug: topicSlug});
   try{
     var timeMs = questionRenderTime[qNum]
       ? Math.round(Date.now() - questionRenderTime[qNum])
       : null;
-    await fetch(SUPABASE_URL + '/rest/v1/question_attempts', {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/question_attempts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -3808,7 +3809,7 @@ async function emitSkillData(qNum, skillTag, awarded, available){
         'Prefer': 'return=minimal'
       },
       body: JSON.stringify({
-        user_id: (currentUser && currentUser.id) || (await getCurrentUserId()),
+        user_id: currentUser ? currentUser.id : null,
         lecture_slug: topicSlug,
         question_index: qNum,
         question_type: (questionAnswers && questionAnswers[qNum] && questionAnswers[qNum].type) || 'unknown',
@@ -3820,7 +3821,15 @@ async function emitSkillData(qNum, skillTag, awarded, available){
         hint_used: !!(questionHintUsed[qNum])
       })
     });
-  } catch(e){ /* silent — never block the student */ }
+    if (!res.ok) {
+      var errText = await res.text();
+      console.error('[emitSkillData] SUPABASE REJECTED IT:', res.status, errText);
+    } else {
+      console.log('[emitSkillData] SUCCESS, status', res.status);
+    }
+  } catch(e){
+    console.error('[emitSkillData] FETCH THREW:', e);
+  }
 }
 
 // ── THE PLAN INITIALISER ──────────────────────────────────────────────────────
