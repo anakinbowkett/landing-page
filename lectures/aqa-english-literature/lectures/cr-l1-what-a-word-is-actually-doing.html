@@ -2618,11 +2618,32 @@ var API_URL       = 'https://www.monturalearn.co.uk/api/chat';
 var SUPABASE_URL  = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 var SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
 
-function getJWT(){
+async function getJWT(){
   try{
     var raw=localStorage.getItem('sb-bdoesoqpjhpxkwsjauwo-auth-token');
     var s=raw?JSON.parse(raw):null;
-    return (s&&s.access_token)?s.access_token:SUPABASE_KEY;
+    if(!s||!s.access_token) return SUPABASE_KEY;
+
+    // Supabase access tokens expire (default ~1hr). This used to just keep
+    // sending the same stale token forever once expired, causing every
+    // authenticated request — including question_attempts logging — to
+    // silently 401. Refresh a little early (60s buffer) rather than only
+    // reacting once it's already dead.
+    var isExpired = s.expires_at && (Date.now()/1000) > (s.expires_at - 60);
+    if(!isExpired) return s.access_token;
+    if(!s.refresh_token) return s.access_token;
+
+    var res = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: s.refresh_token })
+    });
+    if(!res.ok) return s.access_token; // refresh failed — fall back rather than throw
+
+    var refreshed = await res.json();
+    var updated = Object.assign({}, s, refreshed);
+    localStorage.setItem('sb-bdoesoqpjhpxkwsjauwo-auth-token', JSON.stringify(updated));
+    return updated.access_token;
   }catch(e){return SUPABASE_KEY;}
 }
 
@@ -2781,11 +2802,11 @@ var submittedQuestions={};
 
 async function loadUserProfile(){
   try{
-    var res=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+getJWT()}});
+    var res=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+(await getJWT())}});
     var data=await res.json();
     if(data&&data.id){
       currentUser=data;
-      var pRes=await fetch(SUPABASE_URL+'/rest/v1/user_profiles?id=eq.'+data.id+'&select=first_name,last_name,enigma_balance,current_grade',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+getJWT()}});
+      var pRes=await fetch(SUPABASE_URL+'/rest/v1/user_profiles?id=eq.'+data.id+'&select=first_name,last_name,enigma_balance,current_grade',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+(await getJWT())}});
       var profiles=await pRes.json();
       if(profiles&&profiles[0]) currentUserProfile=profiles[0];
     }
@@ -2795,7 +2816,7 @@ async function loadUserProfile(){
 async function loadRetestQuestions(){
   if(!currentUser)return;
   try{
-    var res=await fetch(SUPABASE_URL+'/rest/v1/quiz_question_results?user_id=eq.'+currentUser.id+'&topic_slug=eq.'+topicSlug+'&needs_retest=eq.true&order=attempted_at.desc&limit=14',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+getJWT()}});
+    var res=await fetch(SUPABASE_URL+'/rest/v1/quiz_question_results?user_id=eq.'+currentUser.id+'&topic_slug=eq.'+topicSlug+'&needs_retest=eq.true&order=attempted_at.desc&limit=14',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+(await getJWT())}});
     var rows=await res.json();
     if(!rows||rows.length===0)return;
     var badge=document.createElement('span');
@@ -3795,17 +3816,16 @@ function showChainDiagnostic(diagDiv, state){
 
 // ── SKILL DATA EMITTER (Supabase) ─────────────────────────────────────────────
 async function emitSkillData(qNum, skillTag, awarded, available){
-  console.log('[emitSkillData] CALLED', {qNum, skillTag, awarded, available, user_id: currentUser ? currentUser.id : null, lecture_slug: topicSlug});
   try{
     var timeMs = questionRenderTime[qNum]
       ? Math.round(Date.now() - questionRenderTime[qNum])
       : null;
-    var res = await fetch(SUPABASE_URL + '/rest/v1/question_attempts', {
+    await fetch(SUPABASE_URL + '/rest/v1/question_attempts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + getJWT(),
+        'Authorization': 'Bearer ' + (await getJWT()),
         'Prefer': 'return=minimal'
       },
       body: JSON.stringify({
@@ -3821,15 +3841,7 @@ async function emitSkillData(qNum, skillTag, awarded, available){
         hint_used: !!(questionHintUsed[qNum])
       })
     });
-    if (!res.ok) {
-      var errText = await res.text();
-      console.error('[emitSkillData] SUPABASE REJECTED IT:', res.status, errText);
-    } else {
-      console.log('[emitSkillData] SUCCESS, status', res.status);
-    }
-  } catch(e){
-    console.error('[emitSkillData] FETCH THREW:', e);
-  }
+  } catch(e){ /* silent — never block the student */ }
 }
 
 // ── THE PLAN INITIALISER ──────────────────────────────────────────────────────
@@ -4134,7 +4146,7 @@ async function saveResultsToSupabase(){
   var qBank=window.QUESTION_BANK; var qKeys=Object.keys(qBank);
   try{
     await fetch(SUPABASE_URL+'/rest/v1/user_progress',{
-      method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+getJWT(),'Prefer':'return=minimal'},
+      method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+(await getJWT()),'Prefer':'return=minimal'},
       body:JSON.stringify({user_id:currentUser.id,topic_id:topicSlug,score:score,completed:true})
     });
     var rows=[];
@@ -4145,13 +4157,13 @@ async function saveResultsToSupabase(){
     }
     if(rows.length>0){
       await fetch(SUPABASE_URL+'/rest/v1/quiz_question_results',{
-        method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+getJWT(),'Prefer':'return=minimal'},
+        method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+(await getJWT()),'Prefer':'return=minimal'},
         body:JSON.stringify(rows)
       });
     }
     var newBalance=((currentUserProfile&&currentUserProfile.enigma_balance)||0)+sessionEnigma;
     await fetch(SUPABASE_URL+'/rest/v1/user_profiles?id=eq.'+currentUser.id,{
-      method:'PATCH',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+getJWT(),'Prefer':'return=minimal'},
+      method:'PATCH',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+(await getJWT()),'Prefer':'return=minimal'},
       body:JSON.stringify({enigma_balance:newBalance})
     });
   }catch(e){console.log('Save failed',e);}
@@ -4433,7 +4445,7 @@ async function saveAnnotationsToSupabase(){
       method:'POST',
       headers:{
         'apikey':SUPABASE_KEY,
-        'Authorization':'Bearer '+getJWT(),
+        'Authorization':'Bearer '+(await getJWT()),
         'Content-Type':'application/json',
         'Prefer':'resolution=merge-duplicates'
       },
@@ -4459,7 +4471,7 @@ async function loadAnnotationsFromSupabase(){
     var res = await fetch(
       SUPABASE_URL+'/rest/v1/lecture_annotations?user_id=eq.'+currentUser.id+
       '&lecture_slug=eq.'+encodeURIComponent(topicSlug)+'&select=page_index,strokes',
-      {headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+getJWT()}}
+      {headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+(await getJWT())}}
     );
     var rows = await res.json();
     if(!Array.isArray(rows)) return;
