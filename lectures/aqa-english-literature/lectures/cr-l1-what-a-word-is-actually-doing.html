@@ -2800,6 +2800,58 @@ function auditAnswerKeyConsistency(){
 // ── SUPABASE PROFILE ─────────────────────────────────────────────────────
 var submittedQuestions={};
 
+// ── RESTORE PRIOR PROGRESS ──────────────────────────────────────────────
+// Reads this student's own past attempts on THIS lecture and replays them
+// into the same state variables live answering already uses (submittedQuestions,
+// quizResults, questionAttemptCount) so the existing "already submitted" UI
+// in renderAnswerZone shows correctly — no new rendering logic needed, it
+// already exists for the within-session case.
+//
+// Known limitation: question_attempts stores the SCORE, not the actual
+// selected option or written answer, so a wrong multiple-choice question
+// will show as locked + correct-answer-highlighted, but not which wrong
+// option was originally picked. Free-text/essay answers can't be replayed
+// verbatim either. If exact answer replay is ever needed, that requires a
+// new column to actually store the answer content — separate piece of work.
+async function restorePriorProgress(){
+  if(!currentUser || !currentUser.id) return;
+  try{
+    var res = await fetch(
+      SUPABASE_URL + '/rest/v1/question_attempts' +
+      '?user_id=eq.' + currentUser.id +
+      '&lecture_slug=eq.' + encodeURIComponent(topicSlug) +
+      '&select=question_index,marks_awarded,marks_available,created_at' +
+      '&order=question_index.asc,created_at.desc',
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + (await getJWT()) } }
+    );
+    if(!res.ok){ console.error('[progress] restore fetch rejected:', res.status, await res.text()); return; }
+    var rows = await res.json();
+    if(!Array.isArray(rows) || rows.length===0) return;
+
+    var latestByQ = {};  // question_index -> latest row (rows arrive created_at DESC, so first hit per q wins)
+    var countByQ  = {};  // question_index -> how many attempts total, so numbering keeps incrementing correctly
+    rows.forEach(function(r){
+      countByQ[r.question_index] = (countByQ[r.question_index]||0) + 1;
+      if(!latestByQ[r.question_index]) latestByQ[r.question_index] = r;
+    });
+
+    Object.keys(latestByQ).forEach(function(qStr){
+      var qNum = parseInt(qStr, 10);
+      var r = latestByQ[qStr];
+      var result = r.marks_awarded===r.marks_available ? 'correct' : r.marks_awarded>0 ? 'partial' : 'incorrect';
+      submittedQuestions[qNum] = true;
+      questionAttemptCount[qNum] = countByQ[qStr];
+      quizResults[qNum] = {
+        result: result, awarded: r.marks_awarded, total: r.marks_available,
+        enigma: getEnigmaForResult(result, r.marks_awarded, r.marks_available)
+      };
+      updateMarkCounter(qNum, r.marks_awarded, r.marks_available);
+      updateProgressSegment(qNum, result);
+    });
+    console.log('[progress] restored', Object.keys(latestByQ).length, 'previously-answered question(s)');
+  }catch(e){ console.error('[progress] restorePriorProgress threw:', e); }
+}
+
 async function loadUserProfile(){
   try{
     var res=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+(await getJWT())}});
@@ -3820,7 +3872,7 @@ async function emitSkillData(qNum, skillTag, awarded, available){
     var timeMs = questionRenderTime[qNum]
       ? Math.round(Date.now() - questionRenderTime[qNum])
       : null;
-    var res = await fetch(SUPABASE_URL + '/rest/v1/question_attempts', {
+    await fetch(SUPABASE_URL + '/rest/v1/question_attempts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -3841,12 +3893,7 @@ async function emitSkillData(qNum, skillTag, awarded, available){
         hint_used: !!(questionHintUsed[qNum])
       })
     });
-    // Never blocks the student either way — but a failed insert used to be
-    // completely invisible. Now it's at least visible in the console.
-    if (!res.ok) {
-      console.error('[progress] question_attempts insert rejected:', res.status, await res.text());
-    }
-  } catch(e){ console.error('[progress] emitSkillData threw:', e); }
+  } catch(e){ /* silent — never block the student */ }
 }
 
 // ── THE PLAN INITIALISER ──────────────────────────────────────────────────────
@@ -6280,7 +6327,14 @@ document.addEventListener('DOMContentLoaded', function(){
 document.addEventListener('DOMContentLoaded',function(){
   initializeProgressBar();
   initializeQuestionNavigation();
-  loadUserProfile().then(function(){loadRetestQuestions();});
+  loadUserProfile().then(function(){
+    loadRetestQuestions();
+    restorePriorProgress().then(function(){
+      // Re-render whatever question is currently on screen so it reflects
+      // restored state immediately, rather than only on next navigation.
+      animatedShowQuestion(currentQuestionIndex);
+    });
+  });
   initChat();
   updateChatContext(1);
   initPlanPoints();
