@@ -1902,9 +1902,9 @@ function createSubjectCard(subject) {
         showPaywall();
     } else {
         // Map subjects to their correct folder names
-        const staticRoutes = {
-    'English Literature': 'aqa-english-literature',
-    'English Language': 'aqa-english-language',
+        const subjectSlugs = {
+    'English Literature': 'english-literature',
+    'English Language': 'english-language',
 };
 
 const boardSlug = (subject.exam_board || 'AQA')
@@ -1914,8 +1914,9 @@ const tierMap = { 'foundation': 'f', 'higher': 'h' };
 const tierKey = (subject.tier || '').toLowerCase();
 const tierSlug = tierMap[tierKey] ? `-${tierMap[tierKey]}-tier` : '';
 
-const autoRoute = boardSlug + tierSlug;
-const route = staticRoutes[subject.subject_name] || autoRoute;
+const route = subjectSlugs[subject.subject_name]
+    ? `${boardSlug}-${subjectSlugs[subject.subject_name]}`
+    : boardSlug + tierSlug;
 
 fetch(`lectures/${route}/lectures.html`, { method: 'HEAD' })
     .then(res => {
