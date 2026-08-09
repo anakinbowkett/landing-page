@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deck Session</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --accent: #1d7fe2;
+    --border: #e5e7eb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter', sans-serif; color: #111; }
+
+/* ── HEADER — same fixed chrome pattern as the quiz session, no sidebar ── */
+.header-bar-1 {
+    position: fixed; top: 0; left: 0; right: 0; height: 55px;
+    background: #ffffff; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 24px; z-index: 100; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.exit-btn {
+    position: absolute; left: 24px; display: flex; align-items: center; gap: 6px;
+    font-size: 14px; font-weight: 600; color: var(--text-secondary);
+    background: none; border: none; cursor: pointer; padding: 0;
+    font-family: inherit;
+}
+.exit-btn:hover { color: var(--text-primary); }
+
+.header-controls { position: absolute; right: 24px; display: flex; align-items: center; gap: 8px; }
+.hdr-btn {
+    font-size: 12.5px; font-weight: 600; color: #374151;
+    background: white; border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+    font-family: inherit;
+}
+.hdr-btn:hover { border-color: #c7c7c7; background: #fafafa; }
+.hdr-btn.active { background: #eff6ff; border-color: var(--accent); color: var(--accent); }
+.hdr-btn-primary {
+    font-size: 12.5px; font-weight: 700; color: white; background: var(--accent);
+    border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer;
+    transition: background 0.15s ease; font-family: inherit;
+}
+.hdr-btn-primary:hover { background: #1668c2; }
+
+/* ── MAIN — full-screen below the header, no sidebar at all ── */
+/* ── DECK RAIL — vertical tab-switcher for jumping between decks
+   without leaving the session, styled after a browser tab list ── */
+.deck-rail {
+    position: fixed; top: 55px; left: 0; bottom: 0; width: 220px;
+    background: #fafafa; border-right: 1px solid var(--border);
+    overflow-y: auto; padding: 12px 10px;
+    display: flex; flex-direction: column; gap: 2px;
+}
+.deck-rail-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 10px; border-radius: 8px; cursor: pointer;
+    font-size: 12.5px; color: #374151;
+    transition: background 0.15s ease;
+}
+.deck-rail-item:hover { background: #f0f0f0; }
+.deck-rail-item.active { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.08); color: var(--text-primary); font-weight: 600; }
+.deck-rail-icon { flex-shrink: 0; font-size: 13px; }
+.deck-rail-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.deck-rail-add {
+    margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 9px; border-radius: 8px; border: 1px dashed #d1d5db; color: #9ca3af;
+    cursor: pointer; font-size: 12.5px; font-weight: 600; background: none; font-family: inherit;
+}
+.deck-rail-add:hover { border-color: #9ca3af; color: #6b7280; }
+
+/* ── MAIN — now offset by the rail instead of spanning full width ── */
+.session-main {
+    position: fixed; top: 55px; left: 220px; right: 0; bottom: 0;
+    overflow-y: auto;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 32px 24px 60px;
+}
+
+/* Deck name field, styled like a browser search/omnibox — sits IN the header */
+.session-namebar {
+    width: 340px; max-width: 40vw;
+    font-size: 14px; font-weight: 600; color: var(--text-primary);
+    text-align: center; font-family: inherit;
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #f9fafb;
+    outline: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+.session-namebar:focus { border-color: var(--accent); background: #fff; }
+.session-namebar[readonly] { cursor: default; color: var(--text-primary); }
+
+#sessionCardArea {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.session-progress-wrap {
+    display: flex; align-items: center; gap: 16px;
+    max-width: 1000px; width: 100%; margin-bottom: 28px;
+}
+.session-progress-row {
+    display: flex; gap: 4px; flex-wrap: wrap;
+    flex: 1;
+}
+.session-counter-top { font-size: 12px; color: #9ca3af; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+.session-progress-block {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid #e5e7eb; background: #efefef; cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    flex-shrink: 0; padding: 0;
+}
+.session-progress-block:hover { transform: scale(1.15); }
+.session-progress-block.filled { background: var(--accent); border-color: var(--accent); }
+.session-progress-block.rated-good { background: #54D3AB; border-color: #54D3AB; }
+.session-progress-block.rated-unsure { background: #f59e0b; border-color: #f59e0b; }
+.session-progress-block.rated-forgot { background: #E16280; border-color: #E16280; }
+.session-progress-block.current { border-color: var(--accent); border-width: 2px; }
+
+.session-card-stage {
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+    margin-bottom: 18px; width: 100%; max-width: 1080px;
+}
+.session-nav-arrow {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--border); background: white; color: #374151;
+    font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.15s ease;
+}
+.session-nav-arrow:hover:not(:disabled) { border-color: #c7c7c7; background: #fafafa; }
+.session-nav-arrow:disabled { opacity: 0.3; cursor: default; }
+
+.flashcard {
+    perspective: 1800px;
+    width: min(1000px, calc(100vw - 320px));
+    height: min(560px, 65vh);
+    flex-shrink: 0;
+}
+.flashcard-inner {
+    position: relative; width: 100%; height: 100%;
+    transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+.flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+.flashcard.pulse .flashcard-inner { animation: cardPulse 0.4s ease; }
+@keyframes cardPulse { 0% { transform: scale(1); } 40% { transform: scale(0.97); } 100% { transform: scale(1); } }
+.flashcard-face {
+    position: absolute; inset: 0;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    border-radius: 22px; border: 1px solid #d4d4d4; background: #fff;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 48px 64px; text-align: center;
+}
+.flashcard-back {
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+}
+.flashcard-face-label {
+    position: absolute; top: 16px; left: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #9ca3af;
+}
+.flashcard-text {
+    width: 100%; height: 100%; border: none; outline: none; resize: none;
+    font-family: inherit; font-size: 20px; font-weight: 500; color: var(--text-primary);
+    text-align: center; background: transparent; line-height: 1.5; padding-top: 18px; cursor: text;
+}
+.flashcard-text::placeholder { color: #d1d5db; font-weight: 400; }
+.flashcard-text[readonly] { cursor: pointer; }
+.flashcard-flip-hint { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-size: 11px; color: #c7c7c7; }
+
+.session-bottom-bar {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; max-width: 1000px; margin: 0 auto 8px;
+}
+
+/* Edit mode — Add/Delete Card, same footprint as the rating buttons below */
+.session-edit-actions { display: flex; gap: 16px; width: 100%; }
+.session-edit-btn {
+    flex: 1; min-height: 96px; padding: 22px;
+    border-radius: 12px; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    border: 1.5px solid var(--border); background: white; color: #374151;
+    transition: all 0.15s ease;
+}
+.session-edit-btn:hover { border-color: #c7c7c7; background: #fafafa; }
+.session-edit-btn.danger { color: #ef4444; border-color: #fecaca; }
+.session-edit-btn.danger:hover { background: #fef2f2; border-color: #ef4444; }
+.session-edit-btn:disabled { opacity: 0.4; cursor: default; }
+.session-edit-btn:disabled:hover { background: white; border-color: var(--border); }
+
+/* Study mode — confidence rating, same colors/shape as the Pillar Deck session */
+.session-rating-row { display: flex; gap: 16px; width: 100%; }
+.rating-btn {
+    flex: 1; min-height: 96px; padding: 18px 14px;
+    border-radius: 14px; border: none; cursor: pointer; font-family: inherit;
+    color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.rating-btn:hover { transform: translateY(-2px); }
+.rating-btn:active { transform: translateY(0); }
+.rating-btn.good { background: #54D3AB; }
+.rating-btn.good:hover { box-shadow: 0 6px 16px rgba(84, 211, 171, 0.35); }
+.rating-btn.unsure { background: #f59e0b; }
+.rating-btn.unsure:hover { box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35); }
+.rating-btn.forgot { background: #E16280; }
+.rating-btn.forgot:hover { box-shadow: 0 6px 16px rgba(225, 98, 128, 0.35); }
+.rating-btn-label { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.rating-btn-sub { font-size: 12px; font-weight: 500; opacity: 0.9; }
+.rating-btn-key {
+    margin-top: 3px; font-size: 10px; font-weight: 700;
+    background: rgba(255,255,255,0.28); padding: 2px 7px; border-radius: 4px;
+}
+
+.session-timeline-wrap { max-width: 900px; width: 100%; margin: 0 auto; }
+.session-timeline-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #9ca3af; margin-bottom: 12px; text-align: center;
+}
+.session-timeline { display: flex; gap: 12px; overflow-x: auto; padding: 4px 4px 16px; justify-content: center; flex-wrap: wrap; }
+.timeline-card {
+    flex-shrink: 0; width: 140px; height: 100px; background: white;
+    border: 1.5px solid var(--border); border-radius: 10px; padding: 12px; cursor: grab;
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: border-color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+}
+.timeline-card:hover { border-color: #c7c7c7; }
+.timeline-card.dragging { opacity: 0.35; }
+.timeline-card.drag-over { border-color: var(--accent); transform: scale(1.04); }
+.timeline-card-num { font-size: 10px; font-weight: 700; color: #9ca3af; }
+.timeline-card-preview {
+    font-size: 12px; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; line-height: 1.3;
+}
+.timeline-card-preview.empty { color: #d1d5db; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="header-bar-1">
+    <button class="exit-btn" id="exitBtn">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="16" y2="16"/><line x1="16" y1="4" x2="4" y2="16"/></svg>
+        <span>Exit</span>
+    </button>
+    <input class="session-namebar" id="deckNameInput" placeholder="Deck name">
+    <div class="header-controls" id="headerControls"></div>
+</div>
+
+<div class="deck-rail" id="deckRail"></div>
+
+<div class="session-main">
+    <div class="session-progress-wrap">
+        <div class="session-progress-row" id="sessionProgressRow"></div>
+        <span class="session-counter-top" id="sessionCounterTop"></span>
+    </div>
+
+    <div id="sessionCardArea">
+        <div class="session-card-stage">
+            <button class="session-nav-arrow" id="prevCardBtn">‹</button>
+            <div class="flashcard" id="flashcard">
+                <div class="flashcard-inner">
+                    <div class="flashcard-face flashcard-front">
+                        <span class="flashcard-face-label">Front</span>
+                        <textarea class="flashcard-text" id="frontText" placeholder="Type the question or prompt…"></textarea>
+                        <span class="flashcard-flip-hint">Click to flip</span>
+                    </div>
+                    <div class="flashcard-face flashcard-back">
+                        <span class="flashcard-face-label">Back</span>
+                        <textarea class="flashcard-text" id="backText" placeholder="Type the answer…"></textarea>
+                        <span class="flashcard-flip-hint">Click to flip</span>
+                    </div>
+                </div>
+            </div>
+            <button class="session-nav-arrow" id="nextCardBtn">›</button>
+        </div>
+        <div class="session-bottom-bar" id="sessionBottomBar"></div>
+    </div>
+
+    <div class="session-timeline-wrap" id="sessionTimelineWrap" style="display:none;">
+        <div class="session-timeline-label">Drag to reorder</div>
+        <div class="session-timeline" id="sessionTimeline"></div>
+    </div>
+</div>
+
+<script>
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str == null ? '' : str;
+        return div.innerHTML;
+    }
+
+    const STORAGE_KEY = 'montura_my_decks';
+    function loadDecks() {
+        try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : []; }
+        catch (e) { return []; }
+    }
+    function saveDecks() { localStorage.setItem(STORAGE_KEY, JSON.stringify(decks)); }
+
+    let decks = loadDecks();
+    const params = new URLSearchParams(window.location.search);
+    const deckId = parseInt(params.get('id'), 10);
+    let currentDeck = decks.find(d => d.id === deckId);
+
+    // Fallback — no matching deck (bad link, cleared storage, etc.)
+    if (!currentDeck) {
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:Inter,sans-serif;color:#6b7280;">Couldn\'t find that deck. <a href="flashtiles-my-decks.html" style="color:#1d7fe2;margin-left:6px;">Back to Decks</a></div>';
+        throw new Error('Deck not found');
+    }
+
+    let currentCardIndex = 0;
+    let sessionMode = currentDeck.hasStarted ? 'study' : 'edit';
+    let isFlipped = false;
+    let timelineMode = false;
+    let ratedCards = new Map(); // index -> 'good' | 'unsure' | 'forgot'
+    let nextDeckId = decks.reduce((max, d) => Math.max(max, d.id || 0), 0) + 1;
+
+    function currentCard() { return currentDeck.cards[currentCardIndex]; }
+
+    function saveCurrentCardText() {
+        const front = document.getElementById('frontText');
+        const back = document.getElementById('backText');
+        if (front) currentCard().front = front.value;
+        if (back) currentCard().back = back.value;
+    }
+
+    function persistDeck() {
+        const idx = decks.findIndex(d => d.id === currentDeck.id);
+        if (idx > -1) decks[idx] = currentDeck;
+        saveDecks();
+    }
+
+    function exitToWall() {
+        saveCurrentCardText();
+        persistDeck();
+        window.location.href = 'flashtiles-my-decks.html';
+    }
+    document.getElementById('exitBtn').addEventListener('click', exitToWall);
+
+    function switchToDeck(deck) {
+        saveCurrentCardText();
+        persistDeck();
+        currentDeck = deck;
+        currentCardIndex = 0;
+        sessionMode = currentDeck.hasStarted ? 'study' : 'edit';
+        isFlipped = false;
+        timelineMode = false;
+        ratedCards = new Map();
+        // reflect the switch in the URL without a full page reload
+        const url = new URL(window.location);
+        url.searchParams.set('id', currentDeck.id);
+        window.history.replaceState({}, '', url);
+        renderSession();
+    }
+
+    function createDeckFromRail() {
+        saveCurrentCardText();
+        persistDeck();
+        const deck = {
+            id: nextDeckId++,
+            name: `New Deck ${decks.length + 1}`,
+            topics: [],
+            strength: null,
+            lastStudied: null,
+            justCreated: true,
+            hasStarted: false,
+            cards: [{ front: '', back: '' }]
+        };
+        decks.unshift(deck);
+        switchToDeck(deck);
+    }
+
+    function renderDeckRail() {
+        const rail = document.getElementById('deckRail');
+        rail.innerHTML = '';
+        decks.forEach(deck => {
+            const item = document.createElement('div');
+            item.className = 'deck-rail-item' + (deck.id === currentDeck.id ? ' active' : '');
+            item.innerHTML = `<span class="deck-rail-icon">🃏</span><span class="deck-rail-name">${escapeHtml(deck.name)}</span>`;
+            item.addEventListener('click', () => {
+                if (deck.id !== currentDeck.id) switchToDeck(deck);
+            });
+            rail.appendChild(item);
+        });
+
+        const addBtn = document.createElement('button');
+        addBtn.className = 'deck-rail-add';
+        addBtn.innerHTML = '+ New deck';
+        addBtn.addEventListener('click', createDeckFromRail);
+        rail.appendChild(addBtn);
+    }
+
+    function renderSession() {
+        renderDeckRail();
+        renderNameBar();
+        renderHeaderControls();
+        renderProgressRow();
+        renderCardStage();
+        renderBottomBar();
+        if (timelineMode) renderTimeline();
+        document.getElementById('sessionCardArea').style.display = timelineMode ? 'none' : '';
+        document.getElementById('sessionTimelineWrap').style.display = timelineMode ? '' : 'none';
+    }
+
+    function renderNameBar() {
+        const input = document.getElementById('deckNameInput');
+        input.value = currentDeck.name;
+        input.readOnly = sessionMode !== 'edit';
+        input.oninput = () => { currentDeck.name = input.value; };
+        input.onblur = () => { currentDeck.name = input.value.trim() || currentDeck.name; input.value = currentDeck.name; persistDeck(); };
+    }
+
+    function renderHeaderControls() {
+        const controls = document.getElementById('headerControls');
+        controls.innerHTML = '';
+
+        const shuffleBtn = document.createElement('button');
+        shuffleBtn.className = 'hdr-btn';
+        shuffleBtn.innerHTML = '🔀 Shuffle';
+        shuffleBtn.addEventListener('click', shuffleCards);
+        controls.appendChild(shuffleBtn);
+
+        if (sessionMode === 'edit') {
+            const reorderBtn = document.createElement('button');
+            reorderBtn.className = 'hdr-btn' + (timelineMode ? ' active' : '');
+            reorderBtn.innerHTML = '⋮⋮ Reorder';
+            reorderBtn.addEventListener('click', () => {
+                saveCurrentCardText();
+                timelineMode = !timelineMode;
+                renderSession();
+            });
+            controls.appendChild(reorderBtn);
+
+            const completeBtn = document.createElement('button');
+            completeBtn.className = 'hdr-btn-primary';
+            completeBtn.textContent = currentDeck.hasStarted ? 'Save & Study →' : 'Complete Deck →';
+            completeBtn.addEventListener('click', () => {
+                saveCurrentCardText();
+                currentDeck.hasStarted = true;
+                currentDeck.justCreated = false;
+                sessionMode = 'study';
+                currentCardIndex = 0;
+                isFlipped = false;
+                timelineMode = false;
+                ratedCards = new Map();
+                persistDeck();
+                renderSession();
+            });
+            controls.appendChild(completeBtn);
+        } else {
+            const editBtn = document.createElement('button');
+            editBtn.className = 'hdr-btn';
+            editBtn.innerHTML = '✏️ Edit';
+            editBtn.addEventListener('click', () => {
+                sessionMode = 'edit';
+                isFlipped = false;
+                timelineMode = false;
+                renderSession();
+            });
+            controls.appendChild(editBtn);
+        }
+    }
+
+    function renderTopCounter() {
+        document.getElementById('sessionCounterTop').textContent = `Card ${currentCardIndex + 1} of ${currentDeck.cards.length}`;
+    }
+
+    function renderProgressRow() {
+        const row = document.getElementById('sessionProgressRow');
+        row.innerHTML = '';
+        currentDeck.cards.forEach((card, i) => {
+            const block = document.createElement('button');
+            let stateClass = '';
+            if (sessionMode === 'edit') {
+                stateClass = !!(card.front && card.back) ? ' filled' : '';
+            } else if (ratedCards.has(i)) {
+                stateClass = ' rated-' + ratedCards.get(i);
+            }
+            block.className = 'session-progress-block' + stateClass + (i === currentCardIndex ? ' current' : '');
+            block.title = `Card ${i + 1}`;
+            block.addEventListener('click', () => {
+                saveCurrentCardText();
+                currentCardIndex = i;
+                isFlipped = false;
+                renderSession();
+            });
+            row.appendChild(block);
+        });
+        renderTopCounter();
+    }
+
+    function renderCardStage() {
+        const flashcard = document.getElementById('flashcard');
+        flashcard.classList.toggle('flipped', isFlipped);
+
+        const front = document.getElementById('frontText');
+        const back = document.getElementById('backText');
+        const card = currentCard();
+        front.value = card.front;
+        back.value = card.back;
+
+        const readonly = sessionMode === 'study';
+        front.readOnly = readonly;
+        back.readOnly = readonly;
+
+        front.oninput = () => { card.front = front.value; renderProgressRowIfEdit(); };
+        back.oninput = () => { card.back = back.value; renderProgressRowIfEdit(); };
+
+        flashcard.onclick = (e) => {
+            if (sessionMode === 'edit' && (e.target === front || e.target === back)) return;
+            flipCard();
+        };
+
+        document.querySelectorAll('.flashcard-flip-hint').forEach(h => {
+            h.style.display = sessionMode === 'study' ? '' : 'none';
+        });
+
+        document.getElementById('prevCardBtn').disabled = currentCardIndex === 0;
+        document.getElementById('nextCardBtn').disabled = currentCardIndex === currentDeck.cards.length - 1;
+    }
+
+    function renderProgressRowIfEdit() { if (sessionMode === 'edit') renderProgressRow(); }
+
+    function flipCard() {
+        isFlipped = !isFlipped;
+        document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+    }
+
+    function goToCard(i) {
+        saveCurrentCardText();
+        currentCardIndex = Math.max(0, Math.min(i, currentDeck.cards.length - 1));
+        isFlipped = false;
+        renderSession();
+    }
+    document.getElementById('prevCardBtn').addEventListener('click', () => goToCard(currentCardIndex - 1));
+    document.getElementById('nextCardBtn').addEventListener('click', () => goToCard(currentCardIndex + 1));
+
+    function renderBottomBar() {
+        const bar = document.getElementById('sessionBottomBar');
+        bar.innerHTML = '';
+
+        if (sessionMode === 'edit') {
+            const actions = document.createElement('div');
+            actions.className = 'session-edit-actions';
+
+            const addBtn = document.createElement('button');
+            addBtn.className = 'session-edit-btn';
+            addBtn.textContent = '+ Add Card';
+            addBtn.addEventListener('click', () => {
+                saveCurrentCardText();
+                currentDeck.cards.push({ front: '', back: '' });
+                currentCardIndex = currentDeck.cards.length - 1;
+                isFlipped = false;
+                renderSession();
+                document.getElementById('frontText').focus();
+            });
+            actions.appendChild(addBtn);
+
+            const delBtn = document.createElement('button');
+            delBtn.className = 'session-edit-btn danger';
+            delBtn.textContent = 'Delete Card';
+            delBtn.disabled = currentDeck.cards.length <= 1;
+            delBtn.addEventListener('click', () => {
+                if (currentDeck.cards.length <= 1) return;
+                currentDeck.cards.splice(currentCardIndex, 1);
+                currentCardIndex = Math.min(currentCardIndex, currentDeck.cards.length - 1);
+                isFlipped = false;
+                renderSession();
+            });
+            actions.appendChild(delBtn);
+
+            bar.appendChild(actions);
+        } else {
+            const row = document.createElement('div');
+            row.className = 'session-rating-row';
+            row.innerHTML = `
+                <button class="rating-btn good">
+                    <span class="rating-btn-label">✅ Got it</span>
+                    <span class="rating-btn-sub">much later</span>
+                    <span class="rating-btn-key">A</span>
+                </button>
+                <button class="rating-btn unsure">
+                    <span class="rating-btn-label">😕 Not sure</span>
+                    <span class="rating-btn-sub">a few days</span>
+                    <span class="rating-btn-key">S</span>
+                </button>
+                <button class="rating-btn forgot">
+                    <span class="rating-btn-label">😵 Forgot it</span>
+                    <span class="rating-btn-sub">back tomorrow</span>
+                    <span class="rating-btn-key">D</span>
+                </button>`;
+            row.querySelector('.good').addEventListener('click', () => rateCard('good'));
+            row.querySelector('.unsure').addEventListener('click', () => rateCard('unsure'));
+            row.querySelector('.forgot').addEventListener('click', () => rateCard('forgot'));
+            bar.appendChild(row);
+        }
+    }
+
+    function rateCard(rating) {
+        ratedCards.set(currentCardIndex, rating);
+        if (currentCardIndex < currentDeck.cards.length - 1) {
+            goToCard(currentCardIndex + 1);
+        } else {
+            isFlipped = false;
+            renderSession();
+        }
+    }
+
+    document.addEventListener('keydown', e => {
+        if (sessionMode !== 'study' || timelineMode) return;
+        const active = document.activeElement;
+        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') && !active.readOnly) return;
+        const key = e.key.toLowerCase();
+        if (key === 'a') rateCard('good');
+        else if (key === 's') rateCard('unsure');
+        else if (key === 'd') rateCard('forgot');
+    });
+
+    function shuffleCards() {
+        saveCurrentCardText();
+        const arr = currentDeck.cards;
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        currentCardIndex = 0;
+        isFlipped = false;
+        renderSession();
+        const flashcard = document.getElementById('flashcard');
+        flashcard.classList.remove('pulse');
+        void flashcard.offsetWidth;
+        flashcard.classList.add('pulse');
+    }
+
+    function renderTimeline() {
+        const el = document.getElementById('sessionTimeline');
+        el.innerHTML = '';
+        currentDeck.cards.forEach((card, i) => {
+            const tile = document.createElement('div');
+            tile.className = 'timeline-card';
+            tile.draggable = true;
+            tile.innerHTML = `
+                <div class="timeline-card-num">Card ${i + 1}</div>
+                <div class="timeline-card-preview${card.front ? '' : ' empty'}">${card.front ? escapeHtml(card.front) : 'Empty card'}</div>`;
+
+            tile.addEventListener('click', () => { timelineMode = false; goToCard(i); });
+            tile.addEventListener('dragstart', e => { tile.classList.add('dragging'); e.dataTransfer.setData('text/plain', String(i)); });
+            tile.addEventListener('dragend', () => tile.classList.remove('dragging'));
+            tile.addEventListener('dragover', e => { e.preventDefault(); tile.classList.add('drag-over'); });
+            tile.addEventListener('dragleave', () => tile.classList.remove('drag-over'));
+            tile.addEventListener('drop', e => {
+                e.preventDefault();
+                tile.classList.remove('drag-over');
+                const fromIdx = parseInt(e.dataTransfer.getData('text/plain'), 10);
+                if (fromIdx === i) return;
+                const [moved] = currentDeck.cards.splice(fromIdx, 1);
+                currentDeck.cards.splice(i, 0, moved);
+                renderTimeline();
+                renderProgressRow();
+            });
+            el.appendChild(tile);
+        });
+    }
+
+    // Autosave periodically so a closed tab doesn't lose everything
+    setInterval(() => { saveCurrentCardText(); persistDeck(); }, 4000);
+    window.addEventListener('beforeunload', () => { saveCurrentCardText(); persistDeck(); });
+
+    renderSession();
+</script>
+</body>
+</html>
