@@ -2803,16 +2803,11 @@ var submittedQuestions={};
 // ── RESTORE PRIOR PROGRESS ──────────────────────────────────────────────
 // Reads this student's own past attempts on THIS lecture and replays them
 // into the same state variables live answering already uses (submittedQuestions,
-// quizResults, questionAttemptCount) so the existing "already submitted" UI
-// in renderAnswerZone shows correctly — no new rendering logic needed, it
-// already exists for the within-session case.
-//
-// Known limitation: question_attempts stores the SCORE, not the actual
-// selected option or written answer, so a wrong multiple-choice question
-// will show as locked + correct-answer-highlighted, but not which wrong
-// option was originally picked. Free-text/essay answers can't be replayed
-// verbatim either. If exact answer replay is ever needed, that requires a
-// new column to actually store the answer content — separate piece of work.
+// quizResults, selectedAnswers, questionAttemptCount) so the existing
+// "already submitted" UI in renderAnswerZone shows correctly — including
+// the actual answer given (selected option, matched pairs, filled words,
+// or written text), not just correct/wrong. No new rendering logic needed;
+// it already exists for the within-session case for every question type.
 async function restorePriorProgress(){
   if(!currentUser || !currentUser.id) return;
   try{
@@ -2820,7 +2815,7 @@ async function restorePriorProgress(){
       SUPABASE_URL + '/rest/v1/question_attempts' +
       '?user_id=eq.' + currentUser.id +
       '&lecture_slug=eq.' + encodeURIComponent(topicSlug) +
-      '&select=question_index,marks_awarded,marks_available,created_at' +
+      '&select=question_index,marks_awarded,marks_available,student_answer,created_at' +
       '&order=question_index.asc,created_at.desc',
       { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + (await getJWT()) } }
     );
@@ -2841,6 +2836,14 @@ async function restorePriorProgress(){
       var result = r.marks_awarded===r.marks_available ? 'correct' : r.marks_awarded>0 ? 'partial' : 'incorrect';
       submittedQuestions[qNum] = true;
       questionAttemptCount[qNum] = countByQ[qStr];
+      // student_answer comes back already as a proper JS value (string/array/
+      // object) since it's a jsonb column round-tripped through fetch().json()
+      // — no parsing needed. This is the same variable renderAnswerZone reads
+      // for every question type, both live and when already-submitted, so
+      // restoring it here is enough to make the exact prior answer reappear.
+      if(r.student_answer !== null && r.student_answer !== undefined){
+        selectedAnswers[qNum] = r.student_answer;
+      }
       quizResults[qNum] = {
         result: result, awarded: r.marks_awarded, total: r.marks_available,
         enigma: getEnigmaForResult(result, r.marks_awarded, r.marks_available)
@@ -3816,7 +3819,7 @@ function resolveChainStep(qNum, stepIdx, result, state, allSteps, totalMarks){
     });
     // Write skill data for each step to Supabase
     allSteps.forEach(function(s, i){
-      emitSkillData(qNum, s.skillTag || 'proof-chain', state.stepResults[i] === 'passed' ? s.marks : 0, s.marks || 1);
+      emitSkillData(qNum, s.skillTag || 'proof-chain', state.stepResults[i] === 'passed' ? s.marks : 0, s.marks || 1, state.stepAnswers && state.stepAnswers[i]);
     });
     submittedQuestions[qNum] = true;
     var res = awarded === totalMarks ? 'correct' : awarded > 0 ? 'partial' : 'incorrect';
@@ -3867,12 +3870,17 @@ function showChainDiagnostic(diagDiv, state){
 }
 
 // ── SKILL DATA EMITTER (Supabase) ─────────────────────────────────────────────
-async function emitSkillData(qNum, skillTag, awarded, available){
+async function emitSkillData(qNum, skillTag, awarded, available, answerContent){
+  // If the caller doesn't explicitly pass an answer (every question type
+  // except proof-chain steps), fall back to the same variable renderAnswerZone
+  // already uses for every type — multiple-choice key, true/false string,
+  // matched pairs object, filled-gap object, typed lines array, essay text.
+  if(typeof answerContent === 'undefined') answerContent = selectedAnswers[qNum];
   try{
     var timeMs = questionRenderTime[qNum]
       ? Math.round(Date.now() - questionRenderTime[qNum])
       : null;
-    await fetch(SUPABASE_URL + '/rest/v1/question_attempts', {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/question_attempts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -3890,10 +3898,16 @@ async function emitSkillData(qNum, skillTag, awarded, available){
         marks_available: available,
         attempt_number: questionAttemptCount[qNum] || 1,
         time_to_answer_ms: timeMs,
-        hint_used: !!(questionHintUsed[qNum])
+        hint_used: !!(questionHintUsed[qNum]),
+        student_answer: (typeof answerContent === 'undefined') ? null : answerContent
       })
     });
-  } catch(e){ /* silent — never block the student */ }
+    // Never blocks the student either way — but a failed insert used to be
+    // completely invisible. Now it's at least visible in the console.
+    if (!res.ok) {
+      console.error('[progress] question_attempts insert rejected:', res.status, await res.text());
+    }
+  } catch(e){ console.error('[progress] emitSkillData threw:', e); }
 }
 
 // ── THE PLAN INITIALISER ──────────────────────────────────────────────────────
