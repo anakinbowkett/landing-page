@@ -144,8 +144,8 @@ async function loadStudentProgress() {
 
         const res = await fetch(
             `${LP_SUPABASE_URL}/rest/v1/question_attempts?user_id=eq.${user.id}` +
-            `&select=lecture_slug,question_index,marks_awarded,marks_available,attempt_number` +
-            `&order=lecture_slug.asc,question_index.asc,attempt_number.desc`,
+            `&select=lecture_slug,question_index,marks_awarded,marks_available,created_at` +
+            `&order=lecture_slug.asc,question_index.asc,created_at.desc`,
             { headers: { 'apikey': LP_SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt } }
         );
         if (!res.ok) {
