@@ -266,6 +266,24 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
 .flashcard-text[readonly] { cursor: pointer; }
 .flashcard-flip-hint { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-size: 11px; color: #c7c7c7; }
 
+/* Edit-mode flip zones — the front/back textareas fill the card's inner
+   content box, leaving the card's own padding as dead space. These sit in
+   that padding, tinted so it's obvious you can click there to flip and
+   reach the other side, without landing in the middle of the textarea. */
+.flashcard-flip-zone {
+    position: absolute; top: 0; bottom: 0; width: 56px;
+    background: rgba(29,127,226,0.06);
+    cursor: pointer; z-index: 2;
+    display: none; align-items: center; justify-content: center;
+    transition: background 0.15s ease;
+}
+.flashcard.edit-mode .flashcard-flip-zone { display: flex; }
+.flashcard-flip-zone:hover { background: rgba(29,127,226,0.14); }
+.flashcard-flip-zone svg { opacity: 0.55; transition: opacity 0.15s ease; }
+.flashcard-flip-zone:hover svg { opacity: 1; }
+.flashcard-flip-zone-left { left: 0; border-radius: 22px 0 0 22px; }
+.flashcard-flip-zone-right { right: 0; border-radius: 0 22px 22px 0; }
+
 .session-bottom-bar {
     display: flex; align-items: center; justify-content: center;
     width: 100%; max-width: 1000px; margin: 0 auto 8px;
@@ -466,6 +484,8 @@ body.dark-mode .flashcard-back { background: linear-gradient(135deg, #1a2540 0%,
 body.dark-mode .flashcard-face-label { color: #6b7280; }
 body.dark-mode .flashcard-text::placeholder { color: #4b5563; }
 body.dark-mode .flashcard-flip-hint { color: #4b5563; }
+body.dark-mode .flashcard-flip-zone { background: rgba(96,165,250,0.10); }
+body.dark-mode .flashcard-flip-zone:hover { background: rgba(96,165,250,0.18); }
 
 body.dark-mode .session-edit-btn { background: #1e2330; color: #cbd5e1; }
 body.dark-mode .session-edit-btn:hover { background: #2d3748; border-color: #4b5563; }
@@ -551,11 +571,23 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
                 <div class="flashcard-inner">
                     <div class="flashcard-face flashcard-front">
                         <span class="flashcard-face-label">Front</span>
+                        <div class="flashcard-flip-zone flashcard-flip-zone-left" title="Click to flip">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2.5L4 7L9 11.5" stroke="#1d7fe2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="flashcard-flip-zone flashcard-flip-zone-right" title="Click to flip">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2.5L10 7L5 11.5" stroke="#1d7fe2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
                         <textarea class="flashcard-text" id="frontText" placeholder="Type the question or prompt…"></textarea>
                         <span class="flashcard-flip-hint">Click to flip</span>
                     </div>
                     <div class="flashcard-face flashcard-back">
                         <span class="flashcard-face-label">Back</span>
+                        <div class="flashcard-flip-zone flashcard-flip-zone-left" title="Click to flip">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2.5L4 7L9 11.5" stroke="#1d7fe2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="flashcard-flip-zone flashcard-flip-zone-right" title="Click to flip">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2.5L10 7L5 11.5" stroke="#1d7fe2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
                         <textarea class="flashcard-text" id="backText" placeholder="Type the answer…"></textarea>
                         <span class="flashcard-flip-hint">Click to flip</span>
                     </div>
@@ -1050,6 +1082,7 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
     function renderCardStage() {
         const flashcard = document.getElementById('flashcard');
         flashcard.classList.toggle('flipped', isFlipped);
+        flashcard.classList.toggle('edit-mode', sessionMode === 'edit');
 
         const front = document.getElementById('frontText');
         const back = document.getElementById('backText');
@@ -1118,6 +1151,9 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
     }
     document.getElementById('prevCardBtn').addEventListener('click', () => goToCard(currentCardIndex - 1));
     document.getElementById('nextCardBtn').addEventListener('click', () => goToCard(currentCardIndex + 1));
+    document.querySelectorAll('.flashcard-flip-zone').forEach(zone => {
+        zone.addEventListener('click', (e) => { e.stopPropagation(); flipCard(); });
+    });
 
     function renderBottomBar() {
         const bar = document.getElementById('sessionBottomBar');
