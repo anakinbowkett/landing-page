@@ -80,7 +80,7 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
 /* ── DECK RAIL — vertical tab-switcher for jumping between decks
    without leaving the session, styled after a browser tab list ── */
 .deck-rail {
-    position: fixed; top: 55px; left: 0; bottom: 0; width: 220px;
+    position: fixed; top: 55px; left: 0; bottom: 0; width: 256px;
     background: #fafafa; border-right: 1px solid var(--border);
     overflow-y: auto; padding: 12px 10px;
     display: flex; flex-direction: column; gap: 2px;
@@ -92,21 +92,29 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
 }
 .deck-rail.has-selection-bar { padding-bottom: 60px; }
 .deck-rail-item {
-    display: flex; align-items: center; gap: 8px;
-    padding: 9px 10px; border-radius: 8px; cursor: pointer;
-    font-size: 12.5px; color: #374151;
+    display: flex; align-items: center; gap: 9px;
+    padding: 11px 12px; border-radius: 9px; cursor: pointer;
+    font-size: 13.5px; color: #374151;
     transition: background 0.15s ease, box-shadow 0.15s ease;
 }
 .deck-rail-item:hover { background: #f0f0f0; }
 .deck-rail-item.active { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.08); color: var(--text-primary); font-weight: 600; }
 .deck-rail-item.multi-selected { background: #eff6ff; box-shadow: inset 0 0 0 1.5px var(--accent); }
-.deck-rail-item.grouped { padding-left: 22px; }
-.deck-rail-icon { flex-shrink: 0; font-size: 13px; }
-.deck-rail-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.deck-rail-item.grouped { padding-left: 26px; }
+.deck-rail-icon { flex-shrink: 0; font-size: 14.5px; }
+.deck-rail-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.deck-rail-delete {
+    flex-shrink: 0; width: 22px; height: 22px; border-radius: 6px;
+    border: none; background: none; color: #9ca3af; font-size: 12px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    opacity: 0; transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.deck-rail-item:hover .deck-rail-delete { opacity: 1; }
+.deck-rail-delete:hover { background: #fee2e2; color: #ef4444; }
 .deck-rail-add {
     margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;
-    padding: 9px; border-radius: 8px; border: 1px dashed #d1d5db; color: #9ca3af;
-    cursor: pointer; font-size: 12.5px; font-weight: 600; background: none; font-family: inherit;
+    padding: 11px; border-radius: 9px; border: 1px dashed #d1d5db; color: #9ca3af;
+    cursor: pointer; font-size: 13.5px; font-weight: 600; background: none; font-family: inherit;
 }
 .deck-rail-add:hover { border-color: #9ca3af; color: #6b7280; }
 
@@ -120,8 +128,8 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
 .group-chevron { transition: transform 0.18s ease; transform: rotate(-90deg); }
 .group-chevron.open { transform: rotate(0deg); }
 .group-color-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--group-color); flex-shrink: 0; }
-.group-name { font-size: 11.5px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.03em; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.group-count { font-size: 10.5px; font-weight: 600; color: #9ca3af; flex-shrink: 0; }
+.group-name { font-size: 12.5px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.03em; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.group-count { font-size: 11px; font-weight: 600; color: #9ca3af; flex-shrink: 0; }
 .group-menu-btn {
     width: 20px; height: 20px; border: none; background: none; cursor: pointer; color: #9ca3af;
     font-size: 13px; line-height: 1; border-radius: 5px; opacity: 0.4; transition: opacity 0.15s ease, background 0.15s ease; flex-shrink: 0;
@@ -131,7 +139,7 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
 
 /* ── MULTI-SELECT → GROUP toolbar, pinned to the bottom of the rail ── */
 .rail-selection-bar {
-    position: fixed; left: 0; bottom: 0; width: 220px;
+    position: fixed; left: 0; bottom: 0; width: 256px;
     background: white; border-top: 1px solid var(--border); border-right: 1px solid var(--border);
     padding: 10px 12px; display: none; align-items: center; justify-content: space-between;
     z-index: 90; gap: 8px;
@@ -148,7 +156,7 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
 
 /* ── MAIN — now offset by the rail instead of spanning full width ── */
 .session-main {
-    position: fixed; top: 55px; left: 220px; right: 0; bottom: 0;
+    position: fixed; top: 55px; left: 256px; right: 0; bottom: 0;
     overflow-y: auto;
     display: flex; flex-direction: column; align-items: center;
     padding: 32px 24px 60px;
@@ -215,7 +223,7 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
 
 .flashcard {
     perspective: 1800px;
-    width: min(1000px, calc(100vw - 320px));
+    width: min(1000px, calc(100vw - 356px));
     height: min(560px, 65vh);
     flex-shrink: 0;
     transition: transform 0.14s ease, opacity 0.14s ease;
@@ -355,6 +363,23 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
 .group-modal-confirm { font-size: 13px; font-weight: 700; color: white; background: var(--accent); border: none; border-radius: 8px; padding: 9px 16px; cursor: pointer; font-family: inherit; }
 .group-modal-confirm:hover { background: #1668c2; }
 
+/* ── DELETE DECK confirmation ── */
+.confirm-modal-overlay {
+    position: fixed; inset: 0; background: rgba(17,24,39,0.4);
+    display: none; align-items: center; justify-content: center; z-index: 600;
+}
+.confirm-modal {
+    width: 300px; background: white; border-radius: 16px; padding: 22px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.confirm-modal-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+.confirm-modal-text { font-size: 13px; color: #6b7280; line-height: 1.5; margin-bottom: 20px; }
+.confirm-modal-footer { display: flex; justify-content: flex-end; gap: 8px; }
+.confirm-modal-cancel { font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; border: none; border-radius: 8px; padding: 9px 16px; cursor: pointer; font-family: inherit; }
+.confirm-modal-cancel:hover { background: #e5e7eb; }
+.confirm-modal-delete { font-size: 13px; font-weight: 700; color: white; background: #ef4444; border: none; border-radius: 8px; padding: 9px 16px; cursor: pointer; font-family: inherit; }
+.confirm-modal-delete:hover { background: #dc2626; }
+
 /* ── GUIDED TUTORIAL (spotlight tour) — same mechanism as the lecture pages ── */
 .tutorial-overlay { position: fixed; inset: 0; z-index: 10000; display: none; }
 .tutorial-overlay.active { display: block; }
@@ -427,6 +452,11 @@ body.dark-mode .session-namebar:focus { background: #1e2330; }
 
 body.dark-mode .session-counter-top { color: #6b7280; }
 body.dark-mode .session-progress-block { background: #1e2330; border-color: #374151; }
+body.dark-mode .session-progress-block.filled { background: var(--accent); border-color: var(--accent); }
+body.dark-mode .session-progress-block.rated-good { background: #54D3AB; border-color: #54D3AB; }
+body.dark-mode .session-progress-block.rated-unsure { background: #f59e0b; border-color: #f59e0b; }
+body.dark-mode .session-progress-block.rated-forgot { background: #E16280; border-color: #E16280; }
+body.dark-mode .session-progress-block.current { border-color: var(--accent); border-width: 2px; }
 
 body.dark-mode .session-nav-arrow { background: #1e2330; color: #cbd5e1; }
 body.dark-mode .session-nav-arrow:hover:not(:disabled) { background: #2d3748; border-color: #4b5563; }
@@ -456,6 +486,12 @@ body.dark-mode .group-modal-label { color: #6b7280; }
 body.dark-mode .group-modal-cancel { background: #2d3748; color: #94a3b8; }
 body.dark-mode .group-modal-cancel:hover { background: #374151; }
 body.dark-mode .group-swatch.selected { border-color: #f1f5f9; box-shadow: 0 0 0 2px #1e2330 inset; }
+
+body.dark-mode .confirm-modal-overlay { background: rgba(0,0,0,0.6); }
+body.dark-mode .confirm-modal { background: #1e2330; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+body.dark-mode .confirm-modal-text { color: #94a3b8; }
+body.dark-mode .confirm-modal-cancel { background: #2d3748; color: #94a3b8; }
+body.dark-mode .confirm-modal-cancel:hover { background: #374151; }
 
 body.dark-mode .tutorial-spotlight { box-shadow: 0 0 0 9999px rgba(5,8,15,0.82); }
 body.dark-mode .tutorial-tooltip { background: #1e2330; box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
@@ -549,6 +585,18 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
                 <button class="group-modal-cancel" id="groupModalCancel">Cancel</button>
                 <button class="group-modal-confirm" id="groupModalConfirm">Create Group</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE DECK CONFIRMATION -->
+<div class="confirm-modal-overlay" id="confirmModalOverlay">
+    <div class="confirm-modal">
+        <div class="confirm-modal-title" id="confirmModalTitle">Delete this deck?</div>
+        <div class="confirm-modal-text" id="confirmModalText">This can't be undone.</div>
+        <div class="confirm-modal-footer">
+            <button class="confirm-modal-cancel" id="confirmModalCancel">Cancel</button>
+            <button class="confirm-modal-delete" id="confirmModalDelete">Delete</button>
         </div>
     </div>
 </div>
@@ -703,12 +751,20 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
             + (indented ? ' grouped' : '')
             + (selectedDeckIds.has(deck.id) ? ' multi-selected' : '');
         if (groupColor) item.style.borderLeft = '3px solid ' + groupColor;
-        item.innerHTML = `<span class="deck-rail-icon">🃏</span><span class="deck-rail-name">${escapeHtml(deck.name)}</span>`;
+        item.innerHTML = `
+            <span class="deck-rail-icon">🃏</span>
+            <span class="deck-rail-name">${escapeHtml(deck.name)}</span>
+            <button class="deck-rail-delete" type="button" title="Delete deck">✕</button>
+        `;
         item.addEventListener('click', (e) => {
             if (e.ctrlKey || e.metaKey) { e.preventDefault(); toggleDeckSelection(deck.id); return; }
             if (selectedDeckIds.size) selectedDeckIds.clear();
             if (deck.id !== currentDeck.id) switchToDeck(deck);
             else renderDeckRail();
+        });
+        item.querySelector('.deck-rail-delete').addEventListener('click', (e) => {
+            e.stopPropagation();
+            requestDeleteDeck(deck);
         });
         return item;
     }
@@ -852,6 +908,49 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
     document.getElementById('groupModalNameInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); confirmGroupModal(); } });
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && document.getElementById('groupModalOverlay').style.display === 'flex') closeGroupModal();
+    });
+
+    // ── DELETE DECK (with confirmation) ─────────────────────────────────
+    let deckPendingDelete = null;
+
+    function requestDeleteDeck(deck) {
+        deckPendingDelete = deck;
+        document.getElementById('confirmModalTitle').textContent = `Delete "${deck.name}"?`;
+        const count = deck.cards.length;
+        document.getElementById('confirmModalText').textContent =
+            `This deck and ${count} card${count === 1 ? '' : 's'} in it will be gone for good — this can't be undone.`;
+        document.getElementById('confirmModalOverlay').style.display = 'flex';
+    }
+    function closeConfirmModal() {
+        document.getElementById('confirmModalOverlay').style.display = 'none';
+        deckPendingDelete = null;
+    }
+    function confirmDeleteDeck() {
+        if (!deckPendingDelete) return;
+        const deletedId = deckPendingDelete.id;
+        decks = decks.filter(d => d.id !== deletedId);
+        groups.forEach(g => { g.deckIds = g.deckIds.filter(id => id !== deletedId); });
+        groups = groups.filter(g => g.deckIds.length > 0);
+        selectedDeckIds.delete(deletedId);
+        saveDecks();
+        saveGroups();
+        closeConfirmModal();
+
+        if (currentDeck.id === deletedId) {
+            if (decks.length) {
+                switchToDeck(decks[0]);
+            } else {
+                window.location.href = 'flashtiles-my-decks.html';
+            }
+        } else {
+            renderDeckRail();
+        }
+    }
+    document.getElementById('confirmModalCancel').addEventListener('click', closeConfirmModal);
+    document.getElementById('confirmModalDelete').addEventListener('click', confirmDeleteDeck);
+    document.getElementById('confirmModalOverlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeConfirmModal(); });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && document.getElementById('confirmModalOverlay').style.display === 'flex') closeConfirmModal();
     });
 
     function renderSession() {
