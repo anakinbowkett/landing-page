@@ -100,6 +100,8 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
 .deck-rail-item:hover { background: #f0f0f0; }
 .deck-rail-item.active { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.08); color: var(--text-primary); font-weight: 600; }
 .deck-rail-item.multi-selected { background: #eff6ff; box-shadow: inset 0 0 0 1.5px var(--accent); }
+.deck-rail-item.dragging { opacity: 0.4; }
+.deck-rail-item.drag-over-item { box-shadow: inset 0 2px 0 var(--accent); }
 .deck-rail-item.grouped { padding-left: 26px; }
 .deck-rail-icon { flex-shrink: 0; font-size: 14.5px; }
 .deck-rail-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
@@ -123,7 +125,10 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
     display: flex; align-items: center; gap: 7px;
     padding: 8px 8px 8px 4px; margin-top: 4px; border-radius: 8px;
     cursor: pointer; user-select: none;
+    transition: opacity 0.15s ease, box-shadow 0.15s ease;
 }
+.deck-group-header.dragging { opacity: 0.4; }
+.deck-group-header.drag-over-item { box-shadow: inset 0 2px 0 var(--accent); }
 .group-collapse-toggle { display: flex; align-items: center; justify-content: center; color: #9ca3af; flex-shrink: 0; }
 .group-chevron { transition: transform 0.18s ease; transform: rotate(-90deg); }
 .group-chevron.open { transform: rotate(0deg); }
@@ -194,7 +199,10 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
     display: flex; gap: 4px; flex-wrap: wrap;
     flex: 1;
 }
-.session-counter-top { font-size: 12px; color: #9ca3af; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+.session-counter-top {
+    font-size: 12px; color: var(--text-primary); font-weight: 600; white-space: nowrap; flex-shrink: 0;
+    padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border); background: white;
+}
 .session-progress-block {
     width: 16px; height: 16px; border-radius: 4px;
     border: 1.5px solid #e5e7eb; background: #efefef; cursor: pointer;
@@ -213,9 +221,9 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
     margin-bottom: 18px; width: 100%; max-width: 1080px;
 }
 .session-nav-arrow {
-    width: 40px; height: 40px; border-radius: 50%;
+    width: 48px; height: 48px; border-radius: 50%;
     border: 1px solid var(--border); background: white; color: #374151;
-    font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 21px; cursor: pointer; display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; transition: all 0.15s ease;
 }
 .session-nav-arrow:hover:not(:disabled) { border-color: #c7c7c7; background: #fafafa; }
@@ -246,7 +254,7 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
     border-radius: 22px; border: 1px solid #d4d4d4; background: #fff;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 48px 64px; text-align: center;
+    padding: 48px 84px; text-align: center;
 }
 .flashcard-back {
     transform: rotateY(180deg);
@@ -271,7 +279,7 @@ html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-f
    that padding, tinted so it's obvious you can click there to flip and
    reach the other side, without landing in the middle of the textarea. */
 .flashcard-flip-zone {
-    position: absolute; top: 0; bottom: 0; width: 56px;
+    position: absolute; top: 0; bottom: 0; width: 78px;
     background: rgba(29,127,226,0.06);
     cursor: pointer; z-index: 2;
     display: none; align-items: center; justify-content: center;
@@ -468,7 +476,7 @@ body.dark-mode .rail-selection-clear:hover { background: #2d3748; }
 body.dark-mode .session-namebar { background: #1e2330; }
 body.dark-mode .session-namebar:focus { background: #1e2330; }
 
-body.dark-mode .session-counter-top { color: #6b7280; }
+body.dark-mode .session-counter-top { background: #1e2330; }
 body.dark-mode .session-progress-block { background: #1e2330; border-color: #374151; }
 body.dark-mode .session-progress-block.filled { background: var(--accent); border-color: var(--accent); }
 body.dark-mode .session-progress-block.rated-good { background: #54D3AB; border-color: #54D3AB; }
@@ -776,13 +784,51 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
     document.getElementById('railSelectionClear').addEventListener('click', clearSelection);
     document.getElementById('railSelectionGroup').addEventListener('click', openCreateGroupModal);
 
-    function buildDeckRailItem(deck, indented, groupColor) {
+    // ── DRAG TO REORDER — deck tabs within their own list (ungrouped list,
+    // or within one group), and groups relative to other groups. Dragging
+    // a deck across group boundaries isn't supported here — that's what
+    // Ctrl/Cmd+click "Group" is for.
+    let dragState = null; // { type: 'ungrouped', id } | { type: 'grouped', groupId, id } | { type: 'group', id }
+
+    function reorderUngroupedDeck(draggedId, targetId) {
+        if (draggedId === targetId) return;
+        const fromIdx = decks.findIndex(d => d.id === draggedId);
+        if (fromIdx === -1) return;
+        const [moved] = decks.splice(fromIdx, 1);
+        const toIdx = decks.findIndex(d => d.id === targetId);
+        decks.splice(toIdx === -1 ? decks.length : toIdx, 0, moved);
+        saveDecks();
+        renderDeckRail();
+    }
+    function reorderGroupedDeck(group, draggedId, targetId) {
+        if (draggedId === targetId) return;
+        const fromIdx = group.deckIds.indexOf(draggedId);
+        if (fromIdx === -1) return;
+        group.deckIds.splice(fromIdx, 1);
+        const toIdx = group.deckIds.indexOf(targetId);
+        group.deckIds.splice(toIdx === -1 ? group.deckIds.length : toIdx, 0, draggedId);
+        saveGroups();
+        renderDeckRail();
+    }
+    function reorderGroup(draggedId, targetId) {
+        if (draggedId === targetId) return;
+        const fromIdx = groups.findIndex(g => g.id === draggedId);
+        if (fromIdx === -1) return;
+        const [moved] = groups.splice(fromIdx, 1);
+        const toIdx = groups.findIndex(g => g.id === targetId);
+        groups.splice(toIdx === -1 ? groups.length : toIdx, 0, moved);
+        saveGroups();
+        renderDeckRail();
+    }
+
+    function buildDeckRailItem(deck, indented, groupColor, group) {
         const item = document.createElement('div');
         item.className = 'deck-rail-item'
             + (deck.id === currentDeck.id ? ' active' : '')
             + (indented ? ' grouped' : '')
             + (selectedDeckIds.has(deck.id) ? ' multi-selected' : '');
         if (groupColor) item.style.borderLeft = '3px solid ' + groupColor;
+        item.draggable = true;
         item.innerHTML = `
             <span class="deck-rail-icon">🃏</span>
             <span class="deck-rail-name">${escapeHtml(deck.name)}</span>
@@ -798,6 +844,38 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
             e.stopPropagation();
             requestDeleteDeck(deck);
         });
+
+        item.addEventListener('dragstart', (e) => {
+            e.stopPropagation();
+            item.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', String(deck.id));
+            dragState = indented ? { type: 'grouped', groupId: group.id, id: deck.id } : { type: 'ungrouped', id: deck.id };
+        });
+        item.addEventListener('dragend', () => { item.classList.remove('dragging'); dragState = null; });
+        item.addEventListener('dragover', (e) => {
+            if (!dragState) return;
+            const sameList = indented
+                ? (dragState.type === 'grouped' && dragState.groupId === group.id)
+                : (dragState.type === 'ungrouped');
+            if (!sameList) return;
+            e.preventDefault();
+            item.classList.add('drag-over-item');
+        });
+        item.addEventListener('dragleave', () => item.classList.remove('drag-over-item'));
+        item.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            item.classList.remove('drag-over-item');
+            if (!dragState) return;
+            if (indented && dragState.type === 'grouped' && dragState.groupId === group.id) {
+                reorderGroupedDeck(group, dragState.id, deck.id);
+            } else if (!indented && dragState.type === 'ungrouped') {
+                reorderUngroupedDeck(dragState.id, deck.id);
+            }
+            dragState = null;
+        });
+
         return item;
     }
 
@@ -805,6 +883,7 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
         const header = document.createElement('div');
         header.className = 'deck-group-header';
         header.style.setProperty('--group-color', group.color);
+        header.draggable = true;
         header.innerHTML = `
             <span class="group-collapse-toggle">
                 <svg class="group-chevron${group.collapsed ? '' : ' open'}" width="10" height="10" viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -823,6 +902,29 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
             e.stopPropagation();
             openGroupModal({ mode: 'edit', group: group });
         });
+
+        header.addEventListener('dragstart', (e) => {
+            e.stopPropagation();
+            header.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', String(group.id));
+            dragState = { type: 'group', id: group.id };
+        });
+        header.addEventListener('dragend', () => { header.classList.remove('dragging'); dragState = null; });
+        header.addEventListener('dragover', (e) => {
+            if (!dragState || dragState.type !== 'group') return;
+            e.preventDefault();
+            header.classList.add('drag-over-item');
+        });
+        header.addEventListener('dragleave', () => header.classList.remove('drag-over-item'));
+        header.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            header.classList.remove('drag-over-item');
+            if (dragState && dragState.type === 'group') reorderGroup(dragState.id, group.id);
+            dragState = null;
+        });
+
         return header;
     }
 
@@ -847,7 +949,7 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
         // for anyone who never bothers with groups.
         const groupedIds = new Set(groups.flatMap(g => g.deckIds));
         decks.filter(d => !groupedIds.has(d.id)).forEach(deck => {
-            rail.appendChild(buildDeckRailItem(deck, false, null));
+            rail.appendChild(buildDeckRailItem(deck, false, null, null));
         });
 
         // Then groups, each an independent collapsible accordion block.
@@ -856,7 +958,7 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
             if (!groupDecks.length) return; // every deck in this group was deleted elsewhere
             rail.appendChild(buildGroupHeader(group, groupDecks));
             if (!group.collapsed) {
-                groupDecks.forEach(deck => rail.appendChild(buildDeckRailItem(deck, true, group.color)));
+                groupDecks.forEach(deck => rail.appendChild(buildDeckRailItem(deck, true, group.color, group)));
             }
         });
 
@@ -1048,7 +1150,6 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
             editBtn.innerHTML = '✏️ Edit';
             editBtn.addEventListener('click', () => {
                 sessionMode = 'edit';
-                isFlipped = false;
                 timelineMode = false;
                 renderSession();
             });
@@ -1231,9 +1332,21 @@ body.dark-mode .tutorial-skip-btn:hover { color: #94a3b8; }
     }
 
     document.addEventListener('keydown', e => {
-        if (sessionMode !== 'study' || timelineMode) return;
+        if (timelineMode) return;
         const active = document.activeElement;
-        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') && !active.readOnly) return;
+        const isEditableFocus = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') && !active.readOnly;
+
+        // Left/Right navigate cards in either mode — but not while a
+        // student is actually typing, where the arrows should just move
+        // the text cursor instead.
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            if (isEditableFocus) return;
+            e.preventDefault();
+            goToCard(e.key === 'ArrowLeft' ? currentCardIndex - 1 : currentCardIndex + 1);
+            return;
+        }
+
+        if (sessionMode !== 'study' || isEditableFocus) return;
         const key = e.key.toLowerCase();
         if (key === 'a') rateCard('good');
         else if (key === 's') rateCard('unsure');
