@@ -763,7 +763,7 @@ async function saveRating(skillTag, rating) {
         });
     } catch(e) { console.log('FSRS save failed', e); }
 }
-    renderSession();
+    loadUser().then(() => renderSession());
 </script>
 </body>
 </html>
