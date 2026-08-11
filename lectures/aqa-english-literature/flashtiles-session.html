@@ -293,6 +293,26 @@ html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter',
 </div>
 
 <script>
+    const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+
+let currentUser = null;
+
+async function loadUser() {
+    try {
+        const raw = localStorage.getItem('sb-bdoesoqpjhpxkwsjauwo-auth-token');
+        const session = raw ? JSON.parse(raw) : null;
+        if (!session?.access_token) return;
+        const res = await fetch(SUPABASE_URL + '/auth/v1/user', {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': 'Bearer ' + session.access_token
+            }
+        });
+        const data = await res.json();
+        if (data?.id) currentUser = data;
+    } catch(e) { console.log('Auth load failed', e); }
+}
     function escapeHtml(str) {
         const div = document.createElement('div');
         div.textContent = str == null ? '' : str;
@@ -606,14 +626,24 @@ html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter',
     }
 
     function rateCard(rating) {
-        ratedCards.set(currentCardIndex, rating);
-        if (currentCardIndex < currentDeck.cards.length - 1) {
-            goToCard(currentCardIndex + 1);
-        } else {
-            isFlipped = false;
-            renderSession();
-        }
+    ratedCards.set(currentCardIndex, rating);
+    
+    // Map string rating to FSRS number
+    const ratingNum = rating === 'good' ? 5 : rating === 'unsure' ? 3 : 1;
+    
+    // Write to FSRS if card has a skill_tag (Pillar Deck cards do, My Deck cards don't)
+    const card = currentCard();
+    if (card.skill_tag) {
+        saveRating(card.skill_tag, ratingNum); // fire and forget, don't await
     }
+    
+    if (currentCardIndex < currentDeck.cards.length - 1) {
+        goToCard(currentCardIndex + 1);
+    } else {
+        isFlipped = false;
+        renderSession();
+    }
+}
 
     document.addEventListener('keydown', e => {
         if (sessionMode !== 'study' || timelineMode) return;
@@ -674,7 +704,65 @@ html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter',
     // Autosave periodically so a closed tab doesn't lose everything
     setInterval(() => { saveCurrentCardText(); persistDeck(); }, 4000);
     window.addEventListener('beforeunload', () => { saveCurrentCardText(); persistDeck(); });
+function computeFsrsUpdate(current, rating) {
+    let { stability, difficulty, review_count } = current;
 
+    if (rating === 1) {
+        difficulty = Math.min(10, difficulty + 1.5);
+        stability = 1.0;
+    } else if (rating === 3) {
+        difficulty = Math.max(1, difficulty + 0.1);
+        stability = stability * 1.5;
+    } else if (rating === 5) {
+        difficulty = Math.max(1, difficulty - 0.2);
+        stability = stability * 2.5;
+    }
+
+    const daysUntilReview = Math.max(1, Math.round(stability));
+    const next_review = new Date();
+    next_review.setDate(next_review.getDate() + daysUntilReview);
+
+    return {
+        stability: parseFloat(stability.toFixed(2)),
+        difficulty: parseFloat(difficulty.toFixed(2)),
+        next_review: next_review.toISOString().split('T')[0],
+        last_review: new Date().toISOString().split('T')[0],
+        review_count: (review_count || 0) + 1
+    };
+}
+
+async function saveRating(skillTag, rating) {
+    if (!currentUser || !skillTag) return;
+    try {
+        const raw = localStorage.getItem('sb-bdoesoqpjhpxkwsjauwo-auth-token');
+        const session = raw ? JSON.parse(raw) : null;
+        const jwt = session?.access_token || SUPABASE_KEY;
+
+        const getRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/fsrs_skill_state?user_id=eq.${currentUser.id}&skill_tag=eq.${encodeURIComponent(skillTag)}`,
+            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt } }
+        );
+        const rows = await getRes.json();
+        const current = rows[0] || { stability: 1.0, difficulty: 5.0, review_count: 0 };
+
+        const update = computeFsrsUpdate(current, rating);
+
+        await fetch(`${SUPABASE_URL}/rest/v1/fsrs_skill_state`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': 'Bearer ' + jwt,
+                'Content-Type': 'application/json',
+                'Prefer': 'resolution=merge-duplicates'
+            },
+            body: JSON.stringify({
+                user_id: currentUser.id,
+                skill_tag: skillTag,
+                ...update
+            })
+        });
+    } catch(e) { console.log('FSRS save failed', e); }
+}
     renderSession();
 </script>
 </body>
