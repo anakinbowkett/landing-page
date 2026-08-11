@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deck Session</title>
+<title>Pillar Deck Session</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -11,11 +11,15 @@
     --border: #e5e7eb;
     --text-primary: #111827;
     --text-secondary: #6b7280;
+    /* Per-subject wash behind the study area — swap this single value when
+       this file is reused for another subject/exam board (matches that
+       subject's theme.css --accent-soft-bg). English Literature = #dcfce7. */
+    --subject-bg-soft: #dcfce7;
 }
 *, *::before, *::after { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter', sans-serif; color: #111; }
+html, body { height: 100%; margin: 0; background: var(--subject-bg-soft); font-family: 'Inter', sans-serif; color: #111; }
 
-/* ── HEADER — same fixed chrome pattern as the quiz session, no sidebar ── */
+/* ── HEADER ── */
 .header-bar-1 {
     position: fixed; top: 0; left: 0; right: 0; height: 55px;
     background: #ffffff; border-bottom: 1px solid var(--border);
@@ -30,88 +34,95 @@ html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter',
 }
 .exit-btn:hover { color: var(--text-primary); }
 
-.header-controls { position: absolute; right: 24px; display: flex; align-items: center; gap: 8px; }
-.hdr-btn {
-    font-size: 12.5px; font-weight: 600; color: #374151;
-    background: white; border: 1px solid var(--border); border-radius: 8px;
-    padding: 7px 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
-    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
-    font-family: inherit;
-}
-.hdr-btn:hover { border-color: #c7c7c7; background: #fafafa; }
-.hdr-btn.active { background: #eff6ff; border-color: var(--accent); color: var(--accent); }
-.hdr-btn-primary {
-    font-size: 12.5px; font-weight: 700; color: white; background: var(--accent);
-    border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer;
-    transition: background 0.15s ease; font-family: inherit;
-}
-.hdr-btn-primary:hover { background: #1668c2; }
-
-/* ── MAIN — full-screen below the header, no sidebar at all ── */
-/* ── DECK RAIL — vertical tab-switcher for jumping between decks
-   without leaving the session, styled after a browser tab list ── */
-.deck-rail {
-    position: fixed; top: 55px; left: 0; bottom: 0; width: 220px;
-    background: #fafafa; border-right: 1px solid var(--border);
-    overflow-y: auto; padding: 12px 10px;
-    display: flex; flex-direction: column; gap: 2px;
-}
-.deck-rail-item {
-    display: flex; align-items: center; gap: 8px;
-    padding: 9px 10px; border-radius: 8px; cursor: pointer;
-    font-size: 12.5px; color: #374151;
-    transition: background 0.15s ease;
-}
-.deck-rail-item:hover { background: #f0f0f0; }
-.deck-rail-item.active { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.08); color: var(--text-primary); font-weight: 600; }
-.deck-rail-icon { flex-shrink: 0; font-size: 13px; }
-.deck-rail-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-.deck-rail-add {
-    margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;
-    padding: 9px; border-radius: 8px; border: 1px dashed #d1d5db; color: #9ca3af;
-    cursor: pointer; font-size: 12.5px; font-weight: 600; background: none; font-family: inherit;
-}
-.deck-rail-add:hover { border-color: #9ca3af; color: #6b7280; }
-
-/* ── MAIN — now offset by the rail instead of spanning full width ── */
-.session-main {
-    position: fixed; top: 55px; left: 220px; right: 0; bottom: 0;
-    overflow-y: auto;
-    display: flex; flex-direction: column; align-items: center;
-    padding: 32px 24px 60px;
-}
-
-/* Deck name field, styled like a browser search/omnibox — sits IN the header */
 .session-namebar {
-    width: 340px; max-width: 40vw;
+    width: 380px; max-width: 44vw;
     font-size: 14px; font-weight: 600; color: var(--text-primary);
     text-align: center; font-family: inherit;
     padding: 7px 16px;
     border-radius: 999px;
     border: 1px solid var(--border);
     background: #f9fafb;
-    outline: none;
-    transition: border-color 0.15s ease, background 0.15s ease;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.session-namebar:focus { border-color: var(--accent); background: #fff; }
-.session-namebar[readonly] { cursor: default; color: var(--text-primary); }
 
-#sessionCardArea {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.header-controls { position: absolute; right: 24px; display: flex; align-items: center; gap: 8px; }
+.icon-circle-btn {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: white; border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: border-color 0.2s ease, background 0.15s ease; flex-shrink: 0; padding: 0;
 }
+.icon-circle-btn:hover { border-color: #1d7fe2; }
+.icon-circle-btn.active { background: #eff6ff; border-color: var(--accent); }
+
+/* ── SIDEBAR COLLAPSE TOGGLE ── */
+.rail-collapse-btn {
+    position: fixed; top: 63px; left: 8px; z-index: 150;
+    width: 28px; height: 28px; border-radius: 8px;
+    background: white; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: border-color 0.15s ease;
+}
+.rail-collapse-btn:hover { border-color: #c7c7c7; }
+.rail-collapse-btn svg { transition: transform 0.2s ease; }
+.rail-collapse-btn.collapsed svg { transform: rotate(180deg); }
+
+/* ── LECTURE RAIL — the queue. Order is fixed (curriculum / selection
+   order), not user-arranged, so unlike My Decks there's no drag-reorder
+   here — position reflects study sequence, not a free list. ── */
+.lecture-rail {
+    position: fixed; top: 55px; left: 0; bottom: 0; width: 268px;
+    background: #fafafa; border-right: 1px solid var(--border);
+    overflow-y: auto; padding: 14px 10px;
+    display: flex; flex-direction: column; gap: 3px;
+    transition: width 0.2s ease, padding 0.2s ease, opacity 0.15s ease;
+}
+.lecture-rail.collapsed { width: 0; padding: 14px 0; overflow: hidden; opacity: 0; pointer-events: none; border-right-color: transparent; }
+.lecture-rail-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #9ca3af; padding: 4px 10px 8px;
+}
+.lecture-rail-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 11px 12px; border-radius: 10px;
+    font-size: 13.5px; color: #374151;
+    transition: background 0.15s ease;
+}
+.lecture-rail-item.clickable { cursor: pointer; }
+.lecture-rail-item.clickable:hover { background: #f0f0f0; }
+.lecture-rail-item.current { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.08); color: var(--text-primary); font-weight: 700; }
+.lecture-rail-item.current { border-left: 3px solid var(--accent); padding-left: 9px; }
+.lecture-rail-item.complete { color: #6b7280; }
+.lecture-rail-item.locked { color: #b8bcc4; cursor: default; }
+.lecture-rail-status { flex-shrink: 0; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
+.lecture-rail-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.lecture-rail-count { flex-shrink: 0; font-size: 10.5px; font-weight: 600; color: #9ca3af; background: #eee; border-radius: 999px; padding: 2px 7px; }
+.lecture-rail-item.current .lecture-rail-count { background: #eff6ff; color: var(--accent); }
+.lecture-rail-next-badge {
+    flex-shrink: 0; font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    color: #9ca3af; border: 1px solid #e5e7eb; border-radius: 999px; padding: 2px 7px;
+}
+
+/* ── MAIN ── */
+.session-main {
+    position: fixed; top: 55px; left: 268px; right: 0; bottom: 0;
+    overflow-y: auto;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 32px 24px 60px;
+    transition: left 0.2s ease;
+}
+.session-main.rail-collapsed { left: 0; }
 
 .session-progress-wrap {
     display: flex; align-items: center; gap: 16px;
     max-width: 1000px; width: 100%; margin-bottom: 28px;
 }
-.session-progress-row {
-    display: flex; gap: 4px; flex-wrap: wrap;
-    flex: 1;
+.session-progress-row { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
+.session-counter-top {
+    font-size: 12px; color: var(--text-primary); font-weight: 600; white-space: nowrap; flex-shrink: 0;
+    padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border); background: white;
 }
-.session-counter-top { font-size: 12px; color: #9ca3af; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
 .session-progress-block {
     width: 16px; height: 16px; border-radius: 4px;
     border: 1.5px solid #e5e7eb; background: #efefef; cursor: pointer;
@@ -119,7 +130,6 @@ html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter',
     flex-shrink: 0; padding: 0;
 }
 .session-progress-block:hover { transform: scale(1.15); }
-.session-progress-block.filled { background: var(--accent); border-color: var(--accent); }
 .session-progress-block.rated-good { background: #54D3AB; border-color: #54D3AB; }
 .session-progress-block.rated-unsure { background: #f59e0b; border-color: #f59e0b; }
 .session-progress-block.rated-forgot { background: #E16280; border-color: #E16280; }
@@ -130,9 +140,9 @@ html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter',
     margin-bottom: 18px; width: 100%; max-width: 1080px;
 }
 .session-nav-arrow {
-    width: 40px; height: 40px; border-radius: 50%;
+    width: 48px; height: 48px; border-radius: 50%;
     border: 1px solid var(--border); background: white; color: #374151;
-    font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 21px; cursor: pointer; display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; transition: all 0.15s ease;
 }
 .session-nav-arrow:hover:not(:disabled) { border-color: #c7c7c7; background: #fafafa; }
@@ -140,25 +150,28 @@ html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter',
 
 .flashcard {
     perspective: 1800px;
-    width: min(1000px, calc(100vw - 320px));
+    width: min(1000px, calc(100vw - 368px));
     height: min(560px, 65vh);
     flex-shrink: 0;
+    transition: transform 0.14s ease, opacity 0.14s ease;
 }
+.session-main.rail-collapsed .flashcard { width: min(1000px, calc(100vw - 100px)); }
+.flashcard.slide-out-next { transform: translateX(-28px); opacity: 0; }
+.flashcard.slide-out-prev { transform: translateX(28px); opacity: 0; }
+.flashcard.slide-instant { transition: none !important; }
 .flashcard-inner {
     position: relative; width: 100%; height: 100%;
     transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
     transform-style: preserve-3d;
 }
 .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
-.flashcard.pulse .flashcard-inner { animation: cardPulse 0.4s ease; }
-@keyframes cardPulse { 0% { transform: scale(1); } 40% { transform: scale(0.97); } 100% { transform: scale(1); } }
 .flashcard-face {
     position: absolute; inset: 0;
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
     border-radius: 22px; border: 1px solid #d4d4d4; background: #fff;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 48px 64px; text-align: center;
+    padding: 48px 84px; text-align: center; cursor: pointer;
 }
 .flashcard-back {
     transform: rotateY(180deg);
@@ -169,37 +182,21 @@ html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter',
     font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
     color: #9ca3af;
 }
-.flashcard-text {
-    width: 100%; height: 100%; border: none; outline: none; resize: none;
-    font-family: inherit; font-size: 20px; font-weight: 500; color: var(--text-primary);
-    text-align: center; background: transparent; line-height: 1.5; padding-top: 18px; cursor: text;
+.flashcard-skill-tag {
+    position: absolute; top: 14px; right: 20px;
+    font-size: 10.5px; font-weight: 600; color: var(--accent);
+    background: #eff6ff; border-radius: 999px; padding: 3px 10px;
 }
-.flashcard-text::placeholder { color: #d1d5db; font-weight: 400; }
-.flashcard-text[readonly] { cursor: pointer; }
+.flashcard-text {
+    font-size: 20px; font-weight: 500; color: var(--text-primary);
+    line-height: 1.55; white-space: pre-line;
+}
 .flashcard-flip-hint { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-size: 11px; color: #c7c7c7; }
 
 .session-bottom-bar {
     display: flex; align-items: center; justify-content: center;
     width: 100%; max-width: 1000px; margin: 0 auto 8px;
 }
-
-/* Edit mode — Add/Delete Card, same footprint as the rating buttons below */
-.session-edit-actions { display: flex; gap: 16px; width: 100%; }
-.session-edit-btn {
-    flex: 1; min-height: 96px; padding: 22px;
-    border-radius: 12px; font-size: 14px; font-weight: 700;
-    cursor: pointer; font-family: inherit;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    border: 1.5px solid var(--border); background: white; color: #374151;
-    transition: all 0.15s ease;
-}
-.session-edit-btn:hover { border-color: #c7c7c7; background: #fafafa; }
-.session-edit-btn.danger { color: #ef4444; border-color: #fecaca; }
-.session-edit-btn.danger:hover { background: #fef2f2; border-color: #ef4444; }
-.session-edit-btn:disabled { opacity: 0.4; cursor: default; }
-.session-edit-btn:disabled:hover { background: white; border-color: var(--border); }
-
-/* Study mode — confidence rating, same colors/shape as the Pillar Deck session */
 .session-rating-row { display: flex; gap: 16px; width: 100%; }
 .rating-btn {
     flex: 1; min-height: 96px; padding: 18px 14px;
@@ -217,32 +214,51 @@ html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter',
 .rating-btn.forgot:hover { box-shadow: 0 6px 16px rgba(225, 98, 128, 0.35); }
 .rating-btn-label { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
 .rating-btn-sub { font-size: 12px; font-weight: 500; opacity: 0.9; }
-.rating-btn-key {
-    margin-top: 3px; font-size: 10px; font-weight: 700;
-    background: rgba(255,255,255,0.28); padding: 2px 7px; border-radius: 4px;
+.rating-btn-key { margin-top: 3px; font-size: 10px; font-weight: 700; background: rgba(255,255,255,0.28); padding: 2px 7px; border-radius: 4px; }
+
+.session-state-msg {
+    max-width: 480px; margin: 15vh auto 0; text-align: center;
+    font-size: 14px; color: #6b7280; line-height: 1.6;
+}
+.session-state-msg a { color: var(--accent); font-weight: 600; }
+.session-complete-badge {
+    width: 64px; height: 64px; border-radius: 50%; background: #eff6ff; color: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px;
 }
 
-.session-timeline-wrap { max-width: 900px; width: 100%; margin: 0 auto; }
-.session-timeline-label {
-    font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-    color: #9ca3af; margin-bottom: 12px; text-align: center;
-}
-.session-timeline { display: flex; gap: 12px; overflow-x: auto; padding: 4px 4px 16px; justify-content: center; flex-wrap: wrap; }
-.timeline-card {
-    flex-shrink: 0; width: 140px; height: 100px; background: white;
-    border: 1.5px solid var(--border); border-radius: 10px; padding: 12px; cursor: grab;
-    display: flex; flex-direction: column; justify-content: space-between;
-    transition: border-color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
-}
-.timeline-card:hover { border-color: #c7c7c7; }
-.timeline-card.dragging { opacity: 0.35; }
-.timeline-card.drag-over { border-color: var(--accent); transform: scale(1.04); }
-.timeline-card-num { font-size: 10px; font-weight: 700; color: #9ca3af; }
-.timeline-card-preview {
-    font-size: 12px; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis;
-    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; line-height: 1.3;
-}
-.timeline-card-preview.empty { color: #d1d5db; font-style: italic; }
+/* ─────────────────────────── DARK MODE ─────────────────────────── */
+body.dark-mode { --border: #2d3748; --text-primary: #f1f5f9; --text-secondary: #94a3b8; background: #0f1117; }
+body.dark-mode .header-bar-1 { background: #0f1117; }
+body.dark-mode .session-namebar { background: #1e2330; }
+body.dark-mode .icon-circle-btn { background: #1e2330; }
+body.dark-mode .icon-circle-btn.active { background: #1a2540; }
+body.dark-mode #darkModeBtn svg circle, body.dark-mode #darkModeBtn svg path { stroke: #94a3b8; }
+body.dark-mode #darkModeBtn svg path[fill] { fill: #94a3b8; }
+body.dark-mode .rail-collapse-btn { background: #1e2330; }
+body.dark-mode .rail-collapse-btn svg path { stroke: #94a3b8; }
+body.dark-mode .lecture-rail { background: #0f1117; }
+body.dark-mode .lecture-rail-item.clickable:hover { background: #1e2330; }
+body.dark-mode .lecture-rail-item.current { background: #1e2330; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+body.dark-mode .lecture-rail-item.complete { color: #6b7280; }
+body.dark-mode .lecture-rail-item.locked { color: #4b5563; }
+body.dark-mode .lecture-rail-count { background: #1e2330; color: #6b7280; }
+body.dark-mode .lecture-rail-item.current .lecture-rail-count { background: #1a2540; color: var(--accent); }
+body.dark-mode .lecture-rail-next-badge { border-color: #374151; color: #6b7280; }
+body.dark-mode .session-counter-top { background: #1e2330; }
+body.dark-mode .session-progress-block { background: #1e2330; border-color: #374151; }
+body.dark-mode .session-progress-block.rated-good { background: #54D3AB; border-color: #54D3AB; }
+body.dark-mode .session-progress-block.rated-unsure { background: #f59e0b; border-color: #f59e0b; }
+body.dark-mode .session-progress-block.rated-forgot { background: #E16280; border-color: #E16280; }
+body.dark-mode .session-progress-block.current { border-color: var(--accent); }
+body.dark-mode .session-nav-arrow { background: #1e2330; color: #cbd5e1; }
+body.dark-mode .session-nav-arrow:hover:not(:disabled) { background: #2d3748; border-color: #4b5563; }
+body.dark-mode .flashcard-face { border-color: #374151; background: #1e2330; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
+body.dark-mode .flashcard-back { background: linear-gradient(135deg, #1a2540 0%, #1e2330 100%); }
+body.dark-mode .flashcard-face-label { color: #6b7280; }
+body.dark-mode .flashcard-skill-tag { background: #1a2540; }
+body.dark-mode .flashcard-flip-hint { color: #4b5563; }
+body.dark-mode .session-state-msg { color: #94a3b8; }
+body.dark-mode .session-complete-badge { background: #1a2540; }
 </style>
 </head>
 <body>
@@ -252,518 +268,399 @@ html, body { height: 100%; margin: 0; background: #fafafa; font-family: 'Inter',
         <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="16" y2="16"/><line x1="16" y1="4" x2="4" y2="16"/></svg>
         <span>Exit</span>
     </button>
-    <input class="session-namebar" id="deckNameInput" placeholder="Deck name">
-    <div class="header-controls" id="headerControls"></div>
-</div>
-
-<div class="deck-rail" id="deckRail"></div>
-
-<div class="session-main">
-    <div class="session-progress-wrap">
-        <div class="session-progress-row" id="sessionProgressRow"></div>
-        <span class="session-counter-top" id="sessionCounterTop"></span>
-    </div>
-
-    <div id="sessionCardArea">
-        <div class="session-card-stage">
-            <button class="session-nav-arrow" id="prevCardBtn">‹</button>
-            <div class="flashcard" id="flashcard">
-                <div class="flashcard-inner">
-                    <div class="flashcard-face flashcard-front">
-                        <span class="flashcard-face-label">Front</span>
-                        <textarea class="flashcard-text" id="frontText" placeholder="Type the question or prompt…"></textarea>
-                        <span class="flashcard-flip-hint">Click to flip</span>
-                    </div>
-                    <div class="flashcard-face flashcard-back">
-                        <span class="flashcard-face-label">Back</span>
-                        <textarea class="flashcard-text" id="backText" placeholder="Type the answer…"></textarea>
-                        <span class="flashcard-flip-hint">Click to flip</span>
-                    </div>
-                </div>
-            </div>
-            <button class="session-nav-arrow" id="nextCardBtn">›</button>
-        </div>
-        <div class="session-bottom-bar" id="sessionBottomBar"></div>
-    </div>
-
-    <div class="session-timeline-wrap" id="sessionTimelineWrap" style="display:none;">
-        <div class="session-timeline-label">Drag to reorder</div>
-        <div class="session-timeline" id="sessionTimeline"></div>
+    <div class="session-namebar" id="sessionNamebar">Pillar Deck</div>
+    <div class="header-controls">
+        <button class="icon-circle-btn" id="darkModeBtn" title="Dark / Light mode" onclick="toggleDark()">
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="#374151" stroke-width="1.8"/><path d="M11 2 A9 9 0 0 1 11 20 Z" fill="#374151"/></svg>
+        </button>
     </div>
 </div>
 
+<button class="rail-collapse-btn" id="railCollapseBtn" title="Collapse sidebar">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M9 2.5L4 7L9 11.5" stroke="#374151" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+</button>
+
+<div class="lecture-rail" id="lectureRail"></div>
+
+<div class="session-main" id="sessionMain">
+    <div id="sessionBody"></div>
+</div>
+
+<script src="lectures-data.js"></script>
 <script>
     const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+    const PROGRESS_KEY = 'montura_pillar_session_progress';
+    const RAIL_COLLAPSED_KEY = 'montura_pillar_rail_collapsed';
 
-let currentUser = null;
-
-async function loadUser() {
-    try {
-        const raw = localStorage.getItem('sb-bdoesoqpjhpxkwsjauwo-auth-token');
-        const session = raw ? JSON.parse(raw) : null;
-        if (!session?.access_token) return;
-        const res = await fetch(SUPABASE_URL + '/auth/v1/user', {
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': 'Bearer ' + session.access_token
-            }
-        });
-        const data = await res.json();
-        if (data?.id) currentUser = data;
-    } catch(e) { console.log('Auth load failed', e); }
-}
     function escapeHtml(str) {
         const div = document.createElement('div');
         div.textContent = str == null ? '' : str;
         return div.innerHTML;
     }
 
-    const STORAGE_KEY = 'montura_my_decks';
-    function loadDecks() {
-        try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : []; }
+    // slugToTitle lives in lectures-data.js — never a local copy of this
+    // logic (see project history: a duplicated copy of exactly this drifted
+    // and produced broken titles before).
+    function titleFor(slug) {
+        try { return slugToTitle(slug); } catch (e) { return slug; }
+    }
+
+    const slugs = (() => {
+        try { return JSON.parse(localStorage.getItem('flashtile_session_slugs') || '[]'); }
         catch (e) { return []; }
-    }
-    function saveDecks() { localStorage.setItem(STORAGE_KEY, JSON.stringify(decks)); }
+    })();
+    const sessionLabel = localStorage.getItem('flashtile_session_label') || 'Pillar Deck';
 
-    let decks = loadDecks();
-    const params = new URLSearchParams(window.location.search);
-    const deckId = parseInt(params.get('id'), 10);
-    let currentDeck = decks.find(d => d.id === deckId);
-
-    // Fallback — no matching deck (bad link, cleared storage, etc.)
-    if (!currentDeck) {
-        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:Inter,sans-serif;color:#6b7280;">Couldn\'t find that deck. <a href="flashtiles-my-decks.html" style="color:#1d7fe2;margin-left:6px;">Back to Decks</a></div>';
-        throw new Error('Deck not found');
+    if (!slugs.length) {
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:Inter,sans-serif;color:#6b7280;text-align:center;padding:24px;">No deck selected. <a href="flashtiles-pillar-decks.html" style="color:#1d7fe2;margin-left:6px;">Back to Pillar Decks</a></div>';
+        throw new Error('No slugs in session');
     }
 
-    let currentCardIndex = 0;
-    let sessionMode = currentDeck.hasStarted ? 'study' : 'edit';
+    // ── LOCAL PROGRESS — a stand-in for real Supabase-backed progress
+    // until the FSRS write is built. Keyed to this exact slug set so
+    // starting a different deck next time doesn't inherit stale state.
+    const slugsKey = slugs.join('|');
+    let ratedByLecture = {}; // { [slug]: { [questionIndex]: 'good'|'unsure'|'forgot' } }
+    try {
+        const raw = JSON.parse(localStorage.getItem(PROGRESS_KEY) || 'null');
+        if (raw && raw.slugsKey === slugsKey) ratedByLecture = raw.ratedByLecture || {};
+    } catch (e) {}
+    function saveProgress() {
+        try { localStorage.setItem(PROGRESS_KEY, JSON.stringify({ slugsKey, ratedByLecture })); } catch (e) {}
+    }
+
+    let questionsByLecture = {}; // { [slug]: [{question_index, prompt_text, correct_answer, skill_tag, ...}] }
+    let currentLectureIdx = 0;
+    let currentQuestionIdx = 0;
     let isFlipped = false;
-    let timelineMode = false;
-    let ratedCards = new Map(); // index -> 'good' | 'unsure' | 'forgot'
-    let nextDeckId = decks.reduce((max, d) => Math.max(max, d.id || 0), 0) + 1;
+    let railCollapsed = false;
+    try { railCollapsed = localStorage.getItem(RAIL_COLLAPSED_KEY) === 'true'; } catch (e) {}
 
-    function currentCard() { return currentDeck.cards[currentCardIndex]; }
-
-    function saveCurrentCardText() {
-        const front = document.getElementById('frontText');
-        const back = document.getElementById('backText');
-        if (front) currentCard().front = front.value;
-        if (back) currentCard().back = back.value;
+    function lectureComplete(slug) {
+        const qs = questionsByLecture[slug] || [];
+        if (!qs.length) return false;
+        const rated = ratedByLecture[slug] || {};
+        return qs.every(q => !!rated[q.question_index]);
     }
 
-    function persistDeck() {
-        const idx = decks.findIndex(d => d.id === currentDeck.id);
-        if (idx > -1) decks[idx] = currentDeck;
-        saveDecks();
+    // First not-fully-rated lecture is "current"; everything before it is
+    // complete; the one right after is "queued"; the rest are locked.
+    function computeCurrentIndex() {
+        for (let i = 0; i < slugs.length; i++) {
+            if (!lectureComplete(slugs[i])) return i;
+        }
+        return slugs.length; // every lecture done
     }
 
-    function exitToWall() {
-        saveCurrentCardText();
-        persistDeck();
-        window.location.href = 'flashtiles-my-decks.html';
-    }
-    document.getElementById('exitBtn').addEventListener('click', exitToWall);
-
-    function switchToDeck(deck) {
-        saveCurrentCardText();
-        persistDeck();
-        currentDeck = deck;
-        currentCardIndex = 0;
-        sessionMode = currentDeck.hasStarted ? 'study' : 'edit';
-        isFlipped = false;
-        timelineMode = false;
-        ratedCards = new Map();
-        // reflect the switch in the URL without a full page reload
-        const url = new URL(window.location);
-        url.searchParams.set('id', currentDeck.id);
-        window.history.replaceState({}, '', url);
-        renderSession();
-    }
-
-    function createDeckFromRail() {
-        saveCurrentCardText();
-        persistDeck();
-        const deck = {
-            id: nextDeckId++,
-            name: `New Deck ${decks.length + 1}`,
-            topics: [],
-            strength: null,
-            lastStudied: null,
-            justCreated: true,
-            hasStarted: false,
-            cards: [{ front: '', back: '' }]
-        };
-        decks.unshift(deck);
-        switchToDeck(deck);
-    }
-
-    function renderDeckRail() {
-        const rail = document.getElementById('deckRail');
-        rail.innerHTML = '';
-        decks.forEach(deck => {
-            const item = document.createElement('div');
-            item.className = 'deck-rail-item' + (deck.id === currentDeck.id ? ' active' : '');
-            item.innerHTML = `<span class="deck-rail-icon">🃏</span><span class="deck-rail-name">${escapeHtml(deck.name)}</span>`;
-            item.addEventListener('click', () => {
-                if (deck.id !== currentDeck.id) switchToDeck(deck);
-            });
-            rail.appendChild(item);
-        });
-
-        const addBtn = document.createElement('button');
-        addBtn.className = 'deck-rail-add';
-        addBtn.innerHTML = '+ New deck';
-        addBtn.addEventListener('click', createDeckFromRail);
-        rail.appendChild(addBtn);
-    }
-
-    function renderSession() {
-        renderDeckRail();
-        renderNameBar();
-        renderHeaderControls();
-        renderProgressRow();
-        renderCardStage();
-        renderBottomBar();
-        if (timelineMode) renderTimeline();
-        document.getElementById('sessionCardArea').style.display = timelineMode ? 'none' : '';
-        document.getElementById('sessionTimelineWrap').style.display = timelineMode ? '' : 'none';
-    }
-
-    function renderNameBar() {
-        const input = document.getElementById('deckNameInput');
-        input.value = currentDeck.name;
-        input.readOnly = sessionMode !== 'edit';
-        input.oninput = () => { currentDeck.name = input.value; };
-        input.onblur = () => { currentDeck.name = input.value.trim() || currentDeck.name; input.value = currentDeck.name; persistDeck(); };
-    }
-
-    function renderHeaderControls() {
-        const controls = document.getElementById('headerControls');
-        controls.innerHTML = '';
-
-        const shuffleBtn = document.createElement('button');
-        shuffleBtn.className = 'hdr-btn';
-        shuffleBtn.innerHTML = '🔀 Shuffle';
-        shuffleBtn.addEventListener('click', shuffleCards);
-        controls.appendChild(shuffleBtn);
-
-        if (sessionMode === 'edit') {
-            const reorderBtn = document.createElement('button');
-            reorderBtn.className = 'hdr-btn' + (timelineMode ? ' active' : '');
-            reorderBtn.innerHTML = '⋮⋮ Reorder';
-            reorderBtn.addEventListener('click', () => {
-                saveCurrentCardText();
-                timelineMode = !timelineMode;
-                renderSession();
-            });
-            controls.appendChild(reorderBtn);
-
-            const completeBtn = document.createElement('button');
-            completeBtn.className = 'hdr-btn-primary';
-            completeBtn.textContent = currentDeck.hasStarted ? 'Save & Study →' : 'Complete Deck →';
-            completeBtn.addEventListener('click', () => {
-                saveCurrentCardText();
-                currentDeck.hasStarted = true;
-                currentDeck.justCreated = false;
-                sessionMode = 'study';
-                currentCardIndex = 0;
-                isFlipped = false;
-                timelineMode = false;
-                ratedCards = new Map();
-                persistDeck();
-                renderSession();
-            });
-            controls.appendChild(completeBtn);
-        } else {
-            const editBtn = document.createElement('button');
-            editBtn.className = 'hdr-btn';
-            editBtn.innerHTML = '✏️ Edit';
-            editBtn.addEventListener('click', () => {
-                sessionMode = 'edit';
-                isFlipped = false;
-                timelineMode = false;
-                renderSession();
-            });
-            controls.appendChild(editBtn);
+    function formatAnswer(raw) {
+        if (raw == null) return '';
+        try {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') {
+                if (Array.isArray(parsed)) return parsed.join('\n');
+                return Object.entries(parsed).map(([k, v]) => `${k} → ${v}`).join('\n');
+            }
+            return String(parsed);
+        } catch (e) {
+            return raw;
         }
     }
 
-    function renderTopCounter() {
-        document.getElementById('sessionCounterTop').textContent = `Card ${currentCardIndex + 1} of ${currentDeck.cards.length}`;
-    }
-
-    function renderProgressRow() {
-        const row = document.getElementById('sessionProgressRow');
-        row.innerHTML = '';
-        currentDeck.cards.forEach((card, i) => {
-            const block = document.createElement('button');
-            let stateClass = '';
-            if (sessionMode === 'edit') {
-                stateClass = !!(card.front && card.back) ? ' filled' : '';
-            } else if (ratedCards.has(i)) {
-                stateClass = ' rated-' + ratedCards.get(i);
-            }
-            block.className = 'session-progress-block' + stateClass + (i === currentCardIndex ? ' current' : '');
-            block.title = `Card ${i + 1}`;
-            block.addEventListener('click', () => {
-                saveCurrentCardText();
-                currentCardIndex = i;
-                isFlipped = false;
-                renderSession();
-            });
-            row.appendChild(block);
+    // ── FETCH — read-only, no algorithm involved ──
+    async function fetchQuestions() {
+        const params = slugs.map(s => encodeURIComponent(s)).join(',');
+        const url = `${SUPABASE_URL}/rest/v1/questions?lecture_slug=in.(${params})&select=lecture_slug,question_index,skill_tag,question_type,correct_answer,marks_available,prompt_text&order=lecture_slug.asc,question_index.asc`;
+        const resp = await fetch(url, {
+            headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
         });
-        renderTopCounter();
+        if (!resp.ok) throw new Error(`Supabase returned ${resp.status}`);
+        const rows = await resp.json();
+        const grouped = {};
+        slugs.forEach(s => { grouped[s] = []; });
+        rows.forEach(row => {
+            if (!grouped[row.lecture_slug]) grouped[row.lecture_slug] = [];
+            grouped[row.lecture_slug].push(row);
+        });
+        return grouped;
     }
 
-    function renderCardStage() {
+    // ── RAIL ──
+    function renderRail() {
+        const rail = document.getElementById('lectureRail');
+        rail.innerHTML = '';
+
+        const label = document.createElement('div');
+        label.className = 'lecture-rail-label';
+        label.textContent = sessionLabel;
+        rail.appendChild(label);
+
+        const liveCurrent = computeCurrentIndex();
+
+        slugs.forEach((slug, i) => {
+            const qCount = (questionsByLecture[slug] || []).length;
+            const item = document.createElement('div');
+            let state = 'locked';
+            if (i < liveCurrent) state = 'complete';
+            else if (i === liveCurrent) state = 'current';
+
+            const clickable = state === 'current' || state === 'complete';
+            item.className = 'lecture-rail-item' + (clickable ? ' clickable' : '') + ' ' + state;
+
+            let statusIcon = '';
+            if (state === 'complete') {
+                statusIcon = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L5.5 10.5L11.5 3.5" stroke="#54D3AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+            } else if (state === 'locked') {
+                statusIcon = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5.5" width="7" height="5" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" stroke="currentColor" stroke-width="1.4"/></svg>';
+            } else {
+                statusIcon = '<span class="lecture-rail-icon">📘</span>';
+            }
+
+            const nextBadge = (i === liveCurrent + 1) ? '<span class="lecture-rail-next-badge">Next</span>' : '';
+
+            item.innerHTML = `
+                <span class="lecture-rail-status">${statusIcon}</span>
+                <span class="lecture-rail-name">${escapeHtml(titleFor(slug))}</span>
+                ${nextBadge}
+                <span class="lecture-rail-count">${qCount}</span>
+            `;
+            if (clickable) {
+                item.addEventListener('click', () => {
+                    currentLectureIdx = i;
+                    currentQuestionIdx = 0;
+                    isFlipped = false;
+                    renderAll();
+                });
+            }
+            rail.appendChild(item);
+        });
+    }
+
+    // ── MAIN BODY ──
+    function renderBody() {
+        const body = document.getElementById('sessionBody');
+        const liveCurrent = computeCurrentIndex();
+
+        if (liveCurrent >= slugs.length) {
+            body.innerHTML = `
+                <div class="session-state-msg">
+                    <div class="session-complete-badge">✓</div>
+                    <strong style="color:var(--text-primary);font-size:16px;">Deck complete</strong><br><br>
+                    You've rated every card in every lecture in this deck.
+                    <br><a href="flashtiles-pillar-decks.html">Start another Pillar Deck →</a>
+                </div>`;
+            document.getElementById('sessionNamebar').textContent = sessionLabel;
+            return;
+        }
+
+        // Clamp to the live current lecture if we drifted (e.g. finished
+        // the lecture we were viewing and it auto-advanced).
+        if (currentLectureIdx > liveCurrent) currentLectureIdx = liveCurrent;
+        const slug = slugs[currentLectureIdx];
+        const questions = questionsByLecture[slug] || [];
+        document.getElementById('sessionNamebar').textContent = titleFor(slug);
+
+        if (!questions.length) {
+            body.innerHTML = `<div class="session-state-msg">No questions found in Supabase for this lecture yet (<code>${escapeHtml(slug)}</code>). Nothing to study here — check <code>populate_questions.py</code> has been run against this lecture.</div>`;
+            return;
+        }
+
+        currentQuestionIdx = Math.max(0, Math.min(currentQuestionIdx, questions.length - 1));
+        const q = questions[currentQuestionIdx];
+        const rated = ratedByLecture[slug] || {};
+
+        body.innerHTML = `
+            <div class="session-progress-wrap">
+                <div class="session-progress-row" id="sessionProgressRow"></div>
+                <span class="session-counter-top">Question ${currentQuestionIdx + 1} of ${questions.length}</span>
+            </div>
+            <div class="session-card-stage">
+                <button class="session-nav-arrow" id="prevQBtn">‹</button>
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-face flashcard-front" id="frontFace">
+                            <span class="flashcard-face-label">Question</span>
+                            <span class="flashcard-skill-tag">${escapeHtml(q.skill_tag || '')}</span>
+                            <div class="flashcard-text">${escapeHtml(q.prompt_text || '')}</div>
+                            <span class="flashcard-flip-hint">Click to flip</span>
+                        </div>
+                        <div class="flashcard-face flashcard-back" id="backFace">
+                            <span class="flashcard-face-label">Answer</span>
+                            <div class="flashcard-text">${escapeHtml(formatAnswer(q.correct_answer))}</div>
+                            <span class="flashcard-flip-hint">Click to flip</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="session-nav-arrow" id="nextQBtn">›</button>
+            </div>
+            <div class="session-bottom-bar">
+                <div class="session-rating-row">
+                    <button class="rating-btn good" id="ratingGood">
+                        <span class="rating-btn-label">✅ Got it</span>
+                        <span class="rating-btn-sub">much later</span>
+                        <span class="rating-btn-key">A</span>
+                    </button>
+                    <button class="rating-btn unsure" id="ratingUnsure">
+                        <span class="rating-btn-label">😕 Not sure</span>
+                        <span class="rating-btn-sub">a few days</span>
+                        <span class="rating-btn-key">S</span>
+                    </button>
+                    <button class="rating-btn forgot" id="ratingForgot">
+                        <span class="rating-btn-label">😵 Forgot it</span>
+                        <span class="rating-btn-sub">back tomorrow</span>
+                        <span class="rating-btn-key">D</span>
+                    </button>
+                </div>
+            </div>
+        `;
+
         const flashcard = document.getElementById('flashcard');
         flashcard.classList.toggle('flipped', isFlipped);
+        flashcard.addEventListener('click', flipCard);
 
-        const front = document.getElementById('frontText');
-        const back = document.getElementById('backText');
-        const card = currentCard();
-        front.value = card.front;
-        back.value = card.back;
+        renderProgressRow(questions, rated);
 
-        const readonly = sessionMode === 'study';
-        front.readOnly = readonly;
-        back.readOnly = readonly;
+        document.getElementById('prevQBtn').disabled = currentQuestionIdx === 0;
+        document.getElementById('nextQBtn').disabled = currentQuestionIdx === questions.length - 1;
+        document.getElementById('prevQBtn').addEventListener('click', () => goToQuestion(currentQuestionIdx - 1));
+        document.getElementById('nextQBtn').addEventListener('click', () => goToQuestion(currentQuestionIdx + 1));
 
-        front.oninput = () => { card.front = front.value; renderProgressRowIfEdit(); };
-        back.oninput = () => { card.back = back.value; renderProgressRowIfEdit(); };
-
-        flashcard.onclick = (e) => {
-            if (sessionMode === 'edit' && (e.target === front || e.target === back)) return;
-            flipCard();
-        };
-
-        document.querySelectorAll('.flashcard-flip-hint').forEach(h => {
-            h.style.display = sessionMode === 'study' ? '' : 'none';
-        });
-
-        document.getElementById('prevCardBtn').disabled = currentCardIndex === 0;
-        document.getElementById('nextCardBtn').disabled = currentCardIndex === currentDeck.cards.length - 1;
+        document.getElementById('ratingGood').addEventListener('click', () => rateQuestion('good'));
+        document.getElementById('ratingUnsure').addEventListener('click', () => rateQuestion('unsure'));
+        document.getElementById('ratingForgot').addEventListener('click', () => rateQuestion('forgot'));
     }
 
-    function renderProgressRowIfEdit() { if (sessionMode === 'edit') renderProgressRow(); }
+    function renderProgressRow(questions, rated) {
+        const row = document.getElementById('sessionProgressRow');
+        if (!row) return;
+        row.innerHTML = '';
+        questions.forEach((q, i) => {
+            const block = document.createElement('button');
+            const r = rated[q.question_index];
+            block.className = 'session-progress-block' + (r ? ' rated-' + r : '') + (i === currentQuestionIdx ? ' current' : '');
+            block.title = `Question ${i + 1}`;
+            block.addEventListener('click', () => goToQuestion(i));
+            row.appendChild(block);
+        });
+    }
 
     function flipCard() {
         isFlipped = !isFlipped;
         document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
     }
 
-    function goToCard(i) {
-        saveCurrentCardText();
-        currentCardIndex = Math.max(0, Math.min(i, currentDeck.cards.length - 1));
-        isFlipped = false;
-        renderSession();
+    // ── slide transition, same technique as My Decks ──
+    const CARD_TRANSITION_MS = 140;
+    function animateCardChange(direction, applyChange) {
+        const card = document.getElementById('flashcard');
+        const outClass = direction === 'next' ? 'slide-out-next' : 'slide-out-prev';
+        const inClass = direction === 'next' ? 'slide-out-prev' : 'slide-out-next';
+        card.classList.add(outClass);
+        setTimeout(() => {
+            applyChange();
+            const freshCard = document.getElementById('flashcard');
+            if (!freshCard) return;
+            freshCard.classList.remove(outClass);
+            freshCard.classList.add('slide-instant');
+            freshCard.classList.add(inClass);
+            void freshCard.offsetWidth;
+            freshCard.classList.remove('slide-instant');
+            freshCard.classList.remove(inClass);
+        }, CARD_TRANSITION_MS);
     }
-    document.getElementById('prevCardBtn').addEventListener('click', () => goToCard(currentCardIndex - 1));
-    document.getElementById('nextCardBtn').addEventListener('click', () => goToCard(currentCardIndex + 1));
 
-    function renderBottomBar() {
-        const bar = document.getElementById('sessionBottomBar');
-        bar.innerHTML = '';
+    function goToQuestion(i) {
+        const slug = slugs[currentLectureIdx];
+        const questions = questionsByLecture[slug] || [];
+        const target = Math.max(0, Math.min(i, questions.length - 1));
+        if (target === currentQuestionIdx) return;
+        const direction = target > currentQuestionIdx ? 'next' : 'prev';
+        animateCardChange(direction, () => {
+            currentQuestionIdx = target;
+            isFlipped = false;
+            renderBody();
+        });
+    }
 
-        if (sessionMode === 'edit') {
-            const actions = document.createElement('div');
-            actions.className = 'session-edit-actions';
+    function rateQuestion(rating) {
+        const slug = slugs[currentLectureIdx];
+        const questions = questionsByLecture[slug] || [];
+        const q = questions[currentQuestionIdx];
+        if (!ratedByLecture[slug]) ratedByLecture[slug] = {};
+        ratedByLecture[slug][q.question_index] = rating;
+        saveProgress();
 
-            const addBtn = document.createElement('button');
-            addBtn.className = 'session-edit-btn';
-            addBtn.textContent = '+ Add Card';
-            addBtn.addEventListener('click', () => {
-                saveCurrentCardText();
-                currentDeck.cards.push({ front: '', back: '' });
-                currentCardIndex = currentDeck.cards.length - 1;
-                isFlipped = false;
-                renderSession();
-                document.getElementById('frontText').focus();
-            });
-            actions.appendChild(addBtn);
+        // TODO(FSRS): this is where the real write to fsrs_skill_state
+        // belongs — upsert on (user_id, skill_tag) with the updated
+        // stability/difficulty/next_review/last_review/review_count.
+        // Deliberately not implemented yet — see project decision log.
 
-            const delBtn = document.createElement('button');
-            delBtn.className = 'session-edit-btn danger';
-            delBtn.textContent = 'Delete Card';
-            delBtn.disabled = currentDeck.cards.length <= 1;
-            delBtn.addEventListener('click', () => {
-                if (currentDeck.cards.length <= 1) return;
-                currentDeck.cards.splice(currentCardIndex, 1);
-                currentCardIndex = Math.min(currentCardIndex, currentDeck.cards.length - 1);
-                isFlipped = false;
-                renderSession();
-            });
-            actions.appendChild(delBtn);
-
-            bar.appendChild(actions);
+        if (currentQuestionIdx < questions.length - 1) {
+            goToQuestion(currentQuestionIdx + 1);
         } else {
-            const row = document.createElement('div');
-            row.className = 'session-rating-row';
-            row.innerHTML = `
-                <button class="rating-btn good">
-                    <span class="rating-btn-label"> Got it</span>
-                    <span class="rating-btn-sub">much later</span>
-                    <span class="rating-btn-key">A</span>
-                </button>
-                <button class="rating-btn unsure">
-                    <span class="rating-btn-label"> Not sure</span>
-                    <span class="rating-btn-sub">a few days</span>
-                    <span class="rating-btn-key">S</span>
-                </button>
-                <button class="rating-btn forgot">
-                    <span class="rating-btn-label"> Forgot it</span>
-                    <span class="rating-btn-sub">back tomorrow</span>
-                    <span class="rating-btn-key">D</span>
-                </button>`;
-            row.querySelector('.good').addEventListener('click', () => rateCard('good'));
-            row.querySelector('.unsure').addEventListener('click', () => rateCard('unsure'));
-            row.querySelector('.forgot').addEventListener('click', () => rateCard('forgot'));
-            bar.appendChild(row);
+            // Last card in this lecture — if that was the final rating
+            // needed, the lecture is now complete and the rail/body will
+            // naturally advance to the next lecture on render.
+            isFlipped = false;
+            renderAll();
         }
     }
 
-    function rateCard(rating) {
-    ratedCards.set(currentCardIndex, rating);
-    
-    // Map string rating to FSRS number
-    const ratingNum = rating === 'good' ? 5 : rating === 'unsure' ? 3 : 1;
-    
-    // Write to FSRS if card has a skill_tag (Pillar Deck cards do, My Deck cards don't)
-    const card = currentCard();
-    if (card.skill_tag) {
-        saveRating(card.skill_tag, ratingNum); // fire and forget, don't await
+    function renderAll() {
+        renderRail();
+        renderBody();
     }
-    
-    if (currentCardIndex < currentDeck.cards.length - 1) {
-        goToCard(currentCardIndex + 1);
-    } else {
-        isFlipped = false;
-        renderSession();
-    }
-}
 
-    document.addEventListener('keydown', e => {
-        if (sessionMode !== 'study' || timelineMode) return;
-        const active = document.activeElement;
-        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') && !active.readOnly) return;
-        const key = e.key.toLowerCase();
-        if (key === 'a') rateCard('good');
-        else if (key === 's') rateCard('unsure');
-        else if (key === 'd') rateCard('forgot');
+    // ── DARK MODE ──
+    function toggleDark() {
+        document.body.classList.toggle('dark-mode');
+        document.getElementById('darkModeBtn').classList.toggle('active');
+    }
+
+    // ── SIDEBAR COLLAPSE ──
+    function applyRailCollapsedState() {
+        document.getElementById('lectureRail').classList.toggle('collapsed', railCollapsed);
+        document.getElementById('sessionMain').classList.toggle('rail-collapsed', railCollapsed);
+        const btn = document.getElementById('railCollapseBtn');
+        btn.classList.toggle('collapsed', railCollapsed);
+        btn.title = railCollapsed ? 'Expand sidebar' : 'Collapse sidebar';
+    }
+    document.getElementById('railCollapseBtn').addEventListener('click', () => {
+        railCollapsed = !railCollapsed;
+        applyRailCollapsedState();
+        try { localStorage.setItem(RAIL_COLLAPSED_KEY, String(railCollapsed)); } catch (e) {}
     });
 
-    function shuffleCards() {
-        saveCurrentCardText();
-        const arr = currentDeck.cards;
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        currentCardIndex = 0;
-        isFlipped = false;
-        renderSession();
-        const flashcard = document.getElementById('flashcard');
-        flashcard.classList.remove('pulse');
-        void flashcard.offsetWidth;
-        flashcard.classList.add('pulse');
-    }
+    document.getElementById('exitBtn').addEventListener('click', () => {
+        window.location.href = 'flashtiles-pillar-decks.html';
+    });
 
-    function renderTimeline() {
-        const el = document.getElementById('sessionTimeline');
-        el.innerHTML = '';
-        currentDeck.cards.forEach((card, i) => {
-            const tile = document.createElement('div');
-            tile.className = 'timeline-card';
-            tile.draggable = true;
-            tile.innerHTML = `
-                <div class="timeline-card-num">Card ${i + 1}</div>
-                <div class="timeline-card-preview${card.front ? '' : ' empty'}">${card.front ? escapeHtml(card.front) : 'Empty card'}</div>`;
+    document.addEventListener('keydown', e => {
+        const active = document.activeElement;
+        const isEditableFocus = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') && !active.readOnly;
+        if (isEditableFocus) return;
+        if (e.key === 'ArrowLeft') { e.preventDefault(); goToQuestion(currentQuestionIdx - 1); return; }
+        if (e.key === 'ArrowRight') { e.preventDefault(); goToQuestion(currentQuestionIdx + 1); return; }
+        const key = e.key.toLowerCase();
+        if (key === 'a') rateQuestion('good');
+        else if (key === 's') rateQuestion('unsure');
+        else if (key === 'd') rateQuestion('forgot');
+    });
 
-            tile.addEventListener('click', () => { timelineMode = false; goToCard(i); });
-            tile.addEventListener('dragstart', e => { tile.classList.add('dragging'); e.dataTransfer.setData('text/plain', String(i)); });
-            tile.addEventListener('dragend', () => tile.classList.remove('dragging'));
-            tile.addEventListener('dragover', e => { e.preventDefault(); tile.classList.add('drag-over'); });
-            tile.addEventListener('dragleave', () => tile.classList.remove('drag-over'));
-            tile.addEventListener('drop', e => {
-                e.preventDefault();
-                tile.classList.remove('drag-over');
-                const fromIdx = parseInt(e.dataTransfer.getData('text/plain'), 10);
-                if (fromIdx === i) return;
-                const [moved] = currentDeck.cards.splice(fromIdx, 1);
-                currentDeck.cards.splice(i, 0, moved);
-                renderTimeline();
-                renderProgressRow();
-            });
-            el.appendChild(tile);
+    // ── INIT ──
+    applyRailCollapsedState();
+    document.getElementById('sessionBody').innerHTML = '<div class="session-state-msg">Loading your deck…</div>';
+    fetchQuestions()
+        .then(grouped => {
+            questionsByLecture = grouped;
+            renderAll();
+        })
+        .catch(err => {
+            document.getElementById('sessionBody').innerHTML =
+                `<div class="session-state-msg">Couldn't load questions from Supabase (${escapeHtml(err.message)}). Check the network tab — this environment may not have a path to supabase.co, or the anon key/RLS policy needs checking.</div>`;
         });
-    }
-
-    // Autosave periodically so a closed tab doesn't lose everything
-    setInterval(() => { saveCurrentCardText(); persistDeck(); }, 4000);
-    window.addEventListener('beforeunload', () => { saveCurrentCardText(); persistDeck(); });
-function computeFsrsUpdate(current, rating) {
-    let { stability, difficulty, review_count } = current;
-
-    if (rating === 1) {
-        difficulty = Math.min(10, difficulty + 1.5);
-        stability = 1.0;
-    } else if (rating === 3) {
-        difficulty = Math.max(1, difficulty + 0.1);
-        stability = stability * 1.5;
-    } else if (rating === 5) {
-        difficulty = Math.max(1, difficulty - 0.2);
-        stability = stability * 2.5;
-    }
-
-    const daysUntilReview = Math.max(1, Math.round(stability));
-    const next_review = new Date();
-    next_review.setDate(next_review.getDate() + daysUntilReview);
-
-    return {
-        stability: parseFloat(stability.toFixed(2)),
-        difficulty: parseFloat(difficulty.toFixed(2)),
-        next_review: next_review.toISOString().split('T')[0],
-        last_review: new Date().toISOString().split('T')[0],
-        review_count: (review_count || 0) + 1
-    };
-}
-
-async function saveRating(skillTag, rating) {
-    if (!currentUser || !skillTag) return;
-    try {
-        const raw = localStorage.getItem('sb-bdoesoqpjhpxkwsjauwo-auth-token');
-        const session = raw ? JSON.parse(raw) : null;
-        const jwt = session?.access_token || SUPABASE_KEY;
-
-        const getRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/fsrs_skill_state?user_id=eq.${currentUser.id}&skill_tag=eq.${encodeURIComponent(skillTag)}`,
-            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt } }
-        );
-        const rows = await getRes.json();
-        const current = rows[0] || { stability: 1.0, difficulty: 5.0, review_count: 0 };
-
-        const update = computeFsrsUpdate(current, rating);
-
-        await fetch(`${SUPABASE_URL}/rest/v1/fsrs_skill_state`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': 'Bearer ' + jwt,
-                'Content-Type': 'application/json',
-                'Prefer': 'resolution=merge-duplicates'
-            },
-            body: JSON.stringify({
-                user_id: currentUser.id,
-                skill_tag: skillTag,
-                ...update
-            })
-        });
-    } catch(e) { console.log('FSRS save failed', e); }
-}
-    loadUser().then(() => renderSession());
 </script>
 </body>
 </html>
