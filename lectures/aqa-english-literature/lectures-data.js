@@ -388,13 +388,13 @@ const papersData = [
                 id: "lord-of-the-flies",
                 name: "Lord of the Flies",
                 pillars: [
-                    { tag: "Intro", title: "Meet the World", lectures: ["aqa-lord-of-the-flies-intro-l1-meet-the-world","aqa-lord-of-the-flies-intro-l2-the-full-story"] },
-                    { tag: "Pillar 1", title: "The Storyline", lectures: ["aqa-lord-of-the-flies-p1-l1-arrival-order-and-the-first-fire","aqa-lord-of-the-flies-p1-l2-hunters-fear-and-the-beast","aqa-lord-of-the-flies-p1-l3-simons-death-piggys-death-and-rescue"] },
-                    { tag: "Pillar 2", title: "Meet the Characters", lectures: ["aqa-lord-of-the-flies-p2-l1-ralph-democracy-and-decline","aqa-lord-of-the-flies-p2-l2-jack-savagery-and-power","aqa-lord-of-the-flies-p2-l3-piggy-reason-and-vulnerability","aqa-lord-of-the-flies-p2-l4-simon-goodness-and-sacrifice","aqa-lord-of-the-flies-p2-l5-top-10-must-know-quotes"] },
-                    { tag: "Pillar 3", title: "The Deep Stuff", lectures: ["aqa-lord-of-the-flies-p3-l1-civilisation-vs-savagery","aqa-lord-of-the-flies-p3-l2-power-and-leadership","aqa-lord-of-the-flies-p3-l3-fear-and-its-effects","aqa-lord-of-the-flies-p3-l4-loss-of-innocence","aqa-lord-of-the-flies-p3-l5-the-nature-of-evil"] },
-                    { tag: "Pillar 4", title: "The Novelist's Voice", lectures: ["aqa-lord-of-the-flies-p4-l1-who-is-telling-the-story","aqa-lord-of-the-flies-p4-l2-sensory-word-choices","aqa-lord-of-the-flies-p4-l3-metaphors-and-symbolism","aqa-lord-of-the-flies-p4-l4-chapter-structure-tricks"] },
-                    { tag: "Pillar 5", title: "The Real World (AO3)", lectures: ["aqa-lord-of-the-flies-p5-l1-post-war-pessimism-and-goldings-experience","aqa-lord-of-the-flies-p5-l2-cold-war-fears-and-british-empire","aqa-lord-of-the-flies-p5-l3-what-the-writer-was-attacking"] },
-                    { tag: "Pillar 6", title: "Exam Hacks", lectures: ["aqa-lord-of-the-flies-p6-l1-structuring-the-memory-based-essay","aqa-lord-of-the-flies-p6-l2-planning-for-any-character-or-theme","aqa-lord-of-the-flies-p6-l3-grade-9-vs-grade-5-the-showdown"] }
+                    { tag: "Intro", title: "Meet the World", lectures: ["aqa-lord-of-flies-intro-l1-meet-the-world","aqa-lord-of-flies-intro-l2-the-full-story"] },
+                    { tag: "Pillar 1", title: "The Storyline", lectures: ["aqa-lord-of-flies-p1-l1-arrival-order-and-the-first-fire","aqa-lord-of-flies-p1-l2-hunters-fear-and-the-beast","aqa-lord-of-flies-p1-l3-simons-death-piggys-death-and-rescue"] },
+                    { tag: "Pillar 2", title: "Meet the Characters", lectures: ["aqa-lord-of-flies-p2-l1-ralph-democracy-and-decline","aqa-lord-of-flies-p2-l2-jack-savagery-and-power","aqa-lord-of-flies-p2-l3-piggy-reason-and-vulnerability","aqa-lord-of-flies-p2-l4-simon-goodness-and-sacrifice","aqa-lord-of-flies-p2-l5-top-10-must-know-quotes"] },
+                    { tag: "Pillar 3", title: "The Deep Stuff", lectures: ["aqa-lord-of-flies-p3-l1-civilisation-vs-savagery","aqa-lord-of-flies-p3-l2-power-and-leadership","aqa-lord-of-flies-p3-l3-fear-and-its-effects","aqa-lord-of-flies-p3-l4-loss-of-innocence","aqa-lord-of-flies-p3-l5-the-nature-of-evil"] },
+                    { tag: "Pillar 4", title: "The Novelist's Voice", lectures: ["aqa-lord-of-flies-p4-l1-who-is-telling-the-story","aqa-lord-of-flies-p4-l2-sensory-word-choices","aqa-lord-of-flies-p4-l3-metaphors-and-symbolism","aqa-lord-of-flies-p4-l4-chapter-structure-tricks"] },
+                    { tag: "Pillar 5", title: "The Real World (AO3)", lectures: ["aqa-lord-of-flies-p5-l1-post-war-pessimism-and-goldings-experience","aqa-lord-of-flies-p5-l2-cold-war-fears-and-british-empire","aqa-lord-of-flies-p5-l3-what-the-writer-was-attacking"] },
+                    { tag: "Pillar 6", title: "Exam Hacks", lectures: ["aqa-lord-of-flies-p6-l1-structuring-the-memory-based-essay","aqa-lord-of-flies-p6-l2-planning-for-any-character-or-theme","aqa-lord-of-flies-p6-l3-grade-9-vs-grade-5-the-showdown"] }
                 ]
             },
             {
