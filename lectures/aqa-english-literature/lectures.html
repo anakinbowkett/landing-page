@@ -89,7 +89,7 @@ async function fetchQuestionCount(slug) {
     }
     // Fallback for anything not yet covered by question-counts.js (e.g. a
     // lecture added since it was last regenerated).
-    const cacheKey = 'lecQCount_v1_' + slug;
+    const cacheKey = 'lecQCount_v2_' + slug;
     const cached = localStorage.getItem(cacheKey);
     if (cached) return parseInt(cached, 10);
     try {
