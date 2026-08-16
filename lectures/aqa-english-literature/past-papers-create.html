@@ -269,7 +269,7 @@
 </head>
 <body>
     <aside class="sidebar">
-        <div class="logo">GCSE Mastery</div>
+        <div class="logo">Montura Learn</div>
         <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
         <a href="lectures.html" class="nav-item"><span class="nav-icon">∞</span><span>Lectures</span></a>
         <a href="flashtiles.html" class="nav-item"><span class="nav-icon">⚡</span><span>Flashtiles</span></a>
@@ -421,7 +421,7 @@
                     <div><div class="start-fact-num">46</div><div class="start-fact-label">Marks</div></div>
                     <div><div class="start-fact-num">1h 45m</div><div class="start-fact-label">Time</div></div>
                 </div>
-                <button class="sit-btn">Start Paper →</button>
+                <button class="sit-btn" id="sitBtn">Start Paper →</button>
             </div>
         </section>
 
@@ -474,6 +474,49 @@
         });
 
         render();
+
+        // ── HANDOFF TO THE PAPER SESSION ─────────────────────────────────
+        // Note: this reads whatever is actually rendered in the Review
+        // stage rather than duplicating that data in a second array — the
+        // Build stage doesn't wire real selection state yet (that's a
+        // separate, bigger task), so tonight this is still placeholder
+        // content either way. Reading the DOM instead of hand-copying it
+        // means this can't silently drift out of sync with what the
+        // Review step visibly shows, the way lectures.html's title-cleanup
+        // logic once did when it was duplicated instead of shared.
+        document.getElementById('sitBtn').addEventListener('click', () => {
+            const selectedPaper = document.querySelector('.paper-pick-card.selected');
+            const paperTitle = selectedPaper ? selectedPaper.querySelector('.paper-pick-title').textContent.trim() : 'Paper';
+            const paperSub = selectedPaper ? selectedPaper.querySelector('.paper-pick-sub').textContent.trim() : '';
+
+            const questions = Array.from(document.querySelectorAll('.review-row')).map(row => {
+                const tagText = row.querySelector('.review-q-tag').textContent.trim(); // "Shakespeare · 4 marks"
+                const parts = tagText.split('·').map(s => s.trim());
+                const section = parts[0] || '';
+                const marks = parseInt((parts[1] || '').replace(/\D/g, ''), 10) || 0;
+                return {
+                    number: row.querySelector('.review-q-num').textContent.trim(),
+                    text: row.querySelector('.review-q-text').textContent.trim(),
+                    section: section,
+                    marks: marks
+                };
+            });
+
+            const summaryStrongs = document.querySelectorAll('.review-summary strong');
+            const totalMarks = summaryStrongs[1] ? summaryStrongs[1].textContent.trim() : String(questions.reduce((a, q) => a + q.marks, 0));
+            const timeAllowed = summaryStrongs[2] ? summaryStrongs[2].textContent.trim() : '';
+
+            const payload = {
+                paperTitle: paperSub ? `${paperTitle} — ${paperSub}` : paperTitle,
+                timeAllowed: timeAllowed,
+                totalMarks: totalMarks,
+                questions: questions,
+                builtAt: Date.now()
+            };
+
+            try { localStorage.setItem('created_paper_data', JSON.stringify(payload)); } catch (e) {}
+            window.location.href = 'past-papers-session.html';
+        });
     </script>
 </body>
 </html>
