@@ -80,7 +80,7 @@ function parseQuestionCount(html) {
 }
 
 async function fetchQuestionCount(slug) {
-    const cacheKey = 'lecQCount_v1_' + slug;
+    const cacheKey = 'lecQCount_v2_' + slug;
     const cached = localStorage.getItem(cacheKey);
     if (cached) return parseInt(cached, 10);
     try {
