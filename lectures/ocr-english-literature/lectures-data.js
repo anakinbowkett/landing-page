@@ -112,8 +112,289 @@ const papersData = [
         ]
     },
 
+    /* ══════════════════════════════════════
+       COMPONENT 2 · SECTION A — POETRY ACROSS TIME
+       Anthology: "Towards a World Unknown" (OUP/OCR), current
+       edition — first teaching Sept 2022, first exam summer 2024.
+       Each cluster: 15 poems. Exam format (J352/02, Section A):
+       Part a) compare your studied poem to a PRINTED unseen poem;
+       Part b) explore ONE OTHER poem from your anthology, from
+       memory, on a related theme. No separate "Unseen Poetry"
+       section exists for OCR — the unseen-comparison skill is
+       folded into Pillars 5–6 of each cluster below.
+    ══════════════════════════════════════ */
     {
         tag: "Component 2 · Section A",
+        title: "Love and Relationships",
+        type: "single",
+        pillars: [
+            {
+                tag: "Pillar 1", title: "First Impressions (Grade 3–5)",
+                lectures: [
+                    { slug: "ocr-lr-p1-l1-a-song",                              title: "A Song" },
+                    { slug: "ocr-lr-p1-l2-bright-star",                         title: "Bright Star" },
+                    { slug: "ocr-lr-p1-l3-now",                                 title: "Now" },
+                    { slug: "ocr-lr-p1-l4-love-and-friendship",                 title: "Love and Friendship" },
+                    { slug: "ocr-lr-p1-l5-love-after-love",                     title: "Love After Love" },
+                    { slug: "ocr-lr-p1-l6-morning-song",                        title: "Morning Song" },
+                    { slug: "ocr-lr-p1-l7-i-wouldnt-thank-you-for-a-valentine", title: "I Wouldn't Thank You for a Valentine" },
+                    { slug: "ocr-lr-p1-l8-in-paris-with-you",                   title: "In Paris With You" },
+                    { slug: "ocr-lr-p1-l9-warming-her-pearls",                  title: "Warming Her Pearls" },
+                    { slug: "ocr-lr-p1-l10-dusting-the-phone",                  title: "Dusting the Phone" },
+                    { slug: "ocr-lr-p1-l11-flirtation",                         title: "Flirtation" },
+                    { slug: "ocr-lr-p1-l12-poem-for-my-love",                   title: "Poem for My Love" },
+                    { slug: "ocr-lr-p1-l13-lullaby",                            title: "Lullaby" },
+                    { slug: "ocr-lr-p1-l14-the-perseverance",                   title: "The Perseverance" },
+                    { slug: "ocr-lr-p1-l15-looking-at-your-hands",              title: "Looking at Your Hands" }
+                ]
+            },
+            {
+                tag: "Pillar 2", title: "Language & Imagery (Grade 6–7)",
+                lectures: [
+                    { slug: "ocr-lr-p2-l1-a-song-language",                              title: "A Song — Language" },
+                    { slug: "ocr-lr-p2-l2-bright-star-language",                         title: "Bright Star — Language" },
+                    { slug: "ocr-lr-p2-l3-now-language",                                 title: "Now — Language" },
+                    { slug: "ocr-lr-p2-l4-love-and-friendship-language",                 title: "Love and Friendship — Language" },
+                    { slug: "ocr-lr-p2-l5-love-after-love-language",                     title: "Love After Love — Language" },
+                    { slug: "ocr-lr-p2-l6-morning-song-language",                        title: "Morning Song — Language" },
+                    { slug: "ocr-lr-p2-l7-i-wouldnt-thank-you-for-a-valentine-language", title: "I Wouldn't Thank You for a Valentine — Language" },
+                    { slug: "ocr-lr-p2-l8-in-paris-with-you-language",                   title: "In Paris With You — Language" },
+                    { slug: "ocr-lr-p2-l9-warming-her-pearls-language",                  title: "Warming Her Pearls — Language" },
+                    { slug: "ocr-lr-p2-l10-dusting-the-phone-language",                  title: "Dusting the Phone — Language" },
+                    { slug: "ocr-lr-p2-l11-flirtation-language",                         title: "Flirtation — Language" },
+                    { slug: "ocr-lr-p2-l12-poem-for-my-love-language",                   title: "Poem for My Love — Language" },
+                    { slug: "ocr-lr-p2-l13-lullaby-language",                            title: "Lullaby — Language" },
+                    { slug: "ocr-lr-p2-l14-the-perseverance-language",                   title: "The Perseverance — Language" },
+                    { slug: "ocr-lr-p2-l15-looking-at-your-hands-language",              title: "Looking at Your Hands — Language" }
+                ]
+            },
+            {
+                tag: "Pillar 3", title: "Form & Structure (Grade 8–9)",
+                lectures: [
+                    { slug: "ocr-lr-p3-l1-beats-rhythm-and-metre",                   title: "Beats, Rhythm and Metre" },
+                    { slug: "ocr-lr-p3-l2-why-line-breaks-and-stanza-breaks-matter", title: "Why Line Breaks and Stanza Breaks Matter" },
+                    { slug: "ocr-lr-p3-l3-traditional-vs-free-verse",                title: "Traditional vs Free Verse" },
+                    { slug: "ocr-lr-p3-l4-visual-layout-on-the-page",                title: "Visual Layout on the Page" },
+                    { slug: "ocr-lr-p3-l5-the-volta-the-turning-point",              title: "The Volta — The Turning Point" },
+                    { slug: "ocr-lr-p3-l6-circular-structure-and-repetition",        title: "Circular Structure and Repetition" },
+                    { slug: "ocr-lr-p3-l7-how-a-poem-sounds-aloud",                  title: "How a Poem Sounds Aloud" }
+                ]
+            },
+            {
+                tag: "Pillar 4", title: "Context & Intent (AO3)",
+                lectures: [
+                    { slug: "ocr-lr-p4-l1-the-poets-life-and-purpose",                        title: "The Poet's Life and Purpose" },
+                    { slug: "ocr-lr-p4-l2-romantic-love-desire-and-longing",                   title: "Romantic Love, Desire and Longing" },
+                    { slug: "ocr-lr-p4-l3-family-love-parents-children-and-grandparents",      title: "Family Love — Parents, Children and Grandparents" },
+                    { slug: "ocr-lr-p4-l4-loss-grief-and-absence-in-relationships",             title: "Loss, Grief and Absence in Relationships" },
+                    { slug: "ocr-lr-p4-l5-power-class-and-servitude-in-love",                   title: "Power, Class and Servitude in Love" },
+                    { slug: "ocr-lr-p4-l6-identity-and-vulnerability-within-relationships",     title: "Identity and Vulnerability Within Relationships" },
+                    { slug: "ocr-lr-p4-l7-diverse-voices-modern-and-global-perspectives-on-love", title: "Diverse Voices — Modern and Global Perspectives on Love" },
+                    { slug: "ocr-lr-p4-l8-the-big-picture-cluster-summary",                     title: "The Big Picture — Cluster Summary" }
+                ]
+            },
+            {
+                tag: "Pillar 5", title: "Comparing to an Unseen Poem (Part a Skills)",
+                lectures: [
+                    { slug: "ocr-lr-p5-l1-how-the-comparison-question-works",              title: "How the Comparison Question Works (Part a)" },
+                    { slug: "ocr-lr-p5-l2-finding-thematic-links-with-an-unseen-poem",      title: "Finding Thematic Links With an Unseen Poem" },
+                    { slug: "ocr-lr-p5-l3-comparing-language-choices-with-an-unseen-poem",  title: "Comparing Language Choices With an Unseen Poem" },
+                    { slug: "ocr-lr-p5-l4-comparing-structure-and-form-with-an-unseen-poem", title: "Comparing Structure and Form With an Unseen Poem" }
+                ]
+            },
+            {
+                tag: "Pillar 6", title: "Exam Mastery",
+                lectures: [
+                    { slug: "ocr-lr-p6-l1-mastering-part-a-the-comparison-question",                          title: "Mastering Part a — The Comparison Question" },
+                    { slug: "ocr-lr-p6-l2-mastering-part-b-writing-from-memory-about-a-second-poem",          title: "Mastering Part b — Writing From Memory About a Second Poem" },
+                    { slug: "ocr-lr-p6-l3-grade-9-vs-grade-5-the-showdown",                                   title: "Grade 9 vs Grade 5 — The Showdown" }
+                ]
+            }
+        ]
+    },
+
+    {
+        tag: "Component 2 · Section A",
+        title: "Conflict",
+        type: "single",
+        pillars: [
+            {
+                tag: "Pillar 1", title: "First Impressions (Grade 3–5)",
+                lectures: [
+                    { slug: "ocr-cf-p1-l1-envy",                              title: "Envy" },
+                    { slug: "ocr-cf-p1-l2-boat-stealing",                     title: "Boat Stealing (from The Prelude)" },
+                    { slug: "ocr-cf-p1-l3-the-destruction-of-sennacherib",    title: "The Destruction of Sennacherib" },
+                    { slug: "ocr-cf-p1-l4-theres-a-certain-slant-of-light",   title: "There's a Certain Slant of Light" },
+                    { slug: "ocr-cf-p1-l5-vergissmeinnicht",                  title: "Vergissmeinnicht" },
+                    { slug: "ocr-cf-p1-l6-what-were-they-like",               title: "What Were They Like?" },
+                    { slug: "ocr-cf-p1-l7-lament",                            title: "Lament" },
+                    { slug: "ocr-cf-p1-l8-flag",                              title: "Flag" },
+                    { slug: "ocr-cf-p1-l9-honour-killing",                    title: "Honour Killing" },
+                    { slug: "ocr-cf-p1-l10-partition",                        title: "Partition" },
+                    { slug: "ocr-cf-p1-l11-papa-t",                           title: "Papa-T" },
+                    { slug: "ocr-cf-p1-l12-songs-for-the-people",             title: "Songs for the People" },
+                    { slug: "ocr-cf-p1-l13-we-lived-happily-during-the-war",  title: "We Lived Happily During the War" },
+                    { slug: "ocr-cf-p1-l14-colonization-in-reverse",          title: "Colonization in Reverse" },
+                    { slug: "ocr-cf-p1-l15-thirteen",                         title: "Thirteen" }
+                ]
+            },
+            {
+                tag: "Pillar 2", title: "Language & Imagery (Grade 6–7)",
+                lectures: [
+                    { slug: "ocr-cf-p2-l1-envy-language",                              title: "Envy — Language" },
+                    { slug: "ocr-cf-p2-l2-boat-stealing-language",                     title: "Boat Stealing (from The Prelude) — Language" },
+                    { slug: "ocr-cf-p2-l3-the-destruction-of-sennacherib-language",    title: "The Destruction of Sennacherib — Language" },
+                    { slug: "ocr-cf-p2-l4-theres-a-certain-slant-of-light-language",   title: "There's a Certain Slant of Light — Language" },
+                    { slug: "ocr-cf-p2-l5-vergissmeinnicht-language",                  title: "Vergissmeinnicht — Language" },
+                    { slug: "ocr-cf-p2-l6-what-were-they-like-language",               title: "What Were They Like? — Language" },
+                    { slug: "ocr-cf-p2-l7-lament-language",                            title: "Lament — Language" },
+                    { slug: "ocr-cf-p2-l8-flag-language",                              title: "Flag — Language" },
+                    { slug: "ocr-cf-p2-l9-honour-killing-language",                    title: "Honour Killing — Language" },
+                    { slug: "ocr-cf-p2-l10-partition-language",                        title: "Partition — Language" },
+                    { slug: "ocr-cf-p2-l11-papa-t-language",                           title: "Papa-T — Language" },
+                    { slug: "ocr-cf-p2-l12-songs-for-the-people-language",             title: "Songs for the People — Language" },
+                    { slug: "ocr-cf-p2-l13-we-lived-happily-during-the-war-language",  title: "We Lived Happily During the War — Language" },
+                    { slug: "ocr-cf-p2-l14-colonization-in-reverse-language",          title: "Colonization in Reverse — Language" },
+                    { slug: "ocr-cf-p2-l15-thirteen-language",                         title: "Thirteen — Language" }
+                ]
+            },
+            {
+                tag: "Pillar 3", title: "Form & Structure (Grade 8–9)",
+                lectures: [
+                    { slug: "ocr-cf-p3-l1-beats-rhythm-and-metre",                   title: "Beats, Rhythm and Metre" },
+                    { slug: "ocr-cf-p3-l2-why-line-breaks-and-stanza-breaks-matter", title: "Why Line Breaks and Stanza Breaks Matter" },
+                    { slug: "ocr-cf-p3-l3-traditional-vs-free-verse",                title: "Traditional vs Free Verse" },
+                    { slug: "ocr-cf-p3-l4-visual-layout-on-the-page",                title: "Visual Layout on the Page" },
+                    { slug: "ocr-cf-p3-l5-the-volta-the-turning-point",              title: "The Volta — The Turning Point" },
+                    { slug: "ocr-cf-p3-l6-circular-structure-and-repetition",        title: "Circular Structure and Repetition" },
+                    { slug: "ocr-cf-p3-l7-how-a-poem-sounds-aloud",                  title: "How a Poem Sounds Aloud" }
+                ]
+            },
+            {
+                tag: "Pillar 4", title: "Context & Intent (AO3)",
+                lectures: [
+                    { slug: "ocr-cf-p4-l1-the-poets-life-and-purpose",                  title: "The Poet's Life and Purpose" },
+                    { slug: "ocr-cf-p4-l2-war-and-its-human-cost",                      title: "War and its Human Cost" },
+                    { slug: "ocr-cf-p4-l3-empire-colonialism-and-partition",            title: "Empire, Colonialism and Partition" },
+                    { slug: "ocr-cf-p4-l4-prejudice-persecution-and-injustice",         title: "Prejudice, Persecution and Injustice" },
+                    { slug: "ocr-cf-p4-l5-inner-conflict-and-personal-struggle",        title: "Inner Conflict and Personal Struggle" },
+                    { slug: "ocr-cf-p4-l6-nature-guilt-and-the-aftermath-of-conflict",  title: "Nature, Guilt and the Aftermath of Conflict" },
+                    { slug: "ocr-cf-p4-l7-diverse-voices-global-perspectives-on-conflict", title: "Diverse Voices — Global Perspectives on Conflict" },
+                    { slug: "ocr-cf-p4-l8-the-big-picture-cluster-summary",             title: "The Big Picture — Cluster Summary" }
+                ]
+            },
+            {
+                tag: "Pillar 5", title: "Comparing to an Unseen Poem (Part a Skills)",
+                lectures: [
+                    { slug: "ocr-cf-p5-l1-how-the-comparison-question-works",              title: "How the Comparison Question Works (Part a)" },
+                    { slug: "ocr-cf-p5-l2-finding-thematic-links-with-an-unseen-poem",      title: "Finding Thematic Links With an Unseen Poem" },
+                    { slug: "ocr-cf-p5-l3-comparing-language-choices-with-an-unseen-poem",  title: "Comparing Language Choices With an Unseen Poem" },
+                    { slug: "ocr-cf-p5-l4-comparing-structure-and-form-with-an-unseen-poem", title: "Comparing Structure and Form With an Unseen Poem" }
+                ]
+            },
+            {
+                tag: "Pillar 6", title: "Exam Mastery",
+                lectures: [
+                    { slug: "ocr-cf-p6-l1-mastering-part-a-the-comparison-question",                 title: "Mastering Part a — The Comparison Question" },
+                    { slug: "ocr-cf-p6-l2-mastering-part-b-writing-from-memory-about-a-second-poem", title: "Mastering Part b — Writing From Memory About a Second Poem" },
+                    { slug: "ocr-cf-p6-l3-grade-9-vs-grade-5-the-showdown",                          title: "Grade 9 vs Grade 5 — The Showdown" }
+                ]
+            }
+        ]
+    },
+
+    {
+        tag: "Component 2 · Section A",
+        title: "Youth and Age",
+        type: "single",
+        pillars: [
+            {
+                tag: "Pillar 1", title: "First Impressions (Grade 3–5)",
+                lectures: [
+                    { slug: "ocr-ya-p1-l1-holy-thursday",                title: "Holy Thursday" },
+                    { slug: "ocr-ya-p1-l2-the-bluebell",                 title: "The Bluebell" },
+                    { slug: "ocr-ya-p1-l3-midnight-on-the-great-western", title: "Midnight on the Great Western" },
+                    { slug: "ocr-ya-p1-l4-out-out",                      title: "Out, Out–" },
+                    { slug: "ocr-ya-p1-l5-baby-song",                    title: "Baby Song" },
+                    { slug: "ocr-ya-p1-l6-youre",                        title: "You're" },
+                    { slug: "ocr-ya-p1-l7-cold-knap-lake",               title: "Cold Knap Lake" },
+                    { slug: "ocr-ya-p1-l8-my-first-weeks",               title: "My First Weeks" },
+                    { slug: "ocr-ya-p1-l9-venuss-flytraps",              title: "Venus's-flytraps" },
+                    { slug: "ocr-ya-p1-l10-love",                        title: "Love" },
+                    { slug: "ocr-ya-p1-l11-equilibrium",                 title: "Equilibrium" },
+                    { slug: "ocr-ya-p1-l12-prayer",                      title: "Prayer" },
+                    { slug: "ocr-ya-p1-l13-happy-birthday-moon",         title: "Happy Birthday Moon" },
+                    { slug: "ocr-ya-p1-l14-tea-with-our-grandmothers",   title: "Tea With Our Grandmothers" },
+                    { slug: "ocr-ya-p1-l15-theme-for-english-b",         title: "Theme for English B" }
+                ]
+            },
+            {
+                tag: "Pillar 2", title: "Language & Imagery (Grade 6–7)",
+                lectures: [
+                    { slug: "ocr-ya-p2-l1-holy-thursday-language",                title: "Holy Thursday — Language" },
+                    { slug: "ocr-ya-p2-l2-the-bluebell-language",                 title: "The Bluebell — Language" },
+                    { slug: "ocr-ya-p2-l3-midnight-on-the-great-western-language", title: "Midnight on the Great Western — Language" },
+                    { slug: "ocr-ya-p2-l4-out-out-language",                      title: "Out, Out– — Language" },
+                    { slug: "ocr-ya-p2-l5-baby-song-language",                    title: "Baby Song — Language" },
+                    { slug: "ocr-ya-p2-l6-youre-language",                        title: "You're — Language" },
+                    { slug: "ocr-ya-p2-l7-cold-knap-lake-language",               title: "Cold Knap Lake — Language" },
+                    { slug: "ocr-ya-p2-l8-my-first-weeks-language",               title: "My First Weeks — Language" },
+                    { slug: "ocr-ya-p2-l9-venuss-flytraps-language",              title: "Venus's-flytraps — Language" },
+                    { slug: "ocr-ya-p2-l10-love-language",                        title: "Love — Language" },
+                    { slug: "ocr-ya-p2-l11-equilibrium-language",                 title: "Equilibrium — Language" },
+                    { slug: "ocr-ya-p2-l12-prayer-language",                      title: "Prayer — Language" },
+                    { slug: "ocr-ya-p2-l13-happy-birthday-moon-language",         title: "Happy Birthday Moon — Language" },
+                    { slug: "ocr-ya-p2-l14-tea-with-our-grandmothers-language",   title: "Tea With Our Grandmothers — Language" },
+                    { slug: "ocr-ya-p2-l15-theme-for-english-b-language",         title: "Theme for English B — Language" }
+                ]
+            },
+            {
+                tag: "Pillar 3", title: "Form & Structure (Grade 8–9)",
+                lectures: [
+                    { slug: "ocr-ya-p3-l1-beats-rhythm-and-metre",                   title: "Beats, Rhythm and Metre" },
+                    { slug: "ocr-ya-p3-l2-why-line-breaks-and-stanza-breaks-matter", title: "Why Line Breaks and Stanza Breaks Matter" },
+                    { slug: "ocr-ya-p3-l3-traditional-vs-free-verse",                title: "Traditional vs Free Verse" },
+                    { slug: "ocr-ya-p3-l4-visual-layout-on-the-page",                title: "Visual Layout on the Page" },
+                    { slug: "ocr-ya-p3-l5-the-volta-the-turning-point",              title: "The Volta — The Turning Point" },
+                    { slug: "ocr-ya-p3-l6-circular-structure-and-repetition",        title: "Circular Structure and Repetition" },
+                    { slug: "ocr-ya-p3-l7-how-a-poem-sounds-aloud",                  title: "How a Poem Sounds Aloud" }
+                ]
+            },
+            {
+                tag: "Pillar 4", title: "Context & Intent (AO3)",
+                lectures: [
+                    { slug: "ocr-ya-p4-l1-the-poets-life-and-purpose",                                     title: "The Poet's Life and Purpose" },
+                    { slug: "ocr-ya-p4-l2-childhood-birth-and-early-life",                                  title: "Childhood, Birth and Early Life" },
+                    { slug: "ocr-ya-p4-l3-growing-up-and-loss-of-innocence",                                title: "Growing Up and Loss of Innocence" },
+                    { slug: "ocr-ya-p4-l4-old-age-time-and-mortality",                                      title: "Old Age, Time and Mortality" },
+                    { slug: "ocr-ya-p4-l5-family-memory-and-inheritance",                                   title: "Family, Memory and Inheritance" },
+                    { slug: "ocr-ya-p4-l6-identity-across-generations",                                     title: "Identity Across Generations" },
+                    { slug: "ocr-ya-p4-l7-diverse-voices-modern-and-global-perspectives-on-youth-and-age",  title: "Diverse Voices — Modern and Global Perspectives on Youth and Age" },
+                    { slug: "ocr-ya-p4-l8-the-big-picture-cluster-summary",                                 title: "The Big Picture — Cluster Summary" }
+                ]
+            },
+            {
+                tag: "Pillar 5", title: "Comparing to an Unseen Poem (Part a Skills)",
+                lectures: [
+                    { slug: "ocr-ya-p5-l1-how-the-comparison-question-works",              title: "How the Comparison Question Works (Part a)" },
+                    { slug: "ocr-ya-p5-l2-finding-thematic-links-with-an-unseen-poem",      title: "Finding Thematic Links With an Unseen Poem" },
+                    { slug: "ocr-ya-p5-l3-comparing-language-choices-with-an-unseen-poem",  title: "Comparing Language Choices With an Unseen Poem" },
+                    { slug: "ocr-ya-p5-l4-comparing-structure-and-form-with-an-unseen-poem", title: "Comparing Structure and Form With an Unseen Poem" }
+                ]
+            },
+            {
+                tag: "Pillar 6", title: "Exam Mastery",
+                lectures: [
+                    { slug: "ocr-ya-p6-l1-mastering-part-a-the-comparison-question",                 title: "Mastering Part a — The Comparison Question" },
+                    { slug: "ocr-ya-p6-l2-mastering-part-b-writing-from-memory-about-a-second-poem", title: "Mastering Part b — Writing From Memory About a Second Poem" },
+                    { slug: "ocr-ya-p6-l3-grade-9-vs-grade-5-the-showdown",                          title: "Grade 9 vs Grade 5 — The Showdown" }
+                ]
+            }
+        ]
+    },
+
+    {
+        tag: "Component 2 · Section B",
         title: "Shakespeare",
         type: "multi",
         texts: [
