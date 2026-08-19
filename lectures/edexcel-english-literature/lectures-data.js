@@ -433,5 +433,412 @@ const papersData = [
                 ]
             }
         ]
+    },
+
+    /* ══════════════════════════════════════
+       PAPER 2 · SECTION B — POETRY ANTHOLOGY (Part 1) + UNSEEN POETRY (Part 2)
+    ══════════════════════════════════════ */
+    {
+        tag: "Paper 2 · Section B",
+        title: "Belonging",
+        type: "single",
+        pillars: [
+            {
+                tag: "Pillar 1", title: "First Impressions (Grade 3–5)",
+                lectures: [
+                    "edx-bel-p1-l1-to-my-sister",
+                    "edx-bel-p1-l2-captain-cook-to-my-brother",
+                    "edx-bel-p1-l3-sunday-dip",
+                    "edx-bel-p1-l4-mild-the-mist-upon-the-hill",
+                    "edx-bel-p1-l5-clear-and-gentle-stream",
+                    "edx-bel-p1-l6-i-remember-i-remember",
+                    "edx-bel-p1-l7-island-man",
+                    "edx-bel-p1-l8-peckham-rye-lane",
+                    "edx-bel-p1-l9-we-refugees",
+                    "edx-bel-p1-l10-us",
+                    "edx-bel-p1-l11-in-wales-wanting-to-be-italian",
+                    "edx-bel-p1-l12-kumukanda",
+                    "edx-bel-p1-l13-jamaican-british",
+                    "edx-bel-p1-l14-my-mothers-kitchen",
+                    "edx-bel-p1-l15-the-emigree"
+                ]
+            },
+            {
+                tag: "Pillar 2", title: "Language & Imagery (Grade 6–7)",
+                lectures: [
+                    "edx-bel-p2-l1-to-my-sister-language",
+                    "edx-bel-p2-l2-captain-cook-to-my-brother-language",
+                    "edx-bel-p2-l3-sunday-dip-language",
+                    "edx-bel-p2-l4-mild-the-mist-upon-the-hill-language",
+                    "edx-bel-p2-l5-clear-and-gentle-stream-language",
+                    "edx-bel-p2-l6-i-remember-i-remember-language",
+                    "edx-bel-p2-l7-island-man-language",
+                    "edx-bel-p2-l8-peckham-rye-lane-language",
+                    "edx-bel-p2-l9-we-refugees-language",
+                    "edx-bel-p2-l10-us-language",
+                    "edx-bel-p2-l11-in-wales-wanting-to-be-italian-language",
+                    "edx-bel-p2-l12-kumukanda-language",
+                    "edx-bel-p2-l13-jamaican-british-language",
+                    "edx-bel-p2-l14-my-mothers-kitchen-language",
+                    "edx-bel-p2-l15-the-emigree-language"
+                ]
+            },
+            {
+                tag: "Pillar 3", title: "Form & Structure (Grade 8–9)",
+                lectures: [
+                    "edx-bel-p3-l1-beats-rhythm-and-metre",
+                    "edx-bel-p3-l2-why-line-breaks-and-stanza-breaks-matter",
+                    "edx-bel-p3-l3-traditional-vs-free-verse",
+                    "edx-bel-p3-l4-visual-layout-on-the-page",
+                    "edx-bel-p3-l5-the-volta-the-turning-point",
+                    "edx-bel-p3-l6-circular-structure-and-repetition",
+                    "edx-bel-p3-l7-how-a-poem-sounds-aloud"
+                ]
+            },
+            {
+                tag: "Pillar 4", title: "Context & Intent (AO3)",
+                lectures: [
+                    "edx-bel-p4-l1-the-poets-life-and-purpose",
+                    "edx-bel-p4-l2-family-heritage-and-home",
+                    "edx-bel-p4-l3-migration-and-the-refugee-experience",
+                    "edx-bel-p4-l4-identity-between-two-cultures",
+                    "edx-bel-p4-l5-language-naming-and-the-self",
+                    "edx-bel-p4-l6-nature-and-a-sense-of-rootedness",
+                    "edx-bel-p4-l7-modern-and-global-voices-on-belonging",
+                    "edx-bel-p4-l8-the-big-picture-cluster-summary"
+                ]
+            },
+            {
+                tag: "Pillar 5", title: "Comparison Skills",
+                lectures: [
+                    "edx-bel-p5-l1-how-the-comparison-question-works",
+                    "edx-bel-p5-l2-choosing-your-second-poem-under-exam-pressure",
+                    "edx-bel-p5-l3-finding-thematic-links-across-the-cluster",
+                    "edx-bel-p5-l4-comparing-language-and-form-across-two-poems"
+                ]
+            },
+            {
+                tag: "Pillar 6", title: "Exam Mastery",
+                lectures: [
+                    "edx-bel-p6-l1-mastering-the-part-1-comparison-question",
+                    "edx-bel-p6-l2-building-a-grade-9-comparative-paragraph",
+                    "edx-bel-p6-l3-grade-9-vs-grade-5-the-showdown"
+                ]
+            }
+        ]
+    },
+
+    {
+        tag: "Paper 2 · Section B",
+        title: "Conflict",
+        type: "single",
+        pillars: [
+            {
+                tag: "Pillar 1", title: "First Impressions (Grade 3–5)",
+                lectures: [
+                    "edx-con-p1-l1-a-poison-tree",
+                    "edx-con-p1-l2-the-destruction-of-sennacherib",
+                    "edx-con-p1-l3-extract-from-the-prelude",
+                    "edx-con-p1-l4-the-man-he-killed",
+                    "edx-con-p1-l5-cousin-kate",
+                    "edx-con-p1-l6-half-caste",
+                    "edx-con-p1-l7-exposure",
+                    "edx-con-p1-l8-the-charge-of-the-light-brigade",
+                    "edx-con-p1-l9-catrin",
+                    "edx-con-p1-l10-war-photographer",
+                    "edx-con-p1-l11-belfast-confetti",
+                    "edx-con-p1-l12-the-class-game",
+                    "edx-con-p1-l13-poppies",
+                    "edx-con-p1-l14-no-problem",
+                    "edx-con-p1-l15-what-were-they-like"
+                ]
+            },
+            {
+                tag: "Pillar 2", title: "Language & Imagery (Grade 6–7)",
+                lectures: [
+                    "edx-con-p2-l1-a-poison-tree-language",
+                    "edx-con-p2-l2-the-destruction-of-sennacherib-language",
+                    "edx-con-p2-l3-extract-from-the-prelude-language",
+                    "edx-con-p2-l4-the-man-he-killed-language",
+                    "edx-con-p2-l5-cousin-kate-language",
+                    "edx-con-p2-l6-half-caste-language",
+                    "edx-con-p2-l7-exposure-language",
+                    "edx-con-p2-l8-the-charge-of-the-light-brigade-language",
+                    "edx-con-p2-l9-catrin-language",
+                    "edx-con-p2-l10-war-photographer-language",
+                    "edx-con-p2-l11-belfast-confetti-language",
+                    "edx-con-p2-l12-the-class-game-language",
+                    "edx-con-p2-l13-poppies-language",
+                    "edx-con-p2-l14-no-problem-language",
+                    "edx-con-p2-l15-what-were-they-like-language"
+                ]
+            },
+            {
+                tag: "Pillar 3", title: "Form & Structure (Grade 8–9)",
+                lectures: [
+                    "edx-con-p3-l1-beats-rhythm-and-metre",
+                    "edx-con-p3-l2-why-line-breaks-and-stanza-breaks-matter",
+                    "edx-con-p3-l3-traditional-vs-free-verse",
+                    "edx-con-p3-l4-visual-layout-on-the-page",
+                    "edx-con-p3-l5-the-volta-the-turning-point",
+                    "edx-con-p3-l6-circular-structure-and-repetition",
+                    "edx-con-p3-l7-how-a-poem-sounds-aloud"
+                ]
+            },
+            {
+                tag: "Pillar 4", title: "Context & Intent (AO3)",
+                lectures: [
+                    "edx-con-p4-l1-the-poets-life-and-purpose",
+                    "edx-con-p4-l2-war-and-the-reality-of-combat",
+                    "edx-con-p4-l3-empire-race-and-prejudice",
+                    "edx-con-p4-l4-conflict-within-family-and-community",
+                    "edx-con-p4-l5-betrayal-revenge-and-injustice",
+                    "edx-con-p4-l6-the-aftermath-and-cost-of-conflict",
+                    "edx-con-p4-l7-modern-and-global-voices-on-conflict",
+                    "edx-con-p4-l8-the-big-picture-cluster-summary"
+                ]
+            },
+            {
+                tag: "Pillar 5", title: "Comparison Skills",
+                lectures: [
+                    "edx-con-p5-l1-how-the-comparison-question-works",
+                    "edx-con-p5-l2-choosing-your-second-poem-under-exam-pressure",
+                    "edx-con-p5-l3-finding-thematic-links-across-the-cluster",
+                    "edx-con-p5-l4-comparing-language-and-form-across-two-poems"
+                ]
+            },
+            {
+                tag: "Pillar 6", title: "Exam Mastery",
+                lectures: [
+                    "edx-con-p6-l1-mastering-the-part-1-comparison-question",
+                    "edx-con-p6-l2-building-a-grade-9-comparative-paragraph",
+                    "edx-con-p6-l3-grade-9-vs-grade-5-the-showdown"
+                ]
+            }
+        ]
+    },
+
+    {
+        tag: "Paper 2 · Section B",
+        title: "Relationships",
+        type: "single",
+        pillars: [
+            {
+                tag: "Pillar 1", title: "First Impressions (Grade 3–5)",
+                lectures: [
+                    "edx-rel-p1-l1-la-belle-dame-sans-merci",
+                    "edx-rel-p1-l2-a-child-to-his-sick-grandfather",
+                    "edx-rel-p1-l3-she-walks-in-beauty",
+                    "edx-rel-p1-l4-a-complaint",
+                    "edx-rel-p1-l5-neutral-tones",
+                    "edx-rel-p1-l6-sonnet-43",
+                    "edx-rel-p1-l7-my-last-duchess",
+                    "edx-rel-p1-l8-first-date-she-and-first-date-he",
+                    "edx-rel-p1-l9-valentine",
+                    "edx-rel-p1-l10-one-flesh",
+                    "edx-rel-p1-l11-i-wanna-be-yours",
+                    "edx-rel-p1-l12-loves-dog",
+                    "edx-rel-p1-l13-nettles",
+                    "edx-rel-p1-l14-the-manhunt",
+                    "edx-rel-p1-l15-my-father-would-not-show-us"
+                ]
+            },
+            {
+                tag: "Pillar 2", title: "Language & Imagery (Grade 6–7)",
+                lectures: [
+                    "edx-rel-p2-l1-la-belle-dame-sans-merci-language",
+                    "edx-rel-p2-l2-a-child-to-his-sick-grandfather-language",
+                    "edx-rel-p2-l3-she-walks-in-beauty-language",
+                    "edx-rel-p2-l4-a-complaint-language",
+                    "edx-rel-p2-l5-neutral-tones-language",
+                    "edx-rel-p2-l6-sonnet-43-language",
+                    "edx-rel-p2-l7-my-last-duchess-language",
+                    "edx-rel-p2-l8-first-date-she-and-first-date-he-language",
+                    "edx-rel-p2-l9-valentine-language",
+                    "edx-rel-p2-l10-one-flesh-language",
+                    "edx-rel-p2-l11-i-wanna-be-yours-language",
+                    "edx-rel-p2-l12-loves-dog-language",
+                    "edx-rel-p2-l13-nettles-language",
+                    "edx-rel-p2-l14-the-manhunt-language",
+                    "edx-rel-p2-l15-my-father-would-not-show-us-language"
+                ]
+            },
+            {
+                tag: "Pillar 3", title: "Form & Structure (Grade 8–9)",
+                lectures: [
+                    "edx-rel-p3-l1-beats-rhythm-and-metre",
+                    "edx-rel-p3-l2-why-line-breaks-and-stanza-breaks-matter",
+                    "edx-rel-p3-l3-traditional-vs-free-verse",
+                    "edx-rel-p3-l4-visual-layout-on-the-page",
+                    "edx-rel-p3-l5-the-volta-the-turning-point",
+                    "edx-rel-p3-l6-circular-structure-and-repetition",
+                    "edx-rel-p3-l7-how-a-poem-sounds-aloud"
+                ]
+            },
+            {
+                tag: "Pillar 4", title: "Context & Intent (AO3)",
+                lectures: [
+                    "edx-rel-p4-l1-the-poets-life-and-purpose",
+                    "edx-rel-p4-l2-romantic-love-desire-and-longing",
+                    "edx-rel-p4-l3-family-bonds-parents-children-and-grandparents",
+                    "edx-rel-p4-l4-loss-grief-and-the-end-of-love",
+                    "edx-rel-p4-l5-gender-power-and-silenced-voices-in-love",
+                    "edx-rel-p4-l6-marriage-and-social-expectations-of-relationships",
+                    "edx-rel-p4-l7-modern-and-global-voices-on-relationships",
+                    "edx-rel-p4-l8-the-big-picture-cluster-summary"
+                ]
+            },
+            {
+                tag: "Pillar 5", title: "Comparison Skills",
+                lectures: [
+                    "edx-rel-p5-l1-how-the-comparison-question-works",
+                    "edx-rel-p5-l2-choosing-your-second-poem-under-exam-pressure",
+                    "edx-rel-p5-l3-finding-thematic-links-across-the-cluster",
+                    "edx-rel-p5-l4-comparing-language-and-form-across-two-poems"
+                ]
+            },
+            {
+                tag: "Pillar 6", title: "Exam Mastery",
+                lectures: [
+                    "edx-rel-p6-l1-mastering-the-part-1-comparison-question",
+                    "edx-rel-p6-l2-building-a-grade-9-comparative-paragraph",
+                    "edx-rel-p6-l3-grade-9-vs-grade-5-the-showdown"
+                ]
+            }
+        ]
+    },
+
+    {
+        tag: "Paper 2 · Section B",
+        title: "Time and Place",
+        type: "single",
+        pillars: [
+            {
+                tag: "Pillar 1", title: "First Impressions (Grade 3–5)",
+                lectures: [
+                    "edx-tap-p1-l1-to-autumn",
+                    "edx-tap-p1-l2-composed-upon-westminster-bridge",
+                    "edx-tap-p1-l3-london",
+                    "edx-tap-p1-l4-i-started-early-took-my-dog",
+                    "edx-tap-p1-l5-where-the-picnic-was",
+                    "edx-tap-p1-l6-adlestrop",
+                    "edx-tap-p1-l7-home-thoughts-from-abroad",
+                    "edx-tap-p1-l8-first-flight",
+                    "edx-tap-p1-l9-stewart-island",
+                    "edx-tap-p1-l10-presents-from-my-aunts-in-pakistan",
+                    "edx-tap-p1-l11-hurricane-hits-england",
+                    "edx-tap-p1-l12-nothings-changed",
+                    "edx-tap-p1-l13-postcard-from-a-travel-snob",
+                    "edx-tap-p1-l14-in-romney-marsh",
+                    "edx-tap-p1-l15-absence"
+                ]
+            },
+            {
+                tag: "Pillar 2", title: "Language & Imagery (Grade 6–7)",
+                lectures: [
+                    "edx-tap-p2-l1-to-autumn-language",
+                    "edx-tap-p2-l2-composed-upon-westminster-bridge-language",
+                    "edx-tap-p2-l3-london-language",
+                    "edx-tap-p2-l4-i-started-early-took-my-dog-language",
+                    "edx-tap-p2-l5-where-the-picnic-was-language",
+                    "edx-tap-p2-l6-adlestrop-language",
+                    "edx-tap-p2-l7-home-thoughts-from-abroad-language",
+                    "edx-tap-p2-l8-first-flight-language",
+                    "edx-tap-p2-l9-stewart-island-language",
+                    "edx-tap-p2-l10-presents-from-my-aunts-in-pakistan-language",
+                    "edx-tap-p2-l11-hurricane-hits-england-language",
+                    "edx-tap-p2-l12-nothings-changed-language",
+                    "edx-tap-p2-l13-postcard-from-a-travel-snob-language",
+                    "edx-tap-p2-l14-in-romney-marsh-language",
+                    "edx-tap-p2-l15-absence-language"
+                ]
+            },
+            {
+                tag: "Pillar 3", title: "Form & Structure (Grade 8–9)",
+                lectures: [
+                    "edx-tap-p3-l1-beats-rhythm-and-metre",
+                    "edx-tap-p3-l2-why-line-breaks-and-stanza-breaks-matter",
+                    "edx-tap-p3-l3-traditional-vs-free-verse",
+                    "edx-tap-p3-l4-visual-layout-on-the-page",
+                    "edx-tap-p3-l5-the-volta-the-turning-point",
+                    "edx-tap-p3-l6-circular-structure-and-repetition",
+                    "edx-tap-p3-l7-how-a-poem-sounds-aloud"
+                ]
+            },
+            {
+                tag: "Pillar 4", title: "Context & Intent (AO3)",
+                lectures: [
+                    "edx-tap-p4-l1-the-poets-life-and-purpose",
+                    "edx-tap-p4-l2-nature-season-and-the-passing-of-time",
+                    "edx-tap-p4-l3-journeys-travel-and-displacement",
+                    "edx-tap-p4-l4-memory-and-places-that-have-changed",
+                    "edx-tap-p4-l5-migration-and-the-immigrant-experience-of-place",
+                    "edx-tap-p4-l6-apartheid-injustice-and-contested-places",
+                    "edx-tap-p4-l7-modern-and-global-voices-on-place",
+                    "edx-tap-p4-l8-the-big-picture-cluster-summary"
+                ]
+            },
+            {
+                tag: "Pillar 5", title: "Comparison Skills",
+                lectures: [
+                    "edx-tap-p5-l1-how-the-comparison-question-works",
+                    "edx-tap-p5-l2-choosing-your-second-poem-under-exam-pressure",
+                    "edx-tap-p5-l3-finding-thematic-links-across-the-cluster",
+                    "edx-tap-p5-l4-comparing-language-and-form-across-two-poems"
+                ]
+            },
+            {
+                tag: "Pillar 6", title: "Exam Mastery",
+                lectures: [
+                    "edx-tap-p6-l1-mastering-the-part-1-comparison-question",
+                    "edx-tap-p6-l2-building-a-grade-9-comparative-paragraph",
+                    "edx-tap-p6-l3-grade-9-vs-grade-5-the-showdown"
+                ]
+            }
+        ]
+    },
+
+    {
+        tag: "Paper 2 · Section B",
+        title: "Unseen Poetry",
+        type: "single",
+        pillars: [
+            {
+                tag: "Pillar 1", title: "First Impressions",
+                lectures: [
+                    "edx-unseen-l1-how-to-read-a-poem-for-the-first-time",
+                    "edx-unseen-l2-decoding-the-title-and-opening-line",
+                    "edx-unseen-l3-identifying-who-what-where-when-why"
+                ]
+            },
+            {
+                tag: "Pillar 2", title: "Language & Methods",
+                lectures: [
+                    "edx-unseen-l4-spotting-techniques-under-exam-pressure",
+                    "edx-unseen-l5-analysing-word-choices-and-connotations",
+                    "edx-unseen-l6-unpacking-imagery-without-context"
+                ]
+            },
+            {
+                tag: "Pillar 3", title: "Structure & Form",
+                lectures: [
+                    "edx-unseen-l7-noticing-shifts-in-tone-and-pacing",
+                    "edx-unseen-l8-structural-analysis-stanzas-and-line-breaks"
+                ]
+            },
+            {
+                tag: "Pillar 4", title: "Exam Mastery",
+                lectures: [
+                    "edx-unseen-l9-finding-links-between-two-unseen-poems",
+                    "edx-unseen-l10-comparing-language-choices-across-two-unseen-poems",
+                    "edx-unseen-l11-comparing-structure-and-form-across-two-unseen-poems",
+                    "edx-unseen-l12-the-20-mark-comparison-strategy",
+                    "edx-unseen-l13-model-answer-walkthrough",
+                    "edx-unseen-l14-common-pitfalls-in-unseen-comparison",
+                    "edx-unseen-l15-final-timed-practice-and-confidence"
+                ]
+            }
+        ]
     }
+
 ];
