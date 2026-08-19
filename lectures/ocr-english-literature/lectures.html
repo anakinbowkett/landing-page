@@ -35,6 +35,7 @@
 </main>
 
 <script src="lectures-data.js"></script>
+<script src="question-counts.js"></script>
 <script>
 
 /* ════════════════════════════════════════════
@@ -80,6 +81,14 @@ function parseQuestionCount(html) {
 }
 
 async function fetchQuestionCount(slug) {
+    // Exact, build-time-verified count — always wins if present, so a
+    // lecture that's been edited since it was first cached in the browser
+    // can never show a stale number again.
+    if (window.LECTURE_QUESTION_COUNTS && LECTURE_QUESTION_COUNTS[slug] !== undefined) {
+        return LECTURE_QUESTION_COUNTS[slug];
+    }
+    // Fallback for anything not yet covered by question-counts.js (e.g. a
+    // lecture added since it was last regenerated).
     const cacheKey = 'lecQCount_v2_' + slug;
     const cached = localStorage.getItem(cacheKey);
     if (cached) return parseInt(cached, 10);
