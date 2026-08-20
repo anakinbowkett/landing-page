@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQA Physics - Pillar Decks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+    <link href="shared.css" rel="stylesheet">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="logo">Montura Learn</div>
+    <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
+    <a href="lectures.html"        class="nav-item"><span class="nav-icon">∞</span><span>Lectures</span></a>
+    <a href="flashtiles.html"      class="nav-item active"><span class="nav-icon">⚡</span><span>Flashtiles</span></a>
+    <a href="quick-test.html"      class="nav-item"><span class="nav-icon">🕐</span><span>Quiz</span></a>
+    <a href="past-papers.html"     class="nav-item"><span class="nav-icon">📄</span><span>Past Papers</span></a>
+    <div class="nav-spacer"></div>
+    <button class="live-study-btn">Allow Live Study</button>
+</aside>
+
+<main class="main-content">
+    <div class="content-wrapper compact">
+        <div class="subject-header">
+            <div class="subject-line-left"></div>
+            <h1 class="subject-name">Pillar Decks</h1>
+            <div class="subject-line-right"></div>
+        </div>
+    </div>
+
+    <a href="flashtiles.html" class="crumb-back">← Flashtiles</a>
+
+    <section class="topics-section">
+        <p style="max-width: 700px; font-size: 0.875rem; color: #6b7280; margin: 0 0 20px;">Same structure as your Lectures — open a paper, pick a text if there is one, then tick the lectures you want as flashcards.</p>
+        <div class="papers-list" id="papersList"></div>
+    </section>
+</main>
+
+<div class="page-basket-bar" id="basketBar" style="display: none;">
+    <span id="basketCount">0 selected</span>
+    <button id="clearBasketBtn" style="background:none;border:none;color:#9ca3af;font-size:0.8125rem;font-weight:600;cursor:pointer;">Clear</button>
+    <button id="startDeckBtn" style="background:#1d7fe2;color:white;border:none;padding:10px 18px;border-radius:8px;font-size:0.875rem;font-weight:600;cursor:pointer;">Start Deck →</button>
+</div>
+
+<script src="lectures-data.js"></script>
+<script>
+
+/* ════════════════════════════════════════════
+   SELECTION STATE — shared across every open
+   paper/pillar on the page, since this is now
+   one continuous accordion, not separate pages.
+   selected maps key -> lecture slug, so the real
+   slug travels with the selection instead of only
+   living in the DOM text.
+════════════════════════════════════════════ */
+const selected = new Map();
+const basketBar = document.getElementById('basketBar');
+const basketCount = document.getElementById('basketCount');
+
+function toggleSelection(key, slug, row) {
+    if (selected.has(key)) {
+        selected.delete(key);
+        row.classList.remove('selected');
+    } else {
+        selected.set(key, slug);
+        row.classList.add('selected');
+    }
+    basketBar.style.display = selected.size ? 'flex' : 'none';
+    basketCount.textContent = `${selected.size} selected`;
+}
+
+document.getElementById('clearBasketBtn').addEventListener('click', () => {
+    selected.clear();
+    document.querySelectorAll('.lec-sub-row.selectable.selected').forEach(row => {
+        row.classList.remove('selected');
+    });
+    basketBar.style.display = 'none';
+});
+
+/* Start Deck — hand the real slugs to the session page via localStorage
+   (safer than a URL query string once selections run into dozens of
+   lectures) and navigate there. */
+document.getElementById('startDeckBtn').addEventListener('click', () => {
+    const slugs = Array.from(selected.values());
+    if (slugs.length === 0) return;
+    localStorage.setItem('flashtile_session_slugs', JSON.stringify(slugs));
+    localStorage.setItem('flashtile_session_label', 'Pillar Deck');
+    window.location.href = 'flashtiles-pillar-session.html';
+});
+
+/* ════════════════════════════════════════════
+   BUILD UI
+════════════════════════════════════════════ */
+const list = document.getElementById('papersList');
+
+papersData.forEach((paper, paperIdx) => {
+    const item = document.createElement('div');
+    item.className = 'paper-item';
+
+    const header = document.createElement('button');
+    header.className = 'paper-header';
+    header.innerHTML = `
+        <div class="paper-header-left">
+            <span class="paper-tag">${paper.tag}</span>
+            <span class="paper-title">${paper.title}</span>
+        </div>
+        <span class="paper-chevron">›</span>`;
+
+    const body = document.createElement('div');
+    body.className = 'paper-body';
+
+    const cardsWrap = document.createElement('div');
+    cardsWrap.className = 'subject-cards';
+
+    if (paper.type === 'multi') {
+        const panel = buildMultiTextPanel(paper.texts, paperIdx);
+        cardsWrap.appendChild(panel);
+    } else {
+        const panel = buildSinglePanel(paper.pillars, paperIdx);
+        cardsWrap.appendChild(panel);
+    }
+
+    body.appendChild(cardsWrap);
+    header.addEventListener('click', () => item.classList.toggle('open'));
+    item.appendChild(header);
+    item.appendChild(body);
+    list.appendChild(item);
+});
+
+function makeLectureRow(li, title, key, slug) {
+    const checkSvg = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L4.5 8.5L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const row = document.createElement('div');
+    row.className = 'lec-sub-row selectable';
+    row.dataset.slug = slug;
+    row.innerHTML = `
+        <div class="lec-sub-left">
+            <span class="lecture-checkbox">${checkSvg}</span>
+            <span class="lec-sub-name">${title}</span>
+        </div>`;
+    row.addEventListener('click', e => {
+        e.stopPropagation();
+        toggleSelection(key, slug, row);
+    });
+    return row;
+}
+
+/* ════════════════════════════════════════════
+   MULTI-TEXT PANEL (text grid + pillars)
+════════════════════════════════════════════ */
+function buildMultiTextPanel(texts, paperIdx) {
+    const panel = document.createElement('div');
+    panel.className = 'lec-panel';
+
+    let activeIdx = 0;
+
+    function render() {
+        panel.innerHTML = '';
+
+        const grid = document.createElement('div');
+        grid.className = 'catalogue-grid';
+        grid.style.marginTop = '0';
+        texts.forEach((t, i) => {
+            const card = document.createElement('div');
+            card.className = 'catalogue-card' + (i === activeIdx ? ' active' : '');
+            card.innerHTML = `
+                <div class="catalogue-card-name">${t.name}</div>
+                <div class="catalogue-card-meta">${t.pillars.length} pillars</div>`;
+            card.addEventListener('click', e => { e.stopPropagation(); activeIdx = i; render(); });
+            grid.appendChild(card);
+        });
+
+        const pillarsDiv = document.createElement('div');
+        pillarsDiv.className = 'lec-pillars';
+        const text = texts[activeIdx];
+
+        text.pillars.forEach((pillar, pi) => {
+            const box = document.createElement('div');
+            box.className = 'lec-pillar-box';
+            const hdr = document.createElement('div');
+            hdr.className = 'lec-pillar-header';
+            hdr.innerHTML = `
+                <div class="lec-pillar-header-left">
+                    <span class="lec-pillar-tag">${pillar.tag}</span>
+                    <span class="lec-pillar-name">${pillar.title}</span>
+                </div>
+                <span class="lec-pillar-chevron">›</span>`;
+            hdr.addEventListener('click', e => { e.stopPropagation(); box.classList.toggle('open'); });
+
+            const bdy = document.createElement('div');
+            bdy.className = 'lec-pillar-body';
+
+            pillar.lectures.forEach((slug, li) => {
+                const title = slugToTitle(slug);
+                const key = `${paperIdx}-${text.id}-${pi}-${li}`;
+                bdy.appendChild(makeLectureRow(li, title, key, slug));
+            });
+
+            box.appendChild(hdr); box.appendChild(bdy);
+            pillarsDiv.appendChild(box);
+        });
+
+        panel.appendChild(grid);
+        panel.appendChild(pillarsDiv);
+    }
+
+    render();
+    return panel;
+}
+
+/* ════════════════════════════════════════════
+   SINGLE PANEL (poetry clusters, unseen, foundation)
+════════════════════════════════════════════ */
+function buildSinglePanel(pillars, paperIdx) {
+    const panel = document.createElement('div');
+    panel.className = 'lec-panel';
+    panel.style.padding = '0';
+
+    const pillarsDiv = document.createElement('div');
+    pillarsDiv.className = 'lec-pillars';
+    pillarsDiv.style.padding = '16px';
+
+    pillars.forEach((pillar, pi) => {
+        const box = document.createElement('div');
+        box.className = 'lec-pillar-box';
+
+        const hdr = document.createElement('div');
+        hdr.className = 'lec-pillar-header';
+        hdr.innerHTML = `
+            <div class="lec-pillar-header-left">
+                <span class="lec-pillar-tag">${pillar.tag}</span>
+                <span class="lec-pillar-name">${pillar.title}</span>
+            </div>
+            <span class="lec-pillar-chevron">›</span>`;
+        hdr.addEventListener('click', e => { e.stopPropagation(); box.classList.toggle('open'); });
+
+        const bdy = document.createElement('div');
+        bdy.className = 'lec-pillar-body';
+
+        pillar.lectures.forEach((lec, li) => {
+            const slug = typeof lec === 'string' ? lec : lec.slug;
+            const title = typeof lec === 'string' ? slugToTitle(lec) : lec.title;
+            const key = `${paperIdx}-x-${pi}-${li}`;
+            bdy.appendChild(makeLectureRow(li, title, key, slug));
+        });
+
+        box.appendChild(hdr); box.appendChild(bdy);
+        pillarsDiv.appendChild(box);
+    });
+
+    panel.appendChild(pillarsDiv);
+    return panel;
+}
+</script>
+</body>
+</html>
