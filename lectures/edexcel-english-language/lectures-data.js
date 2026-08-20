@@ -6,7 +6,7 @@ var papersData = [
   {
     type: "single",
     tag: "FOUNDATION",
-    title: "Foundations",
+    title: "Foundations", 
     pillars: [
       {
         tag: "Foundations",
