@@ -1,0 +1,12 @@
+/* Theme: Edexcel Biology
+   A subject only ever needs to override these variables — everything
+   else in shared.css reads from them, so this file is the entire job.
+   header-bg is NOT set here on purpose — that band is a fixed platform
+   color shared by every subject (see shared.css). Only the accent
+   identity changes per subject. */
+:root {
+    --accent-1: #9d174d;           /* wine */
+    --accent-2: #be185d;           /* rose */
+    --accent-soft-bg: #fdf2f6;
+    --accent-soft-text: #9d174d;
+}
