@@ -423,12 +423,14 @@ async function loadQuestions(slugs) {
     let all = [];
     for (let i = 0; i < slugs.length; i += batchSize) {
         const batch = slugs.slice(i, i + batchSize);
-        const slugParam = batch.join(',');
+        const url = `${SUPABASE_URL}/rest/v1/questions?lecture_slug=in.(${batch.join(',')})&order=lecture_slug,question_index&select=*`;
         try {
-            const res = await fetch(
-                `${SUPABASE_URL}/rest/v1/questions?lecture_slug=in.(${slugParam})&order=lecture_slug,question_index&select=*`,
-                { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + getJWT() } }
-            );
+            const res = await fetch(url, {
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_KEY
+                }
+            });
             const rows = await res.json();
             if (Array.isArray(rows)) all = all.concat(rows);
         } catch(e) { console.log('Fetch batch failed', e); }
