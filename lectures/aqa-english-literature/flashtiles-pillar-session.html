@@ -646,9 +646,9 @@ async function init() {
     await loadUser();
 
     // Get slugs — first try sessionStorage, then URL param
-    let slugs = [];
+        let slugs = [];
     try {
-        const raw = sessionStorage.getItem('pillarSlugs');
+        const raw = localStorage.getItem('flashtile_session_slugs');
         if (raw) slugs = JSON.parse(raw);
     } catch(e) {}
     if (!slugs.length) {
