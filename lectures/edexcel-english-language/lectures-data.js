@@ -1,19 +1,11 @@
-// Edexcel English Language (1EN0) — lectures-data.js
-// Built from sync-report.txt ORPHAN list (116 lectures, generated_lectures\EDEXCEL)
-// Explicit {slug, title} objects used throughout (not bare strings) — see AQA English
-// Language build notes for why (slugToTitle() regex doesn't handle these prefixes).
-//
-// ASSUMPTIONS TO CONFIRM WITH ANAKIN:
-// - rqc / tk cross-paper toolkit placement, same as AQA English Language
-// - Paper 1 Q1+Q2 combined into one "Retrieval" pillar (p1, both 1-mark and 2-mark question
-//   lectures are short and paired) rather than split into two pillars
-// - Tag wording assumed from Pearson Edexcel's own spec (Paper 1: Fiction and Imaginative
-//   Writing, 64 marks · Paper 2: Non-Fiction and Transactional Writing, 96 marks)
+// Edexcel English Language (1EN0) — lectures-data.js — REBUILT v2
+// Fixes v1: cr-/tk-l1-20 lectures now included (see AQA build notes for why they were missing).
+// Confirmed generated on disk: 146/147 master lectures. NOT YET GENERATED: rqc-l9.
 
 var papersData = [
-
   {
     type: "single",
+    tag: "FOUNDATION",
     title: "Foundations",
     pillars: [
       {
@@ -33,13 +25,77 @@ var papersData = [
       }
     ]
   },
-
   {
     type: "single",
-    title: "Reading Skills Toolkit",
+    tag: "SKILLS",
+    title: "Close Reading Skills",
     pillars: [
       {
-        tag: "Reading Skills",
+        tag: "Skills",
+        title: "Close Reading Skills",
+        lectures: [
+          { slug: "cr-l1-what-a-word-is-actually-doing", title: "What a Word Is Actually Doing" },
+          { slug: "cr-l2-denotation-vs-connotation", title: "Denotation vs Connotation" },
+          { slug: "cr-l3-why-writers-choose-words", title: "Why Writers Choose Words" },
+          { slug: "cr-l4-what-a-sentence-is-doing-vs-what-it-says", title: "What a Sentence Is Doing vs What It Says" },
+          { slug: "cr-l5-how-to-zoom-in-from-paragraph-to-word", title: "How to Zoom in from Paragraph to Word" },
+          { slug: "cr-l6-what-mood-is-and-how-it-is-created", title: "What Mood Is and How It Is Created" },
+          { slug: "cr-l7-what-tone-is-and-how-it-differs-from-mood", title: "What Tone Is and How It Differs from Mood" },
+          { slug: "cr-l8-how-to-read-a-character", title: "How to Read a Character" },
+          { slug: "cr-l9-how-to-read-a-theme", title: "How to Read a Theme" },
+          { slug: "cr-l10-what-an-audience-is-and-why-it-matters", title: "What an Audience Is and Why It Matters" },
+          { slug: "cr-l12-reading-a-short-extract-from-scratch", title: "Reading a Short Extract from Scratch" }
+        ]
+      }
+    ]
+  },
+  {
+    type: "single",
+    tag: "SKILLS",
+    title: "The Writer's Toolkit",
+    pillars: [
+      {
+        tag: "Skills",
+        title: "The Writer's Toolkit",
+        lectures: [
+          { slug: "tk-l1-metaphor", title: "Metaphor" },
+          { slug: "tk-l2-simile", title: "Simile" },
+          { slug: "tk-l3-personification", title: "Personification" },
+          { slug: "tk-l4-repetition", title: "Repetition" },
+          { slug: "tk-l5-contrast", title: "Contrast" },
+          { slug: "tk-l6-oxymoron", title: "Oxymoron" },
+          { slug: "tk-l7-semantic-field", title: "Semantic Field" },
+          { slug: "tk-l8-imagery", title: "Imagery" },
+          { slug: "tk-l9-foreshadowing", title: "Foreshadowing" },
+          { slug: "tk-l10-dramatic-irony", title: "Dramatic Irony" },
+          { slug: "tk-l12-symbolism", title: "Symbolism" },
+          { slug: "tk-l13-hyperbole", title: "Hyperbole" },
+          { slug: "tk-l14-rhetorical-questions", title: "Rhetorical Questions" },
+          { slug: "tk-l15-alliteration-and-sound", title: "Alliteration and Sound" },
+          { slug: "tk-l16-structure-how-shape-creates-meaning", title: "Structure How Shape Creates Meaning" },
+          { slug: "tk-l17-form-why-it-matters-what-type-of-text-this-is", title: "Form Why It Matters What Type of Text This Is" },
+          { slug: "tk-l18-narrative-voice", title: "Narrative Voice" },
+          { slug: "tk-l19-sentence-structure", title: "Sentence Structure" },
+          { slug: "tk-l20-putting-it-all-together", title: "Putting It All Together" },
+          { slug: "tk-l21-direct-address-and-the-reader", title: "Direct Address and the Reader" },
+          { slug: "tk-l22-anecdote-and-personal-experience-as-evidence", title: "Anecdote and Personal Experience as Evidence" },
+          { slug: "tk-l23-facts-statistics-and-the-appeal-to-logic", title: "Facts Statistics and the Appeal to Logic" },
+          { slug: "tk-l24-emotive-language-and-the-appeal-to-emotion", title: "Emotive Language and the Appeal to Emotion" },
+          { slug: "tk-l25-ethos-and-appealing-to-authority-or-expertise", title: "Ethos and Appealing to Authority or Expertise" },
+          { slug: "tk-l26-the-rule-of-three-and-listing-for-effect", title: "The Rule of Three and Listing for Effect" },
+          { slug: "tk-l27-non-fiction-structure-anecdote-to-argument", title: "Non Fiction Structure Anecdote to Argument" },
+          { slug: "tk-l28-escalating-evidence-and-the-call-to-action-close", title: "Escalating Evidence and the Call to Action Close" }
+        ]
+      }
+    ]
+  },
+  {
+    type: "single",
+    tag: "SKILLS",
+    title: "Reading Question Craft",
+    pillars: [
+      {
+        tag: "Skills",
         title: "Reading Question Craft",
         lectures: [
           { slug: "rqc-l1-purpose-audience-and-form-the-three-things-every-question-tests", title: "Purpose Audience and Form the Three Things Every Question Tests" },
@@ -72,14 +128,14 @@ var papersData = [
       }
     ]
   },
-
   {
     type: "single",
+    tag: "PAPER 1",
     title: "Paper 1: Fiction and Imaginative Writing",
     pillars: [
       {
-        tag: "Paper 1 · Section A · Q1 & Q2",
-        title: "Retrieval",
+        tag: "Paper 1 · Q1+Q2",
+        title: "Spotting What's There",
         lectures: [
           { slug: "edx-lang-p1-l1-the-1-mark-question-find-it-fast", title: "The 1 Mark Question Find It Fast" },
           { slug: "edx-lang-p1-l2-the-2-mark-question-find-it-and-say-what-it-means", title: "The 2 Mark Question Find It and Say What It Means" },
@@ -87,8 +143,8 @@ var papersData = [
         ]
       },
       {
-        tag: "Paper 1 · Section A · Q3",
-        title: "Language & Structure (Combined)",
+        tag: "Paper 1 · Q3",
+        title: "Language and Structure Together",
         lectures: [
           { slug: "edx-lang-p2-l1-what-combined-means-language-and-structure-in-one-answer", title: "What Combined Means Language and Structure in One Answer" },
           { slug: "edx-lang-p2-l2-picking-one-language-feature-that-earns-marks", title: "Picking One Language Feature That Earns Marks" },
@@ -100,8 +156,8 @@ var papersData = [
         ]
       },
       {
-        tag: "Paper 1 · Section A · Q4",
-        title: "Evaluation",
+        tag: "Paper 1 · Q4",
+        title: "Making Your Case",
         lectures: [
           { slug: "edx-lang-p3-l1-what-evaluate-actually-means-vs-explain", title: "What Evaluate Actually Means vs Explain" },
           { slug: "edx-lang-p3-l2-agreeing-disagreeing-and-partly-agreeing-with-conviction", title: "Agreeing Disagreeing and Partly Agreeing with Conviction" },
@@ -113,8 +169,8 @@ var papersData = [
         ]
       },
       {
-        tag: "Paper 1 · Section B",
-        title: "Imaginative Writing",
+        tag: "Paper 1 · Writing",
+        title: "Choosing and Writing Your Fiction Task",
         lectures: [
           { slug: "edx-lang-p4-l1-how-the-choice-works-and-how-to-decide-in-60-seconds", title: "How the Choice Works and How to Decide in 60 Seconds" },
           { slug: "edx-lang-p4-l2-using-an-optional-image-without-becoming-dependent-on-it", title: "Using an Optional Image Without Becoming Dependent on It" },
@@ -131,8 +187,8 @@ var papersData = [
         ]
       },
       {
-        tag: "Paper 1 · Section B · Technical Accuracy",
-        title: "SPaG & Sentence Control",
+        tag: "Paper 1 · AO6",
+        title: "Technical Accuracy",
         lectures: [
           { slug: "edx-lang-p5-l1-punctuation-for-effect-not-just-correctness", title: "Punctuation for Effect not Just Correctness" },
           { slug: "edx-lang-p5-l2-sentence-variety-on-command", title: "Sentence Variety on Command" },
@@ -143,35 +199,14 @@ var papersData = [
       }
     ]
   },
-
   {
     type: "single",
-    title: "Non-Fiction Techniques Toolkit",
-    pillars: [
-      {
-        tag: "Techniques Toolkit",
-        title: "Persuasive & Rhetorical Techniques",
-        lectures: [
-          { slug: "tk-l21-direct-address-and-the-reader", title: "Direct Address and the Reader" },
-          { slug: "tk-l22-anecdote-and-personal-experience-as-evidence", title: "Anecdote and Personal Experience as Evidence" },
-          { slug: "tk-l23-facts-statistics-and-the-appeal-to-logic", title: "Facts Statistics and the Appeal to Logic" },
-          { slug: "tk-l24-emotive-language-and-the-appeal-to-emotion", title: "Emotive Language and the Appeal to Emotion" },
-          { slug: "tk-l25-ethos-and-appealing-to-authority-or-expertise", title: "Ethos and Appealing to Authority or Expertise" },
-          { slug: "tk-l26-the-rule-of-three-and-listing-for-effect", title: "The Rule of Three and Listing for Effect" },
-          { slug: "tk-l27-non-fiction-structure-anecdote-to-argument", title: "Non Fiction Structure Anecdote to Argument" },
-          { slug: "tk-l28-escalating-evidence-and-the-call-to-action-close", title: "Escalating Evidence and the Call to Action Close" }
-        ]
-      }
-    ]
-  },
-
-  {
-    type: "single",
+    tag: "PAPER 2",
     title: "Paper 2: Non-Fiction and Transactional Writing",
     pillars: [
       {
-        tag: "Paper 2 · Section A · Q1 & Q2",
-        title: "Retrieval (Two Texts)",
+        tag: "Paper 2 · Q1,2,4,5",
+        title: "Quickfire Retrieval",
         lectures: [
           { slug: "edx-lang-p6-l1-tracking-which-text-a-question-is-actually-asking-about", title: "Tracking Which Text a Question Is Actually Asking About" },
           { slug: "edx-lang-p6-l2-the-2-mark-retrieval-question-both-halves", title: "The 2 Mark Retrieval Question Both Halves" },
@@ -180,8 +215,8 @@ var papersData = [
         ]
       },
       {
-        tag: "Paper 2 · Section A · Q3",
-        title: "Language & Structure (Combined, Higher Tariff)",
+        tag: "Paper 2 · Q3",
+        title: "Language and Structure Together, the Big Version",
         lectures: [
           { slug: "edx-lang-p7-l1-what-changes-when-the-question-is-worth-15-not-6", title: "What Changes When the Question Is Worth 15 not 6" },
           { slug: "edx-lang-p7-l2-finding-enough-material-for-a-15-mark-answer", title: "Finding Enough Material for a 15 Mark Answer" },
@@ -192,8 +227,8 @@ var papersData = [
         ]
       },
       {
-        tag: "Paper 2 · Section A · Q4",
-        title: "Evaluation",
+        tag: "Paper 2 · Q6",
+        title: "Making Your Case Again",
         lectures: [
           { slug: "edx-lang-p8-l1-the-same-skill-as-paper-1-applied-to-non-fiction", title: "The Same Skill as Paper 1 Applied to Non Fiction" },
           { slug: "edx-lang-p8-l2-evaluating-a-writers-success-not-just-their-technique", title: "Evaluating a Writers Success not Just Their Technique" },
@@ -203,8 +238,8 @@ var papersData = [
         ]
       },
       {
-        tag: "Paper 2 · Section A · Q5",
-        title: "Comparison",
+        tag: "Paper 2 · Q7a+b",
+        title: "Similarities and Perspectives",
         lectures: [
           { slug: "edx-lang-p9-l1-what-part-a-and-part-b-each-actually-want", title: "What Part a and Part B Each Actually Want" },
           { slug: "edx-lang-p9-l2-finding-genuine-similarities-across-both-texts", title: "Finding Genuine Similarities Across Both Texts" },
@@ -218,8 +253,8 @@ var papersData = [
         ]
       },
       {
-        tag: "Paper 2 · Section B",
-        title: "Transactional Writing",
+        tag: "Paper 2 · Writing",
+        title: "Choosing and Writing Your Transactional Task",
         lectures: [
           { slug: "edx-lang-p10-l1-how-the-choice-works-and-how-to-decide-in-60-seconds", title: "How the Choice Works and How to Decide in 60 Seconds" },
           { slug: "edx-lang-p10-l2-drawing-your-argument-from-the-reading-sections-theme", title: "Drawing Your Argument from the Reading Sections Theme" },
@@ -233,8 +268,8 @@ var papersData = [
         ]
       },
       {
-        tag: "Paper 2 · Section B · Technical Accuracy",
-        title: "Formal Register & SPaG",
+        tag: "Paper 2 · AO6",
+        title: "Technical Accuracy",
         lectures: [
           { slug: "edx-lang-p11-l1-formal-register-and-when-to-use-it", title: "Formal Register and When to Use It" },
           { slug: "edx-lang-p11-l2-sentence-variety-in-persuasive-writing", title: "Sentence Variety in Persuasive Writing" },
@@ -243,13 +278,13 @@ var papersData = [
       }
     ]
   },
-
   {
     type: "single",
+    tag: "NEA",
     title: "Spoken Language Endorsement (NEA)",
     pillars: [
       {
-        tag: "Non-Exam Assessment",
+        tag: "NEA",
         title: "Spoken Language Endorsement",
         lectures: [
           { slug: "edx-lang-p12-l1-what-is-actually-being-assessed-presentation-and-questions", title: "What Is Actually Being Assessed Presentation and Questions" },
