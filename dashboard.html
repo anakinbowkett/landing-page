@@ -1882,6 +1882,14 @@ function createSubjectCard(subject) {
     subjectBox.dataset.subject = subject.subject_name.toLowerCase().replace(/\s+/g, '-');
     
     const tierText = subject.tier ? ` (${subject.tier} Tier)` : '';
+
+    // Biology/Chemistry/Physics (bare names) are Triple Science subjects, distinct
+    // from "Combined Science - X". Both can exist for the same board+tier, so tag
+    // Triple Science explicitly to avoid two visually-identical cards.
+    const tripleScienceSubjects = ['Biology', 'Chemistry', 'Physics'];
+    const scienceTag = tripleScienceSubjects.includes(subject.subject_name)
+        ? ' · Triple Science'
+        : '';
     
     // Check if subject should be locked
     const isLocked = shouldSubjectBeLocked(subject);
@@ -1889,7 +1897,7 @@ function createSubjectCard(subject) {
     subjectBox.innerHTML = `
         <div class="subject-top">
             <div class="subject-name">${subject.subject_name}</div>
-            <div class="subject-exam-board">${subject.exam_board} GCSE 9-1${tierText}</div>
+            <div class="subject-exam-board">${subject.exam_board} GCSE 9-1${tierText}${scienceTag}</div>
         </div>
         <div class="subject-bottom">
             <div class="subject-progress-container">
