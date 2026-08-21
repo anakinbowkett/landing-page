@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edexcel Biology - Topic Drill</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+    <link href="shared.css" rel="stylesheet">
+    <style>
+        /* ── Quiz progress rows ── */
+        .quiz-row-wrap { border-bottom: 1px solid #f5f5f5; }
+        .quiz-row-wrap:last-child { border-bottom: none; }
+
+        .quiz-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 12px 20px;
+        }
+        .quiz-row.clickable { cursor: pointer; }
+        .quiz-row.clickable:hover { background: #fafafa; }
+        .quiz-row.state-locked { opacity: 0.55; }
+
+        .quiz-row-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+        .quiz-row-num { font-size: 11px; font-weight: 600; color: #9ca3af; white-space: nowrap; flex-shrink: 0; }
+
+        /* Single collapsed progress block */
+        .quiz-progress-block {
+            width: 15px;
+            height: 15px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            border: 1.5px solid #d1d5db;
+            background: transparent;
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+        .quiz-progress-block.pb-complete { background: #1d7fe2; border-color: #1d7fe2; cursor: pointer; }
+        .quiz-progress-block.pb-resume { background: linear-gradient(90deg, #1d7fe2 50%, transparent 50%); border-color: #1d7fe2; }
+        .quiz-progress-block.pb-next { border-color: #1d7fe2; }
+        .quiz-progress-block.pb-locked { border-color: #e5e7eb; }
+
+        /* Title / breakdown toggle zone */
+        .quiz-title-zone { display: flex; align-items: center; flex: 1; min-width: 0; overflow: hidden; }
+        .quiz-row-title {
+            font-size: 13.5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+            min-width: 0;
+        }
+        .quiz-row.state-complete .quiz-row-title { color: #111; font-weight: 500; }
+        .quiz-row.state-resume .quiz-row-title { color: #111; font-weight: 600; }
+        .quiz-row.state-next .quiz-row-title { color: #111; font-weight: 500; }
+        .quiz-row.state-locked .quiz-row-title { color: #9ca3af; font-weight: 400; }
+
+        .quiz-breakdown-blocks {
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            gap: 3px;
+            overflow: hidden;
+            max-width: 0;
+            flex-shrink: 0;
+            transition: max-width 0.35s ease;
+        }
+        .qb-block { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+        .qb-block.correct { background: #54d3ab; }
+        .qb-block.half { background: #f59e0b; }
+        .qb-block.wrong { background: #e16280; }
+
+        .quiz-row-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+        .quiz-row-status { font-size: 12px; font-weight: 500; white-space: nowrap; }
+        .quiz-row-status.status-complete { color: #16a34a; }
+        .quiz-row-status.status-resume { color: #d97706; }
+        .quiz-row-status.status-locked { color: #9ca3af; }
+
+        .quiz-btn {
+            font-size: 12px;
+            font-weight: 700;
+            border: none;
+            border-radius: 7px;
+            padding: 6px 16px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .quiz-btn.resume {
+            background: #1d7fe2;
+            color: white;
+        }
+        .quiz-btn.resume:hover { background: #1668c2; }
+
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">GCSE Mastery</div>
+        <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
+        <a href="lectures.html" class="nav-item"><span class="nav-icon">∞</span><span>Lectures</span></a>
+        <a href="flashtiles.html" class="nav-item"><span class="nav-icon">⚡</span><span>Flashtiles</span></a>
+        <a href="quick-test.html" class="nav-item active"><span class="nav-icon">🕐</span><span>Quiz</span></a>
+        <a href="past-papers.html" class="nav-item"><span class="nav-icon">📄</span><span>Past Papers</span></a>
+        <div class="nav-spacer"></div>
+        <button class="live-study-btn">Allow Live Study</button>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper compact">
+            <div class="subject-header">
+                <div class="subject-line-left"></div>
+                <h1 class="subject-name">Topic Drill</h1>
+                <div class="subject-line-right"></div>
+            </div>
+        </div>
+
+        <a href="quick-test.html" class="crumb-back">← Quiz</a>
+
+        <section class="topics-section">
+            <p style="max-width: 700px; font-size: 0.875rem; color: #6b7280; margin: 0 0 20px;">Same structure as your Lectures — open a paper, pick a text, then work through each pillar's quizzes in order.</p>
+
+            <div class="papers-list" id="papersList"></div>
+        </section>
+    </main>
+
+    <script src="lectures-data.js"></script>
+    <script>
+        /* ── Deterministic pseudo-progress, so every pillar shows a
+           different but STABLE state on reload, without a backend. ── */
+        function hashKey(key) {
+            let h = 0;
+            for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
+            return h;
+        }
+
+        function seededShuffle(arr, seed) {
+            const out = arr.slice();
+            let s = seed;
+            for (let i = out.length - 1; i > 0; i--) {
+                s = (s * 1103515245 + 12345) >>> 0;
+                const j = s % (i + 1);
+                [out[i], out[j]] = [out[j], out[i]];
+            }
+            return out;
+        }
+
+        function makeQuizRow(pillarKey, li, total, title) {
+            const h = hashKey(pillarKey);
+            const completedCount = h % total;
+            let state;
+            if (li < completedCount) state = 'complete';
+            else if (li === completedCount) state = (h % 3 === 0 ? 'resume' : 'next');
+            else state = 'locked';
+
+            const wrap = document.createElement('div');
+            wrap.className = 'quiz-row-wrap';
+
+            const row = document.createElement('div');
+            row.className = `quiz-row state-${state}` + (state === 'next' ? ' clickable' : '');
+
+            let rightHTML = '';
+            let score = 0;
+            const blockClass = state === 'complete' ? 'pb-complete'
+                : state === 'resume' ? 'pb-resume'
+                : state === 'next' ? 'pb-next'
+                : 'pb-locked';
+
+            if (state === 'complete') {
+                score = 5 + ((h + li) % 6); // 5-10
+                const pct = Math.round((score / 10) * 100);
+                rightHTML = `
+                    <span class="quiz-row-status status-complete">✓ ${pct}%</span>
+                    <span class="quiz-progress-block ${blockClass}"></span>`;
+            } else if (state === 'next') {
+                rightHTML = `<span class="quiz-progress-block ${blockClass}"></span>`;
+            } else if (state === 'resume') {
+                rightHTML = `
+                    <span class="quiz-row-status status-resume">⏸ in progress</span>
+                    <button class="quiz-btn resume">Resume →</button>
+                    <span class="quiz-progress-block ${blockClass}"></span>`;
+            } else {
+                rightHTML = `
+                    <span class="quiz-row-status status-locked">🔒 locked</span>
+                    <span class="quiz-progress-block ${blockClass}"></span>`;
+            }
+
+            row.innerHTML = `
+                <div class="quiz-row-left">
+                    <div class="quiz-title-zone">
+                        <span class="quiz-row-title">${title}</span>
+                        <div class="quiz-breakdown-blocks"></div>
+                    </div>
+                </div>
+                <div class="quiz-row-right">${rightHTML}</div>`;
+
+            let toggleBreakdown = null;
+            if (state === 'complete') {
+                const breakdown = row.querySelector('.quiz-breakdown-blocks');
+                const wrong = 10 - score;
+                const half = Math.floor(wrong / 2);
+                const wrongOnly = wrong - half;
+                let results = [
+                    ...Array(score).fill('correct'),
+                    ...Array(half).fill('half'),
+                    ...Array(wrongOnly).fill('wrong')
+                ];
+                results = seededShuffle(results, h + li);
+                breakdown.innerHTML = results.map(r => `<div class="qb-block ${r}"></div>`).join('');
+
+                toggleBreakdown = () => {
+                    const isOpen = breakdown.classList.toggle('open');
+                    breakdown.style.maxWidth = isOpen ? (results.length * 15 - 3) + 'px' : '0px';
+                };
+            }
+
+            // Row click = start/access this lecture (no real destination yet).
+            // Block click = view its progress breakdown. Two separate actions.
+            if (state === 'next' || state === 'complete') {
+                row.classList.add('clickable');
+                row.addEventListener('click', () => {});
+            } else if (state === 'resume') {
+                row.classList.add('clickable');
+                row.addEventListener('click', () => {}); // no real destination yet
+            }
+
+            const resumeBtn = row.querySelector('.quiz-btn.resume');
+            if (resumeBtn) resumeBtn.addEventListener('click', e => e.stopPropagation()); // no real destination yet
+
+            // The blue progress block is the ONLY way to see the per-question
+            // breakdown — it never triggers the row's start action, and vice versa
+            const progressBlock = row.querySelector('.quiz-progress-block');
+            if (progressBlock && toggleBreakdown) {
+                progressBlock.addEventListener('click', e => {
+                    e.stopPropagation();
+                    toggleBreakdown();
+                });
+            }
+
+            wrap.appendChild(row);
+            return wrap;
+        }
+
+        const list = document.getElementById('papersList');
+
+        papersData.forEach((paper, paperIdx) => {
+            const item = document.createElement('div');
+            item.className = 'paper-item';
+
+            const header = document.createElement('button');
+            header.className = 'paper-header';
+            header.innerHTML = `
+                <div class="paper-header-left">
+                    <span class="paper-tag">${paper.tag}</span>
+                    <span class="paper-title">${paper.title}</span>
+                </div>
+                <span class="paper-chevron">›</span>`;
+
+            const body = document.createElement('div');
+            body.className = 'paper-body';
+            const cardsWrap = document.createElement('div');
+            cardsWrap.className = 'subject-cards';
+
+            if (paper.type === 'multi') {
+                cardsWrap.appendChild(buildMultiTextPanel(paper.texts, paperIdx));
+            } else {
+                cardsWrap.appendChild(buildSinglePanel(paper.pillars, paperIdx));
+            }
+
+            body.appendChild(cardsWrap);
+            header.addEventListener('click', () => item.classList.toggle('open'));
+            item.appendChild(header);
+            item.appendChild(body);
+            list.appendChild(item);
+        });
+
+        function buildMultiTextPanel(texts, paperIdx) {
+            const panel = document.createElement('div');
+            panel.className = 'lec-panel';
+            let activeIdx = 0;
+
+            function render() {
+                panel.innerHTML = '';
+                const grid = document.createElement('div');
+                grid.className = 'catalogue-grid';
+                grid.style.marginTop = '0';
+                texts.forEach((t, i) => {
+                    const card = document.createElement('div');
+                    card.className = 'catalogue-card' + (i === activeIdx ? ' active' : '');
+                    card.innerHTML = `
+                        <div class="catalogue-card-name">${t.name}</div>
+                        <div class="catalogue-card-meta">${t.pillars.length} pillars</div>`;
+                    card.addEventListener('click', e => { e.stopPropagation(); activeIdx = i; render(); });
+                    grid.appendChild(card);
+                });
+
+                const pillarsDiv = document.createElement('div');
+                pillarsDiv.className = 'lec-pillars';
+                const text = texts[activeIdx];
+
+                text.pillars.forEach((pillar, pi) => {
+                    const box = document.createElement('div');
+                    box.className = 'lec-pillar-box';
+                    const hdr = document.createElement('div');
+                    hdr.className = 'lec-pillar-header';
+                    hdr.innerHTML = `
+                        <div class="lec-pillar-header-left">
+                            <span class="lec-pillar-tag">${pillar.tag}</span>
+                            <span class="lec-pillar-name">${pillar.title}</span>
+                        </div>
+                        <span class="lec-pillar-chevron">›</span>`;
+                    hdr.addEventListener('click', e => { e.stopPropagation(); box.classList.toggle('open'); });
+
+                    const bdy = document.createElement('div');
+                    bdy.className = 'lec-pillar-body';
+                    const pillarKey = `${paperIdx}-${text.id}-${pi}`;
+                    const total = pillar.lectures.length;
+                    pillar.lectures.forEach((slug, li) => {
+                        bdy.appendChild(makeQuizRow(pillarKey, li, total, slugToTitle(slug)));
+                    });
+
+                    box.appendChild(hdr); box.appendChild(bdy);
+                    pillarsDiv.appendChild(box);
+                });
+
+                panel.appendChild(grid);
+                panel.appendChild(pillarsDiv);
+            }
+            render();
+            return panel;
+        }
+
+        function buildSinglePanel(pillars, paperIdx) {
+            const panel = document.createElement('div');
+            panel.className = 'lec-panel';
+            panel.style.padding = '0';
+            const pillarsDiv = document.createElement('div');
+            pillarsDiv.className = 'lec-pillars';
+            pillarsDiv.style.padding = '16px';
+
+            pillars.forEach((pillar, pi) => {
+                const box = document.createElement('div');
+                box.className = 'lec-pillar-box';
+                const hdr = document.createElement('div');
+                hdr.className = 'lec-pillar-header';
+                hdr.innerHTML = `
+                    <div class="lec-pillar-header-left">
+                        <span class="lec-pillar-tag">${pillar.tag}</span>
+                        <span class="lec-pillar-name">${pillar.title}</span>
+                    </div>
+                    <span class="lec-pillar-chevron">›</span>`;
+                hdr.addEventListener('click', e => { e.stopPropagation(); box.classList.toggle('open'); });
+
+                const bdy = document.createElement('div');
+                bdy.className = 'lec-pillar-body';
+                const pillarKey = `${paperIdx}-x-${pi}`;
+                const total = pillar.lectures.length;
+                pillar.lectures.forEach((lec, li) => {
+                    const title = typeof lec === 'string' ? slugToTitle(lec) : lec.title;
+                    bdy.appendChild(makeQuizRow(pillarKey, li, total, title));
+                });
+
+                box.appendChild(hdr); box.appendChild(bdy);
+                pillarsDiv.appendChild(box);
+            });
+            panel.appendChild(pillarsDiv);
+            return panel;
+        }
+    </script>
+</body>
+</html>
