@@ -1903,32 +1903,44 @@ function createSubjectCard(subject) {
     } else {
         // Map subjects to their correct folder names
         const subjectSlugs = {
-    'English Literature': 'english-literature',
-    'English Language': 'english-language',
-};
+            'English Literature': 'english-literature',
+            'English Language': 'english-language',
+            'Combined Science - Biology': 'combined-science-biology',
+            'Combined Science - Chemistry': 'combined-science-chemistry',
+            'Combined Science - Physics': 'combined-science-physics',
+        };
 
-const boardSlug = (subject.exam_board || 'AQA')
-    .toLowerCase().replace(/\s+/g, '-');
+        const boardSlug = (subject.exam_board || 'AQA').toLowerCase().replace(/\s+/g, '-');
 
-const tierMap = { 'foundation': 'f', 'higher': 'h' };
-const tierKey = (subject.tier || '').toLowerCase();
-const tierSlug = tierMap[tierKey] ? `-${tierMap[tierKey]}-tier` : '';
+        // Confirmed real convention: full tier word, e.g. aqa-biology-higher/
+        // (not "h-tier"/"f-tier")
+        const tierMap = { 'foundation': 'foundation', 'higher': 'higher' };
+        const tierKey = (subject.tier || '').toLowerCase();
+        const tierWord = tierMap[tierKey]; // 'foundation' | 'higher' | undefined
 
-const route = subjectSlugs[subject.subject_name]
-    ? `${boardSlug}-${subjectSlugs[subject.subject_name]}`
-    : boardSlug + tierSlug;
-
-fetch(`lectures/${route}/lectures.html`, { method: 'HEAD' })
-    .then(res => {
-        if (res.ok) {
-            window.location.href = `lectures/${route}/lectures.html`;
+        let route;
+        if (subjectSlugs[subject.subject_name]) {
+            const isCombinedScience = subject.subject_name.startsWith('Combined Science');
+            route = (isCombinedScience && tierWord)
+                ? `${boardSlug}-${subjectSlugs[subject.subject_name]}-${tierWord}`
+                : `${boardSlug}-${subjectSlugs[subject.subject_name]}`;
         } else {
-            alert(`${subject.subject_name} (${subject.exam_board}${subject.tier ? ' ' + subject.tier + ' Tier' : ''}) is not yet available.`);
+            // Not yet mapped (e.g. separate-science Biology/Chemistry/Physics) —
+            // falls back to board+tier only, which is known-broken. Flag if hit.
+            route = tierWord ? `${boardSlug}-${tierWord}` : boardSlug;
         }
-    })
-    .catch(() => window.location.href = `lectures/${route}/lectures.html`);
-        }
-    });
+
+        fetch(`lectures/${route}/lectures.html`, { method: 'HEAD' })
+            .then(res => {
+                if (res.ok) {
+                    window.location.href = `lectures/${route}/lectures.html`;
+                } else {
+                    alert(`${subject.subject_name} (${subject.exam_board}${subject.tier ? ' ' + subject.tier + ' Tier' : ''}) is not yet available.`);
+                }
+            })
+            .catch(() => window.location.href = `lectures/${route}/lectures.html`);
+    }
+});
 
     if (isLocked) {
         subjectBox.style.opacity = '0.6';
