@@ -1760,7 +1760,9 @@ const subjectCategories = {
     'Biology': 'Science',
     'Chemistry': 'Science',
     'Physics': 'Science',
-    'Combined Science': 'Science',
+    'Combined Science - Biology': 'Science',
+    'Combined Science - Chemistry': 'Science',
+    'Combined Science - Physics': 'Science',
     'History': 'Humanities & Social Sciences',
     'Geography': 'Humanities & Social Sciences',
     'Psychology': 'Humanities & Social Sciences',
@@ -1908,9 +1910,9 @@ function createSubjectCard(subject) {
             'Biology': 'biology',
             'Chemistry': 'chemistry',
             'Physics': 'physics',
-            'Combined Science - Biology': 'combined-science-biology',
-            'Combined Science - Chemistry': 'combined-science-chemistry',
-            'Combined Science - Physics': 'combined-science-physics',
+            'Combined Science - Biology': 'biology',
+            'Combined Science - Chemistry': 'chemistry',
+            'Combined Science - Physics': 'physics',
         };
 
         const boardSlug = (subject.exam_board || 'AQA').toLowerCase().replace(/\s+/g, '-');
