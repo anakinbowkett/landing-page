@@ -420,7 +420,6 @@
         @media (prefers-reduced-motion: reduce) {
             .demo-card, .demo-iframe-wrap, .demo-caption { transition-duration: 0.01ms !important; }
         }
-        
     </style>
 </head>
 <body>
@@ -536,7 +535,7 @@
             </div>
         </div>
 
-                <!-- ── LIVE DEMO SHOWCASE — auto-loops through subjects ── -->
+        <!-- ── LIVE DEMO SHOWCASE — auto-loops through subjects ── -->
         <section class="showcase-section" id="showcaseDemo">
             <div class="showcase-header">
                 <h2 class="showcase-title">Watch it teach. Same experience, every subject.</h2>
@@ -1282,12 +1281,16 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 </script>
 
-    <script>
+<script>
 // Live demo showcase — auto-loops through the two real lecture files every 20s.
-// This wraps your actual embedded files (same technique as the top preview iframe).
-// It deliberately does NOT script clicks into the real UI or fire the real "Ask"
-// button — that hits your live DeepSeek backend, and auto-firing it on a 20s loop
-// for every site visitor would rack up real API calls with no one reading the reply.
+// This reaches into the real embedded lecture (same-origin iframe) to dismiss the
+// intro splash, click the real correct answer, open the real Insight Guide, and
+// type into the real chat box. It deliberately never clicks the real "Ask" send
+// button — that hits your live DeepSeek backend, and firing it on a 20s loop for
+// every site visitor would rack up real API calls with no one reading the reply.
+// Every call into the iframe is wrapped in try/catch and polls for elements rather
+// than guessing fixed delays, so a missing/renamed element just gets skipped
+// silently instead of breaking the rest of the showcase.
 (function() {
     var win = document.getElementById('showcaseWindow');
     if (!win) return;
@@ -1299,6 +1302,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var caption = document.getElementById('demoCaption');
     var physicsFrameWrap = document.getElementById('physicsFrameWrap');
     var englishFrameWrap = document.getElementById('englishFrameWrap');
+    var physicsIframe = physicsFrameWrap.querySelector('iframe');
+    var englishIframe = englishFrameWrap.querySelector('iframe');
 
     var stepTimers = [];
     var cycleInterval = null;
@@ -1315,6 +1320,82 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function waitFor(fn, cb, maxTries, intervalMs) {
+        maxTries = maxTries || 30;
+        intervalMs = intervalMs || 250;
+        var tries = 0;
+        var iv = setInterval(function() {
+            tries++;
+            var result;
+            try { result = fn(); } catch (e) { result = null; }
+            if (result) { clearInterval(iv); cb(result); }
+            else if (tries >= maxTries) { clearInterval(iv); }
+        }, intervalMs);
+    }
+
+    // Drives the real lecture inside an iframe.
+    function driveLecture(iframeEl, correctAnswerText, followUpQuestion) {
+        var docWin, doc;
+        try {
+            docWin = iframeEl.contentWindow;
+            doc = docWin.document;
+        } catch (e) { return; } // cross-origin or not ready — skip silently
+
+        function safeCall(name) {
+            try { if (typeof docWin[name] === 'function') docWin[name](); } catch (e) {}
+        }
+
+        // 1. Dismiss the "Before you start" splash, if it's showing
+        safeCall('dismissStartHere');
+
+        // 2. Wait for the real options to render, click the real correct one
+        waitFor(function() {
+            var opts = doc.querySelectorAll('.az-opt');
+            for (var i = 0; i < opts.length; i++) {
+                if (opts[i].textContent.trim() === correctAnswerText) return opts[i];
+            }
+            return null;
+        }, function(btn) {
+            try { btn.click(); } catch (e) {}
+
+            // 3. A beat later, open the real Insight Guide
+            setTimeout(function() {
+                safeCall('openInsightPanel');
+
+                // 4. A beat after that, type into the real chat box (visual only — never sent)
+                setTimeout(function() {
+                    try {
+                        var input = doc.getElementById('chatInput');
+                        if (!input) return;
+                        input.focus();
+                        var i = 0;
+                        var typer = setInterval(function() {
+                            input.value = followUpQuestion.slice(0, i);
+                            input.dispatchEvent(new Event('input', { bubbles: true }));
+                            i++;
+                            if (i > followUpQuestion.length) clearInterval(typer);
+                        }, 45);
+                    } catch (e) {}
+                }, 1400);
+            }, 900);
+        });
+    }
+
+    // Forces a clean reload (so the demo replays fresh every loop) then drives it
+    function reloadAndDrive(iframeEl, correctAnswerText, followUpQuestion) {
+        if (!iframeEl) return;
+        var base = iframeEl.getAttribute('data-base-src');
+        if (!base) {
+            base = iframeEl.src.split('?')[0];
+            iframeEl.setAttribute('data-base-src', base);
+        }
+        iframeEl.addEventListener('load', function onLoad() {
+            iframeEl.removeEventListener('load', onLoad);
+            setTimeout(function() { driveLecture(iframeEl, correctAnswerText, followUpQuestion); }, 500);
+        }, { once: true });
+        iframeEl.src = base + '?_r=' + Date.now();
+    }
+
     function resetAll() {
         physics.classList.add('is-active');
         physics.classList.remove('is-exit-left');
@@ -1327,23 +1408,31 @@ document.addEventListener('DOMContentLoaded', function() {
     function playCycle() {
         clearSteps();
         resetAll();
+        reloadAndDrive(physicsIframe, 'Distance travelled', 'Why split it into shapes?');
 
-        schedule(300, function() { setCaption('This is the real lecture — Physics, Edexcel'); });
-        schedule(3200, function() { physicsFrameWrap.classList.add('is-zoomed'); setCaption('Every question marked instantly'); });
-        schedule(5600, function() { physicsFrameWrap.classList.remove('is-zoomed'); });
-        schedule(6300, function() { setCaption('An AI Insight Guide for every concept'); });
+        // ── PHYSICS PHASE (0s – 8.8s) ──
+        schedule(300, function() { setCaption('This is a real Monturalearn lecture'); });
+        schedule(2600, function() { setCaption('Marked instantly, the moment you answer'); });
+        schedule(4200, function() { setCaption('One tap opens the AI Insight Guide'); });
+        schedule(6000, function() { physicsFrameWrap.classList.add('is-zoomed'); setCaption('Ask anything, right inside the lecture'); });
+        schedule(8300, function() { physicsFrameWrap.classList.remove('is-zoomed'); });
 
+        // ── TRANSITION: physics → english ──
         schedule(8800, function() {
             physics.classList.remove('is-active'); physics.classList.add('is-exit-left');
             english.classList.add('is-active');
             caption.classList.remove('is-shown');
+            reloadAndDrive(englishIframe, 'Old Major', 'How does the betrayal begin?');
         });
 
+        // ── ENGLISH LITERATURE PHASE (10s – 18.8s) ──
         schedule(10300, function() { setCaption('Same experience — English Literature, AQA'); });
-        schedule(13200, function() { englishFrameWrap.classList.add('is-zoomed'); setCaption('Highlight any line, ask about it instantly'); });
-        schedule(15600, function() { englishFrameWrap.classList.remove('is-zoomed'); });
-        schedule(16300, function() { setCaption('One AI guide, every subject, every board'); });
+        schedule(12600, function() { setCaption('Marked instantly, every question'); });
+        schedule(14200, function() { setCaption('The same AI Insight Guide, any subject'); });
+        schedule(16000, function() { englishFrameWrap.classList.add('is-zoomed'); setCaption('Highlight, ask, get a real answer'); });
+        schedule(18300, function() { englishFrameWrap.classList.remove('is-zoomed'); });
 
+        // ── TRANSITION: english → physics (loop point) ──
         schedule(18800, function() {
             english.classList.remove('is-active'); english.classList.add('is-exit-left');
             physics.classList.remove('is-exit-left'); physics.classList.add('is-active');
@@ -1354,12 +1443,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function playCycleReduced() {
         clearSteps();
         resetAll();
-        schedule(300, function() { setCaption('This is the real lecture — Physics, Edexcel'); });
+        reloadAndDrive(physicsIframe, 'Distance travelled', 'Why split it into shapes?');
+        schedule(300, function() { setCaption('This is a real Monturalearn lecture'); });
         schedule(6000, function() { setCaption('An AI Insight Guide for every concept'); });
         schedule(8800, function() {
             physics.classList.remove('is-active'); physics.classList.add('is-exit-left');
             english.classList.add('is-active');
             setCaption('Same experience — English Literature, AQA');
+            reloadAndDrive(englishIframe, 'Old Major', 'How does the betrayal begin?');
         });
         schedule(14000, function() { setCaption('One AI guide, every subject, every board'); });
         schedule(18800, function() {
