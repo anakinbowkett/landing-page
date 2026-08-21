@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edexcel Biology - Lectures</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+    <link href="shared.css" rel="stylesheet"> 
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="logo">Montura Learn</div>
+    <a href="../../dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
+    <a href="lectures.html"        class="nav-item active"><span class="nav-icon">∞</span><span>Lectures</span></a>
+    <a href="flashtiles.html"      class="nav-item"><span class="nav-icon">⚡</span><span>Flashtiles</span></a>
+    <a href="quick-test.html"      class="nav-item"><span class="nav-icon">🕐</span><span>Quiz</span></a>
+    <a href="past-papers.html"     class="nav-item"><span class="nav-icon">📄</span><span>Past Papers</span></a>
+    <div class="nav-spacer"></div>
+    <button class="live-study-btn">Allow Live Study</button>
+</aside>
+
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="subject-header">
+            <div class="subject-line-left"></div>
+            <h1 class="subject-name">Biology</h1>
+            <div class="subject-line-right"></div>
+        </div>
+    </div>
+    <section class="topics-section">
+        <div class="papers-list" id="papersList"></div>
+    </section>
+</main>
+
+<script src="lectures-data.js"></script>
+<script src="question-counts.js"></script>
+<script>
+
+/* ════════════════════════════════════════════
+   BUILD UI
+════════════════════════════════════════════ */
+const list = document.getElementById('papersList');
+
+/* pillar.lectures entries are sometimes plain slug strings, sometimes
+   {slug, title} objects — this normalises either to just the slug. */
+function lectureSlug(lec) {
+    return typeof lec === 'string' ? lec : lec.slug;
+}
+
+/* ── QUESTION COUNT — read live from each lecture file, cached locally ── */
+function parseQuestionCount(html) {
+    const m = /var\s+questionAnswers\s*=\s*\{/.exec(html);
+    if (!m) return null;
+    let i = m.index + m[0].length - 1;
+    let depth = 0;
+    const start = i;
+    for (; i < html.length; i++) {
+        const c = html[i];
+        if (c === '{' || c === '[') depth++;
+        else if (c === '}' || c === ']') { depth--; if (depth === 0) break; }
+    }
+    const body = html.slice(start + 1, i);
+    const keys = new Set();
+    let d = 0, j = 0;
+    while (j < body.length) {
+        const c = body[j];
+        if (c === '{' || c === '[') { d++; j++; continue; }
+        if (c === '}' || c === ']') { d--; j++; continue; }
+        if (d === 0 && c >= '0' && c <= '9') {
+            let k = j;
+            while (k < body.length && body[k] >= '0' && body[k] <= '9') k++;
+            let look = k;
+            while (look < body.length && /\s/.test(body[look])) look++;
+            if (body[look] === ':') { keys.add(body.slice(j, k)); j = look + 1; continue; }
+        }
+        j++;
+    }
+    return keys.size || null;
+}
+
+async function fetchQuestionCount(slug) {
+    // Exact, build-time-verified count — always wins if present, so a
+    // lecture that's been edited since it was first cached in the browser
+    // can never show a stale number again.
+    if (window.LECTURE_QUESTION_COUNTS && LECTURE_QUESTION_COUNTS[slug] !== undefined) {
+        return LECTURE_QUESTION_COUNTS[slug];
+    }
+    // Fallback for anything not yet covered by question-counts.js (e.g. a
+    // lecture added since it was last regenerated).
+    const cacheKey = 'lecQCount_v2_' + slug;
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) return parseInt(cached, 10);
+    try {
+        const res = await fetch(`lectures/${slug}.html`);
+        const html = await res.text();
+        const count = parseQuestionCount(html) || 6;
+        localStorage.setItem(cacheKey, count);
+        return count;
+    } catch (e) {
+        return 6;
+    }
+}
+
+/* ── LIVE PROGRESS — read the student's own question_attempts from Supabase ── */
+const LP_SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+const LP_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+
+async function lpGetJWT() {
+    try {
+        const raw = localStorage.getItem('sb-bdoesoqpjhpxkwsjauwo-auth-token');
+        const s = raw ? JSON.parse(raw) : null;
+        if (!s || !s.access_token) { console.warn('[progress] no session token in localStorage — treating as logged out'); return LP_SUPABASE_KEY; }
+
+        const isExpired = s.expires_at && (Date.now() / 1000) > (s.expires_at - 60);
+        if (!isExpired) return s.access_token;
+
+        console.log('[progress] cached token expired, attempting refresh…');
+        if (!s.refresh_token) { console.warn('[progress] no refresh_token available, using stale token'); return s.access_token; }
+
+        const res = await fetch(`${LP_SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+            method: 'POST',
+            headers: { 'apikey': LP_SUPABASE_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: s.refresh_token })
+        });
+        if (!res.ok) { console.warn('[progress] token refresh failed, status', res.status); return s.access_token; }
+
+        const refreshed = await res.json();
+        const updated = Object.assign({}, s, refreshed);
+        localStorage.setItem('sb-bdoesoqpjhpxkwsjauwo-auth-token', JSON.stringify(updated));
+        console.log('[progress] token refreshed successfully');
+        return updated.access_token;
+    } catch (e) { console.error('[progress] lpGetJWT threw:', e); return LP_SUPABASE_KEY; }
+}
+
+// Resolves to: { [lecture_slug]: { [question_index]: 'correct'|'partial'|'wrong' } }
+// Only the latest attempt per question is kept.
+async function loadStudentProgress() {
+    const progress = {};
+    try {
+        const jwt = await lpGetJWT();
+        const userRes = await fetch(`${LP_SUPABASE_URL}/auth/v1/user`, {
+            headers: { 'apikey': LP_SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt }
+        });
+        if (!userRes.ok) {
+            console.error('[progress] /auth/v1/user rejected:', userRes.status, await userRes.text());
+            return progress;
+        }
+        const user = await userRes.json();
+        if (!user || !user.id) { console.warn('[progress] no user.id resolved — not logged in?', user); return progress; }
+        console.log('[progress] resolved user:', user.id);
+
+        const res = await fetch(
+            `${LP_SUPABASE_URL}/rest/v1/question_attempts?user_id=eq.${user.id}` +
+            `&select=lecture_slug,question_index,marks_awarded,marks_available,created_at` +
+            `&order=lecture_slug.asc,question_index.asc,created_at.desc`,
+            { headers: { 'apikey': LP_SUPABASE_KEY, 'Authorization': 'Bearer ' + jwt } }
+        );
+        if (!res.ok) {
+            console.error('[progress] question_attempts fetch rejected:', res.status, await res.text());
+            return progress;
+        }
+        const rows = await res.json();
+        console.log('[progress] fetched', Array.isArray(rows) ? rows.length : 0, 'question_attempts rows');
+        if (!Array.isArray(rows)) return progress;
+
+        rows.forEach(r => {
+            if (!progress[r.lecture_slug]) progress[r.lecture_slug] = {};
+            // order puts highest attempt_number first per question — first one wins, skip the rest
+            if (progress[r.lecture_slug][r.question_index] !== undefined) return;
+            progress[r.lecture_slug][r.question_index] =
+                r.marks_awarded === r.marks_available ? 'correct'
+                : r.marks_awarded > 0 ? 'partial'
+                : 'wrong';
+        });
+        console.log('[progress] built progress map for', Object.keys(progress).length, 'lecture(s)');
+    } catch (e) { console.error('[progress] loadStudentProgress threw:', e); }
+    return progress;
+}
+
+// Fetched once on page load, shared by every lecture row and every pillar
+const studentProgressPromise = loadStudentProgress();
+
+/* ── Per-lecture row: fills in a lecture's own blocks once count + progress are known ── */
+function renderLectureBlocks(slug) {
+    Promise.all([fetchQuestionCount(slug), studentProgressPromise]).then(([n, progress]) => {
+        const el = document.getElementById(`blocks-${slug}`);
+        if (!el) return;
+        const results = progress[slug] || {};
+        let html = '';
+        for (let q = 1; q <= n; q++) {
+            const r = results[q]; // 'correct' | 'partial' | 'wrong' | undefined
+            html += `<div class="lec-block${r ? ' ' + r : ''}"></div>`;
+        }
+        el.innerHTML = html;
+    });
+}
+
+/* ── Pillar aggregate strip: one block per lecture, summarising that lecture's state ──
+   Blank  = lecture not fully attempted yet
+   Green  = fully attempted, all correct
+   Amber  = fully attempted, some partial credit, no outright wrongs
+   Red    = fully attempted, at least one wrong */
+function aggBlocksHTML(pillar) {
+    return pillar.lectures.map(lec => {
+        const slug = lectureSlug(lec);
+        return `<div class="lec-agg-block" id="agg-${slug}"></div>`;
+    }).join('');
+}
+
+function renderAggBlock(slug) {
+    Promise.all([fetchQuestionCount(slug), studentProgressPromise]).then(([n, progress]) => {
+        const el = document.getElementById(`agg-${slug}`);
+        if (!el) return;
+        const results = progress[slug] || {};
+        const answered = Object.keys(results).length;
+        if (answered < n) return; // not fully attempted — leave blank, not "done"
+        const values = Object.values(results);
+        const hasWrong   = values.some(r => r === 'wrong');
+        const hasPartial = values.some(r => r === 'partial');
+        el.classList.add(hasWrong ? 'wrong' : hasPartial ? 'partial' : 'correct');
+    });
+}
+
+papersData.forEach((paper) => {
+    const item = document.createElement('div');
+    item.className = 'paper-item';
+
+    const header = document.createElement('button');
+    header.className = 'paper-header';
+    header.innerHTML = `
+        <div class="paper-header-left">
+            <span class="paper-tag">${paper.tag}</span>
+            <span class="paper-title">${paper.title}</span>
+        </div>
+        <span class="paper-chevron">›</span>`;
+
+    const body = document.createElement('div');
+    body.className = 'paper-body';
+
+    const cardsWrap = document.createElement('div');
+    cardsWrap.className = 'subject-cards';
+
+    if (paper.type === 'multi') {
+        /* Multi-text: Shakespeare, novels, prose/drama */
+        const panel = buildMultiTextPanel(paper.texts);
+        cardsWrap.appendChild(panel);
+    } else {
+        /* Single: poetry clusters and unseen */
+        const panel = buildSinglePanel(paper.pillars, paper.title);
+        cardsWrap.appendChild(panel);
+    }
+
+    body.appendChild(cardsWrap);
+    header.addEventListener('click', () => item.classList.toggle('open'));
+    item.appendChild(header);
+    item.appendChild(body);
+    list.appendChild(item);
+});
+
+/* ════════════════════════════════════════════
+   MULTI-TEXT PANEL (text selector + pillars)
+════════════════════════════════════════════ */
+function buildMultiTextPanel(texts) {
+    const panel = document.createElement('div');
+    panel.className = 'lec-panel';
+
+    let activeIdx = 0;
+
+    function render() {
+        panel.innerHTML = '';
+
+        /* Text selector — same catalogue grid used on the Flashtiles side */
+        const grid = document.createElement('div');
+        grid.className = 'catalogue-grid';
+        grid.style.marginTop = '0';
+        texts.forEach((t, i) => {
+            const card = document.createElement('div');
+            card.className = 'catalogue-card' + (i === activeIdx ? ' active' : '');
+            card.innerHTML = `
+                <div class="catalogue-card-name">${t.name}</div>
+                <div class="catalogue-card-meta">${t.pillars.length} pillars</div>`;
+            card.addEventListener('click', e => { e.stopPropagation(); activeIdx = i; render(); });
+            grid.appendChild(card);
+        });
+
+        /* Pillars */
+        const pillarsDiv = document.createElement('div');
+        pillarsDiv.className = 'lec-pillars';
+        const text = texts[activeIdx];
+
+        text.pillars.forEach((pillar) => {
+            const box = document.createElement('div');
+            box.className = 'lec-pillar-box';
+            const hdr = document.createElement('div');
+            hdr.className = 'lec-pillar-header';
+            hdr.innerHTML = `
+                <div class="lec-pillar-header-left">
+                    <span class="lec-pillar-tag">${pillar.tag}</span>
+                    <span class="lec-pillar-name">${pillar.title}</span>
+                </div>
+                <div class="lec-pillar-header-right">
+                    <div class="lec-aggregate-blocks">${aggBlocksHTML(pillar)}</div>
+                    <span class="lec-pillar-chevron">›</span>
+                </div>`;
+            hdr.addEventListener('click', e => { e.stopPropagation(); box.classList.toggle('open'); });
+            pillar.lectures.forEach(lec => renderAggBlock(lectureSlug(lec)));
+
+            const bdy = document.createElement('div');
+            bdy.className = 'lec-pillar-body';
+
+            pillar.lectures.forEach((slug, li) => {
+                const title = slugToTitle(slug);
+                const row = document.createElement('div');
+                row.className = 'lec-sub-row';
+                row.innerHTML = `
+                    <div class="lec-sub-left">
+                        <span class="lec-sub-num">${li+1}</span>
+                        <span class="lec-sub-name">${title}</span>
+                    </div>
+                    <div class="lec-sub-right">
+                        <div class="lec-blocks" id="blocks-${slug}"></div>
+                        <span class="lec-sub-arrow">→</span>
+                    </div>`;
+                renderLectureBlocks(slug);
+                row.addEventListener('click', e => {
+                    e.stopPropagation();
+                    window.location.href = `lectures/${slug}.html`;
+                });
+                bdy.appendChild(row);
+            });
+
+            box.appendChild(hdr); box.appendChild(bdy);
+            pillarsDiv.appendChild(box);
+        });
+
+        panel.appendChild(grid);
+        panel.appendChild(pillarsDiv);
+    }
+
+    render();
+    return panel;
+}
+
+/* ════════════════════════════════════════════
+   SINGLE PANEL (poetry clusters & unseen)
+════════════════════════════════════════════ */
+function buildSinglePanel(pillars) {
+    const panel = document.createElement('div');
+    panel.className = 'lec-panel';
+    panel.style.padding = '0';
+
+    const pillarsDiv = document.createElement('div');
+    pillarsDiv.className = 'lec-pillars';
+    pillarsDiv.style.padding = '16px';
+
+    pillars.forEach((pillar) => {
+        const box = document.createElement('div');
+        box.className = 'lec-pillar-box';
+
+        const hdr = document.createElement('div');
+        hdr.className = 'lec-pillar-header';
+        hdr.innerHTML = `
+            <div class="lec-pillar-header-left">
+                <span class="lec-pillar-tag">${pillar.tag}</span>
+                <span class="lec-pillar-name">${pillar.title}</span>
+            </div>
+            <div class="lec-pillar-header-right">
+                <div class="lec-aggregate-blocks">${aggBlocksHTML(pillar)}</div>
+                <span class="lec-pillar-chevron">›</span>
+            </div>`;
+        hdr.addEventListener('click', e => { e.stopPropagation(); box.classList.toggle('open'); });
+        pillar.lectures.forEach(lec => renderAggBlock(lectureSlug(lec)));
+
+        const bdy = document.createElement('div');
+        bdy.className = 'lec-pillar-body';
+
+        pillar.lectures.forEach((lec, li) => {
+            const slug  = lectureSlug(lec);
+            const title = typeof lec === 'string'
+                ? slugToTitle(slug)
+                : lec.title;
+
+            const row = document.createElement('div');
+            row.className = 'lec-sub-row';
+            row.innerHTML = `
+                <div class="lec-sub-left">
+                    <span class="lec-sub-num">${li+1}</span>
+                    <span class="lec-sub-name">${title}</span>
+                </div>
+                <div class="lec-sub-right">
+                    <div class="lec-blocks" id="blocks-${slug}"></div>
+                    <span class="lec-sub-arrow">→</span>
+                </div>`;
+            renderLectureBlocks(slug);
+            row.addEventListener('click', e => {
+                e.stopPropagation();
+                window.location.href = `lectures/${slug}.html`;
+            });
+            bdy.appendChild(row);
+        });
+
+        box.appendChild(hdr); box.appendChild(bdy);
+        pillarsDiv.appendChild(box);
+    });
+
+    panel.appendChild(pillarsDiv);
+    return panel;
+}
+</script>
+</body>
+</html>
