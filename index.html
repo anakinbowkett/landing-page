@@ -371,6 +371,56 @@
             #carousel { font-size:1.125rem; line-height:1.5rem; }
             #carouselText { display:block; text-align:center; width:100%; }
         }
+
+        /* ── LIVE DEMO SHOWCASE (auto-loops through subjects, real lecture files) ── */
+        .showcase-section { padding: 1rem 0 5rem; }
+        .showcase-header { max-width: 700px; margin: 0 auto 2.25rem; text-align: center; }
+        .showcase-title { font-size: 2rem; font-weight: 700; color: #111827; letter-spacing: -0.02em; margin: 0 0 0.75rem; }
+        .showcase-sub { font-size: 1rem; color: #6b7280; line-height: 1.6; margin: 0; }
+
+        .showcase-window {
+            position: relative; max-width: 880px; margin: 0 auto;
+            height: 560px; border-radius: 20px; border: 2px solid #e5e7eb;
+            background: #1E3F66; overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+        }
+        .demo-card {
+            position: absolute; inset: 0;
+            opacity: 0; transform: translateX(40px) scale(0.97);
+            transition: opacity 0.65s cubic-bezier(0.4,0,0.2,1), transform 0.65s cubic-bezier(0.4,0,0.2,1);
+            pointer-events: none;
+        }
+        .demo-card.is-active { opacity: 1; transform: translateX(0) scale(1); }
+        .demo-card.is-exit-left { opacity: 0; transform: translateX(-30px) scale(0.97); }
+
+        .demo-iframe-wrap {
+            position: absolute; inset: 0; overflow: hidden;
+            transition: transform 0.9s cubic-bezier(0.4,0,0.2,1);
+            transform-origin: 50% 38%;
+        }
+        .demo-iframe-wrap.is-zoomed { transform: scale(1.22); }
+        .demo-real-iframe {
+            width: 100%; height: 100%; border: none; display: block;
+            background: #1E3F66; pointer-events: none; /* preview only — the real, clickable demo lives in the window above */
+        }
+
+        .demo-caption {
+            position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+            background: rgba(17,24,39,0.88); color: #fff; font-size: 12.5px; font-weight: 600;
+            padding: 8px 18px; border-radius: 999px; z-index: 40;
+            opacity: 0; transition: opacity 0.35s ease; letter-spacing: 0.01em;
+            max-width: 90%; text-align: center;
+        }
+        .demo-caption.is-shown { opacity: 1; }
+
+        @media (max-width: 640px) {
+            .showcase-window { height: 460px; }
+            .demo-caption { font-size: 10.5px; padding: 7px 14px; max-width: 94%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .demo-card, .demo-iframe-wrap, .demo-caption { transition-duration: 0.01ms !important; }
+        }
+        
     </style>
 </head>
 <body>
@@ -485,6 +535,43 @@
                 </div>
             </div>
         </div>
+
+                <!-- ── LIVE DEMO SHOWCASE — auto-loops through subjects ── -->
+        <section class="showcase-section" id="showcaseDemo">
+            <div class="showcase-header">
+                <h2 class="showcase-title">Watch it teach. Same experience, every subject.</h2>
+                <p class="showcase-sub">A real Monturalearn lecture — instant feedback, an AI Insight Guide, and answers explained on the spot. This is Physics. It works exactly the same for Macbeth, Frankenstein, or any of your GCSE subjects.</p>
+            </div>
+
+            <div class="showcase-window" id="showcaseWindow">
+
+                <!-- PHYSICS CARD — real lecture file, embedded exactly like the top preview -->
+                <div class="demo-card is-active" id="demoPhysics">
+                    <div class="demo-iframe-wrap" id="physicsFrameWrap">
+                        <iframe
+                            src="lectures/preview/sci-phys-p2-l12-distance-travelled-from-area-under-a-velocity-time-graph.html"
+                            class="demo-real-iframe"
+                            loading="lazy"
+                            title="Physics lecture — distance travelled from a velocity-time graph"
+                        ></iframe>
+                    </div>
+                </div>
+
+                <!-- ENGLISH LITERATURE CARD — real lecture file, embedded exactly like the top preview -->
+                <div class="demo-card" id="demoEnglish">
+                    <div class="demo-iframe-wrap" id="englishFrameWrap">
+                        <iframe
+                            src="lectures/preview/aqa-animal-farm-p3-l3-equality-and-its-betrayal.html"
+                            class="demo-real-iframe"
+                            loading="lazy"
+                            title="English Literature lecture — Animal Farm, equality and its betrayal"
+                        ></iframe>
+                    </div>
+                </div>
+
+                <div class="demo-caption" id="demoCaption"></div>
+            </div>
+        </section>
 
         <!-- ── SUBJECTS TABLE ── -->
         <section style="padding:4rem 0 6rem;" id="subjects">
@@ -1192,6 +1279,115 @@ document.addEventListener('DOMContentLoaded', function() {
     }, { passive:true });
     window.addEventListener('resize', function() { lastScrollY = window.pageYOffset; updateParallax(); });
     updateParallax();
+})();
+</script>
+
+    <script>
+// Live demo showcase — auto-loops through the two real lecture files every 20s.
+// This wraps your actual embedded files (same technique as the top preview iframe).
+// It deliberately does NOT script clicks into the real UI or fire the real "Ask"
+// button — that hits your live DeepSeek backend, and auto-firing it on a 20s loop
+// for every site visitor would rack up real API calls with no one reading the reply.
+(function() {
+    var win = document.getElementById('showcaseWindow');
+    if (!win) return;
+
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var physics = document.getElementById('demoPhysics');
+    var english = document.getElementById('demoEnglish');
+    var caption = document.getElementById('demoCaption');
+    var physicsFrameWrap = document.getElementById('physicsFrameWrap');
+    var englishFrameWrap = document.getElementById('englishFrameWrap');
+
+    var stepTimers = [];
+    var cycleInterval = null;
+    var running = false;
+
+    function schedule(ms, fn) { stepTimers.push(setTimeout(fn, ms)); }
+    function clearSteps() { stepTimers.forEach(clearTimeout); stepTimers = []; }
+
+    function setCaption(text) {
+        caption.classList.remove('is-shown');
+        schedule(180, function() {
+            caption.textContent = text;
+            caption.classList.add('is-shown');
+        });
+    }
+
+    function resetAll() {
+        physics.classList.add('is-active');
+        physics.classList.remove('is-exit-left');
+        english.classList.remove('is-active', 'is-exit-left');
+        physicsFrameWrap.classList.remove('is-zoomed');
+        englishFrameWrap.classList.remove('is-zoomed');
+        caption.classList.remove('is-shown');
+    }
+
+    function playCycle() {
+        clearSteps();
+        resetAll();
+
+        schedule(300, function() { setCaption('This is the real lecture — Physics, Edexcel'); });
+        schedule(3200, function() { physicsFrameWrap.classList.add('is-zoomed'); setCaption('Every question marked instantly'); });
+        schedule(5600, function() { physicsFrameWrap.classList.remove('is-zoomed'); });
+        schedule(6300, function() { setCaption('An AI Insight Guide for every concept'); });
+
+        schedule(8800, function() {
+            physics.classList.remove('is-active'); physics.classList.add('is-exit-left');
+            english.classList.add('is-active');
+            caption.classList.remove('is-shown');
+        });
+
+        schedule(10300, function() { setCaption('Same experience — English Literature, AQA'); });
+        schedule(13200, function() { englishFrameWrap.classList.add('is-zoomed'); setCaption('Highlight any line, ask about it instantly'); });
+        schedule(15600, function() { englishFrameWrap.classList.remove('is-zoomed'); });
+        schedule(16300, function() { setCaption('One AI guide, every subject, every board'); });
+
+        schedule(18800, function() {
+            english.classList.remove('is-active'); english.classList.add('is-exit-left');
+            physics.classList.remove('is-exit-left'); physics.classList.add('is-active');
+            caption.classList.remove('is-shown');
+        });
+    }
+
+    function playCycleReduced() {
+        clearSteps();
+        resetAll();
+        schedule(300, function() { setCaption('This is the real lecture — Physics, Edexcel'); });
+        schedule(6000, function() { setCaption('An AI Insight Guide for every concept'); });
+        schedule(8800, function() {
+            physics.classList.remove('is-active'); physics.classList.add('is-exit-left');
+            english.classList.add('is-active');
+            setCaption('Same experience — English Literature, AQA');
+        });
+        schedule(14000, function() { setCaption('One AI guide, every subject, every board'); });
+        schedule(18800, function() {
+            english.classList.remove('is-active'); english.classList.add('is-exit-left');
+            physics.classList.remove('is-exit-left'); physics.classList.add('is-active');
+        });
+    }
+
+    function startLoop() {
+        if (running) return;
+        running = true;
+        var run = reducedMotion ? playCycleReduced : playCycle;
+        run();
+        cycleInterval = setInterval(run, 20000);
+    }
+    function stopLoop() {
+        running = false;
+        clearSteps();
+        if (cycleInterval) { clearInterval(cycleInterval); cycleInterval = null; }
+    }
+
+    var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) startLoop();
+            else stopLoop();
+        });
+    }, { threshold: 0.25 });
+    io.observe(win);
 })();
 </script>
 
