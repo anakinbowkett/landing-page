@@ -1905,6 +1905,9 @@ function createSubjectCard(subject) {
         const subjectSlugs = {
             'English Literature': 'english-literature',
             'English Language': 'english-language',
+            'Biology': 'biology',
+            'Chemistry': 'chemistry',
+            'Physics': 'physics',
             'Combined Science - Biology': 'combined-science-biology',
             'Combined Science - Chemistry': 'combined-science-chemistry',
             'Combined Science - Physics': 'combined-science-physics',
@@ -1920,13 +1923,12 @@ function createSubjectCard(subject) {
 
         let route;
         if (subjectSlugs[subject.subject_name]) {
-            const isCombinedScience = subject.subject_name.startsWith('Combined Science');
-            route = (isCombinedScience && tierWord)
+            route = tierWord
                 ? `${boardSlug}-${subjectSlugs[subject.subject_name]}-${tierWord}`
                 : `${boardSlug}-${subjectSlugs[subject.subject_name]}`;
         } else {
-            // Not yet mapped (e.g. separate-science Biology/Chemistry/Physics) —
-            // falls back to board+tier only, which is known-broken. Flag if hit.
+            // Subject not in subjectSlugs (e.g. Mathematics, History, etc.) —
+            // falls back to board+tier, or board alone if untiered.
             route = tierWord ? `${boardSlug}-${tierWord}` : boardSlug;
         }
 
