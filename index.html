@@ -401,6 +401,7 @@
         .demo-real-iframe {
             width: 100%; height: 100%; border: none; display: block;
             background: #1E3F66; pointer-events: none; /* preview only — the real, clickable demo lives in the window above */
+            opacity: 0; transition: opacity 0.5s ease;
         }
 
         .demo-caption {
@@ -1282,22 +1283,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 // Live demo showcase — auto-loops through the two real lecture files.
-// Reaches into the real embedded lecture (same-origin iframe) and clicks the
-// actual "Before you start" buttons, the actual correct answer, and types into
-// the actual chat box — never clicks the real "Ask" send button, since that
-// hits your live DeepSeek backend and firing it on a loop for every visitor
-// would rack up real API calls with no one reading the reply.
-// Also suppresses the lecture's own first-visit guided tour (it auto-launches
-// for any browser that hasn't seen it, which would otherwise cover the demo).
-// Every call into the iframe is wrapped in try/catch and polls for elements
-// rather than guessing fixed delays, so a missing/renamed element just gets
-// skipped instead of breaking the rest of the showcase.
+// Runs as a sequence of real steps (click this, wait for that, type this)
+// rather than a fixed timer schedule, so the pacing follows what actually
+// happens in the real app instead of a guessed clock. The iframe's content
+// stays invisible until the "Before you start" splash is fully handled and
+// the Insight Guide (which it auto-opens) is closed again — so the splash is
+// never shown to the visitor. Never clicks the real "Ask" send button, since
+// that hits your live DeepSeek backend and firing it on every visitor's loop
+// would rack up real API calls with no one reading the reply. Also suppresses
+// the lecture's own first-visit guided tour, and force-unlocks question
+// navigation so "Next" always works regardless of reading progress. Every
+// call into the iframe is wrapped in try/catch and polls for elements, so a
+// missing/renamed element just gets skipped instead of breaking the demo.
 (function() {
     var win = document.getElementById('showcaseWindow');
     if (!win) return;
 
-    // Prevent the lecture's first-visit spotlight tour from auto-launching
-    // and covering the demo. Same-origin, so this localStorage key is shared.
     try { window.localStorage.setItem('montura_tutorial_seen', 'true'); } catch (e) {}
 
     var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1310,32 +1311,16 @@ document.addEventListener('DOMContentLoaded', function() {
     var physicsIframe = physicsFrameWrap.querySelector('iframe');
     var englishIframe = englishFrameWrap.querySelector('iframe');
 
-    var stepTimers = [];
-    var cycleInterval = null;
-    var running = false;
-    var PHASE_MS = 13000;   // time given to each subject
-    var TRANSITION_GAP = 700; // gap between phases for the crossfade
-
-    function schedule(ms, fn) { stepTimers.push(setTimeout(fn, ms)); }
-    function clearSteps() { stepTimers.forEach(clearTimeout); stepTimers = []; }
+    var cancelled = true;
+    var captionFadeTimer = null;
 
     function setCaption(text) {
         caption.classList.remove('is-shown');
-        schedule(180, function() {
+        clearTimeout(captionFadeTimer);
+        captionFadeTimer = setTimeout(function() {
             caption.textContent = text;
             caption.classList.add('is-shown');
-        });
-    }
-
-    // Pans/zooms the embedded page by targeting a horizontal % of its 3-column
-    // layout (question | answer | chat) — pos: 0=left, 1=middle, 2=right.
-    function panTo(frameWrap, pos) {
-        var originX = pos === 0 ? '17%' : pos === 1 ? '50%' : '83%';
-        frameWrap.style.transformOrigin = originX + ' 42%';
-        frameWrap.style.transform = 'scale(1.55)';
-    }
-    function panReset(frameWrap) {
-        frameWrap.style.transform = 'scale(1)';
+        }, 180);
     }
 
     function waitFor(fn, cb, maxTries, intervalMs) {
@@ -1346,173 +1331,229 @@ document.addEventListener('DOMContentLoaded', function() {
             tries++;
             var result;
             try { result = fn(); } catch (e) { result = null; }
+            if (cancelled) { clearInterval(iv); return; }
             if (result) { clearInterval(iv); cb(result); }
-            else if (tries >= maxTries) { clearInterval(iv); }
+            else if (tries >= maxTries) { clearInterval(iv); cb(null); } // give up gracefully, keep going
         }, intervalMs);
     }
 
-    function clickByText(doc, selector, matchText) {
-        var els = doc.querySelectorAll(selector);
-        for (var i = 0; i < els.length; i++) {
-            if (els[i].textContent.indexOf(matchText) !== -1) { els[i].click(); return true; }
+    // ── Step builders — each returns a function(next) ──
+    function wait(ms) { return function(next) { setTimeout(function() { if (!cancelled) next(); }, ms); }; }
+    function say(text) { return function(next) { setCaption(text); next(); }; }
+    function call(fn) { return function(next) { try { fn(); } catch (e) {} next(); }; }
+    function clickWhere(getDoc, finder, maxTries) {
+        return function(next) {
+            waitFor(function() { return finder(getDoc()); }, function(el) {
+                if (el) { try { el.click(); } catch (e) {} }
+                next();
+            }, maxTries || 20, 200);
+        };
+    }
+    function clickText(getDoc, selector, matchText, maxTries) {
+        return clickWhere(getDoc, function(doc) {
+            var els = doc.querySelectorAll(selector);
+            for (var i = 0; i < els.length; i++) {
+                if (els[i].textContent.indexOf(matchText) !== -1) return els[i];
+            }
+            return null;
+        }, maxTries);
+    }
+    function typeInto(getDoc, elId, text, charMs) {
+        return function(next) {
+            var doc = getDoc();
+            var input = doc && doc.getElementById(elId);
+            if (!input) { next(); return; }
+            try { input.focus(); } catch (e) {}
+            var i = 0;
+            var typer = setInterval(function() {
+                if (cancelled) { clearInterval(typer); return; }
+                try {
+                    input.value = text.slice(0, i);
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                } catch (e) {}
+                i++;
+                if (i > text.length) { clearInterval(typer); next(); }
+            }, charMs || 55);
+        };
+    }
+    function runSteps(steps, onDone) {
+        var i = 0;
+        function step() {
+            if (cancelled) return;
+            if (i >= steps.length) { if (onDone) onDone(); return; }
+            steps[i++](step);
         }
-        return false;
+        step();
     }
 
-    // Drives the real lecture inside an iframe: clicks through the real
-    // "Before you start" splash (which auto-opens the real Insight Guide for
-    // Q1 once dismissed), clicks the real correct answer, then types into the
-    // real chat box without sending.
-    function driveLecture(iframeEl, correctAnswerText, followUpQuestion) {
-        var docWin, doc;
-        try {
-            docWin = iframeEl.contentWindow;
-            doc = docWin.document;
-        } catch (e) { return; } // cross-origin or not ready — skip silently
-
-        // 1. Click "What will I learn? →" (page 1 of the splash)
-        waitFor(function() {
-            return clickByText(doc, '.start-here-btn', 'What will I learn') ? true : null;
-        }, function() {
-
-            // 2. Shortly after, click "Got it — let's go →" (dismisses the
-            //    splash, which itself auto-opens the Insight Guide for Q1)
-            setTimeout(function() {
-                waitFor(function() {
-                    return clickByText(doc, '.start-here-btn', "let's go") ? true : null;
-                }, function() {
-
-                    // 3. Once dismissed, find and click the real correct answer
-                    setTimeout(function() {
-                        waitFor(function() {
-                            var opts = doc.querySelectorAll('.az-opt');
-                            for (var i = 0; i < opts.length; i++) {
-                                if (opts[i].textContent.trim() === correctAnswerText) return opts[i];
-                            }
-                            return null;
-                        }, function(btn) {
-                            try { btn.click(); } catch (e) {}
-
-                            // 4. A beat later, type into the real chat box (visual only)
-                            setTimeout(function() {
-                                try {
-                                    var input = doc.getElementById('chatInput');
-                                    if (!input) return;
-                                    input.focus();
-                                    var i = 0;
-                                    var typer = setInterval(function() {
-                                        input.value = followUpQuestion.slice(0, i);
-                                        input.dispatchEvent(new Event('input', { bubbles: true }));
-                                        i++;
-                                        if (i > followUpQuestion.length) clearInterval(typer);
-                                    }, 55);
-                                } catch (e) {}
-                            }, 900);
-                        }, 20, 200);
-                    }, 700); // matches dismissStartHere()'s own internal 400ms hide delay + buffer
-                }, 12, 200);
-            }, 350);
-        }, 20, 200);
-    }
-
-    // Forces a clean reload (so the demo replays fresh every loop) then drives it
-    function reloadAndDrive(iframeEl, correctAnswerText, followUpQuestion) {
-        if (!iframeEl) return;
+    // Reloads an iframe fresh (so the demo replays identically every loop),
+    // keeps its content invisible, and calls back once ready to be driven.
+    function reloadHidden(iframeEl, cb) {
         var base = iframeEl.getAttribute('data-base-src');
-        if (!base) {
-            base = iframeEl.src.split('?')[0];
-            iframeEl.setAttribute('data-base-src', base);
-        }
+        if (!base) { base = iframeEl.src.split('?')[0]; iframeEl.setAttribute('data-base-src', base); }
+        iframeEl.style.opacity = '0';
         iframeEl.addEventListener('load', function onLoad() {
             iframeEl.removeEventListener('load', onLoad);
-            setTimeout(function() { driveLecture(iframeEl, correctAnswerText, followUpQuestion); }, 400);
+            setTimeout(function() {
+                if (cancelled) return;
+                var docWin, doc;
+                try { docWin = iframeEl.contentWindow; doc = docWin.document; } catch (e) { cb(null, null); return; }
+                // Force question navigation open regardless of reading progress
+                try { docWin.isQuestionUnlocked = function() { return true; }; } catch (e) {}
+                cb(docWin, doc);
+            }, 400);
         }, { once: true });
         iframeEl.src = base + '?_r=' + Date.now();
     }
 
-    function resetAll() {
-        physics.classList.add('is-active');
-        physics.classList.remove('is-exit-left');
-        english.classList.remove('is-active', 'is-exit-left');
-        panReset(physicsFrameWrap);
-        panReset(englishFrameWrap);
+    function reveal(iframeEl) { iframeEl.style.opacity = '1'; }
+
+    // Full choreography for one subject. Never reveals the splash screen —
+    // it's dismissed and its auto-opened Insight Guide closed again while
+    // the iframe is still invisible.
+    function buildSequence(iframeEl, frameWrap, getDoc, opts) {
+        return [
+            // ── hidden setup: dismiss splash, close the insight it auto-opens ──
+            clickText(getDoc, '.start-here-btn', 'What will I learn'),
+            wait(300),
+            clickText(getDoc, '.start-here-btn', "let's go"),
+            wait(700),
+            clickWhere(getDoc, function(doc) { return doc.getElementById('insightCloseBtn'); }),
+            wait(300),
+
+            // ── reveal: question open, insight closed ──
+            call(function() { frameWrap.style.transform = 'scale(1.22)'; reveal(iframeEl); }),
+            say(opts.intro),
+            wait(2600),
+
+            // ── answer correctly ──
+            clickWhere(getDoc, function(doc) {
+                var els = doc.querySelectorAll('.az-opt, .az-tf-btn');
+                for (var i = 0; i < els.length; i++) {
+                    if (els[i].textContent.indexOf(opts.correctAnswer) !== -1) return els[i];
+                }
+                return null;
+            }),
+            say(opts.afterCorrect),
+            wait(2600),
+
+            // ── ask the AI a question (typed, never sent) ──
+            say(opts.beforeType),
+            typeInto(getDoc, 'chatInput', opts.typedQuestion, 60),
+            wait(1800),
+
+            // ── open the Insight Guide and show it ──
+            clickWhere(getDoc, function(doc) { return doc.getElementById('insightClosedCard'); }),
+            say(opts.insightOpen),
+            wait(3600),
+
+            // ── close it, move to the next question ──
+            clickWhere(getDoc, function(doc) { return doc.getElementById('insightCloseBtn'); }),
+            wait(700),
+            say(opts.nextQuestion),
+            clickWhere(getDoc, function(doc) { return doc.getElementById('nav-next-btn'); }),
+            wait(1200),
+
+            // ── answer wrong this time ──
+            clickWhere(getDoc, function(doc) {
+                var els = doc.querySelectorAll('.az-opt, .az-tf-btn');
+                for (var i = 0; i < els.length; i++) {
+                    if (els[i].textContent.indexOf(opts.wrongAnswer) !== -1) return els[i];
+                }
+                return null;
+            }),
+            say(opts.afterWrong),
+            wait(2000),
+
+            // ── the Insight Guide "opens itself" to help ──
+            clickWhere(getDoc, function(doc) { return doc.getElementById('insightClosedCard'); }),
+            say(opts.insightAutoOpen),
+            wait(3200),
+
+            // ── zoom all the way out to reveal the whole page ──
+            call(function() { frameWrap.style.transform = 'scale(1)'; }),
+            wait(2200)
+        ];
+    }
+
+    function crossfade(hideCard, showCard) {
+        hideCard.classList.remove('is-active'); hideCard.classList.add('is-exit-left');
+        showCard.classList.add('is-active');
         caption.classList.remove('is-shown');
     }
 
-    // One subject's full choreography: intro caption, then three readable
-    // pans (question → answer → chat/insight), each held long enough to read.
-    function runPhase(frameWrap, captions) {
-        setCaption(captions.intro);
-        schedule(2600, function() { panTo(frameWrap, 0); setCaption(captions.left); });
-        schedule(6600, function() { panTo(frameWrap, 1); setCaption(captions.middle); });
-        schedule(10200, function() { panTo(frameWrap, 2); setCaption(captions.right); });
-        schedule(PHASE_MS - TRANSITION_GAP - 300, function() { panReset(frameWrap); });
-    }
+    function loopOnce() {
+        if (cancelled) return;
+        physics.classList.add('is-active'); physics.classList.remove('is-exit-left');
+        english.classList.remove('is-active', 'is-exit-left');
+        physicsFrameWrap.style.transform = 'scale(1)';
+        englishFrameWrap.style.transform = 'scale(1)';
+        caption.classList.remove('is-shown');
 
-    function playCycle() {
-        clearSteps();
-        resetAll();
-        reloadAndDrive(physicsIframe, 'Distance travelled', 'Why split it into shapes?');
-
-        runPhase(physicsFrameWrap, {
-            intro: 'This is a real Monturalearn lecture — Physics, Edexcel',
-            left: 'The real question, the real graph',
-            middle: 'Marked instantly, the moment you answer',
-            right: 'An AI Insight Guide, right there in the lecture'
-        });
-
-        schedule(PHASE_MS, function() {
-            physics.classList.remove('is-active'); physics.classList.add('is-exit-left');
-            english.classList.add('is-active');
-            caption.classList.remove('is-shown');
-            reloadAndDrive(englishIframe, 'Old Major', 'How does the betrayal begin?');
-
-            runPhase(englishFrameWrap, {
-                intro: 'Same experience — English Literature, AQA',
-                left: 'The real text, the real question',
-                middle: 'Marked instantly, every question',
-                right: 'Highlight any line, ask about it'
+        reloadHidden(physicsIframe, function(docWin, doc) {
+            if (cancelled || !doc) return;
+            var getDoc = function() { return doc; };
+            runSteps(buildSequence(physicsIframe, physicsFrameWrap, getDoc, {
+                intro: 'This is a real Monturalearn lecture — Physics, Edexcel',
+                correctAnswer: 'Distance travelled',
+                afterCorrect: 'Marked instantly, the moment you answer',
+                beforeType: 'Ask anything, right inside the lecture',
+                typedQuestion: 'Why split it into shapes?',
+                insightOpen: 'One tap opens the AI Insight Guide',
+                nextQuestion: 'On to the next question',
+                wrongAnswer: 'True',
+                afterWrong: 'This time, get it wrong',
+                insightAutoOpen: 'The Insight Guide opens itself to help'
+            }), function() {
+                if (cancelled) return;
+                crossfade(physics, english);
+                reloadHidden(englishIframe, function(docWin2, doc2) {
+                    if (cancelled || !doc2) return;
+                    var getDoc2 = function() { return doc2; };
+                    runSteps(buildSequence(englishIframe, englishFrameWrap, getDoc2, {
+                        intro: 'Same experience — English Literature, AQA',
+                        correctAnswer: 'Old Major',
+                        afterCorrect: 'Marked instantly, every question',
+                        beforeType: 'The same AI guide, any subject',
+                        typedQuestion: 'How does the betrayal begin?',
+                        insightOpen: 'Highlight any line, ask about it',
+                        nextQuestion: 'On to the next question',
+                        wrongAnswer: 'True',
+                        afterWrong: 'This time, get it wrong',
+                        insightAutoOpen: 'The Insight Guide opens itself to help'
+                    }), function() {
+                        if (cancelled) return;
+                        crossfade(english, physics);
+                        loopOnce();
+                    });
+                });
             });
         });
-
-        schedule(PHASE_MS * 2, function() {
-            english.classList.remove('is-active'); english.classList.add('is-exit-left');
-            physics.classList.remove('is-exit-left'); physics.classList.add('is-active');
-            caption.classList.remove('is-shown');
-        });
     }
 
-    function playCycleReduced() {
-        clearSteps();
-        resetAll();
-        reloadAndDrive(physicsIframe, 'Distance travelled', 'Why split it into shapes?');
+    function loopOnceReduced() {
+        if (cancelled) return;
+        physics.classList.add('is-active'); physics.classList.remove('is-exit-left');
+        english.classList.remove('is-active', 'is-exit-left');
         setCaption('This is a real Monturalearn lecture — Physics, Edexcel');
-        schedule(6000, function() { setCaption('An AI Insight Guide for every concept'); });
-        schedule(PHASE_MS, function() {
-            physics.classList.remove('is-active'); physics.classList.add('is-exit-left');
-            english.classList.add('is-active');
+        setTimeout(function() {
+            if (cancelled) return;
+            crossfade(physics, english);
             setCaption('Same experience — English Literature, AQA');
-            reloadAndDrive(englishIframe, 'Old Major', 'How does the betrayal begin?');
-        });
-        schedule(PHASE_MS + 6000, function() { setCaption('One AI guide, every subject, every board'); });
-        schedule(PHASE_MS * 2, function() {
-            english.classList.remove('is-active'); english.classList.add('is-exit-left');
-            physics.classList.remove('is-exit-left'); physics.classList.add('is-active');
-        });
+            setTimeout(function() {
+                if (cancelled) return;
+                crossfade(english, physics);
+                loopOnceReduced();
+            }, 9000);
+        }, 9000);
     }
 
     function startLoop() {
-        if (running) return;
-        running = true;
-        var run = reducedMotion ? playCycleReduced : playCycle;
-        run();
-        cycleInterval = setInterval(run, PHASE_MS * 2);
+        if (!cancelled) return;
+        cancelled = false;
+        if (reducedMotion) loopOnceReduced(); else loopOnce();
     }
-    function stopLoop() {
-        running = false;
-        clearSteps();
-        if (cycleInterval) { clearInterval(cycleInterval); cycleInterval = null; }
-    }
+    function stopLoop() { cancelled = true; }
 
     var io = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
