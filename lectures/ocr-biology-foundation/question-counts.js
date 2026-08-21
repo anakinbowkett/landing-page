@@ -96,3 +96,4 @@ window.LECTURE_QUESTION_COUNTS = {
   "sci-p3-l7-evaluating-a-method-sources-of-error-and-improvements": 20,
   "sci-p3-l8-the-foundation-pitfall-vague-command-words-like-things-happen-or-it-changes": 23
 };
+// trigger
