@@ -1,172 +1,175 @@
-// AQA Combined Science: Biology (Higher Tier) — lectures-data.js
-// Built from full generated_lectures\\AQA directory listing (160 lectures, all confirmed on disk).
-// Structure: sci-p0 (orientation) and sci-p1/p2/p3 (Working Scientifically maths/data/exam-technique
-// skills) are Combined-Science-wide, not Biology-specific — same pattern as the shared cr-/tk-
-// toolkits in English. sci-bio-p1-p7 map onto AQA's real Trilogy Biology topics 1-7, split across
-// Paper 1 (Topics 1-4) and Paper 2 (Topics 5-7) per AQA's actual spec structure.
-//
-// ASSUMPTION TO CONFIRM: Working Scientifically (sci-p1/p2/p3) placed as one shared "Working
-// Scientifically" paper here. If Chemistry/Physics folders also contain identical sci-p0/p1/p2/p3
-// slugs, treat those as reused across all three sciences (like English's cr-/tk-) — don't rebuild
-// them per subject.
+// Edexcel Combined Science: Physics (Foundation Tier) — lectures-data.js
+// Rebuilt from real generated lecture files (231 lectures). No Foundations/Working
+// Scientifically section (same as Higher and AQA Physics — confirmed pattern for Physics).
+// Paper 1 = Topics 1-6. Paper 2 = Topic 1 (shared) + Topics 8-15.
 
 var papersData = [
   {
     type: "single",
-    tag: "FOUNDATION",
-    title: "Foundations",
-    pillars: [
-      {
-        tag: "Foundations",
-        title: "Getting Started",
-        lectures: [
-          { slug: "sci-p0-l1-what-combined-science-actually-is-two-gcses-one-course", title: "What Combined Science Actually Is Two Gcses One Course" },
-          { slug: "sci-p0-l2-what-foundation-tier-means-and-why-its-a-real-valid-path", title: "What Foundation Tier Means and Why Its a Real Valid Path" },
-          { slug: "sci-p0-l3-what-the-six-papers-look-like-and-which-covers-what", title: "What the Six Papers Look Like and Which Covers What" },
-          { slug: "sci-p0-l4-what-the-examiner-is-actually-marking-ao1-to-ao3-in-plain-english", title: "What the Examiner Is Actually Marking AO1 to AO3 in Plain English" },
-          { slug: "sci-p0-l5-why-required-practicals-matter-even-in-a-written-exam", title: "Why Required Practicals Matter Even in a Written Exam" },
-          { slug: "sci-p0-l6-what-a-strong-grade-5-answer-looks-like-and-how-you-get-there", title: "What a Strong Grade 5 Answer Looks Like and How You Get There" },
-          { slug: "sci-p0-l7-how-to-use-this-platform", title: "How to Use This Platform" },
-          { slug: "sci-p0-l8-how-to-divide-your-time-across-a-70-mark-75-minute-paper", title: "How to Divide Your Time Across a 70 Mark 75 Minute Paper" }
-        ]
-      }
-    ]
-  },
-  {
-    type: "single",
-    tag: "SKILLS",
-    title: "Working Scientifically",
-    pillars: [
-      {
-        tag: "Skills · Command Words & Data",
-        title: "Reading, Command Words & Data",
-        lectures: [
-          { slug: "sci-p1-l1-command-words-describe-vs-explain-the-most-confused-pair", title: "Command Words Describe vs Explain the Most Confused Pair" },
-          { slug: "sci-p1-l2-command-words-evaluate-suggest-predict-compare-determine", title: "Command Words Evaluate Suggest Predict Compare Determine" },
-          { slug: "sci-p1-l3-reading-a-graph-table-or-chart-accurately", title: "Reading a Graph Table or Chart Accurately" },
-          { slug: "sci-p1-l4-plotting-a-graph-from-a-data-table", title: "Plotting a Graph from a Data Table" },
-          { slug: "sci-p1-l5-independent-dependent-and-control-variables", title: "Independent Dependent and Control Variables" },
-          { slug: "sci-p1-l6-units-and-converting-between-them", title: "Units and Converting Between Them" },
-          { slug: "sci-p1-l7-significant-figures-and-sensible-rounding", title: "Significant Figures and Sensible Rounding" },
-          { slug: "sci-p1-l8-standard-form-for-very-large-and-very-small-numbers", title: "Standard Form for Very Large and Very Small Numbers" }
-        ]
-      },
-      {
-        tag: "Skills · Maths & Equations",
-        title: "Maths, Equations & Diagrams",
-        lectures: [
-          { slug: "sci-p2-l1-rearranging-a-simple-equation-safely", title: "Rearranging a Simple Equation Safely" },
-          { slug: "sci-p2-l2-ratios-and-proportions-in-a-science-context", title: "Ratios and Proportions in a Science Context" },
-          { slug: "sci-p2-l3-using-the-physics-equation-sheet-effectively", title: "Using the Physics Equation Sheet Effectively" },
-          { slug: "sci-p2-l4-reading-and-drawing-scientific-diagrams", title: "Reading and Drawing Scientific Diagrams" },
-          { slug: "sci-p2-l5-word-equations-and-symbol-equations", title: "Word Equations and Symbol Equations" },
-          { slug: "sci-p2-l6-estimating-and-checking-an-answer-is-reasonable", title: "Estimating and Checking an Answer Is Reasonable" },
-          { slug: "sci-p2-l7-magnification-and-scale-calculations", title: "Magnification and Scale Calculations" }
-        ]
-      },
-      {
-        tag: "Skills · Exam Technique",
-        title: "Exam Technique & Required Practicals",
-        lectures: [
-          { slug: "sci-p3-l1-the-6-mark-question-what-level-of-response-marking-means", title: "The 6 Mark Question What Level of Response Marking Means" },
-          { slug: "sci-p3-l2-structuring-a-6-mark-answer-so-examiners-can-follow-it", title: "Structuring a 6 Mark Answer so Examiners Can Follow It" },
-          { slug: "sci-p3-l3-required-practical-write-ups-aim-variables-and-method", title: "Required Practical Write Ups Aim Variables and Method" },
-          { slug: "sci-p3-l4-required-practical-write-ups-results-conclusion-and-evaluation", title: "Required Practical Write Ups Results Conclusion and Evaluation" },
-          { slug: "sci-p3-l5-spotting-and-explaining-an-anomalous-result", title: "Spotting and Explaining an Anomalous Result" },
-          { slug: "sci-p3-l6-writing-a-conclusion-that-actually-uses-the-data-given", title: "Writing a Conclusion That Actually Uses the Data Given" },
-          { slug: "sci-p3-l7-evaluating-a-method-sources-of-error-and-improvements", title: "Evaluating a Method Sources of Error and Improvements" },
-          { slug: "sci-p3-l8-the-foundation-pitfall-vague-command-words-like-things-happen-or-it-changes", title: "The Foundation Pitfall Vague Command Words Like Things Happen or It Changes" }
-        ]
-      }
-    ]
-  },
-  {
-    type: "single",
     tag: "PAPER 1",
-    title: "Biology Paper 1 (Topics 1–4)",
+    title: "Physics Paper 1",
     pillars: [
       {
         tag: "Topic 1",
-        title: "Cell Biology",
+        title: "Key Concepts in Physics",
         lectures: [
-          { slug: "sci-bio-p1-l1-eukaryotic-and-prokaryotic-cells", title: "Eukaryotic and Prokaryotic Cells" },
-          { slug: "sci-bio-p1-l2-animal-and-plant-cell-structures-and-functions", title: "Animal and Plant Cell Structures and Functions" },
-          { slug: "sci-bio-p1-l3-cell-specialisation-sperm-nerve-muscle-root-hair-xylem-and-phloem", title: "Cell Specialisation Sperm Nerve Muscle Root Hair Xylem and Phloem" },
-          { slug: "sci-bio-p1-l4-cell-differentiation-and-its-importance", title: "Cell Differentiation and Its Importance" },
-          { slug: "sci-bio-p1-l5-light-and-electron-microscopy-magnification-and-resolution", title: "Light and Electron Microscopy Magnification and Resolution" },
-          { slug: "sci-bio-p1-l6-magnification-calculations", title: "Magnification Calculations" },
-          { slug: "sci-bio-p1-l7-chromosomes-and-genes", title: "Chromosomes and Genes" },
-          { slug: "sci-bio-p1-l8-the-cell-cycle-and-mitosis", title: "The Cell Cycle and Mitosis" },
-          { slug: "sci-bio-p1-l9-stem-cells-embryonic-adult-and-meristems-in-plants", title: "Stem Cells Embryonic Adult and Meristems in Plants" },
-          { slug: "sci-bio-p1-l10-therapeutic-cloning-and-ethical-issues-of-stem-cell-use", title: "Therapeutic Cloning and Ethical Issues of Stem Cell Use" },
-          { slug: "sci-bio-p1-l11-diffusion-factors-affecting-rate-and-exchange-surfaces", title: "Diffusion Factors Affecting Rate and Exchange Surfaces" },
-          { slug: "sci-bio-p1-l12-surface-area-to-volume-ratio-in-multicellular-organisms", title: "Surface Area to Volume Ratio in Multicellular Organisms" },
-          { slug: "sci-bio-p1-l13-osmosis-investigating-effect-on-plant-tissue", title: "Osmosis Investigating Effect on Plant Tissue" },
-          { slug: "sci-bio-p1-l14-active-transport-differences-from-diffusion-and-osmosis", title: "Active Transport Differences from Diffusion and Osmosis" }
+          { slug: "sci-phys-p1-l1-si-units-and-common-physical-quantities", title: "Si Units and Common Physical Quantities" },
+          { slug: "sci-phys-p1-l2-si-prefixes-and-orders-of-magnitude", title: "Si Prefixes and Orders of Magnitude" },
+          { slug: "sci-phys-p1-l3-converting-between-physical-units", title: "Converting Between Physical Units" },
+          { slug: "sci-phys-p1-l4-hours-minutes-and-seconds-conversions", title: "Hours Minutes and Seconds Conversions" },
+          { slug: "sci-phys-p1-l5-significant-figures-in-physics", title: "Significant Figures in Physics" },
+          { slug: "sci-phys-p1-l6-standard-form-and-calculator-notation", title: "Standard Form and Calculator Notation" },
+          { slug: "sci-phys-p1-l7-ratios-proportional-reasoning-and-rates", title: "Ratios Proportional Reasoning and Rates" },
+          { slug: "sci-phys-p1-l8-selecting-equations-and-using-units-correctly", title: "Selecting Equations and Using Units Correctly" }
         ]
       },
       {
         tag: "Topic 2",
-        title: "Organisation",
+        title: "Motion and Forces",
         lectures: [
-          { slug: "sci-bio-p2-l1-cells-tissues-organs-and-organ-systems", title: "Cells Tissues Organs and Organ Systems" },
-          { slug: "sci-bio-p2-l2-enzymes-lock-and-key-model-and-active-site", title: "Enzymes Lock and Key Model and Active Site" },
-          { slug: "sci-bio-p2-l3-effect-of-temperature-and-ph-on-enzyme-activity", title: "Effect of Temperature and Ph on Enzyme Activity" },
-          { slug: "sci-bio-p2-l4-the-human-digestive-system", title: "The Human Digestive System" },
-          { slug: "sci-bio-p2-l5-digestive-enzymes-amylase-proteases-and-lipases", title: "Digestive Enzymes Amylase Proteases and Lipases" },
-          { slug: "sci-bio-p2-l6-the-role-of-bile", title: "The Role of Bile" },
-          { slug: "sci-bio-p2-l7-food-tests-benedicts-iodine-and-biuret", title: "Food Tests Benedicts Iodine and Biuret" },
-          { slug: "sci-bio-p2-l8-investigating-the-effect-of-ph-on-amylase", title: "Investigating the Effect of Ph on Amylase" },
-          { slug: "sci-bio-p2-l9-the-heart-and-double-circulatory-system", title: "The Heart and Double Circulatory System" },
-          { slug: "sci-bio-p2-l10-blood-vessels-arteries-veins-and-capillaries", title: "Blood Vessels Arteries Veins and Capillaries" },
-          { slug: "sci-bio-p2-l11-components-and-functions-of-blood", title: "Components and Functions of Blood" },
-          { slug: "sci-bio-p2-l12-coronary-heart-disease-stents-statins-and-heart-valves", title: "Coronary Heart Disease Stents Statins and Heart Valves" },
-          { slug: "sci-bio-p2-l13-health-disease-and-their-interactions", title: "Health Disease and Their Interactions" },
-          { slug: "sci-bio-p2-l14-lifestyle-factors-and-non-communicable-diseases", title: "Lifestyle Factors and Non Communicable Diseases" },
-          { slug: "sci-bio-p2-l15-cancer-benign-and-malignant-tumours", title: "Cancer Benign and Malignant Tumours" },
-          { slug: "sci-bio-p2-l16-plant-tissues-and-their-functions", title: "Plant Tissues and Their Functions" },
-          { slug: "sci-bio-p2-l17-root-hair-cells-xylem-and-phloem-structure-and-function", title: "Root Hair Cells Xylem and Phloem Structure and Function" },
-          { slug: "sci-bio-p2-l18-transpiration-and-translocation", title: "Transpiration and Translocation" },
-          { slug: "sci-bio-p2-l19-stomata-guard-cells-and-factors-affecting-transpiration-rate", title: "Stomata Guard Cells and Factors Affecting Transpiration Rate" }
+          { slug: "sci-phys-p2-l1-scalars-and-vectors", title: "Scalars and Vectors" },
+          { slug: "sci-phys-p2-l2-vector-and-scalar-quantities-in-physics", title: "Vector and Scalar Quantities in Physics" },
+          { slug: "sci-phys-p2-l3-distance-displacement-speed-and-velocity", title: "Distance Displacement Speed and Velocity" },
+          { slug: "sci-phys-p2-l4-speed-distance-and-time-equations", title: "Speed Distance and Time Equations" },
+          { slug: "sci-phys-p2-l5-calculating-average-speed", title: "Calculating Average Speed" },
+          { slug: "sci-phys-p2-l6-distance-time-graphs", title: "Distance Time Graphs" },
+          { slug: "sci-phys-p2-l7-finding-speed-from-distance-time-graph-gradients", title: "Finding Speed from Distance Time Graph Gradients" },
+          { slug: "sci-phys-p2-l8-acceleration-and-change-in-velocity", title: "Acceleration and Change in Velocity" },
+          { slug: "sci-phys-p2-l9-calculating-acceleration", title: "Calculating Acceleration" },
+          { slug: "sci-phys-p2-l10-velocity-time-graphs", title: "Velocity Time Graphs" },
+          { slug: "sci-phys-p2-l11-finding-acceleration-from-velocity-time-graphs", title: "Finding Acceleration from Velocity Time Graphs" },
+          { slug: "sci-phys-p2-l12-distance-travelled-from-area-under-a-velocity-time-graph", title: "Distance Travelled from Area Under a Velocity Time Graph" },
+          { slug: "sci-phys-p2-l13-laboratory-methods-for-measuring-speed", title: "Laboratory Methods for Measuring Speed" },
+          { slug: "sci-phys-p2-l14-typical-speeds-and-accelerations", title: "Typical Speeds and Accelerations" },
+          { slug: "sci-phys-p2-l15-free-fall-and-gravitational-acceleration", title: "Free Fall and Gravitational Acceleration" },
+          { slug: "sci-phys-p2-l16-newtons-first-law", title: "Newtons First Law" },
+          { slug: "sci-phys-p2-l17-resultant-force-and-changes-in-motion", title: "Resultant Force and Changes in Motion" },
+          { slug: "sci-phys-p2-l18-newtons-second-law-and-f-ma", title: "Newtons Second Law and F Ma" },
+          { slug: "sci-phys-p2-l19-weight-mass-and-gravitational-field-strength", title: "Weight Mass and Gravitational Field Strength" },
+          { slug: "sci-phys-p2-l20-measuring-weight-and-gravitational-field-strength", title: "Measuring Weight and Gravitational Field Strength" },
+          { slug: "sci-phys-p2-l21-circular-motion-and-changing-velocity", title: "Circular Motion and Changing Velocity" },
+          { slug: "sci-phys-p2-l22-centripetal-force", title: "Centripetal Force" },
+          { slug: "sci-phys-p2-l23-inertial-mass", title: "Inertial Mass" },
+          { slug: "sci-phys-p2-l24-newtons-third-law-and-force-pairs", title: "Newtons Third Law and Force Pairs" },
+          { slug: "sci-phys-p2-l25-momentum-and-the-momentum-equation", title: "Momentum and the Momentum Equation" },
+          { slug: "sci-phys-p2-l26-momentum-in-collisions", title: "Momentum in Collisions" },
+          { slug: "sci-phys-p2-l27-force-as-rate-of-change-of-momentum", title: "Force as Rate of Change of Momentum" },
+          { slug: "sci-phys-p2-l28-human-reaction-time", title: "Human Reaction Time" },
+          { slug: "sci-phys-p2-l29-thinking-and-braking-distance", title: "Thinking and Braking Distance" },
+          { slug: "sci-phys-p2-l30-factors-affecting-stopping-distance", title: "Factors Affecting Stopping Distance" },
+          { slug: "sci-phys-p2-l31-drugs-distractions-and-reaction-time", title: "Drugs Distractions and Reaction Time" },
+          { slug: "sci-phys-p2-l32-large-decelerations-and-collision-forces", title: "Large Decelerations and Collision Forces" }
         ]
       },
       {
         tag: "Topic 3",
-        title: "Infection and Response",
+        title: "Conservation of Energy",
         lectures: [
-          { slug: "sci-bio-p3-l1-pathogens-and-how-diseases-spread", title: "Pathogens and How Diseases Spread" },
-          { slug: "sci-bio-p3-l2-viral-diseases-measles-hiv-and-tobacco-mosaic-virus", title: "Viral Diseases Measles Hiv and Tobacco Mosaic Virus" },
-          { slug: "sci-bio-p3-l3-bacterial-diseases-salmonella-and-gonorrhoea", title: "Bacterial Diseases Salmonella and Gonorrhoea" },
-          { slug: "sci-bio-p3-l4-fungal-diseases-rose-black-spot", title: "Fungal Diseases Rose Black Spot" },
-          { slug: "sci-bio-p3-l5-protist-diseases-malaria", title: "Protist Diseases Malaria" },
-          { slug: "sci-bio-p3-l6-the-bodys-non-specific-defence-systems", title: "The Bodys Non Specific Defence Systems" },
-          { slug: "sci-bio-p3-l7-the-immune-system-and-white-blood-cells", title: "The Immune System and White Blood Cells" },
-          { slug: "sci-bio-p3-l8-vaccination-and-how-it-works", title: "Vaccination and How It Works" },
-          { slug: "sci-bio-p3-l9-antibiotics-and-painkillers", title: "Antibiotics and Painkillers" },
-          { slug: "sci-bio-p3-l10-discovery-and-development-of-new-drugs", title: "Discovery and Development of New Drugs" },
-          { slug: "sci-bio-p3-l11-preclinical-and-clinical-drug-trials", title: "Preclinical and Clinical Drug Trials" },
-          { slug: "sci-bio-p3-l12-producing-monoclonal-antibodies", title: "Producing Monoclonal Antibodies" },
-          { slug: "sci-bio-p3-l13-uses-of-monoclonal-antibodies", title: "Uses of Monoclonal Antibodies" }
+          { slug: "sci-phys-p3-l1-gravitational-potential-energy", title: "Gravitational Potential Energy" },
+          { slug: "sci-phys-p3-l2-calculating-gravitational-potential-energy", title: "Calculating Gravitational Potential Energy" },
+          { slug: "sci-phys-p3-l3-kinetic-energy", title: "Kinetic Energy" },
+          { slug: "sci-phys-p3-l4-calculating-kinetic-energy", title: "Calculating Kinetic Energy" },
+          { slug: "sci-phys-p3-l5-energy-stores-and-energy-transfers", title: "Energy Stores and Energy Transfers" },
+          { slug: "sci-phys-p3-l6-energy-transfer-diagrams", title: "Energy Transfer Diagrams" },
+          { slug: "sci-phys-p3-l7-conservation-of-energy", title: "Conservation of Energy" },
+          { slug: "sci-phys-p3-l8-energy-transfers-in-closed-systems", title: "Energy Transfers in Closed Systems" },
+          { slug: "sci-phys-p3-l9-energy-stores-during-system-changes", title: "Energy Stores During System Changes" },
+          { slug: "sci-phys-p3-l10-dissipation-and-wasted-energy", title: "Dissipation and Wasted Energy" },
+          { slug: "sci-phys-p3-l11-energy-dissipation-through-heating", title: "Energy Dissipation Through Heating" },
+          { slug: "sci-phys-p3-l12-reducing-unwanted-energy-transfers", title: "Reducing Unwanted Energy Transfers" },
+          { slug: "sci-phys-p3-l13-lubrication-and-reducing-friction", title: "Lubrication and Reducing Friction" },
+          { slug: "sci-phys-p3-l14-thermal-insulation-and-building-cooling", title: "Thermal Insulation and Building Cooling" },
+          { slug: "sci-phys-p3-l15-efficiency-and-efficiency-calculations", title: "Efficiency and Efficiency Calculations" },
+          { slug: "sci-phys-p3-l16-increasing-efficiency", title: "Increasing Efficiency" },
+          { slug: "sci-phys-p3-l17-renewable-and-non-renewable-energy-resources", title: "Renewable and Non Renewable Energy Resources" },
+          { slug: "sci-phys-p3-l18-fossil-fuels-nuclear-fuel-and-biofuel", title: "Fossil Fuels Nuclear Fuel and Biofuel" },
+          { slug: "sci-phys-p3-l19-wind-hydroelectric-tidal-and-solar-energy", title: "Wind Hydroelectric Tidal and Solar Energy" },
+          { slug: "sci-phys-p3-l20-energy-resource-use-patterns-and-trends", title: "Energy Resource Use Patterns and Trends" }
         ]
       },
       {
         tag: "Topic 4",
-        title: "Bioenergetics",
+        title: "Waves",
         lectures: [
-          { slug: "sci-bio-p4-l1-photosynthesis-the-reaction-and-word-equation", title: "Photosynthesis the Reaction and Word Equation" },
-          { slug: "sci-bio-p4-l2-photosynthesis-as-an-endothermic-reaction", title: "Photosynthesis as an Endothermic Reaction" },
-          { slug: "sci-bio-p4-l3-factors-affecting-the-rate-of-photosynthesis", title: "Factors Affecting the Rate of Photosynthesis" },
-          { slug: "sci-bio-p4-l4-limiting-factors-and-two-and-three-factor-graphs", title: "Limiting Factors and Two and Three Factor Graphs" },
-          { slug: "sci-bio-p4-l5-the-inverse-square-law-and-light-intensity", title: "The Inverse Square Law and Light Intensity" },
-          { slug: "sci-bio-p4-l6-investigating-light-intensity-and-photosynthesis", title: "Investigating Light Intensity and Photosynthesis" },
-          { slug: "sci-bio-p4-l7-uses-of-glucose-made-in-photosynthesis", title: "Uses of Glucose Made in Photosynthesis" },
-          { slug: "sci-bio-p4-l8-aerobic-respiration-reaction-and-word-equation", title: "Aerobic Respiration Reaction and Word Equation" },
-          { slug: "sci-bio-p4-l9-anaerobic-respiration-in-muscles", title: "Anaerobic Respiration in Muscles" },
-          { slug: "sci-bio-p4-l10-anaerobic-respiration-in-yeast-fermentation", title: "Anaerobic Respiration in Yeast Fermentation" },
-          { slug: "sci-bio-p4-l11-comparing-aerobic-and-anaerobic-respiration", title: "Comparing Aerobic and Anaerobic Respiration" },
-          { slug: "sci-bio-p4-l12-the-bodys-response-to-exercise", title: "The Bodys Response to Exercise" },
-          { slug: "sci-bio-p4-l13-lactic-acid-oxygen-debt-and-recovery", title: "Lactic Acid Oxygen Debt and Recovery" },
-          { slug: "sci-bio-p4-l14-metabolism-and-metabolic-reactions", title: "Metabolism and Metabolic Reactions" }
+          { slug: "sci-phys-p4-l1-waves-transfer-energy-and-information", title: "Waves Transfer Energy and Information" },
+          { slug: "sci-phys-p4-l2-waves-and-the-transfer-of-matter", title: "Waves and the Transfer of Matter" },
+          { slug: "sci-phys-p4-l3-frequency-and-wavelength", title: "Frequency and Wavelength" },
+          { slug: "sci-phys-p4-l4-amplitude-period-wave-velocity-and-wavefront", title: "Amplitude Period Wave Velocity and Wavefront" },
+          { slug: "sci-phys-p4-l5-transverse-and-longitudinal-waves", title: "Transverse and Longitudinal Waves" },
+          { slug: "sci-phys-p4-l6-sound-water-electromagnetic-and-seismic-waves", title: "Sound Water Electromagnetic and Seismic Waves" },
+          { slug: "sci-phys-p4-l7-wave-speed-frequency-and-wavelength-equation", title: "Wave Speed Frequency and Wavelength Equation" },
+          { slug: "sci-phys-p4-l8-wave-speed-distance-and-time-equation", title: "Wave Speed Distance and Time Equation" },
+          { slug: "sci-phys-p4-l9-measuring-the-speed-of-sound", title: "Measuring the Speed of Sound" },
+          { slug: "sci-phys-p4-l10-measuring-ripples-and-wave-speed", title: "Measuring Ripples and Wave Speed" },
+          { slug: "sci-phys-p4-l11-refraction-at-a-boundary", title: "Refraction at a Boundary" },
+          { slug: "sci-phys-p4-l12-wave-speed-and-change-of-direction", title: "Wave Speed and Change of Direction" },
+          { slug: "sci-phys-p4-l13-absorption-transmission-reflection-and-refraction", title: "Absorption Transmission Reflection and Refraction" },
+          { slug: "sci-phys-p4-l14-wavelength-and-how-materials-interact-with-waves", title: "Wavelength and How Materials Interact with Waves" }
+        ]
+      },
+      {
+        tag: "Topic 5",
+        title: "Light and the Electromagnetic Spectrum",
+        lectures: [
+          { slug: "sci-phys-p5-l1-electromagnetic-waves-are-transverse", title: "Electromagnetic Waves Are Transverse" },
+          { slug: "sci-phys-p5-l2-speed-of-electromagnetic-waves-in-a-vacuum", title: "Speed of Electromagnetic Waves in a Vacuum" },
+          { slug: "sci-phys-p5-l3-electromagnetic-waves-transfer-energy", title: "Electromagnetic Waves Transfer Energy" },
+          { slug: "sci-phys-p5-l4-the-electromagnetic-spectrum", title: "The Electromagnetic Spectrum" },
+          { slug: "sci-phys-p5-l5-radio-microwaves-infrared-visible-ultraviolet-x-rays-and-gamma-rays", title: "Radio Microwaves Infrared Visible Ultraviolet X Rays and Gamma Rays" },
+          { slug: "sci-phys-p5-l6-wavelength-frequency-and-the-electromagnetic-spectrum", title: "Wavelength Frequency and the Electromagnetic Spectrum" },
+          { slug: "sci-phys-p5-l7-visible-light-and-the-visible-spectrum", title: "Visible Light and the Visible Spectrum" },
+          { slug: "sci-phys-p5-l8-absorption-transmission-reflection-and-refraction-of-em-waves", title: "Absorption Transmission Reflection and Refraction of Em Waves" },
+          { slug: "sci-phys-p5-l9-refraction-of-electromagnetic-waves", title: "Refraction of Electromagnetic Waves" },
+          { slug: "sci-phys-p5-l10-dangers-of-electromagnetic-radiation", title: "Dangers of Electromagnetic Radiation" },
+          { slug: "sci-phys-p5-l11-microwave-and-infrared-hazards", title: "Microwave and Infrared Hazards" },
+          { slug: "sci-phys-p5-l12-ultraviolet-hazards", title: "Ultraviolet Hazards" },
+          { slug: "sci-phys-p5-l13-x-ray-and-gamma-ray-hazards", title: "X Ray and Gamma Ray Hazards" },
+          { slug: "sci-phys-p5-l14-uses-of-radio-waves", title: "Uses of Radio Waves" },
+          { slug: "sci-phys-p5-l15-uses-of-microwaves", title: "Uses of Microwaves" },
+          { slug: "sci-phys-p5-l16-uses-of-infrared", title: "Uses of Infrared" },
+          { slug: "sci-phys-p5-l17-uses-of-visible-light", title: "Uses of Visible Light" },
+          { slug: "sci-phys-p5-l18-uses-of-ultraviolet", title: "Uses of Ultraviolet" },
+          { slug: "sci-phys-p5-l19-uses-of-x-rays", title: "Uses of X Rays" },
+          { slug: "sci-phys-p5-l20-uses-of-gamma-rays", title: "Uses of Gamma Rays" },
+          { slug: "sci-phys-p5-l21-radio-waves-and-electrical-oscillations", title: "Radio Waves and Electrical Oscillations" },
+          { slug: "sci-phys-p5-l22-radiation-from-atoms-and-nuclei", title: "Radiation from Atoms and Nuclei" }
+        ]
+      },
+      {
+        tag: "Topic 6",
+        title: "Radioactivity",
+        lectures: [
+          { slug: "sci-phys-p6-l1-structure-of-the-atom-and-nucleus", title: "Structure of the Atom and Nucleus" },
+          { slug: "sci-phys-p6-l2-relative-mass-and-charge-of-subatomic-particles", title: "Relative Mass and Charge of Subatomic Particles" },
+          { slug: "sci-phys-p6-l3-atomic-number-and-mass-number", title: "Atomic Number and Mass Number" },
+          { slug: "sci-phys-p6-l4-isotopes-and-nuclear-notation", title: "Isotopes and Nuclear Notation" },
+          { slug: "sci-phys-p6-l5-typical-size-of-atoms-and-nuclei", title: "Typical Size of Atoms and Nuclei" },
+          { slug: "sci-phys-p6-l6-electrons-and-energy-levels", title: "Electrons and Energy Levels" },
+          { slug: "sci-phys-p6-l7-formation-of-positive-ions", title: "Formation of Positive Ions" },
+          { slug: "sci-phys-p6-l8-the-development-of-the-atomic-model", title: "The Development of the Atomic Model" },
+          { slug: "sci-phys-p6-l9-radioactive-decay-and-unstable-nuclei", title: "Radioactive Decay and Unstable Nuclei" },
+          { slug: "sci-phys-p6-l10-alpha-beta-and-gamma-radiation", title: "Alpha Beta and Gamma Radiation" },
+          { slug: "sci-phys-p6-l11-beta-minus-and-beta-plus-radiation", title: "Beta Minus and Beta Plus Radiation" },
+          { slug: "sci-phys-p6-l12-neutron-radiation", title: "Neutron Radiation" },
+          { slug: "sci-phys-p6-l13-ionising-radiation", title: "Ionising Radiation" },
+          { slug: "sci-phys-p6-l14-background-radiation", title: "Background Radiation" },
+          { slug: "sci-phys-p6-l15-sources-of-background-radiation", title: "Sources of Background Radiation" },
+          { slug: "sci-phys-p6-l16-detecting-and-measuring-radioactivity", title: "Detecting and Measuring Radioactivity" },
+          { slug: "sci-phys-p6-l17-penetration-and-ionisation-of-alpha-beta-and-gamma", title: "Penetration and Ionisation of Alpha Beta and Gamma" },
+          { slug: "sci-phys-p6-l18-alpha-decay", title: "Alpha Decay" },
+          { slug: "sci-phys-p6-l19-beta-minus-decay", title: "Beta Minus Decay" },
+          { slug: "sci-phys-p6-l20-beta-plus-decay", title: "Beta Plus Decay" },
+          { slug: "sci-phys-p6-l21-gamma-emission-and-nuclear-rearrangement", title: "Gamma Emission and Nuclear Rearrangement" },
+          { slug: "sci-phys-p6-l22-balancing-nuclear-equations", title: "Balancing Nuclear Equations" },
+          { slug: "sci-phys-p6-l23-activity-and-the-becquerel", title: "Activity and the Becquerel" },
+          { slug: "sci-phys-p6-l24-radioactive-decay-and-activity", title: "Radioactive Decay and Activity" },
+          { slug: "sci-phys-p6-l25-half-life-and-what-it-means", title: "Half Life and What It Means" },
+          { slug: "sci-phys-p6-l26-random-nature-of-radioactive-decay", title: "Random Nature of Radioactive Decay" },
+          { slug: "sci-phys-p6-l27-half-life-calculations-and-decay-graphs", title: "Half Life Calculations and Decay Graphs" },
+          { slug: "sci-phys-p6-l28-hazards-of-ionising-radiation", title: "Hazards of Ionising Radiation" },
+          { slug: "sci-phys-p6-l29-tissue-damage-and-mutations", title: "Tissue Damage and Mutations" },
+          { slug: "sci-phys-p6-l30-radiation-safety-and-dose", title: "Radiation Safety and Dose" },
+          { slug: "sci-phys-p6-l31-contamination-versus-irradiation", title: "Contamination Versus Irradiation" }
         ]
       }
     ]
@@ -174,93 +177,152 @@ var papersData = [
   {
     type: "single",
     tag: "PAPER 2",
-    title: "Biology Paper 2 (Topics 5–7)",
+    title: "Physics Paper 2",
     pillars: [
       {
-        tag: "Topic 5",
-        title: "Homeostasis and Response",
+        tag: "Topic 8",
+        title: "Energy — Forces Doing Work",
         lectures: [
-          { slug: "sci-bio-p5-l1-what-homeostasis-is-and-why-it-matters", title: "What Homeostasis Is and Why It Matters" },
-          { slug: "sci-bio-p5-l2-the-nervous-system-structure-and-function", title: "The Nervous System Structure and Function" },
-          { slug: "sci-bio-p5-l3-reflex-arcs-and-reflex-actions", title: "Reflex Arcs and Reflex Actions" },
-          { slug: "sci-bio-p5-l4-the-brain-cerebral-cortex-cerebellum-and-medulla", title: "The Brain Cerebral Cortex Cerebellum and Medulla" },
-          { slug: "sci-bio-p5-l5-the-eye-structure-and-function", title: "The Eye Structure and Function" },
-          { slug: "sci-bio-p5-l6-accommodation-focusing-on-near-and-distant-objects", title: "Accommodation Focusing on Near and Distant Objects" },
-          { slug: "sci-bio-p5-l7-correcting-vision-defects", title: "Correcting Vision Defects" },
-          { slug: "sci-bio-p5-l8-control-of-body-temperature", title: "Control of Body Temperature" },
-          { slug: "sci-bio-p5-l9-vasodilation-vasoconstriction-and-sweating-mechanisms", title: "Vasodilation Vasoconstriction and Sweating Mechanisms" },
-          { slug: "sci-bio-p5-l10-the-endocrine-system-and-hormones", title: "The Endocrine System and Hormones" },
-          { slug: "sci-bio-p5-l11-blood-glucose-regulation-and-insulin", title: "Blood Glucose Regulation and Insulin" },
-          { slug: "sci-bio-p5-l12-glucagon-and-negative-feedback-control-of-blood-glucose", title: "Glucagon and Negative Feedback Control of Blood Glucose" },
-          { slug: "sci-bio-p5-l13-type-1-and-type-2-diabetes", title: "Type 1 and Type 2 Diabetes" },
-          { slug: "sci-bio-p5-l14-water-and-nitrogen-balance-the-kidneys", title: "Water and Nitrogen Balance the Kidneys" },
-          { slug: "sci-bio-p5-l15-adh-and-water-reabsorption-in-kidney-tubules", title: "Adh and Water Reabsorption in Kidney Tubules" },
-          { slug: "sci-bio-p5-l16-kidney-dialysis-and-transplant", title: "Kidney Dialysis and Transplant" },
-          { slug: "sci-bio-p5-l17-hormones-in-reproduction-the-menstrual-cycle", title: "Hormones in Reproduction the Menstrual Cycle" },
-          { slug: "sci-bio-p5-l18-fsh-lh-oestrogen-and-progesterone", title: "Fsh Lh Oestrogen and Progesterone" },
-          { slug: "sci-bio-p5-l19-interactions-of-hormones-in-the-menstrual-cycle", title: "Interactions of Hormones in the Menstrual Cycle" },
-          { slug: "sci-bio-p5-l20-contraception-hormonal-and-non-hormonal-methods", title: "Contraception Hormonal and Non Hormonal Methods" },
-          { slug: "sci-bio-p5-l21-using-hormones-to-treat-infertility-fertility-drugs-and-ivf", title: "Using Hormones to Treat Infertility Fertility Drugs and Ivf" },
-          { slug: "sci-bio-p5-l22-negative-feedback-thyroxine-and-adrenaline", title: "Negative Feedback Thyroxine and Adrenaline" },
-          { slug: "sci-bio-p5-l23-plant-hormones-auxin-and-tropisms", title: "Plant Hormones Auxin and Tropisms" },
-          { slug: "sci-bio-p5-l24-gibberellins-and-ethene-in-plants", title: "Gibberellins and Ethene in Plants" },
-          { slug: "sci-bio-p5-l25-uses-of-plant-hormones-in-agriculture-and-horticulture", title: "Uses of Plant Hormones in Agriculture and Horticulture" }
+          { slug: "sci-phys-p7-l1-energy-stores-in-changing-systems", title: "Energy Stores in Changing Systems" },
+          { slug: "sci-phys-p7-l2-energy-transfer-diagrams", title: "Energy Transfer Diagrams" },
+          { slug: "sci-phys-p7-l3-energy-transfer-by-work-done", title: "Energy Transfer By Work Done" },
+          { slug: "sci-phys-p7-l4-work-done-and-energy-transferred", title: "Work Done and Energy Transferred" },
+          { slug: "sci-phys-p7-l5-work-done-equation", title: "Work Done Equation" },
+          { slug: "sci-phys-p7-l6-gravitational-potential-energy-from-work-done", title: "Gravitational Potential Energy from Work Done" },
+          { slug: "sci-phys-p7-l7-kinetic-energy-from-work-done", title: "Kinetic Energy from Work Done" },
+          { slug: "sci-phys-p7-l8-dissipation-of-energy", title: "Dissipation of Energy" },
+          { slug: "sci-phys-p7-l9-mechanical-energy-and-heating", title: "Mechanical Energy and Heating" },
+          { slug: "sci-phys-p7-l10-power-as-the-rate-of-energy-transfer", title: "Power as the Rate of Energy Transfer" },
+          { slug: "sci-phys-p7-l11-power-calculations", title: "Power Calculations" },
+          { slug: "sci-phys-p7-l12-efficiency-calculations", title: "Efficiency Calculations" }
         ]
       },
       {
-        tag: "Topic 6",
-        title: "Inheritance, Variation and Evolution",
+        tag: "Topic 9",
+        title: "Forces and Their Effects",
         lectures: [
-          { slug: "sci-bio-p6-l1-sexual-and-asexual-reproduction", title: "Sexual and Asexual Reproduction" },
-          { slug: "sci-bio-p6-l2-meiosis-and-the-formation-of-gametes", title: "Meiosis and the Formation of Gametes" },
-          { slug: "sci-bio-p6-l3-dna-structure-and-the-genome", title: "Dna Structure and the Genome" },
-          { slug: "sci-bio-p6-l4-dna-structure-at-the-nucleotide-level", title: "Dna Structure at the Nucleotide Level" },
-          { slug: "sci-bio-p6-l5-protein-synthesis-how-dna-codes-for-proteins", title: "Protein Synthesis How Dna Codes for Proteins" },
-          { slug: "sci-bio-p6-l6-mutations-and-their-effect-on-proteins", title: "Mutations and Their Effect on Proteins" },
-          { slug: "sci-bio-p6-l7-genetic-inheritance-key-terminology", title: "Genetic Inheritance Key Terminology" },
-          { slug: "sci-bio-p6-l8-dominant-and-recessive-alleles", title: "Dominant and Recessive Alleles" },
-          { slug: "sci-bio-p6-l9-punnett-squares-and-predicting-outcomes", title: "Punnett Squares and Predicting Outcomes" },
-          { slug: "sci-bio-p6-l10-inherited-disorders-polydactyly-and-cystic-fibrosis", title: "Inherited Disorders Polydactyly and Cystic Fibrosis" },
-          { slug: "sci-bio-p6-l11-embryo-screening-and-ethical-issues", title: "Embryo Screening and Ethical Issues" },
-          { slug: "sci-bio-p6-l12-sex-determination", title: "Sex Determination" },
-          { slug: "sci-bio-p6-l13-variation-genetic-and-environmental-causes", title: "Variation Genetic and Environmental Causes" },
-          { slug: "sci-bio-p6-l14-evolution-by-natural-selection", title: "Evolution By Natural Selection" },
-          { slug: "sci-bio-p6-l15-selective-breeding", title: "Selective Breeding" },
-          { slug: "sci-bio-p6-l16-genetic-engineering-and-gm-crops", title: "Genetic Engineering and Gm Crops" },
-          { slug: "sci-bio-p6-l17-the-main-steps-in-the-process-of-genetic-engineering", title: "The Main Steps in the Process of Genetic Engineering" },
-          { slug: "sci-bio-p6-l18-cloning-tissue-culture-cuttings-and-embryo-transplants", title: "Cloning Tissue Culture Cuttings and Embryo Transplants" },
-          { slug: "sci-bio-p6-l19-darwin-and-the-theory-of-evolution", title: "Darwin and the Theory of Evolution" },
-          { slug: "sci-bio-p6-l20-darwin-and-wallace-speciation", title: "Darwin and Wallace Speciation" },
-          { slug: "sci-bio-p6-l21-the-work-of-mendel-and-the-development-of-genetics", title: "The Work of Mendel and the Development of Genetics" },
-          { slug: "sci-bio-p6-l22-evidence-for-evolution-fossils-and-antibiotic-resistance", title: "Evidence for Evolution Fossils and Antibiotic Resistance" },
-          { slug: "sci-bio-p6-l23-extinction-and-its-causes", title: "Extinction and Its Causes" },
-          { slug: "sci-bio-p6-l24-antibiotic-resistant-bacteria-and-mrsa", title: "Antibiotic Resistant Bacteria and Mrsa" },
-          { slug: "sci-bio-p6-l25-classification-linnaeus-and-the-three-domain-system", title: "Classification Linnaeus and the Three Domain System" }
+          { slug: "sci-phys-p8-l1-contact-and-non-contact-forces", title: "Contact and Non Contact Forces" },
+          { slug: "sci-phys-p8-l2-gravitational-electrostatic-and-magnetic-fields", title: "Gravitational Electrostatic and Magnetic Fields" },
+          { slug: "sci-phys-p8-l3-normal-contact-force-and-friction", title: "Normal Contact Force and Friction" },
+          { slug: "sci-phys-p8-l4-force-pairs-and-vector-representation", title: "Force Pairs and Vector Representation" },
+          { slug: "sci-phys-p8-l5-vector-diagrams-and-resultant-force", title: "Vector Diagrams and Resultant Force" },
+          { slug: "sci-phys-p8-l6-equilibrium-and-balanced-forces", title: "Equilibrium and Balanced Forces" },
+          { slug: "sci-phys-p8-l7-free-body-force-diagrams", title: "Free Body Force Diagrams" },
+          { slug: "sci-phys-p8-l8-resolution-of-forces-using-scale-drawings", title: "Resolution of Forces Using Scale Drawings" },
+          { slug: "sci-phys-p8-l9-reducing-unwanted-energy-transfer-by-lubrication", title: "Reducing Unwanted Energy Transfer By Lubrication" }
         ]
       },
       {
-        tag: "Topic 7",
-        title: "Ecology",
+        tag: "Topic 10",
+        title: "Electricity and Circuits",
         lectures: [
-          { slug: "sci-bio-p7-l1-ecosystems-communities-and-interdependence", title: "Ecosystems Communities and Interdependence" },
-          { slug: "sci-bio-p7-l2-competition-in-animals-and-plants", title: "Competition in Animals and Plants" },
-          { slug: "sci-bio-p7-l3-abiotic-factors-and-their-effects-on-communities", title: "Abiotic Factors and Their Effects on Communities" },
-          { slug: "sci-bio-p7-l4-biotic-factors-and-their-effects-on-communities", title: "Biotic Factors and Their Effects on Communities" },
-          { slug: "sci-bio-p7-l5-adaptations-structural-behavioural-and-functional", title: "Adaptations Structural Behavioural and Functional" },
-          { slug: "sci-bio-p7-l6-predator-prey-relationships", title: "Predator Prey Relationships" },
-          { slug: "sci-bio-p7-l7-food-chains-food-webs-and-energy-transfer", title: "Food Chains Food Webs and Energy Transfer" },
-          { slug: "sci-bio-p7-l8-trophic-levels-and-the-efficiency-of-energy-transfer", title: "Trophic Levels and the Efficiency of Energy Transfer" },
-          { slug: "sci-bio-p7-l9-biomass-and-pyramids-of-biomass", title: "Biomass and Pyramids of Biomass" },
-          { slug: "sci-bio-p7-l10-the-carbon-cycle", title: "The Carbon Cycle" },
-          { slug: "sci-bio-p7-l11-the-water-cycle", title: "The Water Cycle" },
-          { slug: "sci-bio-p7-l12-the-nitrogen-cycle-and-decomposition", title: "The Nitrogen Cycle and Decomposition" },
-          { slug: "sci-bio-p7-l13-factors-affecting-the-rate-of-decomposition", title: "Factors Affecting the Rate of Decomposition" },
-          { slug: "sci-bio-p7-l14-human-impacts-on-biodiversity", title: "Human Impacts on Biodiversity" },
-          { slug: "sci-bio-p7-l15-deforestation-and-land-use", title: "Deforestation and Land Use" },
-          { slug: "sci-bio-p7-l16-global-warming-and-climate-change", title: "Global Warming and Climate Change" },
-          { slug: "sci-bio-p7-l17-conservation-and-maintaining-biodiversity", title: "Conservation and Maintaining Biodiversity" },
-          { slug: "sci-bio-p7-l18-methods-of-increasing-food-production", title: "Methods of Increasing Food Production" },
-          { slug: "sci-bio-p7-l19-sustainable-fisheries-and-food-security", title: "Sustainable Fisheries and Food Security" }
+          { slug: "sci-phys-p9-l1-atomic-structure-and-electric-charge", title: "Atomic Structure and Electric Charge" },
+          { slug: "sci-phys-p9-l2-circuit-diagram-conventions", title: "Circuit Diagram Conventions" },
+          { slug: "sci-phys-p9-l3-circuit-symbols-and-components", title: "Circuit Symbols and Components" },
+          { slug: "sci-phys-p9-l4-series-and-parallel-circuits", title: "Series and Parallel Circuits" },
+          { slug: "sci-phys-p9-l5-potential-difference-and-voltage", title: "Potential Difference and Voltage" },
+          { slug: "sci-phys-p9-l6-potential-difference-as-energy-per-unit-charge", title: "Potential Difference as Energy Per Unit Charge" },
+          { slug: "sci-phys-p9-l7-energy-transferred-charge-and-potential-difference", title: "Energy Transferred Charge and Potential Difference" },
+          { slug: "sci-phys-p9-l8-current-and-flow-of-charge", title: "Current and Flow of Charge" },
+          { slug: "sci-phys-p9-l9-ammeters-and-measuring-current", title: "Ammeters and Measuring Current" },
+          { slug: "sci-phys-p9-l10-charge-current-and-time", title: "Charge Current and Time" },
+          { slug: "sci-phys-p9-l11-current-in-closed-circuits", title: "Current in Closed Circuits" },
+          { slug: "sci-phys-p9-l12-current-at-junctions", title: "Current at Junctions" },
+          { slug: "sci-phys-p9-l13-resistance-and-current", title: "Resistance and Current" },
+          { slug: "sci-phys-p9-l14-ohms-law", title: "Ohms Law" },
+          { slug: "sci-phys-p9-l15-series-circuit-resistance", title: "Series Circuit Resistance" },
+          { slug: "sci-phys-p9-l16-parallel-circuit-resistance", title: "Parallel Circuit Resistance" },
+          { slug: "sci-phys-p9-l17-filament-lamps-and-non-linear-resistance", title: "Filament Lamps and Non Linear Resistance" },
+          { slug: "sci-phys-p9-l18-diodes-and-their-i-v-characteristics", title: "Diodes and Their I V Characteristics" },
+          { slug: "sci-phys-p9-l19-fixed-resistors-and-i-v-characteristics", title: "Fixed Resistors and I V Characteristics" },
+          { slug: "sci-phys-p9-l20-thermistors-and-temperature", title: "Thermistors and Temperature" },
+          { slug: "sci-phys-p9-l21-ldrs-and-light-intensity", title: "Ldrs and Light Intensity" },
+          { slug: "sci-phys-p9-l22-electrical-heating-and-energy-dissipation", title: "Electrical Heating and Energy Dissipation" },
+          { slug: "sci-phys-p9-l23-electrical-energy-equation", title: "Electrical Energy Equation" },
+          { slug: "sci-phys-p9-l24-electrical-power", title: "Electrical Power" },
+          { slug: "sci-phys-p9-l25-electrical-power-equations", title: "Electrical Power Equations" },
+          { slug: "sci-phys-p9-l26-domestic-appliance-energy-transfers", title: "Domestic Appliance Energy Transfers" },
+          { slug: "sci-phys-p9-l27-direct-and-alternating-current", title: "Direct and Alternating Current" },
+          { slug: "sci-phys-p9-l28-uk-mains-electricity", title: "Uk Mains Electricity" },
+          { slug: "sci-phys-p9-l29-live-neutral-and-earth-wires", title: "Live Neutral and Earth Wires" },
+          { slug: "sci-phys-p9-l30-fuses-circuit-breakers-and-electrical-safety", title: "Fuses Circuit Breakers and Electrical Safety" },
+          { slug: "sci-phys-p9-l31-mains-wire-potential-differences", title: "Mains Wire Potential Differences" },
+          { slug: "sci-phys-p9-l32-domestic-appliance-power-ratings", title: "Domestic Appliance Power Ratings" }
+        ]
+      },
+      {
+        tag: "Topic 12",
+        title: "Magnetism and the Motor Effect",
+        lectures: [
+          { slug: "sci-phys-p10-l1-magnetic-poles-and-attraction-and-repulsion", title: "Magnetic Poles and Attraction and Repulsion" },
+          { slug: "sci-phys-p10-l2-permanent-and-temporary-magnetic-materials", title: "Permanent and Temporary Magnetic Materials" },
+          { slug: "sci-phys-p10-l3-permanent-and-induced-magnets", title: "Permanent and Induced Magnets" },
+          { slug: "sci-phys-p10-l4-magnetic-fields-and-field-lines", title: "Magnetic Fields and Field Lines" },
+          { slug: "sci-phys-p10-l5-magnetic-field-strength-and-field-line-density", title: "Magnetic Field Strength and Field Line Density" },
+          { slug: "sci-phys-p10-l6-plotting-magnetic-fields", title: "Plotting Magnetic Fields" },
+          { slug: "sci-phys-p10-l7-the-earths-magnetic-field", title: "The Earths Magnetic Field" },
+          { slug: "sci-phys-p10-l8-current-and-magnetic-fields", title: "Current and Magnetic Fields" },
+          { slug: "sci-phys-p10-l9-magnetic-field-around-a-straight-conductor", title: "Magnetic Field Around a Straight Conductor" },
+          { slug: "sci-phys-p10-l10-strength-of-magnetic-fields-around-conductors", title: "Strength of Magnetic Fields Around Conductors" },
+          { slug: "sci-phys-p10-l11-solenoids-and-electromagnets", title: "Solenoids and Electromagnets" },
+          { slug: "sci-phys-p10-l12-magnetic-force-on-a-current-carrying-conductor", title: "Magnetic Force on a Current Carrying Conductor" },
+          { slug: "sci-phys-p10-l13-magnetic-fields-and-force", title: "Magnetic Fields and Force" },
+          { slug: "sci-phys-p10-l14-flemings-left-hand-rule", title: "Flemings Left Hand Rule" },
+          { slug: "sci-phys-p10-l15-force-on-a-conductor-equation", title: "Force on a Conductor Equation" },
+          { slug: "sci-phys-p10-l16-electric-motors", title: "Electric Motors" }
+        ]
+      },
+      {
+        tag: "Topic 13",
+        title: "Electromagnetic Induction",
+        lectures: [
+          { slug: "sci-phys-p11-l1-electromagnetic-induction", title: "Electromagnetic Induction" },
+          { slug: "sci-phys-p11-l2-induced-potential-difference", title: "Induced Potential Difference" },
+          { slug: "sci-phys-p11-l3-factors-affecting-induced-potential-difference", title: "Factors Affecting Induced Potential Difference" },
+          { slug: "sci-phys-p11-l4-lenzs-law-and-opposing-magnetic-effects", title: "Lenzs Law and Opposing Magnetic Effects" },
+          { slug: "sci-phys-p11-l5-alternating-current-and-electromagnetic-induction", title: "Alternating Current and Electromagnetic Induction" },
+          { slug: "sci-phys-p11-l6-transformers-and-electromagnetic-induction", title: "Transformers and Electromagnetic Induction" },
+          { slug: "sci-phys-p11-l7-step-up-and-step-down-transformers", title: "Step Up and Step Down Transformers" },
+          { slug: "sci-phys-p11-l8-the-national-grid-and-high-voltage-transmission", title: "The National Grid and High Voltage Transmission" },
+          { slug: "sci-phys-p11-l9-transformers-in-the-national-grid", title: "Transformers in the National Grid" },
+          { slug: "sci-phys-p11-l10-transformer-power-equation", title: "Transformer Power Equation" }
+        ]
+      },
+      {
+        tag: "Topic 14",
+        title: "Particle Model",
+        lectures: [
+          { slug: "sci-phys-p12-l1-kinetic-theory-and-states-of-matter", title: "Kinetic Theory and States of Matter" },
+          { slug: "sci-phys-p12-l2-particle-arrangement-in-solids-liquids-and-gases", title: "Particle Arrangement in Solids Liquids and Gases" },
+          { slug: "sci-phys-p12-l3-density-and-the-density-equation", title: "Density and the Density Equation" },
+          { slug: "sci-phys-p12-l4-density-of-solids-and-liquids", title: "Density of Solids and Liquids" },
+          { slug: "sci-phys-p12-l5-density-and-particle-arrangement", title: "Density and Particle Arrangement" },
+          { slug: "sci-phys-p12-l6-changes-of-state-and-conservation-of-mass", title: "Changes of State and Conservation of Mass" },
+          { slug: "sci-phys-p12-l7-physical-versus-chemical-change", title: "Physical Versus Chemical Change" },
+          { slug: "sci-phys-p12-l8-heating-and-internal-energy", title: "Heating and Internal Energy" },
+          { slug: "sci-phys-p12-l9-specific-heat-capacity", title: "Specific Heat Capacity" },
+          { slug: "sci-phys-p12-l10-specific-latent-heat", title: "Specific Latent Heat" },
+          { slug: "sci-phys-p12-l11-specific-heat-capacity-calculations", title: "Specific Heat Capacity Calculations" },
+          { slug: "sci-phys-p12-l12-specific-latent-heat-calculations", title: "Specific Latent Heat Calculations" },
+          { slug: "sci-phys-p12-l13-thermal-insulation", title: "Thermal Insulation" },
+          { slug: "sci-phys-p12-l14-gas-pressure-and-particle-motion", title: "Gas Pressure and Particle Motion" },
+          { slug: "sci-phys-p12-l15-temperature-and-gas-particle-speed", title: "Temperature and Gas Particle Speed" },
+          { slug: "sci-phys-p12-l16-gas-pressure-at-constant-volume", title: "Gas Pressure at Constant Volume" },
+          { slug: "sci-phys-p12-l17-absolute-zero-and-particle-motion", title: "Absolute Zero and Particle Motion" },
+          { slug: "sci-phys-p12-l18-kelvin-and-celsius-scales", title: "Kelvin and Celsius Scales" }
+        ]
+      },
+      {
+        tag: "Topic 15",
+        title: "Forces and Matter",
+        lectures: [
+          { slug: "sci-phys-p13-l1-elastic-and-inelastic-distortion", title: "Elastic and Inelastic Distortion" },
+          { slug: "sci-phys-p13-l2-forces-needed-to-stretch-bend-and-compress", title: "Forces Needed to Stretch Bend and Compress" },
+          { slug: "sci-phys-p13-l3-hookes-law", title: "Hookes Law" },
+          { slug: "sci-phys-p13-l4-spring-constant-and-extension", title: "Spring Constant and Extension" },
+          { slug: "sci-phys-p13-l5-linear-and-non-linear-force-extension-relationships", title: "Linear and Non Linear Force Extension Relationships" },
+          { slug: "sci-phys-p13-l6-work-done-stretching-a-spring", title: "Work Done Stretching a Spring" },
+          { slug: "sci-phys-p13-l7-elastic-energy-and-spring-extension", title: "Elastic Energy and Spring Extension" }
         ]
       }
     ]
