@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Past Paper</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   INJECTION POINTS — build-time, plain string-token replacement, same
+   convention as the lecture base template (english-base-template.txt).
+   These get swapped ONCE when this file is duplicated into a new
+   subject/exam-board folder — not touched at runtime.
+
+   INJECT_BG_COLOUR   → the desk wash, e.g. #dcfce7 for English Lit
+   INJECT_EXAM_BOARD  → e.g. "AQA"
+
+   The per-paper QUESTION CONTENT is a different, runtime concern —
+   for a self-built paper it's ad hoc per student, so it's read from
+   localStorage at load time (see the ── PAPER CONTENT ── block in the
+   script below), the same way flashtiles-session.html reads its slugs.
+   A future "browse a pre-built paper" page could legitimately bake
+   real question HTML in at build time instead — that's not this file.
+═══════════════════════════════════════════════════════════════════ */
+:root {
+    --accent: #1d7fe2;
+    --border: #e5e7eb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --desk-bg: #dcfce7;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; color: #111; }
+
+/* ── THE DESK — full viewport, subject-tinted, everything pans/zooms
+   inside it via one transformed layer rather than native scroll ── */
+.desk {
+    position: fixed; inset: 0; background: var(--desk-bg);
+    overflow: hidden; cursor: grab;
+}
+.desk.dragging { cursor: grabbing; }
+.desk-surface {
+    position: absolute; top: 50%; left: 50%;
+    transform-origin: center center;
+    will-change: transform;
+}
+
+/* ── THE PAPER — A4 proportioned, sits centered on the surface layer ── */
+.paper {
+    width: 720px; aspect-ratio: 210 / 297;
+    transform: translate(-50%, -50%);
+    background: #fff; border-radius: 3px;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.28), 0 4px 14px rgba(0,0,0,0.12);
+    position: relative; overflow: hidden;
+}
+.paper-page {
+    position: absolute; inset: 0;
+    padding: 52px 56px; overflow-y: auto;
+    transition: transform 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.32s cubic-bezier(0.4,0,0.2,1);
+}
+.paper-page.slide-out-next { transform: translateX(-36px); opacity: 0; pointer-events: none; }
+.paper-page.slide-out-prev { transform: translateX(36px); opacity: 0; pointer-events: none; }
+.paper-page.slide-instant { transition: none !important; }
+
+/* ── FLOATING CHROME — sits on top of the desk, not part of the paper,
+   so it stays put regardless of pan/zoom (deliberately minimal, so the
+   page itself stays the focus rather than feeling like another app) ── */
+.float-exit {
+    position: fixed; top: 18px; left: 18px; z-index: 50;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 600; color: #374151;
+    background: rgba(255,255,255,0.9); backdrop-filter: blur(6px);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 8px 16px 8px 12px; cursor: pointer;
+}
+.float-exit:hover { background: #fff; }
+
+.float-pill {
+    position: fixed; top: 18px; left: 50%; transform: translateX(-50%); z-index: 50;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12.5px; font-weight: 600; color: #374151;
+    background: rgba(255,255,255,0.9); backdrop-filter: blur(6px);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 8px 16px;
+}
+.float-pill .paper-name { max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.float-pill .divider { width: 1px; height: 12px; background: var(--border); }
+
+.float-recenter {
+    position: fixed; top: 18px; right: 18px; z-index: 50;
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(255,255,255,0.9); backdrop-filter: blur(6px);
+    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+}
+.float-recenter:hover { background: #fff; }
+
+.page-nav-arrow {
+    position: fixed; top: 50%; transform: translateY(-50%); z-index: 50;
+    width: 48px; height: 48px; border-radius: 50%;
+    border: 1px solid var(--border); background: rgba(255,255,255,0.9); backdrop-filter: blur(6px);
+    color: #374151; font-size: 21px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+.page-nav-arrow:hover:not(:disabled) { background: #fff; border-color: #c7c7c7; }
+.page-nav-arrow:disabled { opacity: 0.25; cursor: default; }
+.page-nav-arrow.prev { left: 18px; }
+.page-nav-arrow.next { right: 18px; }
+
+.zoom-hint {
+    position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 50;
+    font-size: 11.5px; color: #6b7280; background: rgba(255,255,255,0.85); backdrop-filter: blur(6px);
+    border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px;
+    pointer-events: none; opacity: 0; transition: opacity 0.4s ease;
+}
+.zoom-hint.visible { opacity: 1; }
+
+/* ── COVER PAGE ── */
+.cover-candidate-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 26px;
+}
+.cover-candidate-box { border: 1px solid #9ca3af; border-radius: 3px; padding: 8px 10px 22px; }
+.cover-candidate-box-label { font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #6b7280; }
+.cover-board { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #6b7280; text-align: center; margin-bottom: 4px; }
+.cover-qual { font-size: 15px; font-weight: 700; text-align: center; color: #111827; margin-bottom: 22px; }
+.cover-subject { font-size: 21px; font-weight: 800; text-align: center; color: #111827; line-height: 1.3; }
+.cover-paper-line { font-size: 13.5px; font-weight: 600; text-align: center; color: #374151; margin-top: 6px; margin-bottom: 22px; }
+.cover-meta-row { display: flex; justify-content: center; gap: 28px; font-size: 11.5px; color: #374151; margin-bottom: 30px; padding-bottom: 22px; border-bottom: 1px solid #e5e7eb; }
+.cover-meta-row strong { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: 0.04em; color: #9ca3af; font-weight: 700; margin-bottom: 2px; }
+.cover-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin: 18px 0 8px; }
+.cover-instructions, .cover-information, .cover-advice { font-size: 11.5px; line-height: 1.7; color: #374151; }
+.cover-start-hint { margin-top: 34px; text-align: center; font-size: 10.5px; color: #9ca3af; }
+
+/* ── QUESTION PAGE ── */
+.qpage-head { font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px; margin-bottom: 18px; }
+.qblock { margin-bottom: 26px; }
+.qblock-row { display: flex; gap: 10px; align-items: baseline; }
+.qblock-num { font-weight: 700; color: #111827; font-size: 13px; flex-shrink: 0; }
+.qblock-text { color: #1f2937; font-size: 13px; line-height: 1.7; }
+.qblock-marks { text-align: right; font-size: 10.5px; font-weight: 700; color: #6b7280; margin-top: 6px; }
+.qblock-diagram-slot {
+    margin: 14px 0 14px 23px; border: 1px dashed #d1d5db; border-radius: 6px;
+    padding: 18px; font-size: 10px; color: #9ca3af; text-align: center;
+}
+.page-footer { position: absolute; bottom: 18px; left: 56px; right: 56px; text-align: center; font-size: 9.5px; color: #c7c7c7; }
+
+/* ── WRITE-ON-LINES — a real textarea with a ruled background so it
+   still looks like the lines it replaces, not a plain text box ── */
+.qblock-writing-wrap { position: relative; margin-top: 14px; padding-left: 23px; }
+.qblock-writing {
+    display: block; width: 100%; border: none; outline: none; resize: vertical;
+    font-family: inherit; font-size: 13px; color: #1f2937;
+    background: transparent;
+    background-image: repeating-linear-gradient(to bottom, transparent, transparent 27px, #d1d5db 27px, #d1d5db 28px);
+    line-height: 28px; padding: 0;
+}
+.mic-btn {
+    position: absolute; top: -2px; right: 0; width: 26px; height: 26px; border-radius: 50%;
+    border: 1px solid #e5e7eb; background: #fff; cursor: pointer; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+.mic-btn:hover { border-color: #c7c7c7; }
+.mic-btn.recording { background: #fee2e2; border-color: #ef4444; }
+.mic-btn.recording svg rect { fill: #ef4444; }
+.mic-btn[hidden] { display: none; }
+
+/* ── TICK-BOX ANSWER OPTIONS — built generically; English Lit papers are
+   all extended writing, so the one demo question below is clearly
+   labelled as a demo, not real exam content. Science will actually use
+   this for real. ── */
+.qblock-mc { margin-top: 14px; padding-left: 23px; display: flex; flex-direction: column; gap: 9px; }
+.mc-option { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 12.5px; color: #374151; }
+.mc-tickbox {
+    width: 16px; height: 16px; border: 1.5px solid #9ca3af; border-radius: 3px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; transition: background 0.12s ease, border-color 0.12s ease;
+}
+.mc-option.ticked .mc-tickbox { background: #111827; border-color: #111827; }
+.mc-tickbox svg { opacity: 0; }
+.mc-option.ticked .mc-tickbox svg { opacity: 1; }
+.qblock-demo-note { font-size: 10px; color: #b45309; background: #fffbeb; border-radius: 5px; padding: 4px 8px; margin-bottom: 8px; display: inline-block; }
+
+/* ── DRAW MODE ── */
+.float-draw { top: 62px; }
+.float-draw.active { background: #eff6ff; border-color: var(--accent); }
+.float-clear { top: 106px; }
+.draw-canvas { position: absolute; inset: 0; pointer-events: none; touch-action: none; }
+.draw-canvas.active { pointer-events: auto; cursor: crosshair; }
+</style>
+</head>
+<body>
+
+<button class="float-exit" id="exitBtn">
+    <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="16" y2="16"/><line x1="16" y1="4" x2="4" y2="16"/></svg>
+    Exit
+</button>
+
+<div class="float-pill">
+    <span class="paper-name" id="paperNamePill">Past Paper</span>
+    <span class="divider"></span>
+    <span id="pageCounterPill">Page 1 of 1</span>
+</div>
+
+<button class="float-recenter" id="recenterBtn" title="Recenter the paper">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="2.5" width="11" height="11" rx="2" stroke="#374151" stroke-width="1.5"/><path d="M8 5.5V10.5M5.5 8H10.5" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></svg>
+</button>
+<button class="float-recenter float-draw" id="drawToggleBtn" title="Draw on the page">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.5 13.5L3 11L10.5 3.5C11 3 11.8 3 12.3 3.5L12.5 3.7C13 4.2 13 5 12.5 5.5L5 13L2.5 13.5Z" stroke="#374151" stroke-width="1.3" stroke-linejoin="round"/></svg>
+</button>
+<button class="float-recenter float-clear" id="clearPageBtn" title="Clear drawing on this page" hidden>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4L12 12M12 4L4 12" stroke="#ef4444" stroke-width="1.6" stroke-linecap="round"/></svg>
+</button>
+
+<button class="page-nav-arrow prev" id="prevPageBtn">‹</button>
+<button class="page-nav-arrow next" id="nextPageBtn">›</button>
+<div class="zoom-hint" id="zoomHint">Ctrl / ⌘ + scroll to zoom · drag to move · scroll to flip pages</div>
+
+<div class="desk" id="desk">
+    <div class="desk-surface" id="deskSurface">
+        <div class="paper" id="paper"></div>
+    </div>
+</div>
+
+<script>
+    const EXAM_BOARD = 'AQA';
+
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str == null ? '' : str;
+        return div.innerHTML;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // PAPER CONTENT — runtime, not a build-time injection point (see
+    // note at the top of the stylesheet). Reads the handoff from
+    // past-papers-create.html; falls back to a sample paper so this
+    // page is directly viewable/testable on its own.
+    // ═══════════════════════════════════════════════════════════════
+    const SAMPLE_PAPER = {
+        paperTitle: 'Paper 1 — Shakespeare & the 19th Century Novel',
+        timeAllowed: '1h 45m',
+        totalMarks: '46',
+        questions: [
+            { number: '1', section: 'Shakespeare', marks: 4, text: 'Read the extract below, then answer the question that follows.', hasExtract: true },
+            { number: '1a', section: 'Shakespeare', marks: 1, isDemo: true,
+              text: 'Demo only — English Lit papers don\u2019t actually use multiple-choice. This one question proves the tick-box works, ready for when Science needs it for real.',
+              type: 'mc', options: ['Option A', 'Option B', 'Option C', 'Option D'] },
+            { number: '2', section: 'Shakespeare', marks: 34, text: 'Starting with this extract, explore how Shakespeare presents the theme of jealousy in Romeo and Juliet.', hasDiagram: false },
+            { number: '3', section: '19th Century Novel', marks: 8, text: 'Explore how the writer builds tension in the extract you have just read.' }
+        ]
+    };
+
+    let paperData = SAMPLE_PAPER;
+    try {
+        const raw = localStorage.getItem('created_paper_data');
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && Array.isArray(parsed.questions) && parsed.questions.length) paperData = parsed;
+        }
+    } catch (e) {}
+
+    // Simple pagination — two questions per page. A real generation
+    // pass would make smarter typographic decisions than this; this is
+    // enough to prove the canvas and the injection points work.
+    function paginateQuestions(questions) {
+        const pages = [];
+        for (let i = 0; i < questions.length; i += 2) pages.push(questions.slice(i, i + 2));
+        return pages;
+    }
+    const questionPages = paginateQuestions(paperData.questions);
+
+    // ── LOCAL AUTOSAVE — written text, ticked options, and ink strokes,
+    // all saved as the student works. No backend exists yet to catch
+    // this (that's Phase 3), so this is the stand-in until then.
+    const PROGRESS_KEY = 'past_paper_progress_v1';
+    let progress = { writing: {}, mc: {}, ink: {} };
+    try {
+        const raw = localStorage.getItem(PROGRESS_KEY);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            progress = {
+                writing: parsed.writing || {},
+                mc: parsed.mc || {},
+                ink: parsed.ink || {}
+            };
+        }
+    } catch (e) {}
+    function saveProgress() {
+        try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch (e) {}
+    }
+
+    function coverPageHtml() {
+        // <!-- INJECT_COVER_INSTRUCTIONS --> — generic boilerplate today;
+        // marked so a future per-paper variant could swap this in at
+        // build time without touching the surrounding layout.
+        return `
+            <div class="cover-candidate-row">
+                <div class="cover-candidate-box"><span class="cover-candidate-box-label">Surname</span></div>
+                <div class="cover-candidate-box"><span class="cover-candidate-box-label">Forename(s)</span></div>
+                <div class="cover-candidate-box"><span class="cover-candidate-box-label">Centre No.</span></div>
+                <div class="cover-candidate-box"><span class="cover-candidate-box-label">Candidate No.</span></div>
+            </div>
+            <div class="cover-board">${escapeHtml(EXAM_BOARD)}</div>
+            <div class="cover-qual">GCSE</div>
+            <div class="cover-subject">English Literature</div>
+            <div class="cover-paper-line">${escapeHtml(paperData.paperTitle)}</div>
+            <div class="cover-meta-row">
+                <div><strong>Time allowed</strong>${escapeHtml(paperData.timeAllowed || '—')}</div>
+                <div><strong>Total marks</strong>${escapeHtml(String(paperData.totalMarks || '—'))}</div>
+                <div><strong>Materials</strong>Black ink pen</div>
+            </div>
+            <!-- INJECT_COVER_INSTRUCTIONS -->
+            <div class="cover-section-title">Instructions</div>
+            <div class="cover-instructions">
+                Use black ink. Answer all questions in the space provided. Do not write outside the box around each page.
+            </div>
+            <div class="cover-section-title">Information</div>
+            <div class="cover-information">
+                The marks for each question are shown in brackets. This paper carries ${escapeHtml(String(paperData.totalMarks || ''))} marks in total.
+            </div>
+            <div class="cover-section-title">Advice</div>
+            <div class="cover-advice">
+                Spend roughly one minute per mark. Check your answers if you have time left over.
+            </div>
+            <div class="cover-start-hint">Scroll, or press → , to begin</div>
+        `;
+    }
+
+    function questionBlockHtml(q) {
+        const diagramSlot = q.hasDiagram
+            ? `<div class="qblock-diagram-slot"><!-- INJECT_DIAGRAM:Q${escapeHtml(q.number)} -->[ diagram ]</div>`
+            : '';
+        const demoNote = q.isDemo ? '' : ''; // note is folded into the question text itself for demo items
+
+        let answerHtml;
+        if (q.type === 'mc' && Array.isArray(q.options)) {
+            answerHtml = `<div class="qblock-mc" id="mc-${escapeHtml(q.number)}">` +
+                q.options.map((opt, i) => `
+                    <div class="mc-option" data-q="${escapeHtml(q.number)}" data-i="${i}">
+                        <span class="mc-tickbox"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span>${escapeHtml(opt)}</span>
+                    </div>`).join('') +
+                `</div>`;
+        } else {
+            const lineCount = q.marks > 15 ? 9 : q.marks > 6 ? 5 : 2;
+            answerHtml = `
+                <div class="qblock-writing-wrap">
+                    <textarea class="qblock-writing" id="writing-${escapeHtml(q.number)}" rows="${lineCount}"></textarea>
+                    <button class="mic-btn" data-q="${escapeHtml(q.number)}" title="Dictate this answer" hidden>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="4" y="1" width="4" height="7" rx="2" fill="#374151"/><path d="M2 6.5a4 4 0 0 0 8 0M6 10.5v1" stroke="#374151" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg>
+                    </button>
+                </div>`;
+        }
+
+        return `
+            <div class="qblock" id="qblock-${escapeHtml(q.number)}">
+                <div class="qblock-row">
+                    <span class="qblock-num">${escapeHtml(q.number)}</span>
+                    <span class="qblock-text"><!-- INJECT_QUESTION:Q${escapeHtml(q.number)} -->${escapeHtml(q.text)}</span>
+                </div>
+                ${diagramSlot}
+                ${answerHtml}
+                <div class="qblock-marks">[ ${escapeHtml(String(q.marks))} mark${q.marks === 1 ? '' : 's'} ]</div>
+            </div>
+        `;
+    }
+
+    // <!-- INJECT_PAPER_PAGES_HTML --> — the block below (cover + each
+    // question page) is exactly what a real generation pass would
+    // replace wholesale for a pre-built (non-custom) paper. For a
+    // self-built paper it's produced here at runtime instead — see the
+    // note at the top of the file.
+    function buildPages() {
+        const pages = [{ kind: 'cover', html: coverPageHtml() }];
+        questionPages.forEach((qs, i) => {
+            const section = qs[0] ? qs[0].section : '';
+            const head = `<div class="qpage-head">${escapeHtml(paperData.paperTitle)}${section ? ' · ' + escapeHtml(section) : ''}</div>`;
+            const body = qs.map(questionBlockHtml).join('');
+            pages.push({ kind: 'question', html: head + body + `<div class="page-footer">Page ${i + 2} of ${questionPages.length + 1}</div>` });
+        });
+        return pages;
+    }
+    const pages = buildPages();
+    let currentPage = 0;
+
+    // ── HEADER / CHROME ──
+    document.getElementById('paperNamePill').textContent = paperData.paperTitle;
+    document.getElementById('exitBtn').addEventListener('click', () => {
+        window.location.href = 'past-papers-create.html';
+    });
+
+    // ── PAGE RENDER + SLIDE TRANSITION (same technique as the
+    // Flashtiles session pages: hold the DOM node, animate it across a
+    // content swap rather than recreating it) ──
+    const paperEl = document.getElementById('paper');
+    const CARD_TRANSITION_MS = 160;
+
+    function renderPage() {
+        paperEl.innerHTML = `<div class="paper-page" id="paperPageInner">${pages[currentPage].html}<canvas class="draw-canvas" id="drawCanvas"></canvas></div>`;
+        document.getElementById('pageCounterPill').textContent = `Page ${currentPage + 1} of ${pages.length}`;
+        document.getElementById('prevPageBtn').disabled = currentPage === 0;
+        document.getElementById('nextPageBtn').disabled = currentPage === pages.length - 1;
+        wireUpPageInteractions();
+        setupDrawCanvas();
+    }
+
+    function goToPage(target) {
+        target = Math.max(0, Math.min(target, pages.length - 1));
+        if (target === currentPage) return;
+        const direction = target > currentPage ? 'next' : 'prev';
+        const outClass = direction === 'next' ? 'slide-out-next' : 'slide-out-prev';
+        const inClass = direction === 'next' ? 'slide-out-prev' : 'slide-out-next';
+        const inner = document.getElementById('paperPageInner');
+        if (inner) inner.classList.add(outClass);
+        setTimeout(() => {
+            currentPage = target;
+            renderPage();
+            const fresh = document.getElementById('paperPageInner');
+            fresh.classList.add('slide-instant');
+            fresh.classList.add(inClass);
+            void fresh.offsetWidth;
+            fresh.classList.remove('slide-instant');
+            fresh.classList.remove(inClass);
+        }, CARD_TRANSITION_MS);
+    }
+    document.getElementById('prevPageBtn').addEventListener('click', () => goToPage(currentPage - 1));
+    document.getElementById('nextPageBtn').addEventListener('click', () => goToPage(currentPage + 1));
+
+    // ═══════════════════════════════════════════════════════════════
+    // WRITING AREAS + TICK BOXES — restore saved state, save on change
+    // ═══════════════════════════════════════════════════════════════
+    function wireUpPageInteractions() {
+        document.querySelectorAll('.qblock-writing').forEach(ta => {
+            const qNum = ta.id.replace('writing-', '');
+            if (progress.writing[qNum]) ta.value = progress.writing[qNum];
+            ta.addEventListener('input', () => {
+                progress.writing[qNum] = ta.value;
+                saveProgress();
+            });
+        });
+
+        document.querySelectorAll('.qblock-mc').forEach(mc => {
+            const qNum = mc.id.replace('mc-', '');
+            const saved = progress.mc[qNum];
+            mc.querySelectorAll('.mc-option').forEach(opt => {
+                const i = parseInt(opt.dataset.i, 10);
+                opt.classList.toggle('ticked', saved === i);
+                opt.addEventListener('click', () => {
+                    progress.mc[qNum] = i;
+                    mc.querySelectorAll('.mc-option').forEach(o => o.classList.remove('ticked'));
+                    opt.classList.add('ticked');
+                    saveProgress();
+                });
+            });
+        });
+
+        document.querySelectorAll('.mic-btn').forEach(btn => {
+            if (!SPEECH_SUPPORTED) { btn.hidden = true; return; }
+            btn.hidden = false;
+            btn.addEventListener('click', () => toggleDictation(btn));
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // VOICE DICTATION — Web Speech API. Chromium browsers only; the mic
+    // button stays hidden everywhere else rather than showing something
+    // that would silently fail (Firefox has no support, Safari partial).
+    // ═══════════════════════════════════════════════════════════════
+    const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SPEECH_SUPPORTED = !!SpeechRecognitionCtor;
+    let activeRecognition = null;
+    let activeRecognitionBtn = null;
+
+    function toggleDictation(btn) {
+        if (activeRecognition && activeRecognitionBtn === btn) {
+            activeRecognition.stop();
+            return;
+        }
+        if (activeRecognition) activeRecognition.stop();
+
+        const qNum = btn.dataset.q;
+        const textarea = document.getElementById('writing-' + qNum);
+        if (!textarea) return;
+
+        const recognition = new SpeechRecognitionCtor();
+        recognition.lang = 'en-GB';
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.onresult = (e) => {
+            let finalChunk = '';
+            for (let i = e.resultIndex; i < e.results.length; i++) {
+                if (e.results[i].isFinal) finalChunk += e.results[i][0].transcript;
+            }
+            if (finalChunk.trim()) {
+                const needsSpace = textarea.value && !/\s$/.test(textarea.value);
+                textarea.value = textarea.value + (needsSpace ? ' ' : '') + finalChunk.trim();
+                progress.writing[qNum] = textarea.value;
+                saveProgress();
+            }
+        };
+        recognition.onend = () => {
+            btn.classList.remove('recording');
+            activeRecognition = null;
+            activeRecognitionBtn = null;
+        };
+        recognition.onerror = () => {
+            btn.classList.remove('recording');
+            activeRecognition = null;
+            activeRecognitionBtn = null;
+        };
+
+        recognition.start();
+        btn.classList.add('recording');
+        activeRecognition = recognition;
+        activeRecognitionBtn = btn;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // DRAW ON THE PAGE — a canvas per page, toggled on so it doesn't
+    // fight with desk-panning for the same pointer events. Canvas
+    // resolution is set from the page's own unscaled size (offsetWidth,
+    // unaffected by the desk's zoom transform), so ink stays aligned
+    // regardless of current zoom — only the on-screen conversion ratio
+    // in the pointer handlers needs to account for zoom, not the canvas
+    // buffer itself.
+    // ═══════════════════════════════════════════════════════════════
+    let drawModeActive = false;
+
+    function setupDrawCanvas() {
+        const canvas = document.getElementById('drawCanvas');
+        const pageInner = document.getElementById('paperPageInner');
+        if (!canvas || !pageInner) return;
+
+        canvas.width = pageInner.offsetWidth;
+        canvas.height = pageInner.offsetHeight;
+        canvas.classList.toggle('active', drawModeActive);
+
+        const ctx = canvas.getContext('2d');
+        ctx.strokeStyle = '#111827';
+        ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        const strokes = progress.ink[currentPage] || [];
+        strokes.forEach(stroke => {
+            if (stroke.length < 2) return;
+            ctx.beginPath();
+            stroke.forEach((pt, i) => { i === 0 ? ctx.moveTo(pt[0], pt[1]) : ctx.lineTo(pt[0], pt[1]); });
+            ctx.stroke();
+        });
+
+        let currentStroke = null;
+        canvas.onpointerdown = (e) => {
+            if (!drawModeActive) return;
+            e.stopPropagation(); // don't let this also start a desk-pan drag
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+            currentStroke = [[x, y]];
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            canvas.setPointerCapture(e.pointerId);
+        };
+        canvas.onpointermove = (e) => {
+            if (!drawModeActive || !currentStroke) return;
+            e.stopPropagation();
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+            currentStroke.push([x, y]);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        };
+        function endStroke(e) {
+            if (currentStroke && currentStroke.length > 1) {
+                if (!progress.ink[currentPage]) progress.ink[currentPage] = [];
+                progress.ink[currentPage].push(currentStroke);
+                saveProgress();
+            }
+            currentStroke = null;
+        }
+        canvas.onpointerup = endStroke;
+        canvas.onpointercancel = endStroke;
+    }
+
+    document.getElementById('drawToggleBtn').addEventListener('click', () => {
+        drawModeActive = !drawModeActive;
+        document.getElementById('drawToggleBtn').classList.toggle('active', drawModeActive);
+        document.getElementById('clearPageBtn').hidden = !drawModeActive;
+        const canvas = document.getElementById('drawCanvas');
+        if (canvas) canvas.classList.toggle('active', drawModeActive);
+    });
+    document.getElementById('clearPageBtn').addEventListener('click', () => {
+        progress.ink[currentPage] = [];
+        saveProgress();
+        setupDrawCanvas();
+    });
+
+    // ═══════════════════════════════════════════════════════════════
+    // THE DESK — drag to pan, Ctrl/Cmd+scroll (or pinch) to zoom,
+    // plain scroll to flip pages.
+    // ═══════════════════════════════════════════════════════════════
+    const desk = document.getElementById('desk');
+    const surface = document.getElementById('deskSurface');
+    let panX = 0, panY = 0, scale = 1;
+    const SCALE_MIN = 0.45, SCALE_MAX = 2.4;
+
+    function applyTransform() {
+        surface.style.transform = `translate(-50%, -50%) translate(${panX}px, ${panY}px) scale(${scale})`;
+    }
+    function recenter() {
+        panX = 0; panY = 0; scale = 1;
+        applyTransform();
+    }
+    document.getElementById('recenterBtn').addEventListener('click', recenter);
+
+    let isDragging = false, dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
+    desk.addEventListener('pointerdown', (e) => {
+        if (drawModeActive) return; // can't drag the paper while drawing on it
+        isDragging = true;
+        desk.classList.add('dragging');
+        dragStartX = e.clientX; dragStartY = e.clientY;
+        panStartX = panX; panStartY = panY;
+        desk.setPointerCapture(e.pointerId);
+    });
+    desk.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        panX = panStartX + (e.clientX - dragStartX);
+        panY = panStartY + (e.clientY - dragStartY);
+        applyTransform();
+    });
+    function endDrag(e) {
+        isDragging = false;
+        desk.classList.remove('dragging');
+        try { desk.releasePointerCapture(e.pointerId); } catch (err) {}
+    }
+    desk.addEventListener('pointerup', endDrag);
+    desk.addEventListener('pointercancel', endDrag);
+
+    // Wheel: Ctrl/Cmd = zoom, plain = page flip (accumulated, so a
+    // gentle trackpad scroll doesn't fire ten page flips in a row).
+    let flipAccum = 0;
+    const FLIP_THRESHOLD = 90;
+    let zoomHintTimer = null;
+    function showZoomHint() {
+        const hint = document.getElementById('zoomHint');
+        hint.classList.add('visible');
+        clearTimeout(zoomHintTimer);
+        zoomHintTimer = setTimeout(() => hint.classList.remove('visible'), 1800);
+    }
+    desk.addEventListener('wheel', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            const delta = -e.deltaY * 0.0018;
+            scale = Math.max(SCALE_MIN, Math.min(SCALE_MAX, scale + delta));
+            applyTransform();
+            showZoomHint();
+            return;
+        }
+        e.preventDefault();
+        flipAccum += e.deltaY;
+        if (flipAccum > FLIP_THRESHOLD) { goToPage(currentPage + 1); flipAccum = 0; }
+        else if (flipAccum < -FLIP_THRESHOLD) { goToPage(currentPage - 1); flipAccum = 0; }
+    }, { passive: false });
+
+    document.addEventListener('keydown', (e) => {
+        const active = document.activeElement;
+        const isEditableFocus = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') && !active.readOnly;
+        if (isEditableFocus) return;
+        if (e.key === 'ArrowLeft') { e.preventDefault(); goToPage(currentPage - 1); }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); goToPage(currentPage + 1); }
+    });
+
+    // ── INIT ──
+    renderPage();
+    applyTransform();
+    showZoomHint();
+</script>
+</body>
+</html>
