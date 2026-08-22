@@ -1,172 +1,131 @@
-// AQA Combined Science: Biology (Higher Tier) — lectures-data.js
-// Built from full generated_lectures\\AQA directory listing (160 lectures, all confirmed on disk).
-// Structure: sci-p0 (orientation) and sci-p1/p2/p3 (Working Scientifically maths/data/exam-technique
-// skills) are Combined-Science-wide, not Biology-specific — same pattern as the shared cr-/tk-
-// toolkits in English. sci-bio-p1-p7 map onto AQA's real Trilogy Biology topics 1-7, split across
-// Paper 1 (Topics 1-4) and Paper 2 (Topics 5-7) per AQA's actual spec structure.
+// Edexcel Combined Science: Chemistry (Foundation Tier) — lectures-data.js
+// Rebuilt from real generated lecture files (148 lectures). Topic content verified against
+// Pearson's real Combined Science Chemistry spec by inspecting actual lecture titles.
 //
-// ASSUMPTION TO CONFIRM: Working Scientifically (sci-p1/p2/p3) placed as one shared "Working
-// Scientifically" paper here. If Chemistry/Physics folders also contain identical sci-p0/p1/p2/p3
-// slugs, treat those as reused across all three sciences (like English's cr-/tk-) — don't rebuild
-// them per subject.
+// GAPS vs Higher tier (flag for content generation, not a data-building bug):
+// - No Foundations/Working Scientifically section generated yet for this subject/tier.
+// - Topic 8 (Earth and Atmospheric Science) not yet generated — Paper 2 currently only
+//   covers Topics 5-7 here, vs Higher's Topics 5-8.
 
 var papersData = [
   {
     type: "single",
-    tag: "FOUNDATION",
-    title: "Foundations",
-    pillars: [
-      {
-        tag: "Foundations",
-        title: "Getting Started",
-        lectures: [
-          { slug: "sci-p0-l1-what-combined-science-actually-is-two-gcses-one-course", title: "What Combined Science Actually Is Two Gcses One Course" },
-          { slug: "sci-p0-l2-what-foundation-tier-means-and-why-its-a-real-valid-path", title: "What Foundation Tier Means and Why Its a Real Valid Path" },
-          { slug: "sci-p0-l3-what-the-six-papers-look-like-and-which-covers-what", title: "What the Six Papers Look Like and Which Covers What" },
-          { slug: "sci-p0-l4-what-the-examiner-is-actually-marking-ao1-to-ao3-in-plain-english", title: "What the Examiner Is Actually Marking AO1 to AO3 in Plain English" },
-          { slug: "sci-p0-l5-why-required-practicals-matter-even-in-a-written-exam", title: "Why Required Practicals Matter Even in a Written Exam" },
-          { slug: "sci-p0-l6-what-a-strong-grade-5-answer-looks-like-and-how-you-get-there", title: "What a Strong Grade 5 Answer Looks Like and How You Get There" },
-          { slug: "sci-p0-l7-how-to-use-this-platform", title: "How to Use This Platform" },
-          { slug: "sci-p0-l8-how-to-divide-your-time-across-a-70-mark-75-minute-paper", title: "How to Divide Your Time Across a 70 Mark 75 Minute Paper" }
-        ]
-      }
-    ]
-  },
-  {
-    type: "single",
-    tag: "SKILLS",
-    title: "Working Scientifically",
-    pillars: [
-      {
-        tag: "Skills · Command Words & Data",
-        title: "Reading, Command Words & Data",
-        lectures: [
-          { slug: "sci-p1-l1-command-words-describe-vs-explain-the-most-confused-pair", title: "Command Words Describe vs Explain the Most Confused Pair" },
-          { slug: "sci-p1-l2-command-words-evaluate-suggest-predict-compare-determine", title: "Command Words Evaluate Suggest Predict Compare Determine" },
-          { slug: "sci-p1-l3-reading-a-graph-table-or-chart-accurately", title: "Reading a Graph Table or Chart Accurately" },
-          { slug: "sci-p1-l4-plotting-a-graph-from-a-data-table", title: "Plotting a Graph from a Data Table" },
-          { slug: "sci-p1-l5-independent-dependent-and-control-variables", title: "Independent Dependent and Control Variables" },
-          { slug: "sci-p1-l6-units-and-converting-between-them", title: "Units and Converting Between Them" },
-          { slug: "sci-p1-l7-significant-figures-and-sensible-rounding", title: "Significant Figures and Sensible Rounding" },
-          { slug: "sci-p1-l8-standard-form-for-very-large-and-very-small-numbers", title: "Standard Form for Very Large and Very Small Numbers" }
-        ]
-      },
-      {
-        tag: "Skills · Maths & Equations",
-        title: "Maths, Equations & Diagrams",
-        lectures: [
-          { slug: "sci-p2-l1-rearranging-a-simple-equation-safely", title: "Rearranging a Simple Equation Safely" },
-          { slug: "sci-p2-l2-ratios-and-proportions-in-a-science-context", title: "Ratios and Proportions in a Science Context" },
-          { slug: "sci-p2-l3-using-the-physics-equation-sheet-effectively", title: "Using the Physics Equation Sheet Effectively" },
-          { slug: "sci-p2-l4-reading-and-drawing-scientific-diagrams", title: "Reading and Drawing Scientific Diagrams" },
-          { slug: "sci-p2-l5-word-equations-and-symbol-equations", title: "Word Equations and Symbol Equations" },
-          { slug: "sci-p2-l6-estimating-and-checking-an-answer-is-reasonable", title: "Estimating and Checking an Answer Is Reasonable" },
-          { slug: "sci-p2-l7-magnification-and-scale-calculations", title: "Magnification and Scale Calculations" }
-        ]
-      },
-      {
-        tag: "Skills · Exam Technique",
-        title: "Exam Technique & Required Practicals",
-        lectures: [
-          { slug: "sci-p3-l1-the-6-mark-question-what-level-of-response-marking-means", title: "The 6 Mark Question What Level of Response Marking Means" },
-          { slug: "sci-p3-l2-structuring-a-6-mark-answer-so-examiners-can-follow-it", title: "Structuring a 6 Mark Answer so Examiners Can Follow It" },
-          { slug: "sci-p3-l3-required-practical-write-ups-aim-variables-and-method", title: "Required Practical Write Ups Aim Variables and Method" },
-          { slug: "sci-p3-l4-required-practical-write-ups-results-conclusion-and-evaluation", title: "Required Practical Write Ups Results Conclusion and Evaluation" },
-          { slug: "sci-p3-l5-spotting-and-explaining-an-anomalous-result", title: "Spotting and Explaining an Anomalous Result" },
-          { slug: "sci-p3-l6-writing-a-conclusion-that-actually-uses-the-data-given", title: "Writing a Conclusion That Actually Uses the Data Given" },
-          { slug: "sci-p3-l7-evaluating-a-method-sources-of-error-and-improvements", title: "Evaluating a Method Sources of Error and Improvements" },
-          { slug: "sci-p3-l8-the-foundation-pitfall-vague-command-words-like-things-happen-or-it-changes", title: "The Foundation Pitfall Vague Command Words Like Things Happen or It Changes" }
-        ]
-      }
-    ]
-  },
-  {
-    type: "single",
     tag: "PAPER 1",
-    title: "Biology Paper 1 (Topics 1–4)",
+    title: "Chemistry Paper 1 (Chemistry 1)",
     pillars: [
       {
         tag: "Topic 1",
-        title: "Cell Biology",
+        title: "Key Concepts in Chemistry",
         lectures: [
-          { slug: "sci-bio-p1-l1-eukaryotic-and-prokaryotic-cells", title: "Eukaryotic and Prokaryotic Cells" },
-          { slug: "sci-bio-p1-l2-animal-and-plant-cell-structures-and-functions", title: "Animal and Plant Cell Structures and Functions" },
-          { slug: "sci-bio-p1-l3-cell-specialisation-sperm-nerve-muscle-root-hair-xylem-and-phloem", title: "Cell Specialisation Sperm Nerve Muscle Root Hair Xylem and Phloem" },
-          { slug: "sci-bio-p1-l4-cell-differentiation-and-its-importance", title: "Cell Differentiation and Its Importance" },
-          { slug: "sci-bio-p1-l5-light-and-electron-microscopy-magnification-and-resolution", title: "Light and Electron Microscopy Magnification and Resolution" },
-          { slug: "sci-bio-p1-l6-magnification-calculations", title: "Magnification Calculations" },
-          { slug: "sci-bio-p1-l7-chromosomes-and-genes", title: "Chromosomes and Genes" },
-          { slug: "sci-bio-p1-l8-the-cell-cycle-and-mitosis", title: "The Cell Cycle and Mitosis" },
-          { slug: "sci-bio-p1-l9-stem-cells-embryonic-adult-and-meristems-in-plants", title: "Stem Cells Embryonic Adult and Meristems in Plants" },
-          { slug: "sci-bio-p1-l10-therapeutic-cloning-and-ethical-issues-of-stem-cell-use", title: "Therapeutic Cloning and Ethical Issues of Stem Cell Use" },
-          { slug: "sci-bio-p1-l11-diffusion-factors-affecting-rate-and-exchange-surfaces", title: "Diffusion Factors Affecting Rate and Exchange Surfaces" },
-          { slug: "sci-bio-p1-l12-surface-area-to-volume-ratio-in-multicellular-organisms", title: "Surface Area to Volume Ratio in Multicellular Organisms" },
-          { slug: "sci-bio-p1-l13-osmosis-investigating-effect-on-plant-tissue", title: "Osmosis Investigating Effect on Plant Tissue" },
-          { slug: "sci-bio-p1-l14-active-transport-differences-from-diffusion-and-osmosis", title: "Active Transport Differences from Diffusion and Osmosis" }
+          { slug: "sci-chem-p1-l1-formulae-of-elements-compounds-and-common-ions", title: "Formulae of Elements Compounds and Common Ions" },
+          { slug: "sci-chem-p1-l2-word-equations-and-describing-chemical-reactions", title: "Word Equations and Describing Chemical Reactions" },
+          { slug: "sci-chem-p1-l3-balanced-symbol-equations", title: "Balanced Symbol Equations" },
+          { slug: "sci-chem-p1-l4-state-symbols-in-chemical-equations", title: "State Symbols in Chemical Equations" },
+          { slug: "sci-chem-p1-l5-balanced-ionic-equations", title: "Balanced Ionic Equations" },
+          { slug: "sci-chem-p1-l6-hazard-symbols-and-chemical-safety", title: "Hazard Symbols and Chemical Safety" },
+          { slug: "sci-chem-p1-l7-evaluating-risks-and-suitable-safety-precautions", title: "Evaluating Risks and Suitable Safety Precautions" },
+          { slug: "sci-chem-p1-l8-how-the-dalton-model-of-the-atom-changed", title: "How the Dalton Model of the Atom Changed" },
+          { slug: "sci-chem-p1-l9-the-structure-of-an-atom", title: "The Structure of an Atom" },
+          { slug: "sci-chem-p1-l10-relative-charge-and-relative-mass-of-protons-neutrons-and-electrons", title: "Relative Charge and Relative Mass of Protons Neutrons and Electrons" },
+          { slug: "sci-chem-p1-l11-atomic-number-mass-number-and-isotopes", title: "Atomic Number Mass Number and Isotopes" },
+          { slug: "sci-chem-p1-l12-calculating-protons-neutrons-and-electrons", title: "Calculating Protons Neutrons and Electrons" },
+          { slug: "sci-chem-p1-l13-why-relative-atomic-masses-are-not-always-whole-numbers", title: "Why Relative Atomic Masses Are not Always Whole Numbers" },
+          { slug: "sci-chem-p1-l14-mendeleev-and-the-development-of-the-periodic-table", title: "Mendeleev and the Development of the Periodic Table" },
+          { slug: "sci-chem-p1-l15-how-mendeleev-predicted-undiscovered-elements", title: "How Mendeleev Predicted Undiscovered Elements" },
+          { slug: "sci-chem-p1-l16-atomic-number-periods-and-groups", title: "Atomic Number Periods and Groups" },
+          { slug: "sci-chem-p1-l17-metals-and-non-metals-and-their-position-in-the-periodic-table", title: "Metals and Non Metals and Their Position in the Periodic Table" },
+          { slug: "sci-chem-p1-l18-electronic-configurations-of-the-first-20-elements", title: "Electronic Configurations of the First 20 Elements" },
+          { slug: "sci-chem-p1-l19-electronic-configuration-and-position-in-the-periodic-table", title: "Electronic Configuration and Position in the Periodic Table" },
+          { slug: "sci-chem-p1-l20-ions-and-electron-transfer", title: "Ions and Electron Transfer" },
+          { slug: "sci-chem-p1-l21-formation-of-ions-in-groups-1-2-6-and-7", title: "Formation of Ions in Groups 1 2 6 and 7" },
+          { slug: "sci-chem-p1-l22-calculating-protons-neutrons-and-electrons-in-simple-ions", title: "Calculating Protons Neutrons and Electrons in Simple Ions" },
+          { slug: "sci-chem-p1-l23-naming-ionic-compounds-and-the-ide-and-ate-endings", title: "Naming Ionic Compounds and the Ide and Ate Endings" },
+          { slug: "sci-chem-p1-l24-deducing-formulae-of-ionic-compounds", title: "Deducing Formulae of Ionic Compounds" },
+          { slug: "sci-chem-p1-l25-ionic-lattices-and-electrostatic-forces", title: "Ionic Lattices and Electrostatic Forces" },
+          { slug: "sci-chem-p1-l26-covalent-bonding-and-shared-electron-pairs", title: "Covalent Bonding and Shared Electron Pairs" },
+          { slug: "sci-chem-p1-l27-dot-and-cross-diagrams-for-simple-covalent-molecules", title: "Dot and Cross Diagrams for Simple Covalent Molecules" },
+          { slug: "sci-chem-p1-l28-types-of-substance-and-how-bonding-affects-properties", title: "Types of Substance and How Bonding Affects Properties" },
+          { slug: "sci-chem-p1-l29-properties-of-ionic-compounds", title: "Properties of Ionic Compounds" },
+          { slug: "sci-chem-p1-l30-properties-of-simple-molecular-covalent-substances", title: "Properties of Simple Molecular Covalent Substances" },
+          { slug: "sci-chem-p1-l31-diamond-and-graphite-structures-properties-and-uses", title: "Diamond and Graphite Structures Properties and Uses" },
+          { slug: "sci-chem-p1-l32-fullerenes-and-graphene", title: "Fullerenes and Graphene" },
+          { slug: "sci-chem-p1-l33-polymers-and-polyethene", title: "Polymers and Polyethene" },
+          { slug: "sci-chem-p1-l34-metallic-bonding-and-properties-of-metals", title: "Metallic Bonding and Properties of Metals" },
+          { slug: "sci-chem-p1-l35-limitations-of-dot-and-cross-ball-and-stick-and-3d-models", title: "Limitations of Dot and Cross Ball and Stick and 3d Models" },
+          { slug: "sci-chem-p1-l36-relative-formula-mass-and-percentage-by-mass", title: "Relative Formula Mass and Percentage By Mass" },
+          { slug: "sci-chem-p1-l37-empirical-formulae-from-reacting-masses-and-percentage-composition", title: "Empirical Formulae from Reacting Masses and Percentage Composition" },
+          { slug: "sci-chem-p1-l38-conservation-of-mass-in-closed-and-open-systems", title: "Conservation of Mass in Closed and Open Systems" },
+          { slug: "sci-chem-p1-l39-calculating-masses-of-reactants-and-products-from-equations", title: "Calculating Masses of Reactants and Products from Equations" },
+          { slug: "sci-chem-p1-l40-concentration-of-solutions-in-g-dm-3", title: "Concentration of Solutions in G Dm 3" }
         ]
       },
       {
         tag: "Topic 2",
-        title: "Organisation",
+        title: "States of Matter and Mixtures",
         lectures: [
-          { slug: "sci-bio-p2-l1-cells-tissues-organs-and-organ-systems", title: "Cells Tissues Organs and Organ Systems" },
-          { slug: "sci-bio-p2-l2-enzymes-lock-and-key-model-and-active-site", title: "Enzymes Lock and Key Model and Active Site" },
-          { slug: "sci-bio-p2-l3-effect-of-temperature-and-ph-on-enzyme-activity", title: "Effect of Temperature and Ph on Enzyme Activity" },
-          { slug: "sci-bio-p2-l4-the-human-digestive-system", title: "The Human Digestive System" },
-          { slug: "sci-bio-p2-l5-digestive-enzymes-amylase-proteases-and-lipases", title: "Digestive Enzymes Amylase Proteases and Lipases" },
-          { slug: "sci-bio-p2-l6-the-role-of-bile", title: "The Role of Bile" },
-          { slug: "sci-bio-p2-l7-food-tests-benedicts-iodine-and-biuret", title: "Food Tests Benedicts Iodine and Biuret" },
-          { slug: "sci-bio-p2-l8-investigating-the-effect-of-ph-on-amylase", title: "Investigating the Effect of Ph on Amylase" },
-          { slug: "sci-bio-p2-l9-the-heart-and-double-circulatory-system", title: "The Heart and Double Circulatory System" },
-          { slug: "sci-bio-p2-l10-blood-vessels-arteries-veins-and-capillaries", title: "Blood Vessels Arteries Veins and Capillaries" },
-          { slug: "sci-bio-p2-l11-components-and-functions-of-blood", title: "Components and Functions of Blood" },
-          { slug: "sci-bio-p2-l12-coronary-heart-disease-stents-statins-and-heart-valves", title: "Coronary Heart Disease Stents Statins and Heart Valves" },
-          { slug: "sci-bio-p2-l13-health-disease-and-their-interactions", title: "Health Disease and Their Interactions" },
-          { slug: "sci-bio-p2-l14-lifestyle-factors-and-non-communicable-diseases", title: "Lifestyle Factors and Non Communicable Diseases" },
-          { slug: "sci-bio-p2-l15-cancer-benign-and-malignant-tumours", title: "Cancer Benign and Malignant Tumours" },
-          { slug: "sci-bio-p2-l16-plant-tissues-and-their-functions", title: "Plant Tissues and Their Functions" },
-          { slug: "sci-bio-p2-l17-root-hair-cells-xylem-and-phloem-structure-and-function", title: "Root Hair Cells Xylem and Phloem Structure and Function" },
-          { slug: "sci-bio-p2-l18-transpiration-and-translocation", title: "Transpiration and Translocation" },
-          { slug: "sci-bio-p2-l19-stomata-guard-cells-and-factors-affecting-transpiration-rate", title: "Stomata Guard Cells and Factors Affecting Transpiration Rate" }
+          { slug: "sci-chem-p2-l1-the-particle-model-and-the-three-states-of-matter", title: "The Particle Model and the Three States of Matter" },
+          { slug: "sci-chem-p2-l2-particle-arrangement-movement-and-energy-in-solids-liquids-and-gases", title: "Particle Arrangement Movement and Energy in Solids Liquids and Gases" },
+          { slug: "sci-chem-p2-l3-changes-of-state-and-particle-energy", title: "Changes of State and Particle Energy" },
+          { slug: "sci-chem-p2-l4-predicting-the-physical-state-of-a-substance-from-data", title: "Predicting the Physical State of a Substance from Data" },
+          { slug: "sci-chem-p2-l5-pure-substances-and-mixtures-in-chemistry", title: "Pure Substances and Mixtures in Chemistry" },
+          { slug: "sci-chem-p2-l6-melting-point-data-and-identifying-pure-substances", title: "Melting Point Data and Identifying Pure Substances" },
+          { slug: "sci-chem-p2-l7-simple-distillation-and-separating-solutions", title: "Simple Distillation and Separating Solutions" },
+          { slug: "sci-chem-p2-l8-fractional-distillation-and-separating-liquids", title: "Fractional Distillation and Separating Liquids" },
+          { slug: "sci-chem-p2-l9-filtration-and-crystallisation", title: "Filtration and Crystallisation" },
+          { slug: "sci-chem-p2-l10-paper-chromatography-stationary-and-mobile-phases", title: "Paper Chromatography Stationary and Mobile Phases" },
+          { slug: "sci-chem-p2-l11-interpreting-chromatograms-and-calculating-rf-values", title: "Interpreting Chromatograms and Calculating Rf Values" },
+          { slug: "sci-chem-p2-l12-making-water-potable-and-purifying-water-for-analysis", title: "Making Water Potable and Purifying Water for Analysis" }
         ]
       },
       {
         tag: "Topic 3",
-        title: "Infection and Response",
+        title: "Chemical Changes",
         lectures: [
-          { slug: "sci-bio-p3-l1-pathogens-and-how-diseases-spread", title: "Pathogens and How Diseases Spread" },
-          { slug: "sci-bio-p3-l2-viral-diseases-measles-hiv-and-tobacco-mosaic-virus", title: "Viral Diseases Measles Hiv and Tobacco Mosaic Virus" },
-          { slug: "sci-bio-p3-l3-bacterial-diseases-salmonella-and-gonorrhoea", title: "Bacterial Diseases Salmonella and Gonorrhoea" },
-          { slug: "sci-bio-p3-l4-fungal-diseases-rose-black-spot", title: "Fungal Diseases Rose Black Spot" },
-          { slug: "sci-bio-p3-l5-protist-diseases-malaria", title: "Protist Diseases Malaria" },
-          { slug: "sci-bio-p3-l6-the-bodys-non-specific-defence-systems", title: "The Bodys Non Specific Defence Systems" },
-          { slug: "sci-bio-p3-l7-the-immune-system-and-white-blood-cells", title: "The Immune System and White Blood Cells" },
-          { slug: "sci-bio-p3-l8-vaccination-and-how-it-works", title: "Vaccination and How It Works" },
-          { slug: "sci-bio-p3-l9-antibiotics-and-painkillers", title: "Antibiotics and Painkillers" },
-          { slug: "sci-bio-p3-l10-discovery-and-development-of-new-drugs", title: "Discovery and Development of New Drugs" },
-          { slug: "sci-bio-p3-l11-preclinical-and-clinical-drug-trials", title: "Preclinical and Clinical Drug Trials" },
-          { slug: "sci-bio-p3-l12-producing-monoclonal-antibodies", title: "Producing Monoclonal Antibodies" },
-          { slug: "sci-bio-p3-l13-uses-of-monoclonal-antibodies", title: "Uses of Monoclonal Antibodies" }
+          { slug: "sci-chem-p3-l1-acids-hydrogen-ions-alkalis-and-hydroxide-ions", title: "Acids Hydrogen Ions Alkalis and Hydroxide Ions" },
+          { slug: "sci-chem-p3-l2-the-ph-scale-and-neutral-solutions", title: "The pH Scale and Neutral Solutions" },
+          { slug: "sci-chem-p3-l3-acid-and-alkali-indicators-and-their-colour-changes", title: "Acid and Alkali Indicators and Their Colour Changes" },
+          { slug: "sci-chem-p3-l4-bases-alkalis-and-neutralisation", title: "Bases Alkalis and Neutralisation" },
+          { slug: "sci-chem-p3-l5-reactions-of-acids-with-metals", title: "Reactions of Acids with Metals" },
+          { slug: "sci-chem-p3-l6-reactions-of-acids-with-metal-oxides", title: "Reactions of Acids with Metal Oxides" },
+          { slug: "sci-chem-p3-l7-reactions-of-acids-with-metal-hydroxides", title: "Reactions of Acids with Metal Hydroxides" },
+          { slug: "sci-chem-p3-l8-reactions-of-acids-with-carbonates", title: "Reactions of Acids with Carbonates" },
+          { slug: "sci-chem-p3-l9-testing-for-hydrogen-and-carbon-dioxide", title: "Testing for Hydrogen and Carbon Dioxide" },
+          { slug: "sci-chem-p3-l10-preparing-soluble-salts-from-insoluble-reactants", title: "Preparing Soluble Salts from Insoluble Reactants" },
+          { slug: "sci-chem-p3-l11-why-excess-insoluble-reactant-is-used-when-making-salts", title: "Why Excess Insoluble Reactant Is Used When Making Salts" },
+          { slug: "sci-chem-p3-l12-preparing-soluble-salts-from-soluble-reactants", title: "Preparing Soluble Salts from Soluble Reactants" },
+          { slug: "sci-chem-p3-l13-acid-alkali-titration-and-preparing-pure-dry-soluble-salts", title: "Acid Alkali Titration and Preparing Pure Dry Soluble Salts" },
+          { slug: "sci-chem-p3-l14-solubility-rules-for-common-salts", title: "Solubility Rules for Common Salts" },
+          { slug: "sci-chem-p3-l15-predicting-precipitates-from-solubility-rules", title: "Predicting Precipitates from Solubility Rules" },
+          { slug: "sci-chem-p3-l16-preparing-pure-dry-insoluble-salts-by-precipitation", title: "Preparing Pure Dry Insoluble Salts By Precipitation" },
+          { slug: "sci-chem-p3-l17-electrolysis-electrolytes-electrodes-and-ion-movement", title: "Electrolysis Electrolytes Electrodes and Ion Movement" },
+          { slug: "sci-chem-p3-l18-electrolysis-of-common-molten-and-aqueous-electrolytes", title: "Electrolysis of Common Molten and Aqueous Electrolytes" },
+          { slug: "sci-chem-p3-l19-predicting-products-at-the-electrodes", title: "Predicting Products at the Electrodes" },
+          { slug: "sci-chem-p3-l20-oxidation-and-reduction-as-loss-and-gain-of-electrons", title: "Oxidation and Reduction as Loss and Gain of Electrons" },
+          { slug: "sci-chem-p3-l21-reduction-at-the-cathode-and-oxidation-at-the-anode", title: "Reduction at the Cathode and Oxidation at the Anode" },
+          { slug: "sci-chem-p3-l22-electrolysis-of-copper-sulfate-and-purification-of-copper", title: "Electrolysis of Copper Sulfate and Purification of Copper" }
         ]
       },
       {
         tag: "Topic 4",
-        title: "Bioenergetics",
+        title: "Extracting Metals and Equilibria",
         lectures: [
-          { slug: "sci-bio-p4-l1-photosynthesis-the-reaction-and-word-equation", title: "Photosynthesis the Reaction and Word Equation" },
-          { slug: "sci-bio-p4-l2-photosynthesis-as-an-endothermic-reaction", title: "Photosynthesis as an Endothermic Reaction" },
-          { slug: "sci-bio-p4-l3-factors-affecting-the-rate-of-photosynthesis", title: "Factors Affecting the Rate of Photosynthesis" },
-          { slug: "sci-bio-p4-l4-limiting-factors-and-two-and-three-factor-graphs", title: "Limiting Factors and Two and Three Factor Graphs" },
-          { slug: "sci-bio-p4-l5-the-inverse-square-law-and-light-intensity", title: "The Inverse Square Law and Light Intensity" },
-          { slug: "sci-bio-p4-l6-investigating-light-intensity-and-photosynthesis", title: "Investigating Light Intensity and Photosynthesis" },
-          { slug: "sci-bio-p4-l7-uses-of-glucose-made-in-photosynthesis", title: "Uses of Glucose Made in Photosynthesis" },
-          { slug: "sci-bio-p4-l8-aerobic-respiration-reaction-and-word-equation", title: "Aerobic Respiration Reaction and Word Equation" },
-          { slug: "sci-bio-p4-l9-anaerobic-respiration-in-muscles", title: "Anaerobic Respiration in Muscles" },
-          { slug: "sci-bio-p4-l10-anaerobic-respiration-in-yeast-fermentation", title: "Anaerobic Respiration in Yeast Fermentation" },
-          { slug: "sci-bio-p4-l11-comparing-aerobic-and-anaerobic-respiration", title: "Comparing Aerobic and Anaerobic Respiration" },
-          { slug: "sci-bio-p4-l12-the-bodys-response-to-exercise", title: "The Bodys Response to Exercise" },
-          { slug: "sci-bio-p4-l13-lactic-acid-oxygen-debt-and-recovery", title: "Lactic Acid Oxygen Debt and Recovery" },
-          { slug: "sci-bio-p4-l14-metabolism-and-metabolic-reactions", title: "Metabolism and Metabolic Reactions" }
+          { slug: "sci-chem-p4-l1-deducing-metal-reactivity-from-reactions-with-water-acids-and-salt-solutions", title: "Deducing Metal Reactivity from Reactions with Water Acids and Salt Solutions" },
+          { slug: "sci-chem-p4-l2-the-reactivity-series-and-relative-metal-reactivity", title: "The Reactivity Series and Relative Metal Reactivity" },
+          { slug: "sci-chem-p4-l3-displacement-reactions-between-metals-and-metal-salts", title: "Displacement Reactions Between Metals and Metal Salts" },
+          { slug: "sci-chem-p4-l4-displacement-reactions-as-redox-reactions", title: "Displacement Reactions as Redox Reactions" },
+          { slug: "sci-chem-p4-l5-oxidation-and-reduction-in-terms-of-oxygen", title: "Oxidation and Reduction in Terms of Oxygen" },
+          { slug: "sci-chem-p4-l6-ores-and-the-extraction-of-metals", title: "Ores and the Extraction of Metals" },
+          { slug: "sci-chem-p4-l7-extracting-metals-by-reduction-with-carbon", title: "Extracting Metals By Reduction with Carbon" },
+          { slug: "sci-chem-p4-l8-extracting-metals-by-electrolysis", title: "Extracting Metals By Electrolysis" },
+          { slug: "sci-chem-p4-l9-biological-metal-extraction-bacterial-and-phytoextraction", title: "Biological Metal Extraction Bacterial and Phytoextraction" },
+          { slug: "sci-chem-p4-l10-metal-resistance-to-oxidation-and-corrosion", title: "Metal Resistance to Oxidation and Corrosion" },
+          { slug: "sci-chem-p4-l11-recycling-metals-economic-and-environmental-benefits", title: "Recycling Metals Economic and Environmental Benefits" },
+          { slug: "sci-chem-p4-l12-life-cycle-assessments-and-environmental-impact", title: "Life Cycle Assessments and Environmental Impact" },
+          { slug: "sci-chem-p4-l13-reversible-reactions-and-the-equilibrium-symbol", title: "Reversible Reactions and the Equilibrium Symbol" },
+          { slug: "sci-chem-p4-l14-dynamic-equilibrium", title: "Dynamic Equilibrium" },
+          { slug: "sci-chem-p4-l15-the-haber-process-and-industrial-production-of-ammonia", title: "The Haber Process and Industrial Production of Ammonia" },
+          { slug: "sci-chem-p4-l16-haber-process-conditions-and-industrial-importance", title: "Haber Process Conditions and Industrial Importance" },
+          { slug: "sci-chem-p4-l17-how-temperature-pressure-and-concentration-affect-equilibrium", title: "How Temperature Pressure and Concentration Affect Equilibrium" }
         ]
       }
     ]
@@ -174,93 +133,81 @@ var papersData = [
   {
     type: "single",
     tag: "PAPER 2",
-    title: "Biology Paper 2 (Topics 5–7)",
+    title: "Chemistry Paper 2 (Chemistry 2)",
     pillars: [
       {
         tag: "Topic 5",
-        title: "Homeostasis and Response",
+        title: "Groups in the Periodic Table",
         lectures: [
-          { slug: "sci-bio-p5-l1-what-homeostasis-is-and-why-it-matters", title: "What Homeostasis Is and Why It Matters" },
-          { slug: "sci-bio-p5-l2-the-nervous-system-structure-and-function", title: "The Nervous System Structure and Function" },
-          { slug: "sci-bio-p5-l3-reflex-arcs-and-reflex-actions", title: "Reflex Arcs and Reflex Actions" },
-          { slug: "sci-bio-p5-l4-the-brain-cerebral-cortex-cerebellum-and-medulla", title: "The Brain Cerebral Cortex Cerebellum and Medulla" },
-          { slug: "sci-bio-p5-l5-the-eye-structure-and-function", title: "The Eye Structure and Function" },
-          { slug: "sci-bio-p5-l6-accommodation-focusing-on-near-and-distant-objects", title: "Accommodation Focusing on Near and Distant Objects" },
-          { slug: "sci-bio-p5-l7-correcting-vision-defects", title: "Correcting Vision Defects" },
-          { slug: "sci-bio-p5-l8-control-of-body-temperature", title: "Control of Body Temperature" },
-          { slug: "sci-bio-p5-l9-vasodilation-vasoconstriction-and-sweating-mechanisms", title: "Vasodilation Vasoconstriction and Sweating Mechanisms" },
-          { slug: "sci-bio-p5-l10-the-endocrine-system-and-hormones", title: "The Endocrine System and Hormones" },
-          { slug: "sci-bio-p5-l11-blood-glucose-regulation-and-insulin", title: "Blood Glucose Regulation and Insulin" },
-          { slug: "sci-bio-p5-l12-glucagon-and-negative-feedback-control-of-blood-glucose", title: "Glucagon and Negative Feedback Control of Blood Glucose" },
-          { slug: "sci-bio-p5-l13-type-1-and-type-2-diabetes", title: "Type 1 and Type 2 Diabetes" },
-          { slug: "sci-bio-p5-l14-water-and-nitrogen-balance-the-kidneys", title: "Water and Nitrogen Balance the Kidneys" },
-          { slug: "sci-bio-p5-l15-adh-and-water-reabsorption-in-kidney-tubules", title: "Adh and Water Reabsorption in Kidney Tubules" },
-          { slug: "sci-bio-p5-l16-kidney-dialysis-and-transplant", title: "Kidney Dialysis and Transplant" },
-          { slug: "sci-bio-p5-l17-hormones-in-reproduction-the-menstrual-cycle", title: "Hormones in Reproduction the Menstrual Cycle" },
-          { slug: "sci-bio-p5-l18-fsh-lh-oestrogen-and-progesterone", title: "Fsh Lh Oestrogen and Progesterone" },
-          { slug: "sci-bio-p5-l19-interactions-of-hormones-in-the-menstrual-cycle", title: "Interactions of Hormones in the Menstrual Cycle" },
-          { slug: "sci-bio-p5-l20-contraception-hormonal-and-non-hormonal-methods", title: "Contraception Hormonal and Non Hormonal Methods" },
-          { slug: "sci-bio-p5-l21-using-hormones-to-treat-infertility-fertility-drugs-and-ivf", title: "Using Hormones to Treat Infertility Fertility Drugs and Ivf" },
-          { slug: "sci-bio-p5-l22-negative-feedback-thyroxine-and-adrenaline", title: "Negative Feedback Thyroxine and Adrenaline" },
-          { slug: "sci-bio-p5-l23-plant-hormones-auxin-and-tropisms", title: "Plant Hormones Auxin and Tropisms" },
-          { slug: "sci-bio-p5-l24-gibberellins-and-ethene-in-plants", title: "Gibberellins and Ethene in Plants" },
-          { slug: "sci-bio-p5-l25-uses-of-plant-hormones-in-agriculture-and-horticulture", title: "Uses of Plant Hormones in Agriculture and Horticulture" }
+          { slug: "sci-chem-p5-l1-group-1-alkali-metals-and-their-properties", title: "Group 1 Alkali Metals and Their Properties" },
+          { slug: "sci-chem-p5-l2-group-1-reactions-with-water", title: "Group 1 Reactions with Water" },
+          { slug: "sci-chem-p5-l3-group-1-reactivity-trends", title: "Group 1 Reactivity Trends" },
+          { slug: "sci-chem-p5-l4-explaining-group-1-reactivity-from-electronic-configuration", title: "Explaining Group 1 Reactivity from Electronic Configuration" },
+          { slug: "sci-chem-p5-l5-group-7-halogen-colours-and-physical-states", title: "Group 7 Halogen Colours and Physical States" },
+          { slug: "sci-chem-p5-l6-group-7-trends-in-physical-properties", title: "Group 7 Trends in Physical Properties" },
+          { slug: "sci-chem-p5-l7-testing-for-chlorine", title: "Testing for Chlorine" },
+          { slug: "sci-chem-p5-l8-reactions-of-halogen-with-metals-and-hydrogen", title: "Reactions of Halogen with Metals and Hydrogen" },
+          { slug: "sci-chem-p5-l9-halogen-displacement-reactions-and-reactivity", title: "Halogen Displacement Reactions and Reactivity" },
+          { slug: "sci-chem-p5-l10-halogen-displacement-as-redox", title: "Halogen Displacement as Redox" },
+          { slug: "sci-chem-p5-l11-explaining-halogen-reactivity-from-electronic-configuration", title: "Explaining Halogen Reactivity from Electronic Configuration" },
+          { slug: "sci-chem-p5-l12-group-0-noble-gases-and-inertness", title: "Group 0 Noble Gases and Inertness" },
+          { slug: "sci-chem-p5-l13-uses-and-physical-property-trends-of-noble-gases", title: "Uses and Physical Property Trends of Noble Gases" }
         ]
       },
       {
         tag: "Topic 6",
-        title: "Inheritance, Variation and Evolution",
+        title: "Rates of Reaction and Energy Changes",
         lectures: [
-          { slug: "sci-bio-p6-l1-sexual-and-asexual-reproduction", title: "Sexual and Asexual Reproduction" },
-          { slug: "sci-bio-p6-l2-meiosis-and-the-formation-of-gametes", title: "Meiosis and the Formation of Gametes" },
-          { slug: "sci-bio-p6-l3-dna-structure-and-the-genome", title: "Dna Structure and the Genome" },
-          { slug: "sci-bio-p6-l4-dna-structure-at-the-nucleotide-level", title: "Dna Structure at the Nucleotide Level" },
-          { slug: "sci-bio-p6-l5-protein-synthesis-how-dna-codes-for-proteins", title: "Protein Synthesis How Dna Codes for Proteins" },
-          { slug: "sci-bio-p6-l6-mutations-and-their-effect-on-proteins", title: "Mutations and Their Effect on Proteins" },
-          { slug: "sci-bio-p6-l7-genetic-inheritance-key-terminology", title: "Genetic Inheritance Key Terminology" },
-          { slug: "sci-bio-p6-l8-dominant-and-recessive-alleles", title: "Dominant and Recessive Alleles" },
-          { slug: "sci-bio-p6-l9-punnett-squares-and-predicting-outcomes", title: "Punnett Squares and Predicting Outcomes" },
-          { slug: "sci-bio-p6-l10-inherited-disorders-polydactyly-and-cystic-fibrosis", title: "Inherited Disorders Polydactyly and Cystic Fibrosis" },
-          { slug: "sci-bio-p6-l11-embryo-screening-and-ethical-issues", title: "Embryo Screening and Ethical Issues" },
-          { slug: "sci-bio-p6-l12-sex-determination", title: "Sex Determination" },
-          { slug: "sci-bio-p6-l13-variation-genetic-and-environmental-causes", title: "Variation Genetic and Environmental Causes" },
-          { slug: "sci-bio-p6-l14-evolution-by-natural-selection", title: "Evolution By Natural Selection" },
-          { slug: "sci-bio-p6-l15-selective-breeding", title: "Selective Breeding" },
-          { slug: "sci-bio-p6-l16-genetic-engineering-and-gm-crops", title: "Genetic Engineering and Gm Crops" },
-          { slug: "sci-bio-p6-l17-the-main-steps-in-the-process-of-genetic-engineering", title: "The Main Steps in the Process of Genetic Engineering" },
-          { slug: "sci-bio-p6-l18-cloning-tissue-culture-cuttings-and-embryo-transplants", title: "Cloning Tissue Culture Cuttings and Embryo Transplants" },
-          { slug: "sci-bio-p6-l19-darwin-and-the-theory-of-evolution", title: "Darwin and the Theory of Evolution" },
-          { slug: "sci-bio-p6-l20-darwin-and-wallace-speciation", title: "Darwin and Wallace Speciation" },
-          { slug: "sci-bio-p6-l21-the-work-of-mendel-and-the-development-of-genetics", title: "The Work of Mendel and the Development of Genetics" },
-          { slug: "sci-bio-p6-l22-evidence-for-evolution-fossils-and-antibiotic-resistance", title: "Evidence for Evolution Fossils and Antibiotic Resistance" },
-          { slug: "sci-bio-p6-l23-extinction-and-its-causes", title: "Extinction and Its Causes" },
-          { slug: "sci-bio-p6-l24-antibiotic-resistant-bacteria-and-mrsa", title: "Antibiotic Resistant Bacteria and Mrsa" },
-          { slug: "sci-bio-p6-l25-classification-linnaeus-and-the-three-domain-system", title: "Classification Linnaeus and the Three Domain System" }
+          { slug: "sci-chem-p6-l1-what-rate-of-reaction-means", title: "What Rate of Reaction Means" },
+          { slug: "sci-chem-p6-l2-calculating-rates-from-chemical-data", title: "Calculating Rates from Chemical Data" },
+          { slug: "sci-chem-p6-l3-rate-of-reaction-graphs-and-gradients", title: "Rate of Reaction Graphs and Gradients" },
+          { slug: "sci-chem-p6-l4-temperature-and-reaction-rate", title: "Temperature and Reaction Rate" },
+          { slug: "sci-chem-p6-l5-concentration-and-reaction-rate", title: "Concentration and Reaction Rate" },
+          { slug: "sci-chem-p6-l6-surface-area-and-reaction-rate", title: "Surface Area and Reaction Rate" },
+          { slug: "sci-chem-p6-l7-collision-theory-and-successful-collisions", title: "Collision Theory and Successful Collisions" },
+          { slug: "sci-chem-p6-l8-catalysts-and-activation-energy", title: "Catalysts and Activation Energy" },
+          { slug: "sci-chem-p6-l9-exothermic-and-endothermic-reactions", title: "Exothermic and Endothermic Reactions" },
+          { slug: "sci-chem-p6-l10-heat-energy-changes-in-dissolving-neutralisation-displacement-and-precipitation", title: "Heat Energy Changes in Dissolving Neutralisation Displacement and Precipitation" },
+          { slug: "sci-chem-p6-l11-bond-breaking-and-bond-making", title: "Bond Breaking and Bond Making" },
+          { slug: "sci-chem-p6-l12-calculating-energy-changes-from-bond-energies", title: "Calculating Energy Changes from Bond Energies" },
+          { slug: "sci-chem-p6-l13-activation-energy-and-reaction-profiles", title: "Activation Energy and Reaction Profiles" },
+          { slug: "sci-chem-p6-l14-drawing-and-interpreting-exothermic-reaction-profiles", title: "Drawing and Interpreting Exothermic Reaction Profiles" },
+          { slug: "sci-chem-p6-l15-drawing-and-interpreting-endothermic-reaction-profiles", title: "Drawing and Interpreting Endothermic Reaction Profiles" }
         ]
       },
       {
         tag: "Topic 7",
-        title: "Ecology",
+        title: "Fuels",
         lectures: [
-          { slug: "sci-bio-p7-l1-ecosystems-communities-and-interdependence", title: "Ecosystems Communities and Interdependence" },
-          { slug: "sci-bio-p7-l2-competition-in-animals-and-plants", title: "Competition in Animals and Plants" },
-          { slug: "sci-bio-p7-l3-abiotic-factors-and-their-effects-on-communities", title: "Abiotic Factors and Their Effects on Communities" },
-          { slug: "sci-bio-p7-l4-biotic-factors-and-their-effects-on-communities", title: "Biotic Factors and Their Effects on Communities" },
-          { slug: "sci-bio-p7-l5-adaptations-structural-behavioural-and-functional", title: "Adaptations Structural Behavioural and Functional" },
-          { slug: "sci-bio-p7-l6-predator-prey-relationships", title: "Predator Prey Relationships" },
-          { slug: "sci-bio-p7-l7-food-chains-food-webs-and-energy-transfer", title: "Food Chains Food Webs and Energy Transfer" },
-          { slug: "sci-bio-p7-l8-trophic-levels-and-the-efficiency-of-energy-transfer", title: "Trophic Levels and the Efficiency of Energy Transfer" },
-          { slug: "sci-bio-p7-l9-biomass-and-pyramids-of-biomass", title: "Biomass and Pyramids of Biomass" },
-          { slug: "sci-bio-p7-l10-the-carbon-cycle", title: "The Carbon Cycle" },
-          { slug: "sci-bio-p7-l11-the-water-cycle", title: "The Water Cycle" },
-          { slug: "sci-bio-p7-l12-the-nitrogen-cycle-and-decomposition", title: "The Nitrogen Cycle and Decomposition" },
-          { slug: "sci-bio-p7-l13-factors-affecting-the-rate-of-decomposition", title: "Factors Affecting the Rate of Decomposition" },
-          { slug: "sci-bio-p7-l14-human-impacts-on-biodiversity", title: "Human Impacts on Biodiversity" },
-          { slug: "sci-bio-p7-l15-deforestation-and-land-use", title: "Deforestation and Land Use" },
-          { slug: "sci-bio-p7-l16-global-warming-and-climate-change", title: "Global Warming and Climate Change" },
-          { slug: "sci-bio-p7-l17-conservation-and-maintaining-biodiversity", title: "Conservation and Maintaining Biodiversity" },
-          { slug: "sci-bio-p7-l18-methods-of-increasing-food-production", title: "Methods of Increasing Food Production" },
-          { slug: "sci-bio-p7-l19-sustainable-fisheries-and-food-security", title: "Sustainable Fisheries and Food Security" }
+          { slug: "sci-chem-p7-l1-hydrocarbons-and-their-composition", title: "Hydrocarbons and Their Composition" },
+          { slug: "sci-chem-p7-l2-crude-oil-as-a-complex-mixture-of-hydrocarbons", title: "Crude Oil as a Complex Mixture of Hydrocarbons" },
+          { slug: "sci-chem-p7-l3-crude-oil-as-a-finite-resource-and-petrochemical-feedstock", title: "Crude Oil as a Finite Resource and Petrochemical Feedstock" },
+          { slug: "sci-chem-p7-l4-fractional-distillation-of-crude-oil", title: "Fractional Distillation of Crude Oil" },
+          { slug: "sci-chem-p7-l5-names-and-uses-of-crude-oil-fractions", title: "Names and Uses of Crude Oil Fractions" },
+          { slug: "sci-chem-p7-l6-comparing-fractions-by-size-boiling-point-viscosity-and-ignition", title: "Comparing Fractions By Size Boiling Point Viscosity and Ignition" },
+          { slug: "sci-chem-p7-l7-homologous-series-and-the-alkane-series", title: "Homologous Series and the Alkane Series" },
+          { slug: "sci-chem-p7-l8-complete-combustion-of-hydrocarbons", title: "Complete Combustion of Hydrocarbons" },
+          { slug: "sci-chem-p7-l9-incomplete-combustion-carbon-monoxide-and-soot", title: "Incomplete Combustion Carbon Monoxide and Soot" },
+          { slug: "sci-chem-p7-l10-carbon-monoxide-toxicity-and-the-problems-of-incomplete-combustion", title: "Carbon Monoxide Toxicity and the Problems of Incomplete Combustion" },
+          { slug: "sci-chem-p7-l11-sulfur-dioxide-and-acid-rain", title: "Sulfur Dioxide and Acid Rain" },
+          { slug: "sci-chem-p7-l12-nitrogen-oxides-from-high-temperature-combustion", title: "Nitrogen Oxides from High Temperature Combustion" },
+          { slug: "sci-chem-p7-l13-hydrogen-as-an-alternative-fuel-to-petrol", title: "Hydrogen as an Alternative Fuel to Petrol" },
+          { slug: "sci-chem-p7-l14-fossil-fuels-and-non-renewable-energy-resources", title: "Fossil Fuels and Non Renewable Energy Resources" },
+          { slug: "sci-chem-p7-l15-cracking-large-alkanes-into-smaller-useful-hydrocarbons", title: "Cracking Large Alkanes into Smaller Useful Hydrocarbons" },
+          { slug: "sci-chem-p7-l16-alkenes-and-why-cracking-is-necessary", title: "Alkenes and Why Cracking Is Necessary" },
+          { slug: "sci-chem-p7-l17-the-earths-early-atmosphere-and-volcanic-gases", title: "The Earths Early Atmosphere and Volcanic Gases" },
+          { slug: "sci-chem-p7-l18-the-early-atmosphere-little-oxygen-carbon-dioxide-and-water-vapour", title: "The Early Atmosphere Little Oxygen Carbon Dioxide and Water Vapour" },
+          { slug: "sci-chem-p7-l19-condensation-of-water-vapour-and-formation-of-the-oceans", title: "Condensation of Water Vapour and Formation of the Oceans" },
+          { slug: "sci-chem-p7-l20-carbon-dioxide-removal-by-the-oceans", title: "Carbon Dioxide Removal By the Oceans" },
+          { slug: "sci-chem-p7-l21-photosynthesis-and-the-rise-of-atmospheric-oxygen", title: "Photosynthesis and the Rise of Atmospheric Oxygen" },
+          { slug: "sci-chem-p7-l22-testing-for-oxygen", title: "Testing for Oxygen" },
+          { slug: "sci-chem-p7-l23-the-greenhouse-effect-and-heat-absorbing-gases", title: "The Greenhouse Effect and Heat Absorbing Gases" },
+          { slug: "sci-chem-p7-l24-evidence-for-human-caused-climate-change", title: "Evidence for Human Caused Climate Change" },
+          { slug: "sci-chem-p7-l25-uncertainty-in-climate-change-evidence", title: "Uncertainty in Climate Change Evidence" },
+          { slug: "sci-chem-p7-l26-the-composition-of-the-modern-atmosphere", title: "The Composition of the Modern Atmosphere" },
+          { slug: "sci-chem-p7-l27-effects-of-increased-carbon-dioxide-and-methane", title: "Effects of Increased Carbon Dioxide and Methane" },
+          { slug: "sci-chem-p7-l28-human-activities-that-increase-greenhouse-gases", title: "Human Activities That Increase Greenhouse Gases" },
+          { slug: "sci-chem-p7-l29-mitigating-climate-change-scale-risk-and-environmental-implications", title: "Mitigating Climate Change Scale Risk and Environmental Implications" }
         ]
       }
     ]
