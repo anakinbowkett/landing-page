@@ -85,6 +85,7 @@
         <div class="papers-list" id="papersList"></div>
     </section>
 </main>
+<script src="question-counts.js"></script>
 <script>
 const papersData = [
     {
@@ -273,9 +274,18 @@ function aggBlocksHTML(count) {
     return html;
 }
 
+function slugFromUrl(url) {
+    var parts = url.split('/');
+    var last = parts[parts.length - 1];
+    return last.replace(/\.html$/, '');
+}
+
 function buildRow(section) {
+    var slug = slugFromUrl(section.url);
+    var counts = window.QUESTION_COUNTS || {};
+    var count = counts.hasOwnProperty(slug) ? counts[slug] : 6;
     var blocks = '';
-    for (var i = 0; i < 6; i++) blocks += '<div class="lec-block"></div>';
+    for (var i = 0; i < count; i++) blocks += '<div class="lec-block"></div>';
     var row = document.createElement('div');
     row.className = 'lec-sub-row';
     row.innerHTML = '<div class="lec-sub-left"><span class="lec-sub-num">' + section.number + '</span><span class="lec-sub-name">' + section.title + '</span></div><div class="lec-sub-right"><div class="lec-blocks">' + blocks + '</div><span class="lec-sub-arrow">&#8594;</span></div>';
