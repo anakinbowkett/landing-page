@@ -1933,12 +1933,18 @@ function createSubjectCard(subject) {
         const tierWord = tierMap[tierKey]; // 'foundation' | 'higher' | undefined
 
         let route;
-        if (subjectSlugs[subject.subject_name]) {
+        if (subject.subject_name === 'Mathematics') {
+            // Maths uses a different, older folder convention: {board}-f-tier / {board}-h-tier
+            // (not {board}-foundation / {board}-higher like every other subject).
+            const mathsTierMap = { 'foundation': 'f-tier', 'higher': 'h-tier' };
+            const mathsTier = mathsTierMap[tierKey];
+            route = mathsTier ? `${boardSlug}-${mathsTier}` : boardSlug;
+        } else if (subjectSlugs[subject.subject_name]) {
             route = tierWord
                 ? `${boardSlug}-${subjectSlugs[subject.subject_name]}-${tierWord}`
                 : `${boardSlug}-${subjectSlugs[subject.subject_name]}`;
         } else {
-            // Subject not in subjectSlugs (e.g. Mathematics, History, etc.) —
+            // Subject not in subjectSlugs (e.g. History, etc.) —
             // falls back to board+tier, or board alone if untiered.
             route = tierWord ? `${boardSlug}-${tierWord}` : boardSlug;
         }
