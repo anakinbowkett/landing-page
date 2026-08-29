@@ -227,7 +227,7 @@
                 const joinReasons = Array.from(selectedReasons);
 
                 const trialEndDate = new Date();
-                trialEndDate.setMinutes(trialEndDate.getMinutes() + 1);
+                trialEndDate.setDate(trialEndDate.getDate() + 3);
 
                 const firstName = session.user.user_metadata.first_name || '';
                 const lastName = session.user.user_metadata.last_name || '';
@@ -261,24 +261,20 @@
 
                 if (profileError) throw profileError;
 
-                // Default subjects
-                const defaultSubjects = [
-                    { name: 'Mathematics', examBoard: 'AQA', tier: 'Foundation' },
-                    { name: 'English Language', examBoard: 'AQA', tier: null },
-                    { name: 'English Literature', examBoard: 'AQA', tier: null },
-                    { name: 'Combined Science - Biology', examBoard: 'AQA', tier: 'Foundation' },
-                    { name: 'Combined Science - Chemistry', examBoard: 'AQA', tier: 'Foundation' },
-                    { name: 'Combined Science - Physics', examBoard: 'AQA', tier: 'Foundation' }
-                ];
-
-                const allSubjects = [...defaultSubjects];
+                // Only insert what the student actually picked on step 2 — "Combined Science"
+                // is one choice on screen but tracks as 3 separate rows (Biology/Chemistry/Physics)
+                // so progress bars on the dashboard work the same way they do for separate science.
+                const allSubjects = [];
                 subjectsData.forEach(userSubject => {
-                    const isDuplicate = allSubjects.some(s =>
-                        s.name === userSubject.name &&
-                        s.examBoard === userSubject.examBoard &&
-                        s.tier === userSubject.tier
-                    );
-                    if (!isDuplicate) {
+                    if (userSubject.name === 'Combined Science') {
+                        ['Biology', 'Chemistry', 'Physics'].forEach(component => {
+                            allSubjects.push({
+                                name: `Combined Science - ${component}`,
+                                examBoard: userSubject.examBoard,
+                                tier: userSubject.tier
+                            });
+                        });
+                    } else {
                         allSubjects.push({ name: userSubject.name, examBoard: userSubject.examBoard, tier: userSubject.tier });
                     }
                 });
@@ -289,12 +285,14 @@
                     exam_board: subject.examBoard,
                     tier: subject.tier,
                     progress_percentage: 0,
-                    is_default: defaultSubjects.some(d => d.name === subject.name && d.examBoard === subject.examBoard && d.tier === subject.tier),
+                    is_default: false,
                     color_variant: getColorVariant(subject.name)
                 }));
 
-                const { error: subjectsError } = await sbClient.from('user_subjects').insert(subjectInserts);
-                if (subjectsError) throw subjectsError;
+                if (subjectInserts.length > 0) {
+                    const { error: subjectsError } = await sbClient.from('user_subjects').insert(subjectInserts);
+                    if (subjectsError) throw subjectsError;
+                }
 
                 // Store join reasons for step5 to pick up if needed
                 localStorage.setItem('onboarding_join_reasons', JSON.stringify(joinReasons));
@@ -319,14 +317,9 @@
                 'Biology': 'color-orange',
                 'Chemistry': 'color-orange',
                 'Physics': 'color-orange',
-                'Combined Science': 'color-orange',
-                'History': 'color-purple',
-                'Geography': 'color-teal',
-                'Computer Science': 'color-purple',
-                'Business': 'color-blue',
-                'Psychology': 'color-pink',
-                'Religious Education': 'color-yellow',
-                'Food & Nutrition': 'color-red'
+                'Combined Science - Biology': 'color-orange',
+                'Combined Science - Chemistry': 'color-orange',
+                'Combined Science - Physics': 'color-orange'
             };
             return colorMap[subjectName] || 'color-blue';
         }

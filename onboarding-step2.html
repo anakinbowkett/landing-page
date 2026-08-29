@@ -222,23 +222,14 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
     const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const liveSubjects = ['Mathematics','English Language','English Literature','Chemistry','Physics','Biology'];
-
     const subjects = [
-        { name: 'Mathematics',         requiresTier: true  },
-        { name: 'English Language',    requiresTier: false },
-        { name: 'English Literature',  requiresTier: false },
-        { name: 'Biology',             requiresTier: true  },
-        { name: 'Chemistry',           requiresTier: true  },
-        { name: 'Physics',             requiresTier: true  },
-        { name: 'Combined Science',    requiresTier: true  },
-        { name: 'History',             requiresTier: false },
-        { name: 'Geography',           requiresTier: false },
-        { name: 'Computer Science',    requiresTier: false },
-        { name: 'Business',            requiresTier: false },
-        { name: 'Psychology',          requiresTier: false },
-        { name: 'Religious Education', requiresTier: false },
-        { name: 'Food & Nutrition',    requiresTier: false }
+        { name: 'Mathematics',        requiresTier: true  },
+        { name: 'English Language',   requiresTier: false },
+        { name: 'English Literature', requiresTier: false },
+        { name: 'Combined Science',   requiresTier: true  },
+        { name: 'Biology',  label: 'Biology (Separate Science)',  requiresTier: true, comingSoon: true },
+        { name: 'Chemistry', label: 'Chemistry (Separate Science)', requiresTier: true, comingSoon: true },
+        { name: 'Physics',  label: 'Physics (Separate Science)',  requiresTier: true, comingSoon: true }
     ];
 
     const examBoards = ['AQA', 'Edexcel', 'OCR'];
@@ -270,7 +261,7 @@
     }
 
     function buildCard(subject) {
-        const live = liveSubjects.includes(subject.name);
+        const live = !subject.comingSoon;
         const wrapper = document.createElement('div');
         wrapper.className = 'subject-card-wrapper' + (live ? '' : ' coming-soon');
 
@@ -285,7 +276,7 @@
         card.className = 'subject-card';
         card.innerHTML = `
             <div class="subject-header">
-                <span class="subject-name">${subject.name}</span>
+                <span class="subject-name">${subject.label || subject.name}</span>
                 <span class="check-icon">
                     <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"
                          stroke-linecap="round" stroke-linejoin="round">

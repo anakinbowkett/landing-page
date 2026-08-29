@@ -290,19 +290,12 @@
                         <option value="Mathematics">Mathematics</option>
                         <option value="English Language">English Language</option>
                         <option value="English Literature">English Literature</option>
-                        <option value="Biology">Biology (Separate Science)</option>
-                        <option value="Chemistry">Chemistry (Separate Science)</option>
-                        <option value="Physics">Physics (Separate Science)</option>
                         <option value="Combined Science - Biology">Combined Science: Biology</option>
                         <option value="Combined Science - Chemistry">Combined Science: Chemistry</option>
                         <option value="Combined Science - Physics">Combined Science: Physics</option>
-                        <option value="History">History</option>
-                        <option value="Geography">Geography</option>
-                        <option value="Computer Science">Computer Science</option>
-                        <option value="Business">Business</option>
-                        <option value="Psychology">Psychology</option>
-                        <option value="Religious Education">Religious Education (RS)</option>
-                        <option value="Food & Nutrition">Food & Nutrition</option>
+                        <option value="Biology" disabled>Biology (Separate Science) — Coming Soon</option>
+                        <option value="Chemistry" disabled>Chemistry (Separate Science) — Coming Soon</option>
+                        <option value="Physics" disabled>Physics (Separate Science) — Coming Soon</option>
                     </select>
                 </div>
 
@@ -311,9 +304,8 @@
                     <select id="exam-board-select" required>
                         <option value="">Select exam board...</option>
                         <option value="AQA">AQA</option>
-                        <option value="EDEXCEL">EDEXCEL</option>
+                        <option value="Edexcel">Edexcel</option>
                         <option value="OCR">OCR</option>
-                        <option value="WJEC">WJEC</option>
                     </select>
                 </div>
 
@@ -347,7 +339,20 @@
         let selectedSubjects = [];
         let userId = null;
         const tieredSubjects = ['Mathematics', 'Combined Science - Biology', 'Combined Science - Chemistry', 'Combined Science - Physics', 'Biology', 'Chemistry', 'Physics'];
-        const subjectColors = ['color-blue', 'color-green', 'color-orange', 'color-purple', 'color-pink', 'color-yellow', 'color-red', 'color-teal'];
+        const subjectColorMap = {
+            'Mathematics': 'color-blue',
+            'English Language': 'color-green',
+            'English Literature': 'color-green',
+            'Biology': 'color-orange',
+            'Chemistry': 'color-orange',
+            'Physics': 'color-orange',
+            'Combined Science - Biology': 'color-orange',
+            'Combined Science - Chemistry': 'color-orange',
+            'Combined Science - Physics': 'color-orange'
+        };
+        function getColorVariant(subjectName) {
+            return subjectColorMap[subjectName] || 'color-blue';
+        }
 
         // Check if user is authenticated
         async function checkAuth() {
@@ -417,12 +422,11 @@
                 return;
             }
 
-            const colorIndex = selectedSubjects.length % subjectColors.length;
             selectedSubjects.push({
                 subject,
                 examBoard,
                 tier,
-                color: subjectColors[colorIndex]
+                color: getColorVariant(subject)
             });
 
             renderSubjects();
