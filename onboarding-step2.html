@@ -195,6 +195,15 @@
             .container { padding: 2rem 1.25rem; }
             .subject-grid { grid-template-columns: 1fr; }
         }
+
+        /* Subtle press feedback, consistent across onboarding */
+        .subject-card, .continue-btn, .back-btn, select {
+            transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+        }
+        .subject-card:active { transform: scale(0.98); }
+        .continue-btn:active:not(:disabled) { transform: scale(0.97) translateY(1px); }
+        .back-btn:active { transform: scale(0.97) translateY(1px); }
+        select:active { transform: scale(0.98); }
     </style>
 </head>
 <body>

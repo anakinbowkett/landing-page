@@ -239,6 +239,12 @@
             .grade-columns { grid-template-columns: 1fr; gap: 1.5rem; }
             body { padding: 1rem; }
         }
+
+        /* Subtle press feedback, consistent across onboarding */
+        .start-btn, .back-btn, .grade-btn { transition: all 0.15s ease, transform 0.1s ease; }
+        .start-btn:active:not(:disabled) { transform: scale(0.97) translateY(1px); }
+        .back-btn:active { transform: scale(0.97) translateY(1px); }
+        .grade-btn:active { transform: scale(0.92); }
     </style>
 </head>
 <body>

@@ -252,6 +252,15 @@
         .tier-option input[type="radio"] {
             display: none;
         }
+
+        /* Subtle press feedback, consistent across onboarding */
+        .btn, .add-subject-btn, .subject-card, .remove-btn, .tier-option, select {
+            transition: all 0.15s ease, transform 0.1s ease;
+        }
+        .btn:active:not(:disabled), .add-subject-btn:active { transform: scale(0.97) translateY(1px); }
+        .subject-card:active, .tier-option:active { transform: scale(0.98); }
+        .remove-btn:active { transform: scale(0.85); }
+        select:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
