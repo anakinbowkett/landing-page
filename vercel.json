@@ -4,5 +4,9 @@
       "memory": 1024,
       "maxDuration": 10
     }
-  }
+  },
+  "rewrites": [
+    { "source": "/creator-consent", "destination": "/creator-consent.html" },
+    { "source": "/creator-contract", "destination": "/creator-contract.html" }
+  ]
 }
