@@ -6,6 +6,12 @@
 // localStorage, sharing a bookmarked link) can get past it, because the
 // decision is made here against Postgres's own clock, never the visitor's.
 //
+// Two tiers live here:
+//  - Core lecture content is free forever for any signed-in student — no
+//    payment check at all, just proof of a real account.
+//  - Everything else under /lectures/* (Flashtiles, past papers, quick
+//    tests) needs an active trial or paid subscription.
+//
 // Needs one thing from Vercel: an environment variable called
 // SUPABASE_SERVICE_ROLE_KEY (Project Settings → Environment Variables).
 // This key must NEVER appear in any file that ships to the browser.
@@ -17,6 +23,12 @@ export const config = {
 };
 
 const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+
+// Deliberately narrow, and defaults to "not free" for anything that doesn't
+// clearly match — a miss here should mean "still needs paying for", never
+// "accidentally free", so new page types added later stay protected by
+// default until someone explicitly widens this pattern.
+const FREE_LECTURE_PATH = /^\/lectures\/[^/]+\/(lectures\.html|lectures\/[^/]+\.html|lectures-data\.js|question-counts\.js)$/;
 
 function getCookie(request, name) {
   const cookieHeader = request.headers.get('cookie') || '';
@@ -58,8 +70,16 @@ export default async function middleware(request) {
     return Response.redirect(new URL('/signin.html', request.url), 302);
   }
 
-  // Server-side entitlement check (SQL function runs inside Postgres, so
-  // "now" is the database's clock — see supabase/check_entitlement.sql).
+  // Core lecture content: free for any real, signed-in account — no
+  // trial/subscription check at all.
+  if (FREE_LECTURE_PATH.test(url.pathname)) {
+    return next();
+  }
+
+  // Everything else under /lectures/* (Flashtiles, past papers, quick
+  // tests) needs an active trial or paid subscription — server-side entitlement
+  // check (SQL function runs inside Postgres, so "now" is the database's
+  // clock — see supabase/check_entitlement.sql).
   let entitled = false;
   try {
     const entitlementRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/check_entitlement`, {

@@ -104,16 +104,25 @@ async function handleCheckoutCompleted(session) {
     // event unless you explicitly expand it, so the old lookup always fell
     // through to the default.
     const productType = session.metadata?.productType || 'core_bundle';
+    const usedIntroOffer = session.metadata?.usedIntroOffer === 'true';
 
     // Update user profile in Supabase
+    const profileUpdate = {
+        subscription_status: 'active',
+        stripe_customer_id: customerId,
+        stripe_subscription_id: subscriptionId,
+        updated_at: new Date().toISOString()
+    };
+    // Only ever flips false -> true, and only once payment has actually
+    // gone through — never set at checkout creation, so an abandoned
+    // checkout never burns someone's one shot at the offer.
+    if (usedIntroOffer) {
+        profileUpdate.used_intro_offer = true;
+    }
+
     const { error } = await supabase
         .from('user_profiles')
-        .update({
-            subscription_status: 'active',
-            stripe_customer_id: customerId,
-            stripe_subscription_id: subscriptionId,
-            updated_at: new Date().toISOString()
-        })
+        .update(profileUpdate)
         .eq('id', userId);
 
     if (error) {

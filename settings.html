@@ -343,12 +343,13 @@
                 const errEl = document.getElementById('billing-error');
                 errEl.style.display = 'none';
                 try {
-                    const res = await fetch('/api/create-portal-session', {
+                    const res = await fetch('/api/create-checkout-session', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${session.access_token}`,
                         },
+                        body: JSON.stringify({ action: 'portal' }),
                     });
                     const data = await res.json();
                     if (!res.ok || !data.url) throw new Error(data.error || 'Could not open billing portal');

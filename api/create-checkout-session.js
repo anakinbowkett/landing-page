@@ -1,20 +1,41 @@
 // api/create-checkout-session.js
+//
+// Handles two related jobs in one function (Vercel's Hobby plan caps
+// serverless functions at 12 — see supabase/add_intro_offer_column.sql
+// era commit history for why this matters): starting a new Checkout
+// Session, and opening the Stripe Billing Portal for an existing
+// subscriber. Selected by body.action, defaulting to "checkout" so
+// nothing already calling this endpoint needs to change.
 import Stripe from 'stripe';
+import { createClient } from '@supabase/supabase-js';
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+// The one-time 99p-first-month coupon. Created once in Stripe — see
+// update-montura-pricing.js for how it was set up.
+const INTRO_OFFER_COUPON_ID = process.env.STRIPE_INTRO_COUPON_ID;
+
 export default async function handler(req, res) {
-    // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
-    
-    // Enable CORS
+
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
+
+    if (req.body?.action === 'portal') {
+        return handlePortalSession(req, res);
+    }
+    return handleCheckoutSession(req, res);
+}
+
+async function handleCheckoutSession(req, res) {
     try {
         const { priceId, userId, userEmail, successUrl, cancelUrl, quantity = 1 } = req.body;
         
@@ -24,9 +45,23 @@ export default async function handler(req, res) {
                 error: 'Missing required fields: priceId, userId, userEmail' 
             });
         }
-        
-        // Create Stripe Checkout Session
-        const session = await stripe.checkout.sessions.create({
+
+        // Decide the intro-offer eligibility ourselves, server-side, from our
+        // own database — never from anything the checkout page claims. This
+        // is what actually makes the 99p offer one-time-only.
+        let usedIntroOffer = true; // fail closed: unknown account never gets a free discount
+        try {
+            const { data: profile } = await supabase
+                .from('user_profiles')
+                .select('used_intro_offer')
+                .eq('id', userId)
+                .single();
+            usedIntroOffer = profile?.used_intro_offer ?? true;
+        } catch {
+            usedIntroOffer = true;
+        }
+
+        const sessionParams = {
             payment_method_types: ['card'],
             line_items: [
                 {
@@ -43,13 +78,21 @@ export default async function handler(req, res) {
                 userId: userId,
                 userEmail: userEmail,
                 productType: req.body.productType || 'standard',
+                usedIntroOffer: (!usedIntroOffer && INTRO_OFFER_COUPON_ID) ? 'true' : 'false',
             },
             subscription_data: {
                 metadata: {
                     userId: userId,
                 }
             }
-        });
+        };
+
+        if (!usedIntroOffer && INTRO_OFFER_COUPON_ID) {
+            sessionParams.discounts = [{ coupon: INTRO_OFFER_COUPON_ID }];
+        }
+
+        // Create Stripe Checkout Session
+        const session = await stripe.checkout.sessions.create(sessionParams);
         
         return res.status(200).json({ 
             id: session.id,
@@ -60,5 +103,42 @@ export default async function handler(req, res) {
         return res.status(500).json({ 
             error: error.message || 'Internal server error' 
         });
+    }
+}
+
+async function handlePortalSession(req, res) {
+    try {
+        // Trust the caller's own signed-in session, never a userId they
+        // send us in the body — otherwise anyone could open anyone else's portal.
+        const token = (req.headers.authorization || '').replace('Bearer ', '');
+        if (!token) {
+            return res.status(401).json({ error: 'Missing auth token' });
+        }
+
+        const { data: userData, error: userError } = await supabase.auth.getUser(token);
+        if (userError || !userData?.user) {
+            return res.status(401).json({ error: 'Invalid session' });
+        }
+        const userId = userData.user.id;
+
+        const { data: profile, error: profileError } = await supabase
+            .from('user_profiles')
+            .select('stripe_customer_id')
+            .eq('id', userId)
+            .single();
+
+        if (profileError || !profile?.stripe_customer_id) {
+            return res.status(400).json({ error: 'No billing account yet — subscribe first from the pricing page.' });
+        }
+
+        const portalSession = await stripe.billingPortal.sessions.create({
+            customer: profile.stripe_customer_id,
+            return_url: `${req.headers.origin}/settings.html`,
+        });
+
+        return res.status(200).json({ url: portalSession.url });
+    } catch (error) {
+        console.error('Portal session error:', error);
+        return res.status(500).json({ error: error.message || 'Internal server error' });
     }
 }
