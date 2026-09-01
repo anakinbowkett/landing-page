@@ -6,7 +6,7 @@
 <title>Creator Programme Consent Form — Monturalearn</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -20,132 +20,110 @@
     nav {
         position: fixed;
         top: 0; left: 0; right: 0;
-        background: rgba(10,10,10,0.92);
+        background: rgba(10,10,10,0.94);
         backdrop-filter: blur(12px);
         border-bottom: 1px solid #1f1f1f;
         z-index: 50;
-        height: 5rem;
+        height: 4.25rem;
         display: flex;
         align-items: center;
-        padding: 0 2rem;
+        padding: 0 1.5rem;
         justify-content: space-between;
     }
 
-    .nav-logo-row { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-    .nav-logo-row img { height: 40px; width: auto; }
-    .nav-brand { font-size: 1.125rem; font-weight: 700; color: #ffffff; }
-    .nav-back { font-size: 0.9rem; font-weight: 500; color: #6b7280; text-decoration: none; transition: color 0.2s; }
+    .nav-logo-row { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
+    .nav-logo-row img { height: 32px; width: auto; }
+    .nav-brand { font-size: 1rem; font-weight: 700; color: #ffffff; }
+    .nav-back { font-size: 0.85rem; font-weight: 500; color: #9ca3af; text-decoration: none; }
     .nav-back:hover { color: #e5e7eb; }
 
-    .page-hero { padding: 12rem 2rem 4rem; max-width: 860px; margin: 0 auto; }
+    .doc-wrap { max-width: 720px; margin: 0 auto; padding: 6rem 1rem 0; }
 
-    .page-tag {
-        display: inline-block; background: #1a1a1a; color: #9ca3af;
-        font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
-        letter-spacing: 0.1em; padding: 0.375rem 1rem; border-radius: 9999px;
-        border: 1px solid #2a2a2a; margin-bottom: 2rem;
+    .doc-page {
+        width: 100%;
+        display: block;
+        border-radius: 6px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        margin-bottom: 1rem;
+        border: 1px solid #262626;
     }
 
-    .page-hero h1 {
-        font-size: clamp(2.2rem, 5.5vw, 3.4rem); font-weight: 700; line-height: 1.1;
-        color: #ffffff; margin-bottom: 1.5rem; letter-spacing: -0.03em;
+    .scroll-hint {
+        text-align: center; font-size: 0.75rem; color: #6b7280;
+        padding: 0.5rem 0 1.5rem; letter-spacing: 0.02em;
     }
-
-    .page-hero p { font-size: 1rem; color: #9ca3af; line-height: 1.75; max-width: 620px; }
-    .page-hero p strong { color: #e5e7eb; }
-
-    .page-content { max-width: 860px; margin: 0 auto; padding: 0 2rem 4rem; }
-
-    .divider { border: none; border-top: 1px solid #1f1f1f; margin: 3rem 0; }
-
-    .content-block { margin-bottom: 3rem; }
-    .content-block h2 { font-size: 1.0625rem; font-weight: 600; color: #ffffff; margin-bottom: 1rem; letter-spacing: -0.01em; }
-    .content-block p { font-size: 0.9375rem; color: #9ca3af; line-height: 1.8; margin-bottom: 0.85rem; }
-    .content-block p:last-child { margin-bottom: 0; }
-    .content-block strong { color: #d1d5db; }
-
-    .content-block ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin: 0.75rem 0; }
-    .content-block ul li { font-size: 0.9375rem; color: #9ca3af; line-height: 1.7; padding-left: 1.25rem; position: relative; }
-    .content-block ul li::before { content: "—"; position: absolute; left: 0; color: #3a3a3a; }
 
     /* ── Signing zone (identical system to creator-contract.html) ── */
-    .sign-zone { background: #111214; border: 1px solid #262626; border-radius: 20px; padding: 2.25rem; margin-top: 1rem; }
+    .sign-wrap { max-width: 720px; margin: 0 auto; padding: 0 1rem 4rem; }
+
+    .sign-zone { background: #111214; border: 1px solid #262626; border-radius: 20px; padding: 1.75rem; }
     .sign-zone-tag {
         display: inline-block; background: #7c2d2d22; color: #f87171;
-        font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
-        padding: 0.3rem 0.85rem; border-radius: 9999px; border: 1px solid #7c2d2d55; margin-bottom: 1rem;
+        font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+        padding: 0.3rem 0.8rem; border-radius: 9999px; border: 1px solid #7c2d2d55; margin-bottom: 0.85rem;
     }
-    .sign-zone h2 { font-size: 1.375rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
-    .sign-zone > p { font-size: 0.875rem; color: #9ca3af; margin-bottom: 1.75rem; line-height: 1.6; }
+    .sign-zone h2 { font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem; }
+    .sign-zone > p.lede { font-size: 0.85rem; color: #9ca3af; margin-bottom: 1.5rem; line-height: 1.6; }
 
-    .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
-    @media (max-width: 640px) { .details-grid { grid-template-columns: 1fr; } }
+    .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin-bottom: 1.75rem; }
+    @media (max-width: 560px) { .details-grid { grid-template-columns: 1fr; } }
 
-    .field { display: flex; flex-direction: column; gap: 0.4rem; }
-    .field label { font-size: 0.8rem; font-weight: 500; color: #9ca3af; }
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .field label { font-size: 0.78rem; font-weight: 500; color: #9ca3af; }
     .field input {
         background: #1a1b1e; border: 1px solid #2c2c2f; border-radius: 10px;
-        padding: 0.75rem 0.9rem; color: #f3f4f6; font-size: 0.95rem; font-family: inherit;
+        padding: 0.7rem 0.85rem; color: #f3f4f6; font-size: 0.95rem; font-family: inherit;
         outline: none; transition: border-color 0.15s;
     }
     .field input:focus { border-color: #6b7280; }
 
-    .signer-block { border: 1px solid #232326; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; background: #0d0e10; }
-    .signer-block h3 { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-    .signer-block h3 .dot { width: 8px; height: 8px; border-radius: 50%; background: #d64545; display: inline-block; }
+    .signer-block { border: 1px solid #232326; border-radius: 16px; padding: 1.35rem; margin-bottom: 1.25rem; background: #0d0e10; }
+    .signer-block h3 { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
+    .signer-block h3 .dot { width: 7px; height: 7px; border-radius: 50%; background: #d64545; display: inline-block; }
+
+    .sig-field-label { font-size: 0.78rem; font-weight: 500; color: #9ca3af; margin-bottom: 0.35rem; }
+    .sig-line { position: relative; border-bottom: 2px solid #3a3a3f; padding-bottom: 0.4rem; margin-bottom: 0.3rem; }
+    .sig-line input {
+        width: 100%; background: none; border: none; outline: none;
+        font-family: 'Dancing Script', cursive; font-size: 1.9rem; color: #f3f4f6;
+        padding: 0.1rem 0.1rem 0; font-weight: 600;
+    }
+    .sig-line input::placeholder { font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #55565c; font-weight: 400; }
+    .sig-caption { font-size: 0.72rem; color: #55565c; margin-bottom: 1.1rem; }
 
     .agree-row {
-        display: flex; align-items: flex-start; gap: 0.65rem; margin: 1.1rem 0 1.4rem;
-        font-size: 0.85rem; color: #9ca3af; line-height: 1.55;
+        display: flex; align-items: flex-start; gap: 0.6rem; margin: 0.9rem 0 0.2rem;
+        font-size: 0.82rem; color: #9ca3af; line-height: 1.5;
     }
-    .agree-row input[type="checkbox"] { margin-top: 0.2rem; width: 17px; height: 17px; accent-color: #d64545; flex-shrink: 0; cursor: pointer; }
+    .agree-row input[type="checkbox"] { margin-top: 0.2rem; width: 16px; height: 16px; accent-color: #d64545; flex-shrink: 0; cursor: pointer; }
     .agree-row label { cursor: pointer; }
 
-    .pad-label { font-size: 0.8rem; font-weight: 500; color: #9ca3af; margin-bottom: 0.4rem; display: block; }
-    canvas.sig-canvas {
-        width: 100%; height: 150px; display: block;
-        background: #17181b; border: 1.5px dashed #33343a; border-radius: 12px;
-        touch-action: none; cursor: crosshair;
-    }
-    canvas.sig-canvas.has-ink { border-style: solid; border-color: #3a3a3f; }
+    .age-gate { display: none; font-size: 0.78rem; color: #fca5a5; margin: -1rem 0 0.9rem; }
 
-    .pad-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
-    .pad-hint { font-size: 0.75rem; color: #55565c; }
-    .clear-btn { background: none; border: none; color: #9ca3af; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; padding: 0.2rem 0; }
-    .clear-btn:hover { color: #e5e7eb; }
-
-    .date-note { font-size: 0.78rem; color: #6b7280; margin-top: 0.75rem; }
+    .date-note { font-size: 0.75rem; color: #6b7280; margin-top: 1rem; }
 
     .submit-btn {
         width: 100%; background: #d64545; color: #fff; border: none; border-radius: 12px;
-        padding: 1rem; font-size: 1rem; font-weight: 700; font-family: inherit; cursor: pointer;
-        transition: background 0.15s, opacity 0.15s; margin-top: 0.5rem;
+        padding: 0.95rem; font-size: 0.98rem; font-weight: 700; font-family: inherit; cursor: pointer;
+        transition: background 0.15s; margin-top: 0.75rem;
     }
     .submit-btn:hover:not(:disabled) { background: #c23a3a; }
     .submit-btn:disabled { background: #2a2a2c; color: #6b7280; cursor: not-allowed; }
 
-    .status-msg { font-size: 0.85rem; margin-top: 1rem; line-height: 1.5; display: none; padding: 0.85rem 1rem; border-radius: 10px; }
+    .status-msg { font-size: 0.82rem; margin-top: 0.9rem; line-height: 1.5; display: none; padding: 0.8rem 0.95rem; border-radius: 10px; }
     .status-msg.error { display: block; background: #3a1414; color: #fca5a5; border: 1px solid #5c1f1f; }
 
-    .age-gate { display: none; font-size: 0.8rem; color: #fca5a5; margin-top: 0.4rem; }
-
-    .success-panel { text-align: center; padding: 2rem 1rem; }
+    .success-panel { text-align: center; padding: 1.75rem 1rem; }
     .success-panel .check {
-        width: 56px; height: 56px; border-radius: 50%; background: #16321c; border: 1px solid #234a2b;
-        display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 1.6rem;
+        width: 52px; height: 52px; border-radius: 50%; background: #16321c; border: 1px solid #234a2b;
+        display: flex; align-items: center; justify-content: center; margin: 0 auto 1.1rem; font-size: 1.5rem;
     }
-    .success-panel h2 { color: #fff; margin-bottom: 0.75rem; }
-    .success-panel p { color: #9ca3af; font-size: 0.9rem; line-height: 1.7; max-width: 420px; margin: 0 auto; }
+    .success-panel h2 { color: #fff; margin-bottom: 0.6rem; font-size: 1.2rem; }
+    .success-panel p { color: #9ca3af; font-size: 0.88rem; line-height: 1.65; max-width: 400px; margin: 0 auto; }
     .success-panel a { color: #f3a3a3; font-weight: 600; }
 
-    .page-footer { background: #000; border-top: 1px solid #1a1a1a; padding: 2rem; text-align: center; }
-    .page-footer p { color: #4b5563; font-size: 0.8125rem; }
-
-    @media (max-width: 640px) {
-        .page-hero { padding: 8.5rem 1.25rem 3rem; }
-        .page-content { padding: 0 1.25rem 3rem; }
-        .sign-zone { padding: 1.5rem 1.25rem; border-radius: 16px; }
-    }
+    .page-footer { background: #000; border-top: 1px solid #1a1a1a; padding: 1.75rem; text-align: center; }
+    .page-footer p { color: #4b5563; font-size: 0.78rem; }
 </style>
 </head>
 <body>
@@ -158,86 +136,16 @@
     <a href="creator-contract.html" class="nav-back">Creator contract →</a>
 </nav>
 
-<div class="page-hero">
-    <span class="page-tag">Creator Programme · Consent</span>
-    <h1>Creator Programme Consent Form</h1>
-    <p>This confirms that you and a parent or guardian have read, understood, and agree to take part in the Creator Programme. Read it together with the <a href="creator-contract.html" style="color:#e5e7eb;">full Agreement</a> — they cover everything involved.</p>
+<div class="doc-wrap">
+    <img class="doc-page" src="assets/consent-1.png" alt="Creator Programme Consent Form, page 1">
+    <p class="scroll-hint">That's the full Consent Form — sign below ↓</p>
 </div>
 
-<div class="page-content">
-
-    <div class="content-block">
-        <h2>1. About this form</h2>
-        <p>This form confirms that the Creator named below and their parent/guardian have read, understood, and agree to the Creator taking part in the Montura Learn Creator Programme, as fully described in the accompanying Creator Programme Agreement. Please read both documents together — they cover everything involved.</p>
-    </div>
-
-    <hr class="divider">
-
-    <div class="content-block">
-        <h2>2. Eligibility</h2>
-        <p>The Creator confirms they are aged 16 or over, and are no longer of compulsory school age — i.e. they have finished Year 11/GCSEs and are now in Sixth Form, College, employment, or equivalent. Montura Learn does not accept anyone under 16, or anyone still in Year 11 or below, onto this programme.</p>
-    </div>
-
-    <hr class="divider">
-
-    <div class="content-block">
-        <h2>3. What the programme involves (summary)</h2>
-        <ul>
-            <li>Posting 4–6 TikTok videos a week promoting Montura Learn</li>
-            <li>Following the weekly content brief (or, once trusted, proposing your own approach)</li>
-            <li>£5 per video posted — not based on views, likes, comments, or shares</li>
-            <li>Sending a performance screenshot within 24 hours of posting</li>
-        </ul>
-        <p>Full detail of all of the above is set out in the Creator Programme Agreement.</p>
-    </div>
-
-    <hr class="divider">
-
-    <div class="content-block">
-        <h2>4. About the "Visit Website" button on some videos</h2>
-        <ul>
-            <li>Sometimes we might turn one of your videos into a TikTok ad, so more people see it, with a button that takes them straight to our website.</li>
-            <li>To do this, TikTok needs a special code from you — it just gives us permission to boost that one video. It does NOT give us your password or access to your account.</li>
-            <li>This is optional — we'll only ask for videos that are already doing well, and you can say no.</li>
-            <li>This costs Montura Learn money, like any TikTok ad. It costs you nothing and does not change your £5 per video.</li>
-            <li>We'll show you exactly how to generate the code — it only takes a minute.</li>
-        </ul>
-    </div>
-
-    <hr class="divider">
-
-    <div class="content-block">
-        <h2>5. What we need from the Parent/Guardian</h2>
-        <p>By signing below, you confirm that:</p>
-        <ul>
-            <li>(a) You are the parent or legal guardian of the Creator named below;</li>
-            <li>(b) You have read this Consent Form and the Agreement in full, and are satisfied you understand the payment structure, content requirements, and how the Creator's videos may be used;</li>
-            <li>(c) You have discussed this with the Creator, and you consent to them taking part;</li>
-            <li>(d) You agree, as set out in the Agreement, to be bound by and guarantee the Creator's obligations under it.</li>
-        </ul>
-    </div>
-
-    <hr class="divider">
-
-    <div class="content-block">
-        <h2>6. Data protection</h2>
-        <p>Montura Learn collects the Creator's name, date of birth, contact details, bank details (for payment), video/engagement content, and both signatures on this form, in order to run the programme and pay the Creator. Full detail is in the Agreement's Data Protection clause. Monturalearn is the data controller.</p>
-    </div>
-
-    <hr class="divider">
-
-    <div class="content-block">
-        <h2>7. Right to withdraw</h2>
-        <p>The Creator or Parent/Guardian may withdraw from the programme at any time by giving written notice, as set out in the Agreement.</p>
-    </div>
-
-    <hr class="divider">
-
-    <!-- ══════════ SIGNING ZONE ══════════ -->
+<div class="sign-wrap">
     <div id="formPanel" class="sign-zone">
         <span class="sign-zone-tag">Signatures required</span>
         <h2>Sign the Consent Form</h2>
-        <p>Both the Creator and a parent or guardian need to fill in their part and sign below. It's fine to hand the phone or laptop between you.</p>
+        <p class="lede">Both the Creator and a parent or guardian need to fill in their part below. Typing your name in the signature line and submitting is a legally recognised electronic signature — no need to draw anything.</p>
 
         <div class="details-grid">
             <div class="field">
@@ -254,8 +162,8 @@
             <h3><span class="dot"></span>Creator</h3>
             <div class="details-grid">
                 <div class="field">
-                    <label for="creatorName">Full name</label>
-                    <input type="text" id="creatorName" required>
+                    <label for="creatorLegalName">Full name</label>
+                    <input type="text" id="creatorLegalName" required>
                 </div>
                 <div class="field">
                     <label for="creatorDob">Date of birth</label>
@@ -264,22 +172,19 @@
             </div>
             <p class="age-gate" id="ageGate">You need to be 16 or over to join the Creator Programme — this date of birth doesn't meet that.</p>
 
-            <span class="pad-label">Sign here</span>
-            <div class="pad-wrap">
-                <canvas class="sig-canvas" id="creatorPad"></canvas>
+            <div class="sig-field-label">Signature</div>
+            <div class="sig-line">
+                <input type="text" id="creatorSig" placeholder="Type your full name to sign">
             </div>
-            <div class="pad-actions">
-                <span class="pad-hint">Draw with your finger or mouse</span>
-                <button type="button" class="clear-btn" data-clear="creatorPad">Clear</button>
-            </div>
+            <p class="sig-caption">Typing your name here and submitting counts as your electronic signature.</p>
         </div>
 
         <div class="signer-block">
             <h3><span class="dot" style="background:#6b7280;"></span>Parent / Guardian</h3>
             <div class="details-grid">
                 <div class="field">
-                    <label for="parentName">Full name</label>
-                    <input type="text" id="parentName" required>
+                    <label for="parentLegalName">Full name</label>
+                    <input type="text" id="parentLegalName" required>
                 </div>
                 <div class="field">
                     <label for="parentRelationship">Relationship to Creator</label>
@@ -297,22 +202,19 @@
                 </div>
             </div>
 
+            <div class="sig-field-label">Signature</div>
+            <div class="sig-line">
+                <input type="text" id="parentSig" placeholder="Type your full name to sign">
+            </div>
+            <p class="sig-caption">Typing your name here and submitting counts as your electronic signature.</p>
+
             <div class="agree-row">
                 <input type="checkbox" id="parentAgree">
                 <label for="parentAgree">I confirm (a)–(d) in Section 5 above, and I consent to my child taking part in the Creator Programme.</label>
             </div>
-
-            <span class="pad-label">Sign here</span>
-            <div class="pad-wrap">
-                <canvas class="sig-canvas" id="parentPad"></canvas>
-            </div>
-            <div class="pad-actions">
-                <span class="pad-hint">Draw with your finger or mouse</span>
-                <button type="button" class="clear-btn" data-clear="parentPad">Clear</button>
-            </div>
         </div>
 
-        <p class="date-note">Both signatures will be dated automatically with today's date (<span id="todayLabel"></span>) when submitted.</p>
+        <p class="date-note">Both signatures will be dated automatically with today's date (<span id="todayLabel"></span>) when submitted, along with a timestamp and device record for our files.</p>
 
         <button class="submit-btn" id="submitBtn" disabled>Sign &amp; submit</button>
         <div class="status-msg" id="statusMsg"></div>
@@ -323,7 +225,6 @@
         <h2>Consent form signed</h2>
         <p>Thanks — that's the Consent Form done. If you haven't already, head over to the <a href="creator-contract.html">Agreement</a> to finish up. Once both are signed we'll be in touch with your content plan.</p>
     </div>
-
 </div>
 
 <div class="page-footer">
@@ -333,75 +234,6 @@
 <script>
 (function () {
     "use strict";
-
-    function makePad(canvas) {
-        const ctx = canvas.getContext('2d');
-        let drawing = false, hasInk = false, last = null;
-
-        function resize() {
-            const rect = canvas.getBoundingClientRect();
-            const dpr = window.devicePixelRatio || 1;
-            const prevData = hasInk ? canvas.toDataURL() : null;
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
-            ctx.scale(dpr, dpr);
-            ctx.lineWidth = 2.4;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.strokeStyle = '#f3f4f6';
-            if (prevData) {
-                const img = new Image();
-                img.onload = () => ctx.drawImage(img, 0, 0, rect.width, rect.height);
-                img.src = prevData;
-            }
-        }
-
-        function pos(e) {
-            const rect = canvas.getBoundingClientRect();
-            return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-        }
-
-        function start(e) { drawing = true; last = pos(e); canvas.setPointerCapture(e.pointerId); }
-        function move(e) {
-            if (!drawing) return;
-            const p = pos(e);
-            ctx.beginPath();
-            ctx.moveTo(last.x, last.y);
-            ctx.lineTo(p.x, p.y);
-            ctx.stroke();
-            last = p;
-            if (!hasInk) { hasInk = true; canvas.classList.add('has-ink'); }
-        }
-        function end() { drawing = false; }
-
-        canvas.addEventListener('pointerdown', start);
-        canvas.addEventListener('pointermove', move);
-        canvas.addEventListener('pointerup', end);
-        canvas.addEventListener('pointercancel', end);
-        window.addEventListener('resize', resize);
-        resize();
-
-        return {
-            clear() {
-                const rect = canvas.getBoundingClientRect();
-                ctx.clearRect(0, 0, rect.width, rect.height);
-                hasInk = false;
-                canvas.classList.remove('has-ink');
-            },
-            isEmpty() { return !hasInk; },
-            toDataURL() { return canvas.toDataURL('image/png'); }
-        };
-    }
-
-    const creatorPad = makePad(document.getElementById('creatorPad'));
-    const parentPad = makePad(document.getElementById('parentPad'));
-
-    document.querySelectorAll('[data-clear]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            (btn.dataset.clear === 'creatorPad' ? creatorPad : parentPad).clear();
-            validate();
-        });
-    });
 
     const STORAGE_KEY = 'montura_creator_identity';
     function loadIdentity() {
@@ -417,9 +249,9 @@
     const $ = id => document.getElementById(id);
     if (idn.email) $('email').value = idn.email;
     if (idn.tiktokUsername) $('tiktok').value = idn.tiktokUsername;
-    if (idn.creatorName) $('creatorName').value = idn.creatorName;
+    if (idn.creatorName) { $('creatorLegalName').value = idn.creatorName; $('creatorSig').value = idn.creatorName; }
     if (idn.dob) $('creatorDob').value = idn.dob;
-    if (idn.parentName) $('parentName').value = idn.parentName;
+    if (idn.parentName) { $('parentLegalName').value = idn.parentName; $('parentSig').value = idn.parentName; }
     if (idn.parentRelationship) $('parentRelationship').value = idn.parentRelationship;
     if (idn.parentEmail) $('parentEmail').value = idn.parentEmail;
     if (idn.parentPhone) $('parentPhone').value = idn.parentPhone;
@@ -446,6 +278,11 @@
     const statusMsg = document.getElementById('statusMsg');
     const ageGateMsg = document.getElementById('ageGate');
 
+    function namesRoughlyMatch(a, b) {
+        const norm = s => (s || '').trim().toLowerCase().replace(/\s+/g, ' ');
+        return norm(a) === norm(b) && norm(a).length > 0;
+    }
+
     function validate() {
         const dob = $('creatorDob').value;
         const oldEnough = isOldEnough(dob);
@@ -453,25 +290,23 @@
 
         const ok = $('email').value.trim() &&
             $('tiktok').value.trim() &&
-            $('creatorName').value.trim() &&
+            $('creatorLegalName').value.trim() &&
             oldEnough &&
-            !creatorPad.isEmpty() &&
-            $('parentName').value.trim() &&
+            namesRoughlyMatch($('creatorSig').value, $('creatorLegalName').value) &&
+            $('parentLegalName').value.trim() &&
             $('parentRelationship').value.trim() &&
             $('parentEmail').value.trim() &&
             $('parentPhone').value.trim() &&
-            $('parentAgree').checked &&
-            !parentPad.isEmpty();
+            namesRoughlyMatch($('parentSig').value, $('parentLegalName').value) &&
+            $('parentAgree').checked;
 
         submitBtn.disabled = !ok;
         return ok;
     }
 
-    ['email','tiktok','creatorName','creatorDob','parentName','parentRelationship','parentEmail','parentPhone','parentAgree']
-        .forEach(id => $(id).addEventListener('input', validate));
-    $('parentAgree').addEventListener('change', validate);
-    document.getElementById('creatorPad').addEventListener('pointerup', validate);
-    document.getElementById('parentPad').addEventListener('pointerup', validate);
+    ['email','tiktok','creatorLegalName','creatorDob','creatorSig',
+     'parentLegalName','parentRelationship','parentEmail','parentPhone','parentSig','parentAgree']
+        .forEach(id => { $(id).addEventListener('input', validate); $(id).addEventListener('change', validate); });
 
     submitBtn.addEventListener('click', async () => {
         if (!validate()) return;
@@ -486,14 +321,14 @@
                 tiktokUsername: $('tiktok').value.trim()
             },
             formData: {
-                participantName: $('creatorName').value.trim(),
+                participantName: $('creatorLegalName').value.trim(),
                 participantDob: $('creatorDob').value,
-                participantSignature: creatorPad.toDataURL(),
-                parentName: $('parentName').value.trim(),
+                participantSignature: $('creatorSig').value.trim(),
+                parentName: $('parentLegalName').value.trim(),
                 relationship: $('parentRelationship').value.trim(),
                 parentEmail: $('parentEmail').value.trim(),
                 parentPhone: $('parentPhone').value.trim(),
-                signature: parentPad.toDataURL(),
+                signature: $('parentSig').value.trim(),
                 date: today.toISOString().slice(0, 10)
             }
         };
