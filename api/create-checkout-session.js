@@ -1,11 +1,11 @@
 // api/create-checkout-session.js
 //
-// Handles two related jobs in one function (Vercel's Hobby plan caps
-// serverless functions at 12 — see supabase/add_intro_offer_column.sql
-// era commit history for why this matters): starting a new Checkout
-// Session, and opening the Stripe Billing Portal for an existing
-// subscriber. Selected by body.action, defaulting to "checkout" so
-// nothing already calling this endpoint needs to change.
+// Handles three related jobs in one function (Vercel's Hobby plan caps
+// serverless functions at 12): starting a new Checkout Session, opening
+// the Stripe Billing Portal for an existing subscriber, and sending the
+// SMS code used to gate the 99p intro offer by phone number. Selected by
+// body.action, defaulting to "checkout" so nothing already calling this
+// endpoint needs to change.
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
@@ -15,6 +15,40 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SER
 // The one-time 99p-first-month coupon. Created once in Stripe — see
 // update-montura-pricing.js for how it was set up.
 const INTRO_OFFER_COUPON_ID = process.env.STRIPE_INTRO_COUPON_ID;
+
+const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_VERIFY_SERVICE = process.env.TWILIO_VERIFY_SERVICE_SID;
+
+function twilioAuthHeader() {
+    return 'Basic ' + Buffer.from(`${TWILIO_SID}:${TWILIO_AUTH}`).toString('base64');
+}
+
+async function twilioSendOtp(phone) {
+    const res = await fetch(`https://verify.twilio.com/v2/Services/${TWILIO_VERIFY_SERVICE}/Verifications`, {
+        method: 'POST',
+        headers: {
+            'Authorization': twilioAuthHeader(),
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ To: phone, Channel: 'sms' }).toString(),
+    });
+    return res.ok;
+}
+
+async function twilioCheckOtp(phone, code) {
+    const res = await fetch(`https://verify.twilio.com/v2/Services/${TWILIO_VERIFY_SERVICE}/VerificationCheck`, {
+        method: 'POST',
+        headers: {
+            'Authorization': twilioAuthHeader(),
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ To: phone, Code: code }).toString(),
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    return data.status === 'approved';
+}
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -32,12 +66,35 @@ export default async function handler(req, res) {
     if (req.body?.action === 'portal') {
         return handlePortalSession(req, res);
     }
+    if (req.body?.action === 'send-otp') {
+        return handleSendOtp(req, res);
+    }
     return handleCheckoutSession(req, res);
+}
+
+async function handleSendOtp(req, res) {
+    try {
+        const { phone } = req.body;
+        if (!phone) {
+            return res.status(400).json({ error: 'Missing phone number' });
+        }
+        if (!TWILIO_SID || !TWILIO_AUTH || !TWILIO_VERIFY_SERVICE) {
+            return res.status(500).json({ error: 'Phone verification is not configured yet' });
+        }
+        const sent = await twilioSendOtp(phone);
+        if (!sent) {
+            return res.status(400).json({ error: 'Could not send that code — check the number and try again' });
+        }
+        return res.status(200).json({ sent: true });
+    } catch (error) {
+        console.error('Send OTP error:', error);
+        return res.status(500).json({ error: error.message || 'Internal server error' });
+    }
 }
 
 async function handleCheckoutSession(req, res) {
     try {
-        const { priceId, userId, userEmail, successUrl, cancelUrl, quantity = 1 } = req.body;
+        const { priceId, userId, userEmail, successUrl, cancelUrl, quantity = 1, phone, otpCode } = req.body;
         
         // Validate required fields
         if (!priceId || !userId || !userEmail) {
@@ -61,6 +118,38 @@ async function handleCheckoutSession(req, res) {
             usedIntroOffer = true;
         }
 
+        let verifiedPhone = null;
+
+        // Only an account that hasn't used the offer yet gets asked for phone
+        // verification at all — nobody who's already paying full price is
+        // ever bothered with this step.
+        if (!usedIntroOffer && INTRO_OFFER_COUPON_ID) {
+            if (!phone || !otpCode) {
+                return res.status(400).json({ error: 'phone_verification_required' });
+            }
+
+            const codeOk = await twilioCheckOtp(phone, otpCode);
+            if (!codeOk) {
+                return res.status(400).json({ error: 'That code didn\'t match — request a new one and try again.' });
+            }
+
+            // Genuine, verified phone — now check whether it's already
+            // claimed the offer on a different account. New/first-time
+            // numbers stay eligible; a reused number just quietly loses
+            // the discount, nothing else happens to either account.
+            const { data: phoneRecord } = await supabase
+                .from('used_intro_phone_numbers')
+                .select('first_used_by')
+                .eq('phone_number', phone)
+                .maybeSingle();
+
+            if (phoneRecord) {
+                usedIntroOffer = true; // already claimed elsewhere — full price
+            } else {
+                verifiedPhone = phone; // eligible — recorded once payment actually completes
+            }
+        }
+
         const sessionParams = {
             payment_method_types: ['card'],
             line_items: [
@@ -79,6 +168,7 @@ async function handleCheckoutSession(req, res) {
                 userEmail: userEmail,
                 productType: req.body.productType || 'standard',
                 usedIntroOffer: (!usedIntroOffer && INTRO_OFFER_COUPON_ID) ? 'true' : 'false',
+                verifiedPhone: verifiedPhone || '',
             },
             subscription_data: {
                 metadata: {

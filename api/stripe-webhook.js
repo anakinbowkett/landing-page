@@ -169,6 +169,23 @@ async function handleCheckoutCompleted(session) {
             // Never let this side-check break the main checkout flow.
             console.error('Fingerprint tracking error (non-fatal):', fingerprintError);
         }
+
+        // Record the verified phone number as claimed. This one was already
+        // checked BEFORE checkout (create-checkout-session.js won't apply the
+        // coupon to a phone number that's already here), so this is really
+        // just confirming what was already decided — but only once payment
+        // has actually gone through, matching every other "mark it used"
+        // step in this flow.
+        const verifiedPhone = session.metadata?.verifiedPhone;
+        if (verifiedPhone) {
+            try {
+                await supabase
+                    .from('used_intro_phone_numbers')
+                    .upsert({ phone_number: verifiedPhone, first_used_by: userId }, { onConflict: 'phone_number', ignoreDuplicates: true });
+            } catch (phoneError) {
+                console.error('Phone tracking error (non-fatal):', phoneError);
+            }
+        }
     }
 
     // 🆕 AMBASSADOR LOGIC: Check if user was referred
