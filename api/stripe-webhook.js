@@ -170,20 +170,17 @@ async function handleCheckoutCompleted(session) {
             console.error('Fingerprint tracking error (non-fatal):', fingerprintError);
         }
 
-        // Record the verified phone number as claimed. This one was already
-        // checked BEFORE checkout (create-checkout-session.js won't apply the
-        // coupon to a phone number that's already here), so this is really
-        // just confirming what was already decided — but only once payment
-        // has actually gone through, matching every other "mark it used"
-        // step in this flow.
-        const verifiedPhone = session.metadata?.verifiedPhone;
-        if (verifiedPhone) {
+        // Record the normalized email as claimed. Free check, same pattern
+        // as the fingerprint one — only recorded once payment has actually
+        // gone through.
+        const normalizedEmail = session.metadata?.normalizedEmail;
+        if (normalizedEmail) {
             try {
                 await supabase
-                    .from('used_intro_phone_numbers')
-                    .upsert({ phone_number: verifiedPhone, first_used_by: userId }, { onConflict: 'phone_number', ignoreDuplicates: true });
-            } catch (phoneError) {
-                console.error('Phone tracking error (non-fatal):', phoneError);
+                    .from('used_intro_normalized_emails')
+                    .upsert({ normalized_email: normalizedEmail, first_used_by: userId }, { onConflict: 'normalized_email', ignoreDuplicates: true });
+            } catch (emailError) {
+                console.error('Email normalization tracking error (non-fatal):', emailError);
             }
         }
     }

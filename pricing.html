@@ -329,59 +329,9 @@
         .cta-button:active:not(:disabled) {
             transform: scale(0.97) translateY(1px);
         }
-
-        /* Phone verification modal (99p intro offer gate) */
-        #phone-verify-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(17,24,39,0.55);
-            z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(3px);
-        }
-        #phone-verify-overlay.active { display: flex; }
-        .pv-box {
-            background: white; border-radius: 16px; padding: 2.25rem; max-width: 380px; width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2); border: 1px solid #e5e7eb;
-        }
-        .pv-box h3 { font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
-        .pv-box p { font-size: 0.875rem; color: #6b7280; line-height: 1.5; margin-bottom: 1.25rem; }
-        .pv-box input {
-            width: 100%; padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 10px;
-            font-size: 0.9375rem; font-family: 'Inter', sans-serif; margin-bottom: 0.75rem; color: #111827;
-        }
-        .pv-box input:focus { outline: none; border-color: #1d7fe2; }
-        .pv-box button.pv-primary {
-            width: 100%; background: #111827; color: white; border: none; padding: 0.75rem;
-            border-radius: 10px; font-size: 0.9375rem; font-weight: 600; cursor: pointer;
-            font-family: 'Inter', sans-serif; margin-bottom: 0.5rem; transition: transform 0.1s ease;
-        }
-        .pv-box button.pv-primary:active:not(:disabled) { transform: scale(0.97) translateY(1px); }
-        .pv-box button.pv-primary:disabled { opacity: 0.6; cursor: default; }
-        .pv-box button.pv-secondary {
-            width: 100%; background: transparent; color: #6b7280; border: none; padding: 0.5rem;
-            font-size: 0.8125rem; cursor: pointer; font-family: 'Inter', sans-serif;
-        }
-        .pv-error { color: #dc2626; font-size: 0.8125rem; margin-bottom: 0.75rem; display: none; }
     </style>
 </head>
 <body>
-    <div id="phone-verify-overlay">
-        <div class="pv-box">
-            <div id="pv-step-phone">
-                <h3>Quick check for your 99p offer</h3>
-                <p>A one-time text to confirm you're a first-time student — takes a few seconds.</p>
-                <div class="pv-error" id="pv-phone-error"></div>
-                <input type="tel" id="pv-phone-input" placeholder="e.g. +447123456789">
-                <button class="pv-primary" id="pv-send-btn">Send code</button>
-                <button class="pv-secondary" id="pv-cancel-btn">Cancel</button>
-            </div>
-            <div id="pv-step-code" style="display:none;">
-                <h3>Enter the code</h3>
-                <p>We just texted a 6-digit code to that number.</p>
-                <div class="pv-error" id="pv-code-error"></div>
-                <input type="text" id="pv-code-input" placeholder="6-digit code" inputmode="numeric" maxlength="6">
-                <button class="pv-primary" id="pv-verify-btn">Verify &amp; continue</button>
-                <button class="pv-secondary" id="pv-cancel-btn-2">Cancel</button>
-            </div>
-        </div>
-    </div>
     <div class="container">
         <!-- Header -->
         <div class="header">
@@ -474,7 +424,6 @@
     };
  
     let currentUser = null;
-    let introOfferEligible = false;
  
     // Check authentication
     async function checkAuth() {
@@ -484,16 +433,9 @@
             return;
         }
         currentUser = session.user;
-
-        const { data: profile } = await sbClient
-            .from('user_profiles')
-            .select('used_intro_offer')
-            .eq('id', currentUser.id)
-            .single();
-        introOfferEligible = profile ? !profile.used_intro_offer : false;
     }
 
-    async function startCheckout(priceId, productType, phone, otpCode) {
+    async function startCheckout(priceId, productType) {
         if (!currentUser) {
             window.location.href = 'signin.html';
             return;
@@ -509,9 +451,7 @@
                     priceId,
                     userId: currentUser.id,
                     userEmail: currentUser.email,
-                    productType,
-                    phone,
-                    otpCode
+                    productType
                 })
             });
 
@@ -539,100 +479,7 @@
     }
 
     document.getElementById('pro-btn').addEventListener('click', () => {
-        if (introOfferEligible) {
-            openPhoneVerifyModal();
-        } else {
-            startCheckout(STRIPE_PRICES.pro, 'pro_monthly');
-        }
-    });
-
-    // 99p intro offer — phone verification modal
-    let pvPhone = '';
-    function openPhoneVerifyModal() {
-        document.getElementById('phone-verify-overlay').classList.add('active');
-        document.getElementById('pv-step-phone').style.display = 'block';
-        document.getElementById('pv-step-code').style.display = 'none';
-        document.getElementById('pv-phone-error').style.display = 'none';
-        document.getElementById('pv-code-error').style.display = 'none';
-        document.getElementById('pv-phone-input').value = '';
-        document.getElementById('pv-code-input').value = '';
-    }
-    function closePhoneVerifyModal() {
-        document.getElementById('phone-verify-overlay').classList.remove('active');
-    }
-    function pvShowError(id, msg) {
-        const el = document.getElementById(id);
-        el.textContent = msg;
-        el.style.display = 'block';
-    }
-
-    document.getElementById('pv-cancel-btn').addEventListener('click', closePhoneVerifyModal);
-    document.getElementById('pv-cancel-btn-2').addEventListener('click', closePhoneVerifyModal);
-
-    document.getElementById('pv-send-btn').addEventListener('click', async () => {
-        const phone = document.getElementById('pv-phone-input').value.trim();
-        if (!phone) {
-            pvShowError('pv-phone-error', 'Enter a phone number first.');
-            return;
-        }
-        const btn = document.getElementById('pv-send-btn');
-        btn.disabled = true;
-        btn.textContent = 'Sending…';
-        try {
-            const res = await fetch('/api/create-checkout-session', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'send-otp', phone })
-            });
-            const data = await res.json();
-            if (!res.ok || !data.sent) throw new Error(data.error || 'Could not send code');
-            pvPhone = phone;
-            document.getElementById('pv-step-phone').style.display = 'none';
-            document.getElementById('pv-step-code').style.display = 'block';
-        } catch (err) {
-            pvShowError('pv-phone-error', err.message);
-        } finally {
-            btn.disabled = false;
-            btn.textContent = 'Send code';
-        }
-    });
-
-    document.getElementById('pv-verify-btn').addEventListener('click', async () => {
-        const code = document.getElementById('pv-code-input').value.trim();
-        if (!code) {
-            pvShowError('pv-code-error', 'Enter the code you were sent.');
-            return;
-        }
-        const btn = document.getElementById('pv-verify-btn');
-        btn.disabled = true;
-        btn.textContent = 'Verifying…';
-        document.getElementById('pv-code-error').style.display = 'none';
-
-        try {
-            const response = await fetch('/api/create-checkout-session', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    priceId: STRIPE_PRICES.pro,
-                    userId: currentUser.id,
-                    userEmail: currentUser.email,
-                    productType: 'pro_monthly',
-                    phone: pvPhone,
-                    otpCode: code
-                })
-            });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'Verification failed');
-            if (!data.url) throw new Error('No checkout URL returned');
-
-            closePhoneVerifyModal();
-            window.location.href = data.url;
-        } catch (err) {
-            pvShowError('pv-code-error', err.message.includes('match') ? err.message : 'That code didn\'t work — check it and try again.');
-        } finally {
-            btn.disabled = false;
-            btn.textContent = 'Verify & continue';
-        }
+        startCheckout(STRIPE_PRICES.pro, 'pro_monthly');
     });
 
     document.getElementById('free-btn').addEventListener('click', () => {
