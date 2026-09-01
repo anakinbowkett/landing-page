@@ -99,7 +99,7 @@
             top: -12px;
             left: 50%;
             transform: translateX(-50%);
-            background: #1d7fe2;
+            background: #dc2626;
             color: white;
             padding: 0.375rem 1rem;
             border-radius: 20px;
@@ -107,6 +107,14 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+        }
+
+        .price-was {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-decoration: line-through;
+            text-decoration-color: #dc2626;
         }
 
         .card-header {
@@ -317,6 +325,10 @@
             <p>Choose the plan that works for you. Cancel anytime.</p>
         </div>
 
+        <div id="trial-ended-banner" style="display:none; max-width: 640px; margin: 0 auto 2rem; background: #fef3f2; border: 1px solid #fecdca; border-radius: 12px; padding: 1rem 1.25rem; text-align: center; color: #b42318; font-size: 0.9375rem; font-weight: 500;">
+            Your free trial's ended for Flashtiles, past papers and live quizzes — your lectures are still free, always. Pick a plan below to get everything back.
+        </div>
+
         <!-- Pricing Cards -->
         <div class="pricing-grid">
             <!-- Card 1: Free -->
@@ -345,11 +357,12 @@
 
             <!-- Card 2: Montura Pro -->
             <div class="pricing-card featured">
-                <div class="badge">FIRST MONTH 99P</div>
+                <div class="badge">FIRST MONTH: 99P</div>
 
                 <div class="card-header">
                     <h3 class="card-title">Montura Pro</h3>
                     <div class="card-price">
+                        <span class="price-was">£6.99</span>
                         <span class="price-amount">99p</span>
                         <span class="price-period">first month</span>
                     </div>
@@ -476,6 +489,13 @@
  
     // Initialize
     checkAuth();
+
+    // Middleware redirects here with ?trial_ended=true when someone tries
+    // to open Flashtiles/past papers/a quiz after their trial window closes.
+    if (new URLSearchParams(window.location.search).get('trial_ended') === 'true') {
+        const banner = document.getElementById('trial-ended-banner');
+        if (banner) banner.style.display = 'block';
+    }
 </script>
 
 </body>

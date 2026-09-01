@@ -1311,7 +1311,7 @@ nav {
         font-weight: 500;
         letter-spacing: 0.02em;
     ">
-        ⏳ Free Trial Active - Upgrade to Monturalearn Pro to keep your progress and unlock all features after trial ends!
+        ⏳ Free Trial Active - Upgrade to Montura Pro for Flashtiles, past papers &amp; live quizzes after trial ends!
     </span>
     <button style="
         background: white;
@@ -1891,9 +1891,6 @@ function createSubjectCard(subject) {
         ? ' · Triple Science'
         : '';
     
-    // Check if subject should be locked
-    const isLocked = shouldSubjectBeLocked(subject);
-    
     subjectBox.innerHTML = `
         <div class="subject-top">
             <div class="subject-name">${subject.subject_name}</div>
@@ -1908,10 +1905,10 @@ function createSubjectCard(subject) {
         </div>
     `;
     
+    // Lectures are free for every subject, always — trial/subscription status
+    // never affects whether a subject card opens. Only Flashtiles, past papers
+    // and quizzes (inside the subject's own page) are Pro-gated.
     subjectBox.addEventListener('click', () => {
-    if (isLocked) {
-        showPaywall();
-    } else {
         // Map subjects to their correct folder names
         const subjectSlugs = {
             'English Literature': 'english-literature',
@@ -1958,51 +1955,9 @@ function createSubjectCard(subject) {
                 }
             })
             .catch(() => window.location.href = `lectures/${route}/lectures.html`);
-    }
-});
+    });
 
-    if (isLocked) {
-        subjectBox.style.opacity = '0.65';
-        subjectBox.style.cursor = 'pointer';
-        subjectBox.style.filter = 'grayscale(35%)';
-        subjectBox.style.position = 'relative';
-        
-        const lockOverlay = document.createElement('div');
-        lockOverlay.style.cssText = `
-            position: absolute; top: 0.75rem; right: 0.75rem;
-            background: rgba(17, 24, 39, 0.85); color: white;
-            font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.02em;
-            padding: 0.25rem 0.625rem; border-radius: 999px;
-            z-index: 10; pointer-events: none;
-        `;
-        lockOverlay.textContent = 'Pro';
-        subjectBox.appendChild(lockOverlay);
-    } else {
-        subjectBox.style.opacity = '1';
-        subjectBox.style.cursor = 'pointer';
-        subjectBox.style.filter = 'none';
-    }
-    
     return subjectBox;
-}
-
-function shouldSubjectBeLocked(subject) {
-    // During active subscription, nothing is locked
-    if (userData.subscriptionStatus === 'active') {
-        return false;
-    }
-    
-    // During trial period, allow all subjects
-    if (userData.trialStatus === 'trial') {
-        return false;
-    }
-    
-    // Trial expired and no subscription - everything is locked
-    if (userData.trialStatus === 'expired') {
-        return true;
-    }
-    
-    return false;
 }
 
 function checkTrialStatus(profile) {
@@ -2026,46 +1981,6 @@ function checkTrialStatus(profile) {
     return 'expired';
 }
 
-function showPaywall() {
-    let paywall = document.getElementById('paywall-overlay');
-    
-    if (!paywall) {
-        paywall = document.createElement('div');
-        paywall.id = 'paywall-overlay';
-        paywall.style.cssText = `
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(17, 24, 39, 0.55); z-index: 10000;
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(3px);
-        `;
-        
-        paywall.innerHTML = `
-            <div style="background: white; border-radius: 16px; padding: 2.5rem; max-width: 420px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.2); border: 1px solid #e5e7eb;">
-                <h2 style="font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem; letter-spacing: -0.02em;">
-                    Your free trial has ended
-                </h2>
-                <p style="font-size: 0.9375rem; color: #6b7280; line-height: 1.5; margin-bottom: 1.75rem;">
-                    Upgrade to Montura Pro to keep going and pick up right where you left off.
-                </p>
-                <button onclick="window.location.href='pricing.html'" style="
-                    background: #111827; color: white; border: none;
-                    padding: 0.875rem 2rem; border-radius: 10px; font-size: 0.9375rem;
-                    font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
-                    margin-bottom: 0.625rem; width: 100%;
-                    transition: all 0.15s ease, transform 0.1s ease;
-                ">View plans</button>
-                <button onclick="document.getElementById('paywall-overlay').remove()" style="
-                    background: transparent; color: #6b7280; border: none;
-                    padding: 0.625rem; font-size: 0.875rem; cursor: pointer;
-                    font-family: 'Inter', sans-serif; border-radius: 8px;
-                    width: 100%; transition: all 0.15s ease, transform 0.1s ease;
-                ">Maybe later</button>
-            </div>
-        `;
-        document.body.appendChild(paywall);
-    }
-    paywall.style.display = 'flex';
-}
 function showTrialBanner(trialEndDate) {
     const trialEnd = new Date(trialEndDate);
     if (Date.now() >= trialEnd.getTime()) return;
@@ -2085,7 +2000,7 @@ function showTrialBanner(trialEndDate) {
         <div>
             <strong style="color: white; font-size: 1.125rem;">⏳ Free Trial: <span id="trial-countdown-text">calculating…</span> remaining</strong>
             <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem; margin-top: 0.5rem;">
-                Upgrade to Monturalearn Pro to keep your progress and unlock all subjects
+                Upgrade to Montura Pro for Flashtiles, past papers &amp; live quizzes
             </p>
         </div>
         <button onclick="window.location.href='pricing.html'" style="
@@ -2257,11 +2172,7 @@ if (signoutBtn) {
 }
 
 document.querySelector('.add-subjects-btn')?.addEventListener('click', () => {
-    if (userData.trialStatus === 'expired') {
-        showPaywall();
-    } else {
-        window.location.href = 'add-subjects.html';
-    }
+    window.location.href = 'add-subjects.html';
 });
 
 const learningGoalsToggle = document.getElementById('learning-goals-toggle');
