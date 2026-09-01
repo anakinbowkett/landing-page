@@ -319,59 +319,55 @@
 
         <!-- Pricing Cards -->
         <div class="pricing-grid">
-            <!-- Card 1: Monthly -->
+            <!-- Card 1: Free -->
             <div class="pricing-card">
                 <div class="card-header">
-                    <h3 class="card-title">Montura Pro — Monthly</h3>
+                    <h3 class="card-title">Free</h3>
                     <div class="card-price">
-                        <span class="price-amount">£9.99</span>
-                        <span class="price-period">/ month</span>
+                        <span class="price-amount">£0</span>
+                        <span class="price-period">forever</span>
                     </div>
-                    <p class="price-description">Billed monthly, cancel anytime</p>
+                    <p class="price-description">Lectures only, no card needed</p>
                 </div>
 
                 <ul class="features-list">
-                    <li class="feature-item"><span class="feature-icon">✓</span><span>Every GCSE subject, every exam board, Foundation &amp; Higher</span></li>
-                    <li class="feature-item"><span class="feature-icon">✓</span><span>Interactive lectures with instant marking</span></li>
-                    <li class="feature-item"><span class="feature-icon">✓</span><span>AI Insight Guide — get unstuck without waiting for a tutor</span></li>
-                    <li class="feature-item"><span class="feature-icon">✓</span><span>Flashtiles spaced-repetition practice</span></li>
-                    <li class="feature-item"><span class="feature-icon">✓</span><span>Real past papers with instant analytics</span></li>
-                    <li class="feature-item"><span class="feature-icon">✓</span><span>Live progress tracking across every subject</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Every GCSE subject's lectures, every exam board, Foundation &amp; Higher</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Instant marking and the AI Insight Guide, built into every lecture</span></li>
+                    <li class="feature-item" style="opacity: 0.5;"><span class="feature-icon" style="color:#9ca3af;">–</span><span>Flashtiles, past papers, live quizzes &amp; leaderboard</span></li>
                 </ul>
 
-                <button class="cta-button secondary" id="monthly-btn">Start Montura Pro</button>
+                <button class="cta-button secondary" id="free-btn">Start for Free</button>
 
                 <div class="card-footer">
-                    Includes mastery rewards, leaderboards &amp; live study mode
+                    No trial to run out, no card details, ever
                 </div>
             </div>
 
-            <!-- Card 2: Yearly -->
+            <!-- Card 2: Montura Pro -->
             <div class="pricing-card featured">
-                <div class="badge">SAVE 17%</div>
+                <div class="badge">FIRST MONTH 99P</div>
 
                 <div class="card-header">
-                    <h3 class="card-title">Montura Pro — Yearly</h3>
+                    <h3 class="card-title">Montura Pro</h3>
                     <div class="card-price">
-                        <span class="price-amount">£8.29</span>
-                        <span class="price-period">/ month</span>
+                        <span class="price-amount">99p</span>
+                        <span class="price-period">first month</span>
                     </div>
-                    <p class="price-description">£99.50 billed once a year — works out cheapest</p>
+                    <p class="price-description">Then £6.99/month, cancel anytime</p>
                 </div>
 
                 <ul class="features-list">
-                    <li class="feature-item"><span class="feature-icon">✓</span><span>Everything in Monthly, at 17% off</span></li>
-                    <li class="feature-item"><span class="feature-icon">✓</span><span>Every GCSE subject, every exam board, Foundation &amp; Higher</span></li>
-                    <li class="feature-item"><span class="feature-icon">✓</span><span>Interactive lectures with instant marking</span></li>
-                    <li class="feature-item"><span class="feature-icon">✓</span><span>AI Insight Guide — get unstuck without waiting for a tutor</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Everything in Free</span></li>
                     <li class="feature-item"><span class="feature-icon">✓</span><span>Flashtiles spaced-repetition practice</span></li>
                     <li class="feature-item"><span class="feature-icon">✓</span><span>Real past papers with instant analytics</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Live quizzes, leaderboard &amp; Mastery Miles</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Full progress tracking across every subject</span></li>
                 </ul>
 
-                <button class="cta-button" id="yearly-btn">Start Montura Pro — Yearly</button>
+                <button class="cta-button" id="pro-btn">Start Montura Pro — 99p</button>
 
                 <div class="card-footer">
-                    One payment of £99.50 today, renews yearly
+                    99p first-month offer is one-time, per student
                 </div>
             </div>
         </div>
@@ -394,8 +390,7 @@
     const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
  
     const STRIPE_PRICES = {
-        monthly: 'price_1UAiWoAgI47NcCKvHZMMJDp2',
-        yearly: 'price_1UAiWpAgI47NcCKvbLds4XxL'
+        pro: 'price_1UAuz8AgI47NcCKvEPF4Lxyq'
     };
  
     let currentUser = null;
@@ -453,12 +448,16 @@
         }
     }
 
-    document.getElementById('monthly-btn').addEventListener('click', () => {
-        startCheckout(STRIPE_PRICES.monthly, 'monthly');
+    document.getElementById('pro-btn').addEventListener('click', () => {
+        startCheckout(STRIPE_PRICES.pro, 'pro_monthly');
     });
 
-    document.getElementById('yearly-btn').addEventListener('click', () => {
-        startCheckout(STRIPE_PRICES.yearly, 'yearly');
+    document.getElementById('free-btn').addEventListener('click', () => {
+        if (!currentUser) {
+            window.location.href = 'signup.html';
+            return;
+        }
+        window.location.href = 'dashboard.html';
     });
  
     // Show/hide loading
