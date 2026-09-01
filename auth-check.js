@@ -5,6 +5,19 @@ const AC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzd
 async function checkAuthAndRedirect() {
     const sbClient = window.supabase.createClient(AC_SUPABASE_URL, AC_SUPABASE_ANON_KEY);
 
+    // middleware.mjs runs server-side and can only see cookies, never
+    // localStorage — this keeps a cookie in sync with whatever Supabase's
+    // client SDK is doing (sign-in, token refresh, sign-out) so the
+    // lecture-page gate always has a current, valid token to check.
+    sbClient.auth.onAuthStateChange((event, session) => {
+        if (session && session.access_token) {
+            const maxAge = session.expires_in || 3600;
+            document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; Secure`;
+        } else {
+            document.cookie = 'sb-access-token=; path=/; max-age=0; SameSite=Lax; Secure';
+        }
+    });
+
     const { data: { session } } = await sbClient.auth.getSession();
 
     const isAlevelPage = window.location.pathname.includes('/alevel/');

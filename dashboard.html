@@ -2004,18 +2004,16 @@ function shouldSubjectBeLocked(subject) {
 }
 
 function checkTrialStatus(profile) {
-    return 'active'; // TEMPORARY: Unlock all subjects
-    
     const now = new Date();
     
     if (profile.subscription_status === 'active') {
         return 'active';
     }
     
-    // If in trial, check if 48 hours have passed since trial_start_date
+    // If in trial, check if 3 days have passed since trial_start_date
     if (profile.subscription_status === 'trial') {
         const trialStart = new Date(profile.trial_start_date);
-        const trialEnd = new Date(trialStart.getTime() + 20 * 1000); // 20 seconds for testing
+        const trialEnd = new Date(trialStart.getTime() + 3 * 24 * 60 * 60 * 1000);
         
         // Store end date in userData for paywall display
         userData.trialEndDate = trialEnd.toISOString();
@@ -2079,15 +2077,13 @@ function showPaywall() {
     }
     paywall.style.display = 'flex';
 }
-function showTrialBanner(trialStartDate) {
-    const now = new Date();
-    const trialStart = new Date(trialStartDate);
-    const trialEnd = new Date(trialStart.getTime() + 48 * 60 * 60 * 1000);
-    const hoursLeft = Math.floor((trialEnd - now) / (1000 * 60 * 60));
-    
-    if (hoursLeft <= 0) return;
-    
+function showTrialBanner(trialEndDate) {
+    const trialEnd = new Date(trialEndDate);
+    if (Date.now() >= trialEnd.getTime()) return;
+    if (document.getElementById('trial-countdown-banner')) return; // never show twice
+
     const banner = document.createElement('div');
+    banner.id = 'trial-countdown-banner';
     banner.style.cssText = `
         background: linear-gradient(135deg, #1d7fe2 0%, #1a5fb8 100%); 
         border-radius: 10px; padding: 1.5rem;
@@ -2098,7 +2094,7 @@ function showTrialBanner(trialStartDate) {
     
     banner.innerHTML = `
         <div>
-            <strong style="color: white; font-size: 1.125rem;">⏳ Free Trial: ${hoursLeft} hours remaining</strong>
+            <strong style="color: white; font-size: 1.125rem;">⏳ Free Trial: <span id="trial-countdown-text">calculating…</span> remaining</strong>
             <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem; margin-top: 0.5rem;">
                 Upgrade to Monturalearn Pro to keep your progress and unlock all subjects
             </p>
@@ -2115,6 +2111,23 @@ function showTrialBanner(trialStartDate) {
     const container = document.querySelector('.container');
     const welcomeBox = document.querySelector('.welcome-box');
     container.insertBefore(banner, welcomeBox.nextSibling);
+
+    const textEl = document.getElementById('trial-countdown-text');
+    function tick() {
+        const msLeft = trialEnd.getTime() - Date.now();
+        if (msLeft <= 0) {
+            textEl.textContent = '0m';
+            clearInterval(intervalId);
+            return;
+        }
+        const totalMinutes = Math.floor(msLeft / 60000);
+        const d = Math.floor(totalMinutes / (60 * 24));
+        const h = Math.floor((totalMinutes % (60 * 24)) / 60);
+        const m = totalMinutes % 60;
+        textEl.textContent = d > 0 ? `${d}d ${h}h ${m}m` : (h > 0 ? `${h}h ${m}m` : `${m}m`);
+    }
+    tick();
+    const intervalId = setInterval(tick, 1000 * 30); // every 30s is plenty for a countdown this coarse
 }
 
 async function checkAuth() {
@@ -2171,11 +2184,9 @@ updateUserData();
 
 
         // Show trial banner if in active trial
-if (userData.trialStatus === 'trial' && userData.trialEndDate) {
-    const trialEnd = new Date(userData.trialEndDate);
-    const trialStart = new Date(trialEnd.getTime() - 48 * 60 * 60 * 1000);
-    showTrialBanner(trialStart.toISOString());
-}
+        if (userData.trialStatus === 'trial' && userData.trialEndDate) {
+            showTrialBanner(userData.trialEndDate);
+        }
         if (subjects.length === 0) {
             document.querySelector('.subjects-container').innerHTML = `
                 <div class="subjects-header-container">
@@ -2191,12 +2202,6 @@ if (userData.trialStatus === 'trial' && userData.trialEndDate) {
             renderSubjects(subjects);
         }
 
-        if (userData.trialStatus === 'trial') {
-    // Calculate trial start date from end date (subtract 48 hours)
-    const trialEnd = new Date(userData.trialEndDate);
-    const trialStart = new Date(trialEnd.getTime() - 48 * 60 * 60 * 1000);
-    showTrialBanner(trialStart.toISOString());
-}
     } catch (error) {
         console.error('Auth check error:', error);
         window.location.href = 'signin.html';
