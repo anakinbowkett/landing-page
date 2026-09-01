@@ -1962,18 +1962,20 @@ function createSubjectCard(subject) {
 });
 
     if (isLocked) {
-        subjectBox.style.opacity = '0.6';
-        subjectBox.style.cursor = 'not-allowed';
-        subjectBox.style.filter = 'grayscale(50%)';
+        subjectBox.style.opacity = '0.65';
+        subjectBox.style.cursor = 'pointer';
+        subjectBox.style.filter = 'grayscale(35%)';
         subjectBox.style.position = 'relative';
         
         const lockOverlay = document.createElement('div');
         lockOverlay.style.cssText = `
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); font-size: 3rem;
+            position: absolute; top: 0.75rem; right: 0.75rem;
+            background: rgba(17, 24, 39, 0.85); color: white;
+            font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.02em;
+            padding: 0.25rem 0.625rem; border-radius: 999px;
             z-index: 10; pointer-events: none;
         `;
-        lockOverlay.textContent = '🔒';
+        lockOverlay.textContent = 'Pro';
         subjectBox.appendChild(lockOverlay);
     } else {
         subjectBox.style.opacity = '1';
@@ -2028,49 +2030,36 @@ function showPaywall() {
     let paywall = document.getElementById('paywall-overlay');
     
     if (!paywall) {
-        // Calculate hours left if in trial
-        let timeRemaining = '';
-        if (userData.trialStatus === 'trial' && userData.trialEndDate) {
-            const now = new Date();
-            const trialEnd = new Date(userData.trialEndDate);
-            const hoursLeft = Math.max(0, Math.ceil((trialEnd - now) / (1000 * 60 * 60)));
-            timeRemaining = hoursLeft > 0 ? `(${hoursLeft} hours remaining)` : '';
-        }
-        
         paywall = document.createElement('div');
         paywall.id = 'paywall-overlay';
         paywall.style.cssText = `
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); z-index: 10000;
+            background: rgba(17, 24, 39, 0.55); z-index: 10000;
             display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(3px);
         `;
         
         paywall.innerHTML = `
-            <div style="background: white; border-radius: 16px; padding: 3rem; max-width: 500px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-                <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔒</div>
-                <h2 style="font-size: 2rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem;">
-                    Free Trial Ended
+            <div style="background: white; border-radius: 16px; padding: 2.5rem; max-width: 420px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.2); border: 1px solid #e5e7eb;">
+                <h2 style="font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem; letter-spacing: -0.02em;">
+                    Your free trial has ended
                 </h2>
-                <p style="font-size: 1rem; color: #6b7280; margin-bottom: 0.5rem;">
-                    Unlock all subjects and save your progress
-                </p>
-                <p style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 2rem;">
-                    Upgrade to Monturalearn Pro for £5.99/month ${timeRemaining}
+                <p style="font-size: 0.9375rem; color: #6b7280; line-height: 1.5; margin-bottom: 1.75rem;">
+                    Upgrade to Montura Pro to keep going and pick up right where you left off.
                 </p>
                 <button onclick="window.location.href='pricing.html'" style="
-                    background: #1d7fe2; color: white; border: none;
-                    padding: 1rem 2rem; border-radius: 8px; font-size: 1.125rem;
+                    background: #111827; color: white; border: none;
+                    padding: 0.875rem 2rem; border-radius: 10px; font-size: 0.9375rem;
                     font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
-                    margin-bottom: 0.75rem; width: 100%;
-                    transition: all 0.2s;
-                ">✨ Upgrade to Pro!</button>
+                    margin-bottom: 0.625rem; width: 100%;
+                    transition: all 0.15s ease, transform 0.1s ease;
+                ">View plans</button>
                 <button onclick="document.getElementById('paywall-overlay').remove()" style="
-                    background: transparent; color: #6b7280; border: 1px solid #e0e4e9;
-                    padding: 0.75rem; font-size: 0.875rem; cursor: pointer;
+                    background: transparent; color: #6b7280; border: none;
+                    padding: 0.625rem; font-size: 0.875rem; cursor: pointer;
                     font-family: 'Inter', sans-serif; border-radius: 8px;
-                    width: 100%; transition: all 0.2s;
-                ">Maybe Later</button>
+                    width: 100%; transition: all 0.15s ease, transform 0.1s ease;
+                ">Maybe later</button>
             </div>
         `;
         document.body.appendChild(paywall);

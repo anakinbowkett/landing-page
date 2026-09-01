@@ -228,9 +228,6 @@
                 const referralSource = localStorage.getItem('onboarding_referral');
                 const joinReasons = Array.from(selectedReasons);
 
-                const trialEndDate = new Date();
-                trialEndDate.setMinutes(trialEndDate.getMinutes() + 1);
-
                 const firstName = session.user.user_metadata.first_name || '';
                 const lastName = session.user.user_metadata.last_name || '';
 
@@ -238,7 +235,7 @@
                 // could in principle have both a GCSE and an A-Level profile row.
                 const { data: existingProfile } = await sbClient
                     .from('user_profiles')
-                    .select('id')
+                    .select('id, trial_start_date')
                     .eq('id', userId)
                     .eq('course_level', 'A-Level')
                     .maybeSingle();
@@ -252,7 +249,7 @@
                     referral_source: referralSource,
                     join_reason: joinReasons,
                     subscription_status: 'trial',
-                    trial_end_date: trialEndDate.toISOString(),
+                    trial_start_date: existingProfile?.trial_start_date || new Date().toISOString(),
                     onboarding_completed: false, // set true after step5
                     updated_at: new Date().toISOString()
                 };

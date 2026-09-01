@@ -232,15 +232,12 @@
                 const referralSource = localStorage.getItem('onboarding_referral');
                 const joinReasons = Array.from(selectedReasons);
 
-                const trialEndDate = new Date();
-                trialEndDate.setDate(trialEndDate.getDate() + 3);
-
                 const firstName = session.user.user_metadata.first_name || '';
                 const lastName = session.user.user_metadata.last_name || '';
 
                 const { data: existingProfile } = await sbClient
                     .from('user_profiles')
-                    .select('id')
+                    .select('id, trial_start_date')
                     .eq('id', userId)
                     .single();
 
@@ -252,7 +249,12 @@
                     referral_source: referralSource,
                     join_reason: joinReasons,
                     subscription_status: 'trial',
-                    trial_end_date: trialEndDate.toISOString(),
+                    // Every trial check (dashboard banner, the server-side lecture
+                    // gate) reads trial_start_date and adds 3 days to it itself —
+                    // this must be the actual signup moment, not a pre-offset date,
+                    // and must never be overwritten if it's already set (upsert
+                    // runs again after step 5 completes onboarding).
+                    trial_start_date: existingProfile?.trial_start_date || new Date().toISOString(),
                     onboarding_completed: false, // will be set true after step5
                     updated_at: new Date().toISOString()
                 };
