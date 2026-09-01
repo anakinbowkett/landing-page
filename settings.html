@@ -189,6 +189,13 @@
         <div id="successMessage" class="success-message"></div>
 
         <div class="settings-section">
+            <h2 class="section-title">Billing</h2>
+            <div id="billing-status" style="margin-bottom: 1.25rem; color: #6b7280; font-size: 0.9375rem;">Loading…</div>
+            <button class="save-btn" id="manage-billing-btn" style="margin-top: 0;">Manage Billing</button>
+            <div id="billing-error" style="display:none; color:#dc2626; font-size:0.875rem; margin-top:0.75rem;"></div>
+        </div>
+
+        <div class="settings-section">
             <h2 class="section-title">Your Subjects</h2>
             <div id="subjects-list"></div>
         </div>
@@ -296,7 +303,67 @@
             setTimeout(() => successMsg.classList.remove('show'), 3000);
         }
 
+        async function loadBillingStatus() {
+            const { data: { session } } = await sbClient.auth.getSession();
+            if (!session) return;
+
+            const { data: profile } = await sbClient
+                .from('user_profiles')
+                .select('subscription_status, trial_start_date')
+                .eq('id', session.user.id)
+                .single();
+
+            const statusEl = document.getElementById('billing-status');
+            const btn = document.getElementById('manage-billing-btn');
+            if (!profile) { statusEl.textContent = 'Unable to load billing status.'; return; }
+
+            if (profile.subscription_status === 'active') {
+                statusEl.textContent = 'You\'re on Montura Pro. Manage your plan, payment method, and invoices, or cancel, from the button below.';
+                btn.textContent = 'Manage Billing';
+            } else if (profile.subscription_status === 'trial' && profile.trial_start_date) {
+                const trialEnd = new Date(new Date(profile.trial_start_date).getTime() + 3 * 24 * 60 * 60 * 1000);
+                const daysLeft = Math.max(0, Math.ceil((trialEnd - Date.now()) / (1000 * 60 * 60 * 24)));
+                statusEl.textContent = daysLeft > 0
+                    ? `You're on a free trial — ${daysLeft} day${daysLeft === 1 ? '' : 's'} left.`
+                    : 'Your free trial has ended.';
+                btn.textContent = 'Upgrade to Montura Pro';
+            } else {
+                statusEl.textContent = 'No active plan.';
+                btn.textContent = 'Upgrade to Montura Pro';
+            }
+
+            btn.addEventListener('click', async () => {
+                // No paid history yet — nothing to manage, send them to pick a plan.
+                if (profile.subscription_status !== 'active') {
+                    window.location.href = 'pricing.html';
+                    return;
+                }
+                btn.disabled = true;
+                btn.textContent = 'Opening…';
+                const errEl = document.getElementById('billing-error');
+                errEl.style.display = 'none';
+                try {
+                    const res = await fetch('/api/create-portal-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${session.access_token}`,
+                        },
+                    });
+                    const data = await res.json();
+                    if (!res.ok || !data.url) throw new Error(data.error || 'Could not open billing portal');
+                    window.location.href = data.url;
+                } catch (err) {
+                    errEl.textContent = err.message;
+                    errEl.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Manage Billing';
+                }
+            });
+        }
+
         loadSubjects();
+        loadBillingStatus();
     </script>
     <script src="auth-check.js"></script>
 </body>
