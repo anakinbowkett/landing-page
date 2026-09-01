@@ -130,6 +130,47 @@ async function handleCheckoutCompleted(session) {
         throw error;
     }
 
+    // Track the card fingerprint on any intro-offer redemption. This never
+    // touches the payment that already went through — a duplicate here just
+    // means the account's used_intro_offer flag gets set too, so a *future*
+    // checkout on either account won't get the discount again. Never blocks
+    // sign-in or the purchase itself; a legitimate shared family card only
+    // ever loses the discount a second time, nothing more.
+    if (usedIntroOffer) {
+        try {
+            const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
+                expand: ['payment_intent.payment_method'],
+            });
+            const fingerprint = fullSession.payment_intent?.payment_method?.card?.fingerprint;
+
+            if (fingerprint) {
+                const { data: existing } = await supabase
+                    .from('used_intro_card_fingerprints')
+                    .select('first_used_by')
+                    .eq('fingerprint', fingerprint)
+                    .maybeSingle();
+
+                if (!existing) {
+                    await supabase.from('used_intro_card_fingerprints').insert({
+                        fingerprint,
+                        first_used_by: userId,
+                    });
+                } else if (existing.first_used_by !== userId) {
+                    console.warn(`Intro offer reused: card already claimed by ${existing.first_used_by}, now also on ${userId}`);
+                    // This account already got the discount on this purchase (can't
+                    // undo that safely), but make sure it can never happen again.
+                    await supabase
+                        .from('user_profiles')
+                        .update({ used_intro_offer: true })
+                        .eq('id', userId);
+                }
+            }
+        } catch (fingerprintError) {
+            // Never let this side-check break the main checkout flow.
+            console.error('Fingerprint tracking error (non-fatal):', fingerprintError);
+        }
+    }
+
     // 🆕 AMBASSADOR LOGIC: Check if user was referred
     const { data: userProfile } = await supabase
         .from('user_profiles')
