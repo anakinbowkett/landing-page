@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const supabase = createClient(
     process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
+    process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 export default async function handler(req, res) {
@@ -23,6 +23,13 @@ export default async function handler(req, res) {
         
         if (session.payment_status !== 'paid') {
             return res.status(400).json({ error: 'Payment not completed' });
+        }
+
+        // Don't let a request with someone else's valid session ID upgrade
+        // a different account — the session must actually belong to this user.
+        const sessionUserId = session.client_reference_id || session.metadata?.userId;
+        if (sessionUserId !== userId) {
+            return res.status(403).json({ error: 'Session does not belong to this account' });
         }
         
         const { data, error } = await supabase

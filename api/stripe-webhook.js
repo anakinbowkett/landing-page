@@ -59,6 +59,7 @@ export default async function handler(req, res) {
                 await handleCheckoutCompleted(event.data.object);
                 break;
 
+            case 'customer.subscription.created':
             case 'customer.subscription.updated':
                 await handleSubscriptionUpdated(event.data.object);
                 break;
@@ -98,16 +99,11 @@ async function handleCheckoutCompleted(session) {
         return;
     }
 
-    // Determine which product was purchased by checking the line items
-    let productType = 'core_bundle'; // default
-    
-    if (session.line_items?.data?.[0]?.price?.id) {
-        const priceId = session.line_items.data[0].price.id;
-        // Check if it's the per-subject price
-        if (priceId === 'price_1Sn40vCCgLNEbNJs0VMTqmej') {
-            productType = 'per_subject';
-        }
-    }
+    // productType is set as metadata at checkout time (create-checkout-session.js) —
+    // reading it here directly, since Stripe does NOT include line_items on this
+    // event unless you explicitly expand it, so the old lookup always fell
+    // through to the default.
+    const productType = session.metadata?.productType || 'core_bundle';
 
     // Update user profile in Supabase
     const { error } = await supabase
@@ -116,7 +112,6 @@ async function handleCheckoutCompleted(session) {
             subscription_status: 'active',
             stripe_customer_id: customerId,
             stripe_subscription_id: subscriptionId,
-            trial_end_date: null,
             updated_at: new Date().toISOString()
         })
         .eq('id', userId);
@@ -161,12 +156,12 @@ async function handleSubscriptionUpdated(subscription) {
         return;
     }
 
-    let subscriptionStatus = 'trial';
-    if (status === 'active') {
+    let subscriptionStatus = 'expired';
+    if (status === 'active' || status === 'trialing') {
         subscriptionStatus = 'active';
-    } else if (status === 'canceled' || status === 'unpaid') {
-        subscriptionStatus = 'expired';
     }
+    // canceled, unpaid, past_due, incomplete, incomplete_expired, paused
+    // all fall through to 'expired' — never silently hand back a fresh trial.
 
     const { error } = await supabase
         .from('user_profiles')
