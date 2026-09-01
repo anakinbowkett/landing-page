@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing - GCSE Mastery</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://js.stripe.com/v3/"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -301,6 +300,10 @@
                 font-size: 2.5rem;
             }
         }
+        /* Subtle press feedback, consistent with the rest of the site */
+        .cta-button:active:not(:disabled) {
+            transform: scale(0.97) translateY(1px);
+        }
     </style>
 </head>
 <body>
@@ -308,8 +311,7 @@
         <!-- Header -->
         <div class="header">
             <div class="logo">
-                <img src="https://i.postimg.cc/kDrBZ2z5/Monturalearn-logo.jpg" alt="Monturalearn" style="height: 40px;">
-                <span class="logo-text">Montura</span>
+                <img src="https://i.postimg.cc/kDrBZ2z5/Monturalearn-logo.jpg" alt="Monturalearn" style="height: 44px;">
             </div>
             <h1>One platform. Every GCSE.<br>Built to turn confusion into confidence.</h1>
             <p>Choose the plan that works for you. Cancel anytime.</p>
@@ -317,87 +319,59 @@
 
         <!-- Pricing Cards -->
         <div class="pricing-grid">
-            <!-- Card 1: All Subjects Bundle -->
-            <div class="pricing-card featured">
-                <div class="badge">MOST POPULAR</div>
-                
+            <!-- Card 1: Monthly -->
+            <div class="pricing-card">
                 <div class="card-header">
-                    <h3 class="card-title">Core Subjects Bundle</h3>
+                    <h3 class="card-title">Montura Pro — Monthly</h3>
                     <div class="card-price">
-                        <span class="price-amount">£6.99</span>
+                        <span class="price-amount">£9.99</span>
                         <span class="price-period">/ month</span>
                     </div>
-                    <p class="price-description">Everything you need to master your GCSEs</p>
+                    <p class="price-description">Billed monthly, cancel anytime</p>
                 </div>
 
                 <ul class="features-list">
-                    <li class="feature-item">
-                        <span class="feature-icon"></span>
-                        <span>All core GCSE subjects in one place (Maths, English & Science — all exam boards)</span>
-                    </li>
-                    <li class="feature-item">
-                        <span class="feature-icon"></span>
-                        <span>Learn exactly how exam questions are marked (Step-by-step lessons, not waffle)</span>
-                    </li>
-                    <li class="feature-item">
-                        <span class="feature-icon"></span>
-                        <span>Practise real exam-style questions (The same formats you'll see in the exam)</span>
-                    </li>
-                    <li class="feature-item">
-                        <span class="feature-icon"></span>
-                        <span>Get unstuck instantly with AI support (Guides you through each step)</span>
-                    </li>
-                    <li class="feature-item">
-                        <span class="feature-icon"></span>
-                        <span>See what's holding your grade back (Live progress tracking + reports)</span>
-                    </li>
-                    <li class="feature-item">
-                        <span class="feature-icon"></span>
-                        <span>Automatically practise your weak topics (No guessing what to revise)</span>
-                    </li>
-                    <li class="feature-item">
-                        <span class="feature-icon"></span>
-                        <span>Train under real exam conditions (Past papers + monthly live exam sessions)</span>
-                    </li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Every GCSE subject, every exam board, Foundation &amp; Higher</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Interactive lectures with instant marking</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>AI Insight Guide — get unstuck without waiting for a tutor</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Flashtiles spaced-repetition practice</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Real past papers with instant analytics</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Live progress tracking across every subject</span></li>
                 </ul>
 
-                <button class="cta-button" id="bundle-btn">Start Early Access</button>
+                <button class="cta-button secondary" id="monthly-btn">Start Montura Pro</button>
 
                 <div class="card-footer">
-                    Includes mastery rewards, leaderboards & live study mode
+                    Includes mastery rewards, leaderboards &amp; live study mode
                 </div>
             </div>
 
-            <!-- Card 2: Pay Per Subject -->
-            <div class="pricing-card">
+            <!-- Card 2: Yearly -->
+            <div class="pricing-card featured">
+                <div class="badge">SAVE 17%</div>
+
                 <div class="card-header">
-                    <h3 class="card-title">Pay Per Subject</h3>
+                    <h3 class="card-title">Montura Pro — Yearly</h3>
                     <div class="card-price">
-                        <span class="price-amount">£3.50</span>
-                        <span class="price-period">/ subject / month</span>
+                        <span class="price-amount">£8.29</span>
+                        <span class="price-period">/ month</span>
                     </div>
-                    <p class="price-description">Flexible - add subjects anytime</p>
+                    <p class="price-description">£99.50 billed once a year — works out cheapest</p>
                 </div>
 
                 <ul class="features-list">
-                    <li class="feature-item">
-                        <span class="feature-icon">➕</span>
-                        <span><strong>Add any GCSE subject instantly</strong><br>Same system, same support</span>
-                    </li>
-                    <li class="feature-item">
-                        <span class="feature-icon">➕</span>
-                        <span><strong>Same system, same support</strong><br>Lectures, questions, AI Tutor, Progress Tracking</span>
-                    </li>
-                    <li class="feature-item">
-                        <span class="feature-icon">➕</span>
-                        <span><strong>Flexible - add subjects anytime</strong><br>(No contracts, no stress)</span>
-                    </li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Everything in Monthly, at 17% off</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Every GCSE subject, every exam board, Foundation &amp; Higher</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Interactive lectures with instant marking</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>AI Insight Guide — get unstuck without waiting for a tutor</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Flashtiles spaced-repetition practice</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Real past papers with instant analytics</span></li>
                 </ul>
 
-                <button class="cta-button secondary" id="persubject-btn">Add Subjects Anytime</button>
+                <button class="cta-button" id="yearly-btn">Start Montura Pro — Yearly</button>
 
-                <div class="sub-text">
-                    Only pay for the subjects you actually study.
+                <div class="card-footer">
+                    One payment of £99.50 today, renews yearly
                 </div>
             </div>
         </div>
@@ -419,12 +393,9 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
     const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
  
-    const STRIPE_PUBLISHABLE_KEY = 'pk_test_51QwR7UAgI47NcCKv947U2YLHAqxDdx3SV4WpdQTLx34xYjrk43TOodLLy4TOi3dLZvIRHMwosGvwlnUXYUmvG4St008I8jD2TJ';
-    const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
- 
     const STRIPE_PRICES = {
-        bundle: 'price_1TQod8AgI47NcCKv5iyt2Jd3',
-        perSubject: 'price_1TQog0AgI47NcCKv0q3IrBTx'
+        monthly: 'price_1UAiWoAgI47NcCKvHZMMJDp2',
+        yearly: 'price_1UAiWpAgI47NcCKvbLds4XxL'
     };
  
     let currentUser = null;
@@ -438,95 +409,56 @@
         }
         currentUser = session.user;
     }
- 
-    // Handle Bundle Subscription
-    document.getElementById('bundle-btn').addEventListener('click', async () => {
+
+    async function startCheckout(priceId, productType) {
         if (!currentUser) {
             window.location.href = 'signin.html';
             return;
         }
-        
+
         showLoading(true);
-        
+
         try {
             const response = await fetch('/api/create-checkout-session', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    priceId: STRIPE_PRICES.bundle,
+                    priceId,
                     userId: currentUser.id,
                     userEmail: currentUser.email,
-                    productType: 'core_bundle'
+                    productType
                 })
             });
-            
+
             const data = await response.json();
-            
+
             if (!response.ok) {
                 console.error('API Error:', data);
                 throw new Error(data.error || 'Failed to create checkout');
             }
-            
-            if (!data.id) {
-                throw new Error('No session ID returned from API');
+
+            if (!data.url) {
+                throw new Error('No checkout URL returned from API');
             }
-            
-            const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
-            if (error) {
-                console.error('Stripe error:', error);
-                alert('Stripe error: ' + error.message);
-            }
-            
+
+            // Go straight to the Checkout Session's own URL — no need for
+            // Stripe.js or a publishable key on this page at all, and no
+            // risk of a live/test key mismatch breaking the button.
+            window.location.href = data.url;
+
         } catch (error) {
             console.error('Checkout error:', error);
             alert('Payment error: ' + error.message);
             showLoading(false);
         }
+    }
+
+    document.getElementById('monthly-btn').addEventListener('click', () => {
+        startCheckout(STRIPE_PRICES.monthly, 'monthly');
     });
- 
-    // Handle Per Subject Subscription
-    document.getElementById('persubject-btn').addEventListener('click', async () => {
-        if (!currentUser) {
-            window.location.href = 'signin.html';
-            return;
-        }
-        
-        showLoading(true);
-        
-        try {
-            const response = await fetch('/api/create-checkout-session', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    priceId: STRIPE_PRICES.perSubject,
-                    userId: currentUser.id,
-                    userEmail: currentUser.email,
-                    productType: 'per_subject'
-                })
-            });
-            
-            const data = await response.json();
-            
-            if (!response.ok) {
-                console.error('API Error:', data);
-                throw new Error(data.error || 'Failed to create checkout');
-            }
-            
-            if (!data.id) {
-                throw new Error('No session ID returned from API');
-            }
-            
-            const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
-            if (error) {
-                console.error('Stripe error:', error);
-                alert('Stripe error: ' + error.message);
-            }
-            
-        } catch (error) {
-            console.error('Checkout error:', error);
-            alert('Payment error: ' + error.message);
-            showLoading(false);
-        }
+
+    document.getElementById('yearly-btn').addEventListener('click', () => {
+        startCheckout(STRIPE_PRICES.yearly, 'yearly');
     });
  
     // Show/hide loading
