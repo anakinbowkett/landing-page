@@ -1222,6 +1222,23 @@ nav {
                     <span>1,250</span>
                 </div>
             </div>
+            <button id="nav-upgrade-btn" onclick="window.location.href='pricing.html'" style="
+                display: none;
+                background: linear-gradient(135deg, #1d7fe2 0%, #1a5fb8 100%);
+                color: white;
+                border: none;
+                padding: 0.55rem 1.1rem;
+                border-radius: 8px;
+                font-size: 0.8125rem;
+                font-weight: 700;
+                cursor: pointer;
+                font-family: 'Inter', sans-serif;
+                white-space: nowrap;
+                transition: transform 0.12s ease, box-shadow 0.12s ease;
+                box-shadow: 0 2px 6px rgba(29, 127, 226, 0.25);
+            " onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+                Upgrade Now
+            </button>
             <div class="user-profile-container">
                 <div class="user-info" id="user-profile-trigger">
                     <div class="user-avatar" id="user-avatar">A</div>
@@ -1288,56 +1305,7 @@ nav {
         </div>
     </div>
 
-       <!-- STICKY TRIAL BANNER AT TOP -->
-<div id="trial-banner" onclick="window.location.href='pricing.html'" style="
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    background: linear-gradient(135deg, #1d7fe2 0%, #1a5fb8 100%);
-    padding: 0.75rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(29, 127, 226, 0.3);
-    z-index: 999;
-    cursor: pointer;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-">
-    <span style="
-        color: white; 
-        font-size: 0.875rem;
-        font-weight: 500;
-        letter-spacing: 0.02em;
-    ">
-        ⏳ Free Trial Active - Upgrade to Montura Pro for Flashtiles, past papers &amp; live quizzes after trial ends!
-    </span>
-    <button style="
-        background: white;
-        color: #1d7fe2;
-        border: none;
-        padding: 0.5rem 1.25rem;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        cursor: pointer;
-        font-family: 'Inter', sans-serif;
-        white-space: nowrap;
-        margin-left: 1.5rem;
-        flex-shrink: 0;
-        transition: all 0.2s;
-    " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(29, 127, 226, 0.3)';"
-       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-        Upgrade Now →
-    </button>
-</div>
 
-<style>
-    body {
-        padding-top: 3.5rem;
-    }
-</style>
         
     <!-- Metrics & Leaderboard Container -->
     <div class="metrics-leaderboard-container">
@@ -1981,59 +1949,6 @@ function checkTrialStatus(profile) {
     return 'expired';
 }
 
-function showTrialBanner(trialEndDate) {
-    const trialEnd = new Date(trialEndDate);
-    if (Date.now() >= trialEnd.getTime()) return;
-    if (document.getElementById('trial-countdown-banner')) return; // never show twice
-
-    const banner = document.createElement('div');
-    banner.id = 'trial-countdown-banner';
-    banner.style.cssText = `
-        background: linear-gradient(135deg, #1d7fe2 0%, #1a5fb8 100%); 
-        border-radius: 10px; padding: 1.5rem;
-        margin-bottom: 1.5rem; display: flex; 
-        justify-content: space-between; align-items: center;
-        box-shadow: 0 4px 12px rgba(29, 127, 226, 0.2);
-    `;
-    
-    banner.innerHTML = `
-        <div>
-            <strong style="color: white; font-size: 1.125rem;">⏳ Free Trial: <span id="trial-countdown-text">calculating…</span> remaining</strong>
-            <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem; margin-top: 0.5rem;">
-                Upgrade to Montura Pro for Flashtiles, past papers &amp; live quizzes
-            </p>
-        </div>
-        <button onclick="window.location.href='pricing.html'" style="
-            background: white; color: #1d7fe2; border: none;
-            padding: 0.75rem 1.75rem; border-radius: 8px; font-size: 0.875rem;
-            font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
-            white-space: nowrap; margin-left: 1rem;
-            transition: all 0.2s;
-        ">Upgrade Now →</button>
-    `;
-    
-    const container = document.querySelector('.container');
-    const welcomeBox = document.querySelector('.welcome-box');
-    container.insertBefore(banner, welcomeBox.nextSibling);
-
-    const textEl = document.getElementById('trial-countdown-text');
-    function tick() {
-        const msLeft = trialEnd.getTime() - Date.now();
-        if (msLeft <= 0) {
-            textEl.textContent = '0m';
-            clearInterval(intervalId);
-            return;
-        }
-        const totalMinutes = Math.floor(msLeft / 60000);
-        const d = Math.floor(totalMinutes / (60 * 24));
-        const h = Math.floor((totalMinutes % (60 * 24)) / 60);
-        const m = totalMinutes % 60;
-        textEl.textContent = d > 0 ? `${d}d ${h}h ${m}m` : (h > 0 ? `${h}h ${m}m` : `${m}m`);
-    }
-    tick();
-    const intervalId = setInterval(tick, 1000 * 30); // every 30s is plenty for a countdown this coarse
-}
-
 async function checkAuth() {
     try {
         const { data: { session }, error } = await sbClient.auth.getSession();
@@ -2087,9 +2002,12 @@ updateUserData();
         const subjects = await loadUserSubjects(userId);
 
 
-        // Show trial banner if in active trial
-        if (userData.trialStatus === 'trial' && userData.trialEndDate) {
-            showTrialBanner(userData.trialEndDate);
+        // Show the trial/upgrade popup (every login), unless already on a paid plan
+        if (typeof showTrialPopup === 'function' && userData.subscriptionStatus !== 'active') {
+            showTrialPopup({
+                status: userData.trialStatus, // 'trial' or 'expired'
+                trialEndDate: userData.trialEndDate
+            });
         }
         if (subjects.length === 0) {
             document.querySelector('.subjects-container').innerHTML = `
@@ -2136,6 +2054,12 @@ function updateUserData() {
     const milesBadge = document.querySelector('.mastery-miles-badge span');
     if (milesBadge && userData.miles !== undefined) {
         milesBadge.textContent = Number(userData.miles).toLocaleString();
+    }
+
+    // Upgrade Now button: shown for anyone not on a paid, active subscription
+    const upgradeBtn = document.getElementById('nav-upgrade-btn');
+    if (upgradeBtn) {
+        upgradeBtn.style.display = userData.subscriptionStatus !== 'active' ? 'inline-flex' : 'none';
     }
 }
 
@@ -2362,36 +2286,10 @@ async function syncMilesToLeaderboard(userId, miles) {
 }
 
 initializeDashboard();
-
-// Show banner only if user is in trial
-function showTrialBannerIfNeeded() {
-    const banner = document.getElementById('trial-banner');
-    if (banner) {
-        // Only show if subscription is 'trial'
-        if (userData && userData.subscriptionStatus === 'trial') {
-            banner.style.display = 'flex';
-        } else {
-            banner.style.display = 'none';
-        }
-    }
-}
-
-// Check every second if we should hide the banner
-setInterval(() => {
-    if (userData && userData.subscriptionStatus !== 'trial') {
-        const banner = document.getElementById('trial-banner');
-        if (banner) banner.style.display = 'none';
-    }
-}, 1000);
-
-// Call on load
-setTimeout(() => {
-    showTrialBannerIfNeeded();
-}, 500);
-       
 </script>
 <script src="leaderboard.js"></script>
 <script src="auth-check.js"></script>
+<script src="trial-popup.js"></script>
 </body>
 </html>
       

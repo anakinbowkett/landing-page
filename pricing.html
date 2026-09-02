@@ -69,9 +69,9 @@
         /* Pricing Cards */
         .pricing-grid {
             display: grid;
-            grid-template-columns: 0.88fr 1.12fr;
+            grid-template-columns: 0.85fr 1.05fr 1.05fr;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
             margin-bottom: 3rem;
         }
 
@@ -106,6 +106,15 @@
             box-shadow: 0 24px 56px rgba(29, 127, 226, 0.24);
         }
 
+        .pricing-card.value-pack {
+            background: linear-gradient(to bottom, #f0fdf4 0%, #ffffff 100%);
+            border: 2px solid #16a34a;
+        }
+
+        .pricing-card.value-pack:hover {
+            border-color: #16a34a;
+        }
+
         .badge {
             position: absolute;
             top: -12px;
@@ -119,6 +128,10 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+        }
+
+        .badge.badge-green {
+            background: #16a34a;
         }
 
         .price-was {
@@ -324,6 +337,10 @@
             .pricing-card.featured:hover {
                 transform: translateY(-2px);
             }
+
+            .pricing-card.value-pack {
+                order: -1;
+            }
         }
         /* Subtle press feedback, consistent with the rest of the site */
         .cta-button:active:not(:disabled) {
@@ -400,6 +417,35 @@
                     99p first-month offer is one-time, per student
                 </div>
             </div>
+
+            <!-- Card 3: 6 Months Access -->
+            <div class="pricing-card value-pack">
+                <div class="badge badge-green">SAVE 17%</div>
+
+                <div class="card-header">
+                    <h3 class="card-title">6 Months Access</h3>
+                    <div class="card-price">
+                        <span class="price-was">£41.94</span>
+                        <span class="price-amount">£34.81</span>
+                        <span class="price-period">one payment</span>
+                    </div>
+                    <p class="price-description">Works out at £5.80/month — billed once, upfront</p>
+                </div>
+
+                <ul class="features-list">
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Everything in Free</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Flashtiles spaced-repetition practice</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Real past papers with instant analytics</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Live quizzes, leaderboard &amp; Mastery Miles</span></li>
+                    <li class="feature-item"><span class="feature-icon">✓</span><span>Full progress tracking across every subject</span></li>
+                </ul>
+
+                <button class="cta-button" id="six-month-btn">Get 6 Months — £34.81</button>
+
+                <div class="card-footer">
+                    Full Pro access for 6 months, locked in at today's price
+                </div>
+            </div>
         </div>
 
         <!-- Trustpilot Section -->
@@ -420,7 +466,10 @@
     const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
  
     const STRIPE_PRICES = {
-        pro: 'price_1UAuz8AgI47NcCKvEPF4Lxyq'
+        pro: 'price_1UAuz8AgI47NcCKvEPF4Lxyq',
+        // Run create-six-month-price.js locally, then paste the printed
+        // price ID in here to switch this plan on.
+        sixMonth: null
     };
  
     let currentUser = null;
@@ -488,6 +537,14 @@
             return;
         }
         window.location.href = 'dashboard.html';
+    });
+
+    document.getElementById('six-month-btn').addEventListener('click', () => {
+        if (!STRIPE_PRICES.sixMonth) {
+            alert("This plan's almost ready — check back shortly!");
+            return;
+        }
+        startCheckout(STRIPE_PRICES.sixMonth, 'pro_six_month');
     });
  
     // Show/hide loading

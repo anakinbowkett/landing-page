@@ -12,8 +12,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 // The one-time 99p-first-month coupon. Created once in Stripe — see
-// update-montura-pricing.js for how it was set up.
+// update-montura-pricing.js for how it was set up. This coupon is priced
+// for the £6.99/month plan specifically (nets 99p) — it must never be
+// applied to any other price (e.g. the 6-month bundle), or that plan's
+// advertised price on pricing.html would be wrong.
 const INTRO_OFFER_COUPON_ID = process.env.STRIPE_INTRO_COUPON_ID;
+const MONTHLY_PRICE_ID = 'price_1UAuz8AgI47NcCKvEPF4Lxyq';
 
 // Free abuse check: collapses "the same real inbox, made to look like
 // different addresses" down to one canonical form. Gmail specifically
@@ -79,12 +83,15 @@ async function handleCheckoutSession(req, res) {
             usedIntroOffer = true;
         }
 
+        // The intro coupon only ever applies to the monthly plan.
+        const eligibleForIntroOffer = priceId === MONTHLY_PRICE_ID;
+
         let normalizedEmail = null;
 
         // Second, free check: has this same real inbox (under a different-
         // looking address) already claimed the offer? Costs nothing —
         // pure string comparison against our own table.
-        if (!usedIntroOffer && INTRO_OFFER_COUPON_ID) {
+        if (!usedIntroOffer && INTRO_OFFER_COUPON_ID && eligibleForIntroOffer) {
             normalizedEmail = normalizeEmail(userEmail);
             try {
                 const { data: emailRecord } = await supabase
@@ -117,8 +124,8 @@ async function handleCheckoutSession(req, res) {
                 userId: userId,
                 userEmail: userEmail,
                 productType: req.body.productType || 'standard',
-                usedIntroOffer: (!usedIntroOffer && INTRO_OFFER_COUPON_ID) ? 'true' : 'false',
-                normalizedEmail: (!usedIntroOffer && INTRO_OFFER_COUPON_ID) ? normalizedEmail : '',
+                usedIntroOffer: (!usedIntroOffer && INTRO_OFFER_COUPON_ID && eligibleForIntroOffer) ? 'true' : 'false',
+                normalizedEmail: (!usedIntroOffer && INTRO_OFFER_COUPON_ID && eligibleForIntroOffer) ? normalizedEmail : '',
             },
             subscription_data: {
                 metadata: {
@@ -127,7 +134,7 @@ async function handleCheckoutSession(req, res) {
             }
         };
 
-        if (!usedIntroOffer && INTRO_OFFER_COUPON_ID) {
+        if (!usedIntroOffer && INTRO_OFFER_COUPON_ID && eligibleForIntroOffer) {
             sessionParams.discounts = [{ coupon: INTRO_OFFER_COUPON_ID }];
         }
 

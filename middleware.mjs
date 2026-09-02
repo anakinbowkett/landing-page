@@ -86,7 +86,7 @@ function lockedFeaturePage(featureName) {
     <img src="https://i.postimg.cc/kDrBZ2z5/Monturalearn-logo.jpg" alt="Monturalearn">
     <h1>${featureName} is part of Montura Pro</h1>
     <p>Your lectures stay free, always. ${featureName} is one of the Pro features — subscribe to get it back, for every subject.</p>
-    <a class="primary" href="/pricing.html?trial_ended=true">Subscribe to Montura Pro</a>
+    <a class="primary" href="/pricing.html?trial_ended=true">Upgrade Now</a>
     <a class="secondary" href="/dashboard.html">Back to dashboard</a>
   </div>
 </body>
