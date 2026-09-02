@@ -411,7 +411,7 @@
                     <li class="feature-item"><span class="feature-icon">✓</span><span>Full progress tracking across every subject</span></li>
                 </ul>
 
-                <button class="cta-button" id="pro-btn">Start Montura Pro — 99p</button>
+                <button class="cta-button" id="pro-btn">Start Montura Pro</button>
 
                 <div class="card-footer">
                     99p first-month offer is one-time, per student
@@ -440,7 +440,7 @@
                     <li class="feature-item"><span class="feature-icon">✓</span><span>Full progress tracking across every subject</span></li>
                 </ul>
 
-                <button class="cta-button" id="six-month-btn">Get 6 Months — £34.81</button>
+                <button class="cta-button" id="six-month-btn">Get 6 Months Access</button>
 
                 <div class="card-footer">
                     Full Pro access for 6 months, locked in at today's price
@@ -560,6 +560,16 @@
             buttons.forEach(btn => btn.disabled = false);
         }
     }
+
+    // If the browser restores this page from its back/forward cache (e.g.
+    // after clicking Back from Stripe), the "loading" state from before the
+    // redirect can otherwise stay frozen forever, leaving every button
+    // permanently disabled. Reset it whenever the page is shown this way.
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            showLoading(false);
+        }
+    });
  
     // Initialize
     checkAuth();
