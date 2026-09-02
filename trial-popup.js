@@ -1,6 +1,9 @@
 /* trial-popup.js
-   Shared "here's what you get" popup, shown every time a non-Pro student
-   (trial or expired) lands on the dashboard. Every "buy" CTA routes to
+   Shared "here's what you get" popup, shown once per browser session for a
+   non-Pro student (trial or expired). Closing it, or clicking through to
+   Subscribe, marks it dismissed for the rest of that session (sessionStorage)
+   so it won't pop back up just from navigating to pricing.html and back —
+   it shows again on the next genuinely new visit. Every "buy" CTA routes to
    /pricing.html. Included on dashboard.html and alevel/dashboard.html via
    <script src="trial-popup.js"></script> — call window.showTrialPopup({status, trialEndDate}).
 
@@ -172,10 +175,28 @@
         document.head.appendChild(style);
     }
 
+    function hasBeenDismissedThisSession() {
+        try {
+            return sessionStorage.getItem('montura_trial_popup_dismissed') === '1';
+        } catch (e) {
+            return false; // if storage is blocked, fail open and just show it
+        }
+    }
+
+    function markDismissedThisSession() {
+        try {
+            sessionStorage.setItem('montura_trial_popup_dismissed', '1');
+        } catch (e) { /* storage blocked — nothing to persist, not fatal */ }
+    }
+
     window.showTrialPopup = function (opts) {
         opts = opts || {};
         const status = opts.status === 'trial' ? 'trial' : 'expired';
         const trialEndDate = opts.trialEndDate;
+
+        // Only once per browser session — closing it (or clicking through to
+        // pricing) shouldn't bring it right back on the next page.
+        if (hasBeenDismissedThisSession()) return;
 
         // Never stack two copies
         if (document.getElementById('trial-popup-overlay')) return;
@@ -204,6 +225,7 @@
         document.body.appendChild(overlay);
 
         function closePopup() {
+            markDismissedThisSession();
             if (countdownInterval) clearInterval(countdownInterval);
             overlay.remove();
         }
@@ -232,6 +254,7 @@
             `;
 
             document.getElementById('trial-popup-subscribe').onclick = function () {
+                markDismissedThisSession();
                 window.location.href = PRICING_URL;
             };
             document.getElementById('trial-popup-nav').onclick = function () {
