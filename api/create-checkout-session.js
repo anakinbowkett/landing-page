@@ -12,12 +12,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 // The one-time 99p-first-month coupon. Created once in Stripe — see
-// update-montura-pricing.js for how it was set up. This coupon is priced
-// for the £6.99/month plan specifically (nets 99p) — it must never be
+// update-monthly-pricing.js for how it was set up. This coupon is priced
+// for the £8.99/month plan specifically (nets 99p) — it must never be
 // applied to any other price (e.g. the 6-month bundle), or that plan's
 // advertised price on pricing.html would be wrong.
 const INTRO_OFFER_COUPON_ID = process.env.STRIPE_INTRO_COUPON_ID;
-const MONTHLY_PRICE_ID = 'price_1UAuz8AgI47NcCKvEPF4Lxyq';
+const MONTHLY_PRICE_ID = 'price_1UBebhAgI47NcCKvBDdwhKai';
 
 // Free abuse check: collapses "the same real inbox, made to look like
 // different addresses" down to one canonical form. Gmail specifically

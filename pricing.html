@@ -396,11 +396,11 @@
                 <div class="card-header">
                     <h3 class="card-title">Montura Pro</h3>
                     <div class="card-price">
-                        <span class="price-was">£6.99</span>
+                        <span class="price-was">£8.99</span>
                         <span class="price-amount">99p</span>
                         <span class="price-period">first month</span>
                     </div>
-                    <p class="price-description">Then £6.99/month, cancel anytime</p>
+                    <p class="price-description">Then £8.99/month, cancel anytime</p>
                 </div>
 
                 <ul class="features-list">
@@ -425,8 +425,8 @@
                 <div class="card-header">
                     <h3 class="card-title">6 Months Access</h3>
                     <div class="card-price">
-                        <span class="price-was">£41.94</span>
-                        <span class="price-amount">£34.99</span>
+                        <span class="price-was">£53.94</span>
+                        <span class="price-amount">£44.99</span>
                         <span class="price-period">one payment</span>
                     </div>
                 </div>
@@ -465,10 +465,8 @@
     const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
  
     const STRIPE_PRICES = {
-        pro: 'price_1UAuz8AgI47NcCKvEPF4Lxyq',
-        // Run create-six-month-price.js locally, then paste the printed
-        // price ID in here to switch this plan on.
-        sixMonth: null
+        pro: 'price_1UBebhAgI47NcCKvBDdwhKai',
+        sixMonth: 'price_1UBeeFAgI47NcCKvjfwzbc41'
     };
  
     let currentUser = null;
