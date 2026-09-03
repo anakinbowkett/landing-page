@@ -8,6 +8,8 @@
     "@supabase/supabase-js": "^2.39.0",
     "node-fetch": "^2.6.7",
     "nodemailer": "^6.9.0",
-    "@vercel/functions": "^1.0.0"
+    "@vercel/functions": "^1.0.0",
+    "pdfkit": "^0.15.0",
+    "dotenv": "^16.4.5"
   }
 }

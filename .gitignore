@@ -27,6 +27,9 @@ yarn-error.log*
 .env.local
 .env
 
+# creator signature records — personal data, never commit
+/signed-records
+
 # vercel
 .vercel
 

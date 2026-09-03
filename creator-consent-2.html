@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creator Programme Consent Form — Monturalearn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #0a0a0a;
+        color: #e5e7eb;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    nav {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        background: rgba(10,10,10,0.94);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid #1f1f1f;
+        z-index: 50;
+        height: 4.25rem;
+        display: flex;
+        align-items: center;
+        padding: 0 1.5rem;
+        justify-content: space-between;
+    }
+
+    .nav-logo-row { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
+    .nav-logo-row img { height: 32px; width: auto; }
+    .nav-brand { font-size: 1rem; font-weight: 700; color: #ffffff; }
+    .nav-back { font-size: 0.85rem; font-weight: 500; color: #9ca3af; text-decoration: none; }
+    .nav-back:hover { color: #e5e7eb; }
+
+    .doc-wrap { max-width: 720px; margin: 0 auto; padding: 6rem 1rem 0; }
+
+    .doc-page {
+        width: 100%;
+        display: block;
+        border-radius: 6px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        margin-bottom: 1rem;
+        border: 1px solid #262626;
+    }
+
+    .scroll-hint {
+        text-align: center; font-size: 0.75rem; color: #6b7280;
+        padding: 0.5rem 0 1.5rem; letter-spacing: 0.02em;
+    }
+
+    /* ── Signing zone (identical system to creator-contract.html) ── */
+    .sign-wrap { max-width: 720px; margin: 0 auto; padding: 0 1rem 4rem; }
+
+    .sign-zone { background: #111214; border: 1px solid #262626; border-radius: 20px; padding: 1.75rem; }
+    .sign-zone-tag {
+        display: inline-block; background: #7c2d2d22; color: #f87171;
+        font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+        padding: 0.3rem 0.8rem; border-radius: 9999px; border: 1px solid #7c2d2d55; margin-bottom: 0.85rem;
+    }
+    .sign-zone h2 { font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem; }
+    .sign-zone > p.lede { font-size: 0.85rem; color: #9ca3af; margin-bottom: 1.5rem; line-height: 1.6; }
+
+    .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin-bottom: 1.75rem; }
+    @media (max-width: 560px) { .details-grid { grid-template-columns: 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .field label { font-size: 0.78rem; font-weight: 500; color: #9ca3af; }
+    .field input {
+        background: #1a1b1e; border: 1px solid #2c2c2f; border-radius: 10px;
+        padding: 0.7rem 0.85rem; color: #f3f4f6; font-size: 0.95rem; font-family: inherit;
+        outline: none; transition: border-color 0.15s;
+    }
+    .field input:focus { border-color: #6b7280; }
+
+    .signer-block { border: 1px solid #232326; border-radius: 16px; padding: 1.35rem; margin-bottom: 1.25rem; background: #0d0e10; }
+    .signer-block h3 { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
+    .signer-block h3 .dot { width: 7px; height: 7px; border-radius: 50%; background: #d64545; display: inline-block; }
+
+    .sig-field-label { font-size: 0.78rem; font-weight: 500; color: #9ca3af; margin-bottom: 0.35rem; }
+    .sig-line { position: relative; border-bottom: 2px solid #3a3a3f; padding-bottom: 0.4rem; margin-bottom: 0.3rem; }
+    .sig-line input {
+        width: 100%; background: none; border: none; outline: none;
+        font-family: 'Dancing Script', cursive; font-size: 1.9rem; color: #f3f4f6;
+        padding: 0.1rem 0.1rem 0; font-weight: 600;
+    }
+    .sig-line input::placeholder { font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #55565c; font-weight: 400; }
+    .sig-caption { font-size: 0.72rem; color: #55565c; margin-bottom: 1.1rem; }
+
+    .agree-row {
+        display: flex; align-items: flex-start; gap: 0.6rem; margin: 0.9rem 0 0.2rem;
+        font-size: 0.82rem; color: #9ca3af; line-height: 1.5;
+    }
+    .agree-row input[type="checkbox"] { margin-top: 0.2rem; width: 16px; height: 16px; accent-color: #d64545; flex-shrink: 0; cursor: pointer; }
+    .agree-row label { cursor: pointer; }
+
+    .age-gate { display: none; font-size: 0.78rem; color: #fca5a5; margin: -1rem 0 0.9rem; }
+
+    .date-note { font-size: 0.75rem; color: #6b7280; margin-top: 1rem; }
+
+    .submit-btn {
+        width: 100%; background: #d64545; color: #fff; border: none; border-radius: 12px;
+        padding: 0.95rem; font-size: 0.98rem; font-weight: 700; font-family: inherit; cursor: pointer;
+        transition: background 0.15s; margin-top: 0.75rem;
+    }
+    .submit-btn:hover:not(:disabled) { background: #c23a3a; }
+    .submit-btn:disabled { background: #2a2a2c; color: #6b7280; cursor: not-allowed; }
+
+    .status-msg { font-size: 0.82rem; margin-top: 0.9rem; line-height: 1.5; display: none; padding: 0.8rem 0.95rem; border-radius: 10px; }
+    .status-msg.error { display: block; background: #3a1414; color: #fca5a5; border: 1px solid #5c1f1f; }
+
+    .success-panel { text-align: center; padding: 1.75rem 1rem; }
+    .success-panel .check {
+        width: 52px; height: 52px; border-radius: 50%; background: #16321c; border: 1px solid #234a2b;
+        display: flex; align-items: center; justify-content: center; margin: 0 auto 1.1rem; font-size: 1.5rem;
+    }
+    .success-panel h2 { color: #fff; margin-bottom: 0.6rem; font-size: 1.2rem; }
+    .success-panel p { color: #9ca3af; font-size: 0.88rem; line-height: 1.65; max-width: 400px; margin: 0 auto; }
+    .success-panel a { color: #f3a3a3; font-weight: 600; }
+
+    .page-footer { background: #000; border-top: 1px solid #1a1a1a; padding: 1.75rem; text-align: center; }
+    .page-footer p { color: #4b5563; font-size: 0.78rem; }
+</style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo-row">
+        <img src="https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png" alt="Monturalearn Logo">
+        <span class="nav-brand">Monturalearn</span>
+    </a>
+    <a href="creator-contract-2.html" class="nav-back">Creator contract →</a>
+</nav>
+
+<div class="doc-wrap">
+    <img class="doc-page" src="assets/consent2-1.png" alt="Creator Programme Consent Form, page 1">
+    <img class="doc-page" src="assets/consent2-2.png" alt="Creator Programme Consent Form, page 2">
+    <p class="scroll-hint">That's the full Consent Form — sign below ↓</p>
+</div>
+
+<div class="sign-wrap">
+    <div id="formPanel" class="sign-zone">
+        <span class="sign-zone-tag">Signatures required</span>
+        <h2>Sign the Consent Form</h2>
+        <p class="lede">Both the Creator and a parent or guardian need to fill in their part below. Typing your name in the signature line and submitting is a legally recognised electronic signature — no need to draw anything.</p>
+
+        <div class="details-grid">
+            <div class="field">
+                <label for="email">Your email address</label>
+                <input type="email" id="email" placeholder="you@example.com" required>
+            </div>
+            <div class="field">
+                <label for="tiktok">Your TikTok username</label>
+                <input type="text" id="tiktok" placeholder="@yourname" required>
+            </div>
+        </div>
+
+        <div class="signer-block">
+            <h3><span class="dot"></span>Creator</h3>
+            <div class="details-grid">
+                <div class="field">
+                    <label for="creatorLegalName">Full name</label>
+                    <input type="text" id="creatorLegalName" required>
+                </div>
+                <div class="field">
+                    <label for="creatorDob">Date of birth</label>
+                    <input type="date" id="creatorDob" required>
+                </div>
+            </div>
+            <p class="age-gate" id="ageGate">You need to be 16 or over to join the Creator Programme — this date of birth doesn't meet that.</p>
+
+            <div class="sig-field-label">Signature</div>
+            <div class="sig-line">
+                <input type="text" id="creatorSig" placeholder="Type your full name to sign">
+            </div>
+            <p class="sig-caption">Typing your name here and submitting counts as your electronic signature.</p>
+        </div>
+
+        <div class="signer-block">
+            <h3><span class="dot" style="background:#6b7280;"></span>Parent / Guardian</h3>
+            <div class="details-grid">
+                <div class="field">
+                    <label for="parentLegalName">Full name</label>
+                    <input type="text" id="parentLegalName" required>
+                </div>
+                <div class="field">
+                    <label for="parentRelationship">Relationship to Creator</label>
+                    <input type="text" id="parentRelationship" placeholder="e.g. Mother" required>
+                </div>
+            </div>
+            <div class="details-grid">
+                <div class="field">
+                    <label for="parentEmail">Your email</label>
+                    <input type="email" id="parentEmail" required>
+                </div>
+                <div class="field">
+                    <label for="parentPhone">Your phone number</label>
+                    <input type="tel" id="parentPhone" required>
+                </div>
+            </div>
+
+            <div class="sig-field-label">Signature</div>
+            <div class="sig-line">
+                <input type="text" id="parentSig" placeholder="Type your full name to sign">
+            </div>
+            <p class="sig-caption">Typing your name here and submitting counts as your electronic signature.</p>
+
+            <div class="agree-row">
+                <input type="checkbox" id="parentAgree">
+                <label for="parentAgree">I confirm (a)–(d) in Section 5 above, and I consent to my child taking part in the Creator Programme.</label>
+            </div>
+        </div>
+
+        <p class="date-note">Both signatures will be dated automatically with today's date (<span id="todayLabel"></span>) when submitted, along with a timestamp and device record for our files.</p>
+
+        <button class="submit-btn" id="submitBtn" disabled>Sign &amp; submit</button>
+        <div class="status-msg" id="statusMsg"></div>
+    </div>
+
+    <div id="successPanel" class="sign-zone success-panel" style="display:none;">
+        <div class="check">✓</div>
+        <h2>Consent form signed</h2>
+        <p>Thanks — that's the Consent Form done. If you haven't already, head over to the <a href="creator-contract-2.html">Agreement</a> to finish up. Once both are signed we'll be in touch with your content plan.</p>
+    </div>
+</div>
+
+<div class="page-footer">
+    <p>Monturalearn — Creator Programme. Questions? <a href="mailto:monturalearn@gmail.com" style="color:#6b7280;">monturalearn@gmail.com</a></p>
+</div>
+
+<script>
+(function () {
+    "use strict";
+
+    const STORAGE_KEY = 'montura_creator_identity';
+    function loadIdentity() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+        catch (e) { return {}; }
+    }
+    function saveIdentity(obj) {
+        const existing = loadIdentity();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(Object.assign(existing, obj)));
+    }
+
+    const idn = loadIdentity();
+    const $ = id => document.getElementById(id);
+    if (idn.email) $('email').value = idn.email;
+    if (idn.tiktokUsername) $('tiktok').value = idn.tiktokUsername;
+    if (idn.creatorName) { $('creatorLegalName').value = idn.creatorName; $('creatorSig').value = idn.creatorName; }
+    if (idn.dob) $('creatorDob').value = idn.dob;
+    if (idn.parentName) { $('parentLegalName').value = idn.parentName; $('parentSig').value = idn.parentName; }
+    if (idn.parentRelationship) $('parentRelationship').value = idn.parentRelationship;
+    if (idn.parentEmail) $('parentEmail').value = idn.parentEmail;
+    if (idn.parentPhone) $('parentPhone').value = idn.parentPhone;
+
+    if (localStorage.getItem('montura_consent_signed_v2') === '1') {
+        document.getElementById('formPanel').style.display = 'none';
+        document.getElementById('successPanel').style.display = 'block';
+    }
+
+    function isOldEnough(dobStr) {
+        if (!dobStr) return false;
+        const dob = new Date(dobStr);
+        const now = new Date();
+        let age = now.getFullYear() - dob.getFullYear();
+        const m = now.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age--;
+        return age >= 16;
+    }
+
+    const today = new Date();
+    document.getElementById('todayLabel').textContent = today.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const submitBtn = document.getElementById('submitBtn');
+    const statusMsg = document.getElementById('statusMsg');
+    const ageGateMsg = document.getElementById('ageGate');
+
+    function namesRoughlyMatch(a, b) {
+        const norm = s => (s || '').trim().toLowerCase().replace(/\s+/g, ' ');
+        return norm(a) === norm(b) && norm(a).length > 0;
+    }
+
+    function validate() {
+        const dob = $('creatorDob').value;
+        const oldEnough = isOldEnough(dob);
+        ageGateMsg.style.display = (dob && !oldEnough) ? 'block' : 'none';
+
+        const ok = $('email').value.trim() &&
+            $('tiktok').value.trim() &&
+            $('creatorLegalName').value.trim() &&
+            oldEnough &&
+            namesRoughlyMatch($('creatorSig').value, $('creatorLegalName').value) &&
+            $('parentLegalName').value.trim() &&
+            $('parentRelationship').value.trim() &&
+            $('parentEmail').value.trim() &&
+            $('parentPhone').value.trim() &&
+            namesRoughlyMatch($('parentSig').value, $('parentLegalName').value) &&
+            $('parentAgree').checked;
+
+        submitBtn.disabled = !ok;
+        return ok;
+    }
+
+    ['email','tiktok','creatorLegalName','creatorDob','creatorSig',
+     'parentLegalName','parentRelationship','parentEmail','parentPhone','parentSig','parentAgree']
+        .forEach(id => { $(id).addEventListener('input', validate); $(id).addEventListener('change', validate); });
+
+    submitBtn.addEventListener('click', async () => {
+        if (!validate()) return;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting…';
+        statusMsg.className = 'status-msg';
+
+        const payload = {
+            stage: 'consent',
+            docVersion: 'v2',
+            identity: {
+                email: $('email').value.trim(),
+                tiktokUsername: $('tiktok').value.trim()
+            },
+            formData: {
+                participantName: $('creatorLegalName').value.trim(),
+                participantDob: $('creatorDob').value,
+                participantSignature: $('creatorSig').value.trim(),
+                parentName: $('parentLegalName').value.trim(),
+                relationship: $('parentRelationship').value.trim(),
+                parentEmail: $('parentEmail').value.trim(),
+                parentPhone: $('parentPhone').value.trim(),
+                signature: $('parentSig').value.trim(),
+                date: today.toISOString().slice(0, 10)
+            }
+        };
+
+        try {
+            const res = await fetch('/api/ambassador-signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (!res.ok || !data.success) throw new Error(data.error || 'Something went wrong saving your signature.');
+
+            saveIdentity({
+                email: payload.identity.email,
+                tiktokUsername: payload.identity.tiktokUsername,
+                creatorName: payload.formData.participantName,
+                dob: payload.formData.participantDob,
+                parentName: payload.formData.parentName,
+                parentRelationship: payload.formData.relationship,
+                parentEmail: payload.formData.parentEmail,
+                parentPhone: payload.formData.parentPhone,
+                ambassadorId: data.ambassadorId
+            });
+            localStorage.setItem('montura_consent_signed_v2', '1');
+
+            document.getElementById('formPanel').style.display = 'none';
+            document.getElementById('successPanel').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('successPanel').offsetTop - 100, behavior: 'smooth' });
+        } catch (err) {
+            statusMsg.textContent = 'Sorry — ' + err.message + ' Please try again, or email monturalearn@gmail.com if it keeps happening.';
+            statusMsg.className = 'status-msg error';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Sign & submit';
+        }
+    });
+
+    validate();
+})();
+</script>
+
+</body>
+</html>
