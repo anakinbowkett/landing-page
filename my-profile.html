@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Montura Learn</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Crimson+Text:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: white;
+            border-bottom: 1px solid #e0e4e9;
+            padding: 1.25rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left { display: flex; align-items: center; gap: 1rem; }
+        .nav-left img { height: 28px; }
+        .nav-left span { font-size: 1.125rem; font-weight: 600; color: #111827; }
+
+        .back-btn {
+            background: #f3f4f6;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #111827;
+            transition: background 0.15s ease, transform 0.1s ease;
+        }
+        .back-btn:hover { background: #e5e7eb; }
+        .back-btn:active { transform: scale(0.97) translateY(1px); }
+
+        .container {
+            max-width: 760px;
+            margin: 3rem auto;
+            padding: 0 2rem 4rem;
+        }
+
+        .page-header { margin-bottom: 2rem; }
+
+        .page-header h1 {
+            font-family: 'Crimson Text', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .page-header p { color: #6b7280; font-size: 0.9375rem; }
+
+        .card {
+            background: white;
+            border: 1px solid #e0e4e9;
+            border-radius: 14px;
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-title { font-size: 1.0625rem; font-weight: 700; color: #111827; }
+
+        .card-subtitle { font-size: 0.875rem; color: #6b7280; margin-top: 0.2rem; }
+
+        /* Usage stat row */
+        .usage-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        .usage-stat {
+            text-align: center;
+            padding: 1.1rem 0.75rem;
+            border-radius: 10px;
+            background: #f9fafb;
+            border: 1px solid #eef0f3;
+        }
+        .usage-stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.2;
+        }
+        .usage-stat-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-top: 0.25rem;
+        }
+
+        /* Courses */
+        .course-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.875rem 0;
+            border-bottom: 1px solid #f0f1f3;
+        }
+        .course-row:last-child { border-bottom: none; }
+        .course-name { font-size: 0.9375rem; font-weight: 600; color: #111827; }
+        .course-meta { display: flex; gap: 0.5rem; margin-top: 0.3rem; }
+        .course-chip {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #4b5563;
+            background: #f3f4f6;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+        }
+        .empty-note { color: #9ca3af; font-size: 0.875rem; }
+
+        .btn {
+            border: none;
+            padding: 0.7rem 1.35rem;
+            border-radius: 9px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.15s ease;
+        }
+        .btn:active:not(:disabled) { transform: scale(0.97) translateY(1px); }
+        .btn:disabled { opacity: 0.6; cursor: default; }
+
+        .btn-dark { background: #111827; color: white; }
+        .btn-dark:hover { background: #000000; }
+
+        .btn-outline {
+            background: white;
+            color: #111827;
+            border: 1px solid #d1d5db;
+        }
+        .btn-outline:hover { background: #f9fafb; }
+
+        .btn-block { width: 100%; }
+
+        /* Plan card */
+        .plan-status-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.4rem;
+        }
+        .plan-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.65rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .plan-badge.active { background: #dcfce7; color: #15803d; }
+        .plan-badge.trial { background: #dbeafe; color: #1d4ed8; }
+        .plan-badge.expired { background: #f3f4f6; color: #6b7280; }
+
+        .plan-name { font-size: 1.125rem; font-weight: 700; color: #111827; }
+        .plan-detail { font-size: 0.875rem; color: #6b7280; margin-bottom: 1.5rem; }
+
+        .plan-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .cancel-row {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #f0f1f3;
+        }
+        .btn-cancel {
+            background: white;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+        }
+        .btn-cancel:hover { background: #fef2f2; }
+        .cancel-note { font-size: 0.8125rem; color: #9ca3af; margin-top: 0.6rem; }
+
+        .inline-error {
+            display: none;
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.75rem;
+        }
+
+        @media (max-width: 600px) {
+            nav { padding: 1rem 1.25rem; }
+            .container { padding: 0 1.25rem 3rem; margin: 2rem auto; }
+            .usage-grid { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+            .usage-stat { padding: 0.85rem 0.4rem; }
+            .usage-stat-value { font-size: 1.2rem; }
+            .card { padding: 1.4rem 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <img src="https://i.postimg.cc/Hxv3Vsc7/GMM-logo-removebg-preview.png" alt="Logo">
+            <span>Montura Learn</span>
+        </div>
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">← Back to Dashboard</button>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>My Profile</h1>
+            <p>Your courses, your progress, and your plan — all in one place.</p>
+        </div>
+
+        <!-- Your Courses -->
+        <div class="card">
+            <div class="card-title-row">
+                <div>
+                    <div class="card-title">Your Courses</div>
+                    <div class="card-subtitle">What you're currently studying</div>
+                </div>
+            </div>
+            <div id="courses-list"><div class="empty-note">Loading…</div></div>
+            <div style="margin-top: 1.25rem;">
+                <button class="btn btn-outline" onclick="window.location.href='settings.html'">Manage Subjects, Boards &amp; Tiers</button>
+            </div>
+        </div>
+
+        <!-- Usage -->
+        <div class="card">
+            <div class="card-title-row">
+                <div>
+                    <div class="card-title">Your Usage</div>
+                    <div class="card-subtitle">A quick snapshot of your progress</div>
+                </div>
+            </div>
+            <div class="usage-grid">
+                <div class="usage-stat">
+                    <div class="usage-stat-value" id="stat-streak">—</div>
+                    <div class="usage-stat-label">Day Streak</div>
+                </div>
+                <div class="usage-stat">
+                    <div class="usage-stat-value" id="stat-miles">—</div>
+                    <div class="usage-stat-label">Mastery Miles</div>
+                </div>
+                <div class="usage-stat">
+                    <div class="usage-stat-value" id="stat-subjects">—</div>
+                    <div class="usage-stat-label">Subjects</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Plan & Billing -->
+        <div class="card">
+            <div class="card-title-row">
+                <div>
+                    <div class="card-title">Plan &amp; Billing</div>
+                    <div class="card-subtitle">Your subscription, billing cycle, and cancellation</div>
+                </div>
+            </div>
+
+            <div id="plan-body">
+                <div class="empty-note">Loading…</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let session = null;
+
+        async function init() {
+            const { data } = await sbClient.auth.getSession();
+            session = data.session;
+            if (!session) {
+                window.location.href = 'signin.html';
+                return;
+            }
+            loadCourses();
+            loadUsage();
+            loadPlan();
+        }
+
+        async function loadCourses() {
+            const { data: subjects, error } = await sbClient
+                .from('user_subjects')
+                .select('*')
+                .eq('user_id', session.user.id)
+                .order('created_at');
+
+            const el = document.getElementById('courses-list');
+            if (error || !subjects || subjects.length === 0) {
+                el.innerHTML = '<div class="empty-note">No subjects added yet.</div>';
+                document.getElementById('stat-subjects').textContent = '0';
+                return;
+            }
+
+            document.getElementById('stat-subjects').textContent = subjects.length;
+
+            el.innerHTML = subjects.map(s => `
+                <div class="course-row">
+                    <div>
+                        <div class="course-name">${s.subject_name}</div>
+                        <div class="course-meta">
+                            <span class="course-chip">${s.exam_board || 'Board not set'}</span>
+                            ${s.tier ? `<span class="course-chip">${s.tier}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadUsage() {
+            const { data: streakRow } = await sbClient
+                .from('user_streaks')
+                .select('current_streak')
+                .eq('user_id', session.user.id)
+                .maybeSingle();
+            document.getElementById('stat-streak').textContent = streakRow?.current_streak ?? 0;
+
+            const { data: profile } = await sbClient
+                .from('user_profiles')
+                .select('mastery_miles')
+                .eq('id', session.user.id)
+                .single();
+            document.getElementById('stat-miles').textContent = Number(profile?.mastery_miles || 0).toLocaleString();
+        }
+
+        async function loadPlan() {
+            const { data: profile } = await sbClient
+                .from('user_profiles')
+                .select('subscription_status, trial_start_date')
+                .eq('id', session.user.id)
+                .single();
+
+            const body = document.getElementById('plan-body');
+            if (!profile) {
+                body.innerHTML = '<div class="empty-note">Unable to load your plan right now.</div>';
+                return;
+            }
+
+            let badgeClass, badgeText, planName, detailText, primaryLabel, showCancel;
+
+            if (profile.subscription_status === 'active') {
+                badgeClass = 'active';
+                badgeText = 'Active';
+                planName = 'Montura Pro';
+                detailText = 'Billed monthly. Flashtiles, past papers, live quizzes and the leaderboard are all unlocked.';
+                primaryLabel = 'Manage Billing';
+                showCancel = true;
+            } else if (profile.subscription_status === 'trial' && profile.trial_start_date) {
+                const trialEnd = new Date(new Date(profile.trial_start_date).getTime() + 3 * 24 * 60 * 60 * 1000);
+                const daysLeft = Math.max(0, Math.ceil((trialEnd - Date.now()) / (1000 * 60 * 60 * 24)));
+                badgeClass = 'trial';
+                badgeText = daysLeft > 0 ? 'Free Trial' : 'Trial Ended';
+                planName = 'Montura Free Trial';
+                detailText = daysLeft > 0
+                    ? `${daysLeft} day${daysLeft === 1 ? '' : 's'} left with full access to every feature. Lectures stay free either way.`
+                    : 'Your trial has ended. Lectures stay free — subscribe to unlock Flashtiles, past papers, live quizzes and the leaderboard again.';
+                primaryLabel = 'Upgrade to Montura Pro';
+                showCancel = false;
+            } else {
+                badgeClass = 'expired';
+                badgeText = 'Free Plan';
+                planName = 'Montura Free';
+                detailText = 'Lectures stay free forever. Subscribe to unlock Flashtiles, past papers, live quizzes and the leaderboard.';
+                primaryLabel = 'Upgrade to Montura Pro';
+                showCancel = false;
+            }
+
+            body.innerHTML = `
+                <div class="plan-status-row">
+                    <span class="plan-badge ${badgeClass}">${badgeText}</span>
+                </div>
+                <div class="plan-name">${planName}</div>
+                <div class="plan-detail">${detailText}</div>
+                <div class="plan-actions">
+                    <button class="btn btn-dark" id="plan-primary-btn">${primaryLabel}</button>
+                </div>
+                ${showCancel ? `
+                    <div class="cancel-row">
+                        <button class="btn btn-cancel" id="cancel-btn">Cancel Subscription</button>
+                        <div class="cancel-note">You'll keep full Pro access until the end of your current billing period.</div>
+                    </div>
+                ` : ''}
+                <div class="inline-error" id="plan-error"></div>
+            `;
+
+            document.getElementById('plan-primary-btn').addEventListener('click', () => {
+                if (profile.subscription_status !== 'active') {
+                    window.location.href = 'pricing.html';
+                    return;
+                }
+                openBillingPortal(document.getElementById('plan-primary-btn'), primaryLabel);
+            });
+
+            const cancelBtn = document.getElementById('cancel-btn');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => openBillingPortal(cancelBtn, 'Cancel Subscription'));
+            }
+        }
+
+        async function openBillingPortal(btn, originalLabel) {
+            const errEl = document.getElementById('plan-error');
+            errEl.style.display = 'none';
+            btn.disabled = true;
+            btn.textContent = 'Opening…';
+            try {
+                const res = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`,
+                    },
+                    body: JSON.stringify({ action: 'portal' }),
+                });
+                const data = await res.json();
+                if (!res.ok || !data.url) throw new Error(data.error || 'Could not open billing portal');
+                window.location.href = data.url;
+            } catch (err) {
+                errEl.textContent = err.message;
+                errEl.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = originalLabel;
+            }
+        }
+
+        init();
+    </script>
+    <script src="auth-check.js"></script>
+</body>
+</html>
