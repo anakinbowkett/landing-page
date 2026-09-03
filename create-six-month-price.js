@@ -25,7 +25,7 @@ const PRODUCT_ID = 'prod_VB4greIAVxrzvZ'; // the existing "Montura Pro" product
 async function main() {
     const params = new URLSearchParams();
     params.append('product', PRODUCT_ID);
-    params.append('unit_amount', '4499'); // £44.99, in pence
+    params.append('unit_amount', '3999'); // £39.99, in pence
     params.append('currency', 'gbp');
     params.append('recurring[interval]', 'month');
     params.append('recurring[interval_count]', '6'); // bills every 6 months
