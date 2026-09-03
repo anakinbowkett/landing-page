@@ -5,15 +5,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// TEMPORARY: accepts EITHER the env var value OR this hardcoded
-// password — so it works even if ADMIN_PASSWORD in Vercel is set
-// to something unexpected (extra whitespace, wrong value, etc).
-// REMOVE this fallback once the env var issue is confirmed fixed —
-// a hardcoded password sitting in your GitHub repo is a real
-// security risk long-term.
-const FALLBACK_ADMIN_PASSWORD = 'Montura-Temp-9247!';
 function isValidAdminPassword(candidate) {
-  return candidate === process.env.ADMIN_PASSWORD || candidate === FALLBACK_ADMIN_PASSWORD;
+  return !!process.env.ADMIN_PASSWORD && candidate === process.env.ADMIN_PASSWORD;
 }
 
 module.exports = async function handler(req, res) {
@@ -101,6 +94,9 @@ module.exports = async function handler(req, res) {
   // NEW: GET payout history for the creator-facing graph
   // /api/admin-payouts?action=payout-history&ambassadorId=UUID
   if (req.method === 'GET' && req.query.action === 'payout-history') {
+    if (!isValidAdminPassword(req.query.password)) {
+      return res.status(401).json({ error: 'Unauthorised' });
+    }
     const { ambassadorId } = req.query;
     if (!ambassadorId) return res.status(400).json({ error: 'ambassadorId required' });
 
@@ -122,8 +118,11 @@ module.exports = async function handler(req, res) {
 
   
   
-  // Admin view ambassador (no password needed)
+  // Admin view ambassador
   if (req.query.adminView === 'true' && req.query.ambassadorId) {
+    if (!isValidAdminPassword(req.query.password)) {
+      return res.status(401).json({ error: 'Unauthorised' });
+    }
     const { ambassadorId } = req.query;
 
     try {
