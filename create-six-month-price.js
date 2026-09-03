@@ -29,7 +29,7 @@ async function main() {
     params.append('currency', 'gbp');
     params.append('recurring[interval]', 'month');
     params.append('recurring[interval_count]', '6'); // bills every 6 months
-    params.append('nickname', '6 Months Access (17% off)');
+    params.append('nickname', '6 Months Access (26% off)');
 
     const res = await fetch('https://api.stripe.com/v1/prices', {
         method: 'POST',
