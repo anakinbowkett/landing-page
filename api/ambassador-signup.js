@@ -75,7 +75,8 @@ async function findOrCreateAmbassador({ email, tiktokUsername, fullNameGuess }) 
 // and creator-contract.html. Kept in this file (rather than its own api/*.js)
 // to stay within Vercel's Hobby-plan Serverless Function limit.
 async function handleSignatureSubmission(req, res) {
-  const { stage, identity, formData } = req.body || {};
+  const { stage, identity, formData, docVersion } = req.body || {};
+  const version = docVersion === 'v2' ? 'v2' : 'v1';
 
   if (!identity || !identity.email || !identity.tiktokUsername) {
     return res.status(400).json({ error: 'Email and TikTok username are required' });
@@ -118,6 +119,7 @@ async function handleSignatureSubmission(req, res) {
           terms_date: formData.date,
           terms_signed_ip: ip,
           terms_user_agent: userAgent,
+          terms_doc_version: version,
           updated_at: new Date().toISOString()
         }, { onConflict: 'ambassador_id' });
 
@@ -142,6 +144,7 @@ async function handleSignatureSubmission(req, res) {
           consent_date: formData.date,
           consent_signed_ip: ip,
           consent_user_agent: userAgent,
+          consent_doc_version: version,
           updated_at: new Date().toISOString()
         }, { onConflict: 'ambassador_id' });
 
