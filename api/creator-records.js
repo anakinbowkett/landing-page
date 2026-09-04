@@ -1,27 +1,29 @@
 import { createClient } from '@supabase/supabase-js';
 import PDFDocument from 'pdfkit';
-import https from 'https';
+import fs from 'fs';
+import path from 'path';
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-const LOGO_URL = 'https://i.postimg.cc/vH9GHtHV/erasebg-transformed.png';
 const PINK = '#DD5A67';
 const DEEP = '#A30223';
 const INK = '#161616';
 const GREY = '#6b7280';
 
-function fetchBuffer(url) {
-  return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      if (res.statusCode !== 200) return reject(new Error('Logo fetch failed: ' + res.statusCode));
-      const chunks = [];
-      res.on('data', (c) => chunks.push(c));
-      res.on('end', () => resolve(Buffer.concat(chunks)));
-    }).on('error', reject);
-  });
+// Reads the logo straight from the repo instead of fetching it over the
+// network on every request. The old version fetched an external postimg.cc
+// URL with no timeout, which could hang indefinitely and was the actual
+// cause of the 504 FUNCTION_INVOCATION_TIMEOUT errors on download.
+function loadLocalLogo() {
+  try {
+    return fs.readFileSync(path.join(process.cwd(), 'assets', 'montura-logo.png'));
+  } catch (e) {
+    console.error('Could not read local logo asset:', e.message);
+    return null;
+  }
 }
 
 function field(doc, label, value, x, y, width) {
@@ -192,7 +194,7 @@ async function handleGenerate(req, res) {
     }
 
     let logoBuffer = null;
-    try { logoBuffer = await fetchBuffer(LOGO_URL); } catch (e) { /* continue without logo */ }
+    try { logoBuffer = loadLocalLogo(); } catch (e) { /* continue without logo */ }
 
     const merged = Object.assign({}, ambassador, docRow);
     const pdfBuffer = await buildRecordBuffer(merged, logoBuffer);
