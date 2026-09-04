@@ -158,6 +158,10 @@ async function handleCheckoutCompleted(session) {
             });
             const fingerprint = fullSession.payment_intent?.payment_method?.card?.fingerprint;
 
+            if (!fingerprint) {
+                console.warn('No card fingerprint found on session', session.id, '- payment_intent type:', typeof fullSession.payment_intent, 'payment_method present:', !!fullSession.payment_intent?.payment_method);
+            }
+
             if (fingerprint) {
                 const { data: existing } = await supabase
                     .from('used_intro_card_fingerprints')
