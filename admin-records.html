@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monturalearn — Creator Records</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root { --pink:#DD5A67; --deep:#A30223; --ink:#161616; --grey:#6b7280; --bg:#faf7f7; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background:var(--bg); color:var(--ink); margin:0; padding:32px 20px; }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 { color: var(--deep); font-size: 22px; margin-bottom: 4px; }
+  p.sub { color: var(--grey); margin-top: 0; font-size: 14px; }
+  #gate { max-width: 380px; margin: 60px auto; text-align: center; }
+  #gate input { width: 100%; padding: 12px 14px; border: 1.5px solid #e5c8cc; border-radius: 8px; font-size: 15px; margin-bottom: 12px; }
+  #gate button, .dl-btn { background: var(--pink); color: white; border: none; padding: 11px 18px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; text-decoration: none; display: inline-block; }
+  #gate button:hover, .dl-btn:hover { background: var(--deep); }
+  #gateError { color: var(--deep); font-size: 13px; margin-top: 8px; min-height: 16px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  th, td { text-align: left; padding: 12px 14px; font-size: 13.5px; border-bottom: 1px solid #f0e6e7; }
+  th { background: #fceef0; color: var(--deep); font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; }
+  tr:last-child td { border-bottom: none; }
+  .muted { color: var(--grey); font-size: 12px; }
+  .hidden { display: none; }
+  #loading, #empty { color: var(--grey); margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="gate">
+    <h1>Creator Records</h1>
+    <p class="sub">Enter the admin password to view signed creators.</p>
+    <input type="password" id="secretInput" placeholder="Admin password">
+    <br>
+    <button onclick="unlock()">Unlock</button>
+    <div id="gateError"></div>
+  </div>
+
+  <div id="content" class="hidden">
+    <h1>Creator Records</h1>
+    <p class="sub">Everyone who has signed the Consent Form and/or Agreement. Click Download for a filed PDF record.</p>
+    <div id="loading">Loading…</div>
+    <div id="empty" class="hidden">No signed creators yet.</div>
+    <table id="table" class="hidden">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>TikTok</th>
+          <th>Agreement</th>
+          <th>Consent</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  function getSecret() { return sessionStorage.getItem('montura_admin_secret') || ''; }
+
+  function unlock() {
+    const val = document.getElementById('secretInput').value.trim();
+    if (!val) return;
+    sessionStorage.setItem('montura_admin_secret', val);
+    loadList();
+  }
+
+  document.getElementById('secretInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') unlock();
+  });
+
+  async function loadList() {
+    const secret = getSecret();
+    if (!secret) return;
+
+    try {
+      const res = await fetch('/api/list-signed-creators?secret=' + encodeURIComponent(secret));
+      if (res.status === 401) {
+        document.getElementById('gateError').textContent = 'Wrong password — try again.';
+        sessionStorage.removeItem('montura_admin_secret');
+        return;
+      }
+      const data = await res.json();
+      document.getElementById('gate').classList.add('hidden');
+      document.getElementById('content').classList.remove('hidden');
+      document.getElementById('loading').classList.add('hidden');
+
+      const creators = data.creators || [];
+      if (creators.length === 0) {
+        document.getElementById('empty').classList.remove('hidden');
+        return;
+      }
+
+      const tbody = document.getElementById('tbody');
+      tbody.innerHTML = creators.map((c) => {
+        const dlUrl = '/api/generate-creator-record?email=' + encodeURIComponent(c.email) + '&secret=' + encodeURIComponent(secret);
+        const agreementCell = c.termsDate
+          ? new Date(c.termsDate).toLocaleDateString('en-GB') + ' <span class="muted">(' + (c.termsDocVersion || 'v1') + ')</span>'
+          : '<span class="muted">Not signed</span>';
+        const consentCell = c.consentDate
+          ? new Date(c.consentDate).toLocaleDateString('en-GB') + ' <span class="muted">(' + (c.consentDocVersion || 'v1') + ')</span>'
+          : '<span class="muted">Not signed</span>';
+        return '<tr>' +
+          '<td>' + (c.name || '—') + '</td>' +
+          '<td>' + (c.email || '—') + '</td>' +
+          '<td>' + (c.tiktokUsername || '—') + '</td>' +
+          '<td>' + agreementCell + '</td>' +
+          '<td>' + consentCell + '</td>' +
+          '<td><a class="dl-btn" href="' + dlUrl + '">Download PDF</a></td>' +
+          '</tr>';
+      }).join('');
+      document.getElementById('table').classList.remove('hidden');
+    } catch (e) {
+      document.getElementById('gateError').textContent = 'Something went wrong — try again.';
+    }
+  }
+
+  if (getSecret()) {
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('content').classList.remove('hidden');
+    loadList();
+  }
+</script>
+</body>
+</html>
