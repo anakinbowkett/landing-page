@@ -79,7 +79,7 @@
     if (!secret) return;
 
     try {
-      const res = await fetch('/api/list-signed-creators?secret=' + encodeURIComponent(secret));
+      const res = await fetch('/api/creator-records?secret=' + encodeURIComponent(secret));
       if (res.status === 401) {
         document.getElementById('gateError').textContent = 'Wrong password — try again.';
         sessionStorage.removeItem('montura_admin_secret');
@@ -98,7 +98,7 @@
 
       const tbody = document.getElementById('tbody');
       tbody.innerHTML = creators.map((c) => {
-        const dlUrl = '/api/generate-creator-record?email=' + encodeURIComponent(c.email) + '&secret=' + encodeURIComponent(secret);
+        const dlUrl = '/api/creator-records?action=generate&email=' + encodeURIComponent(c.email) + '&secret=' + encodeURIComponent(secret);
         const agreementCell = c.termsDate
           ? new Date(c.termsDate).toLocaleDateString('en-GB') + ' <span class="muted">(' + (c.termsDocVersion || 'v1') + ')</span>'
           : '<span class="muted">Not signed</span>';
