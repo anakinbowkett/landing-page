@@ -1,4 +1,19 @@
 // api/stripe-webhook.js
+//
+// IMPORTANT HISTORY: as of [live-webhook fix, this session] this endpoint
+// had NEVER actually been receiving events - no webhook destination
+// existed in Stripe's Live mode at all. subscription_status was only ever
+// being set by verify-payment.js's client-side confirmation, which meant
+// used_intro_offer, the anti-abuse tables, and (critically) demoting
+// subscription_status back to 'expired' on cancellation/payment failure
+// had never once run for a real customer. Fixed by creating the actual
+// webhook destination in Stripe (Developers -> Webhooks) pointing at
+// /api/stripe-webhook, subscribed to exactly the 6 events this file
+// handles, with STRIPE_WEBHOOK_SECRET set in Vercel to match. If anything
+// webhook-dependent (cancellation, anti-abuse tracking, referral
+// commissions) seems broken again, check this destination still exists
+// and its signing secret still matches the env var before assuming it's
+// a code bug.
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
