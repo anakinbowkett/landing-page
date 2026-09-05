@@ -96,17 +96,6 @@ function lockedFeaturePage(featureName) {
 export default async function middleware(request) {
   const url = new URL(request.url);
 
-  // TEMPORARY DIAGNOSTIC — remove once the entitlement-gating bug is
-  // found. ?debugcheck=1 forces the locked page regardless of real
-  // entitlement, to prove whether this middleware runs at all. Safe for
-  // every real user since nobody's actual link has this on it.
-  if (url.searchParams.get('debugcheck') === '1') {
-    return new Response(lockedFeaturePage('DEBUG TEST — middleware is running'), {
-      status: 200,
-      headers: { 'content-type': 'text/html; charset=utf-8' },
-    });
-  }
-
   // The homepage's live demo lectures are meant to be public — that's the
   // whole point of them, so they're the one deliberate exception.
   if (url.pathname.startsWith('/lectures/preview/')) {
