@@ -1,6 +1,6 @@
 // ============================================================
 // leaderboard.js — Full Battle Leaderboard System
-// GCSE Mastery Platform
+// Monturalearn Platform
 // ============================================================
 
 const LB_SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
