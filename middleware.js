@@ -33,7 +33,7 @@ const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 // clearly match — a miss here should mean "still needs paying for", never
 // "accidentally free", so new page types added later stay protected by
 // default until someone explicitly widens this pattern.
-const FREE_LECTURE_PATH = /^\/lectures\/[^/]+\/(lectures\.html|lectures\/[^/]+\.html|lectures-data\.js|question-counts\.js)$/;
+const FREE_LECTURE_PATH = /^\/lectures\/[^/]+\/(lectures\.html|lectures\/[^/]+\.html|lectures-data\.js|question-counts\.js|theme\.css|shared\.css)$/;
 
 function getCookie(request, name) {
   const cookieHeader = request.headers.get('cookie') || '';
