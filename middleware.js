@@ -48,6 +48,21 @@ function featureNameFromPath(pathname) {
   return 'This feature';
 }
 
+// Best-effort, cosmetic only — this only feeds the blurred backdrop behind
+// the modal, never anything a screen reader or search engine would read
+// carefully, so it doesn't need to be perfect for every subject slug.
+const SUBJECT_WORD_OVERRIDES = {
+  aqa: 'AQA', ocr: 'OCR', edexcel: 'Edexcel', wjec: 'WJEC',
+  f: 'Foundation', h: 'Higher', tier: 'Tier',
+};
+function subjectNameFromPath(pathname) {
+  const slug = pathname.split('/')[2] || '';
+  return slug
+    .split('-')
+    .map((w) => SUBJECT_WORD_OVERRIDES[w] || (w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(' ');
+}
+
 function featureIcon(featureName) {
   // Monoline icons, single color, kept deliberately simple - one visual
   // idea per feature rather than a generic padlock for everything.
@@ -68,7 +83,11 @@ function featureIcon(featureName) {
     <path d="M22.5 26v-4.5a5.5 5.5 0 0 1 11 0V26" fill="none" stroke="currentColor" stroke-width="2.2"/>`;
 }
 
-function lockedFeaturePage(featureName) {
+function lockedFeaturePage(featureName, pathname) {
+  const subjectName = subjectNameFromPath(pathname);
+  const navItem = (icon, label, isActive) =>
+    `<div class="nav-item${isActive ? ' active' : ''}"><span class="nav-icon">${icon}</span><span>${label}</span></div>`;
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,18 +97,57 @@ function lockedFeaturePage(featureName) {
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
-    font-family: 'Inter', sans-serif; min-height: 100vh; background: #f5f5f7;
+    font-family: 'Inter', sans-serif; background: #ffffff;
+    -webkit-font-smoothing: antialiased; overflow: hidden;
+  }
+
+  /* ---------- Backdrop: a generic stand-in for the real page chrome,
+     never the actual gated content, so it's safe to show to anyone ---------- */
+  .backdrop {
+    position: fixed; inset: 0; display: flex;
+    filter: blur(5px); transform: scale(1.02); /* scale hides the blur's soft edge */
+  }
+  .sidebar {
+    width: 280px; padding: 2rem 1.5rem; margin: 20px;
+    display: flex; flex-direction: column; flex-shrink: 0;
+  }
+  .logo { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 2.5rem; }
+  .logo img { height: 22px; width: auto; }
+  .logo span { font-size: 1.0625rem; font-weight: 600; color: #111827; letter-spacing: -0.02em; }
+  .nav-item {
+    display: flex; align-items: center; gap: 0.875rem; padding: 0.875rem 1rem;
+    margin-bottom: 0.5rem; border-radius: 8px; font-size: 0.9375rem;
+    font-weight: 500; color: #374151;
+  }
+  .nav-item.active { background: #ffffff; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .nav-icon { font-size: 1.125rem; }
+  .main-content {
+    flex: 1; margin: 20px 20px 20px 0; background: #ffffff; border-radius: 10px;
+    overflow: hidden; border: 1px solid #e0e4e9; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .subject-band {
+    background: #dcfce7; padding: 3rem 3rem 2rem;
+  }
+  .subject-band h2 { font-size: 1.75rem; font-weight: 700; color: #111827; letter-spacing: -0.02em; }
+  @media (max-width: 760px) {
+    .sidebar { display: none; }
+    .main-content { margin-left: 20px; }
+  }
+
+  /* ---------- Overlay: the actual, crisp, interactive content ---------- */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(20,20,22,0.4);
     display: flex; align-items: center; justify-content: center; padding: 1.5rem;
-    -webkit-font-smoothing: antialiased;
   }
   .card {
     background: #ffffff; border-radius: 20px; padding: 3rem 2.75rem 2.25rem;
     max-width: 430px; width: 100%; text-align: center;
     box-shadow:
-      0 1px 2px rgba(0,0,0,0.04),
-      0 8px 24px rgba(0,0,0,0.06),
-      0 24px 48px rgba(0,0,0,0.05);
+      0 1px 2px rgba(0,0,0,0.06),
+      0 12px 32px rgba(0,0,0,0.16),
+      0 32px 64px rgba(0,0,0,0.18);
   }
   .icon-badge {
     width: 56px; height: 56px; border-radius: 16px; margin: 0 auto 1.5rem;
@@ -134,17 +192,33 @@ function lockedFeaturePage(featureName) {
 </style>
 </head>
 <body>
-  <div class="card">
-    <div class="icon-badge">
-      <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">${featureIcon(featureName)}</svg>
+  <div class="backdrop" aria-hidden="true">
+    <div class="sidebar">
+      <div class="logo"><img src="/assets/montura-logo.png" alt=""><span>Montura Learn</span></div>
+      ${navItem('🏠', 'Dashboard', false)}
+      ${navItem('∞', 'Lectures', false)}
+      ${navItem('⚡', 'Flashtiles', featureName === 'Flashtiles')}
+      ${navItem('🕐', 'Quiz', featureName === 'Daily Quiz')}
+      ${navItem('📄', 'Past Papers', featureName === 'Past Papers')}
     </div>
-    <h1>${featureName} is part of Montura Pro</h1>
-    <p>Your lectures stay free, always. Subscribing unlocks ${featureName.toLowerCase()} across every subject.</p>
-    <a class="primary" href="/pricing.html?trial_ended=true">Upgrade Now</a>
-    <a class="secondary" href="/dashboard.html">Back to dashboard</a>
-    <div class="signature">
-      <img src="/assets/montura-logo.png" alt="">
-      <span>Montura Learn</span>
+    <div class="main-content">
+      <div class="subject-band"><h2>${subjectName}</h2></div>
+    </div>
+  </div>
+
+  <div class="overlay">
+    <div class="card">
+      <div class="icon-badge">
+        <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">${featureIcon(featureName)}</svg>
+      </div>
+      <h1>${featureName} is part of Montura Pro</h1>
+      <p>Your lectures stay free, always. Subscribing unlocks ${featureName.toLowerCase()} across every subject.</p>
+      <a class="primary" href="/pricing.html?trial_ended=true">Upgrade Now</a>
+      <a class="secondary" href="/dashboard.html">Back to dashboard</a>
+      <div class="signature">
+        <img src="/assets/montura-logo.png" alt="">
+        <span>Montura Learn</span>
+      </div>
     </div>
   </div>
 </body>
@@ -216,7 +290,7 @@ export default async function middleware(request) {
     // papers/quiz content (and any question data it would otherwise load)
     // never gets sent to the browser at all, so there's nothing to view
     // source or inspect into.
-    return new Response(lockedFeaturePage(featureNameFromPath(url.pathname)), {
+    return new Response(lockedFeaturePage(featureNameFromPath(url.pathname), url.pathname), {
       status: 200,
       headers: { 'content-type': 'text/html; charset=utf-8' },
     });
