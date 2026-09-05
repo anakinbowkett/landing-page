@@ -48,6 +48,26 @@ function featureNameFromPath(pathname) {
   return 'This feature';
 }
 
+function featureIcon(featureName) {
+  // Monoline icons, single color, kept deliberately simple - one visual
+  // idea per feature rather than a generic padlock for everything.
+  if (featureName === 'Flashtiles') {
+    return `<rect x="14" y="18" width="24" height="18" rx="3.5" transform="rotate(-6 26 27)" fill="none" stroke="currentColor" stroke-width="2.2"/>
+      <rect x="17" y="15" width="24" height="18" rx="3.5" fill="white" stroke="currentColor" stroke-width="2.2"/>`;
+  }
+  if (featureName === 'Past Papers') {
+    return `<path d="M18 14h14l6 6v18a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2V16a2 2 0 0 1 2-2z" fill="white" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="M32 14v6h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="M20 30h12M20 35h8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`;
+  }
+  if (featureName === 'Daily Quiz') {
+    return `<circle cx="28" cy="27" r="13" fill="white" stroke="currentColor" stroke-width="2.2"/>
+      <path d="M22.5 27.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+  return `<rect x="19" y="26" width="18" height="13" rx="3" fill="white" stroke="currentColor" stroke-width="2.2"/>
+    <path d="M22.5 26v-4.5a5.5 5.5 0 0 1 11 0V26" fill="none" stroke="currentColor" stroke-width="2.2"/>`;
+}
+
 function lockedFeaturePage(featureName) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -59,35 +79,73 @@ function lockedFeaturePage(featureName) {
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: 'Inter', sans-serif; min-height: 100vh; background: #f8f9fa;
+    font-family: 'Inter', sans-serif; min-height: 100vh; background: #f5f5f7;
     display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+    -webkit-font-smoothing: antialiased;
   }
-  .box {
-    background: white; border-radius: 16px; padding: 2.5rem; max-width: 420px;
-    text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;
+  .card {
+    background: #ffffff; border-radius: 20px; padding: 3rem 2.75rem 2.25rem;
+    max-width: 430px; width: 100%; text-align: center;
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.04),
+      0 8px 24px rgba(0,0,0,0.06),
+      0 24px 48px rgba(0,0,0,0.05);
   }
-  img { height: 40px; margin-bottom: 1.5rem; }
-  h1 { font-size: 1.375rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
-  p { font-size: 0.9375rem; color: #6b7280; line-height: 1.5; margin-bottom: 1.75rem; }
+  .icon-badge {
+    width: 56px; height: 56px; border-radius: 16px; margin: 0 auto 1.5rem;
+    background: linear-gradient(160deg, #eaf3fd 0%, #dcecfb 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: #1d7fe2;
+  }
+  .icon-badge svg { width: 30px; height: 30px; }
+  h1 {
+    font-size: 1.375rem; font-weight: 700; color: #1d1d1f;
+    letter-spacing: -0.03em; margin-bottom: 0.625rem; line-height: 1.3;
+  }
+  p {
+    font-size: 0.9375rem; color: #6e6e73; line-height: 1.5;
+    margin-bottom: 1.875rem; letter-spacing: -0.005em;
+  }
   a.primary {
-    display: block; background: #111827; color: white; text-decoration: none;
-    padding: 0.875rem 2rem; border-radius: 10px; font-size: 0.9375rem; font-weight: 600;
-    margin-bottom: 0.625rem; transition: transform 0.1s ease;
+    display: block; text-decoration: none; color: white;
+    background: linear-gradient(180deg, #2f8ce8 0%, #1d7fe2 55%, #1a72cc 100%);
+    padding: 0.8rem 1.5rem; border-radius: 12px; font-size: 0.9375rem; font-weight: 600;
+    margin-bottom: 0.875rem;
+    box-shadow: 0 1px 1px rgba(15,60,110,0.15), 0 6px 14px rgba(29,127,226,0.28);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
   }
-  a.primary:active { transform: scale(0.97) translateY(1px); }
+  a.primary:active {
+    transform: scale(0.97) translateY(1px);
+    box-shadow: 0 1px 1px rgba(15,60,110,0.15), 0 3px 8px rgba(29,127,226,0.24);
+  }
+  a.primary:focus-visible, a.secondary:focus-visible {
+    outline: 2px solid #1d7fe2; outline-offset: 2px;
+  }
   a.secondary {
-    display: block; color: #6b7280; text-decoration: none; padding: 0.625rem;
-    font-size: 0.875rem; border-radius: 8px;
+    display: block; color: #6e6e73; text-decoration: none; padding: 0.5rem;
+    font-size: 0.875rem; border-radius: 8px; margin-bottom: 1.5rem;
   }
+  .signature {
+    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+    opacity: 0.38;
+  }
+  .signature img { height: 14px; width: auto; }
+  .signature span { font-size: 0.75rem; font-weight: 600; color: #1d1d1f; }
 </style>
 </head>
 <body>
-  <div class="box">
-    <img src="https://i.postimg.cc/kDrBZ2z5/Monturalearn-logo.jpg" alt="Monturalearn">
+  <div class="card">
+    <div class="icon-badge">
+      <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">${featureIcon(featureName)}</svg>
+    </div>
     <h1>${featureName} is part of Montura Pro</h1>
-    <p>Your lectures stay free, always. ${featureName} is one of the Pro features — subscribe to get it back, for every subject.</p>
+    <p>Your lectures stay free, always. Subscribing unlocks ${featureName.toLowerCase()} across every subject.</p>
     <a class="primary" href="/pricing.html?trial_ended=true">Upgrade Now</a>
     <a class="secondary" href="/dashboard.html">Back to dashboard</a>
+    <div class="signature">
+      <img src="/assets/montura-logo.png" alt="">
+      <span>Montura Learn</span>
+    </div>
   </div>
 </body>
 </html>`;
