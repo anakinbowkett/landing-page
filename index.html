@@ -383,6 +383,27 @@
         .pathway-line { stroke-dasharray: 1000; stroke-dashoffset: 1000; transition: stroke-dashoffset 1s ease; }
         .pathway-line.is-drawn { stroke-dashoffset: 0; }
 
+        /* ── FEATURE BLEED SECTIONS — real product screenshot bleeding off one edge, feature copy in the whitespace ── */
+        .feature-bleed-section { width:100vw; position:relative; left:50%; margin-left:-50vw; overflow:hidden; background:#ffffff; }
+        .feature-bleed-row { display:flex; align-items:center; min-height:82vh; flex-wrap:wrap; }
+        .feature-bleed-text { flex:1 1 320px; padding:2rem clamp(1.5rem,5vw,5rem); }
+        .feature-bleed-text h2 { font-size:clamp(1.75rem,3.5vw,2.75rem); font-weight:800; color:#111827; letter-spacing:-0.02em; margin:0 0 1rem; }
+        .feature-bleed-text p { font-size:1.125rem; color:#4b5563; line-height:1.6; max-width:420px; margin:0; }
+        .feature-bleed-img-wrap { flex:0 0 auto; }
+        .feature-bleed-img-wrap img { display:block; width:64vw; height:auto; }
+        .feature-bleed-right .feature-bleed-img-wrap { margin-right:-12.8vw; order:2; }
+        .feature-bleed-right .feature-bleed-img-wrap img { border-radius:24px 0 0 24px; box-shadow:-8px 0 32px rgba(0,0,0,0.06); }
+        .feature-bleed-right .feature-bleed-text { order:1; }
+        .feature-bleed-left .feature-bleed-img-wrap { margin-left:-9.2vw; order:1; }
+        .feature-bleed-left .feature-bleed-img-wrap img { border-radius:0 24px 24px 0; box-shadow:8px 0 32px rgba(0,0,0,0.06); }
+        .feature-bleed-left .feature-bleed-text { order:2; }
+        @media (max-width:900px) {
+            .feature-bleed-row { min-height:auto; flex-direction:column; }
+            .feature-bleed-img-wrap { margin:0 !important; width:100%; order:1 !important; }
+            .feature-bleed-img-wrap img { width:100%; border-radius:0 !important; box-shadow:none !important; }
+            .feature-bleed-text { order:2 !important; padding:2rem 1.5rem; }
+        }
+
     </style>
 </head>
 <body>
@@ -497,6 +518,32 @@
                 <h2 style="font-size:clamp(2.5rem,7vw,4.5rem);font-weight:800;color:#ffffff;letter-spacing:-0.03em;line-height:1.05;margin:0;">Montura M1.</h2>
                 <p style="font-size:clamp(1.0625rem,2vw,1.25rem);color:#9ca3af;line-height:1.6;max-width:520px;margin:0.5rem auto 0;">The first version of the world's first fully personalised pathway to GCSE and A-Level success.</p>
                 <a class="press-btn" href="choose-path.html" style="margin-top:0.5rem;background:#1d7fe2;color:white;padding:1rem 2.5rem;border-radius:9999px;font-size:1rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;transition:background 0.2s;display:inline-block;">Find your path →</a>
+            </div>
+        </section>
+
+        <!-- ── FEATURE: Don't miss a mark (Flashtiles) ── -->
+        <section class="feature-bleed-section">
+            <div class="feature-bleed-row feature-bleed-right">
+                <div class="feature-bleed-text">
+                    <h2>Don't miss a mark</h2>
+                    <p>Bite sized knowledge cards for the topic recaps, broken down into multiple segments that test every single topic in the whole syllabus.</p>
+                </div>
+                <div class="feature-bleed-img-wrap">
+                    <img src="assets/feature-flashtiles.jpg" alt="Flashtiles — topic recap cards, rated Got it, Not sure, or Forgot it">
+                </div>
+            </div>
+        </section>
+
+        <!-- ── FEATURE: Specific to your syllabus (Insight Guide) ── -->
+        <section class="feature-bleed-section">
+            <div class="feature-bleed-row feature-bleed-left">
+                <div class="feature-bleed-img-wrap">
+                    <img src="assets/feature-insight-guide.jpg" alt="Exam-style question with the AI Insight Guide open beside it">
+                </div>
+                <div class="feature-bleed-text">
+                    <h2>Specific to your syllabus</h2>
+                    <p>Exam style questions that gradually build up in difficulty, allowing you to find your personal learning strengths and weaknesses with clarity</p>
+                </div>
             </div>
         </section>
 
