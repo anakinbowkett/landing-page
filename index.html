@@ -74,8 +74,8 @@
         /* ── HERO ── */
         .hero { padding: 9rem 1rem 3rem; }
         .hero-title {
-            font-size: 3.75rem; font-weight: 700;
-            line-height: 1.1; color: #111827;
+            font-size: clamp(2.5rem, 6vw, 5.25rem); font-weight: 800;
+            line-height: 1.03; color: #111827; letter-spacing: -0.03em;
         }
         .hero-subtitle { font-size: 1.375rem; color: #4b5563; max-width: 680px; }
         .hero-cta {
@@ -288,9 +288,9 @@
         }
 
         /* ── CTA SECTION ── */
-        .cta-section { padding:6rem 1rem; background:white; }
+        .cta-section { padding:7rem 1rem; background:#0a0e1a; }
         .cta-container { max-width:56rem; margin:0 auto; text-align:center; display:flex; flex-direction:column; gap:3rem; }
-        .cta-title { font-size:2.25rem; font-weight:700; color:#111827; white-space:nowrap; }
+        .cta-title { font-size:clamp(2rem,4.5vw,3rem); font-weight:800; color:#ffffff; white-space:nowrap; letter-spacing:-0.02em; }
         .cta-button {
             background:#1d7fe2;
             color:rgba(255,255,255,0.95); padding:1rem 2.25rem; font-size:1rem;
@@ -349,7 +349,6 @@
 
         /* ── MOBILE OVERRIDES ── */
         @media (max-width:768px) {
-            .hero-title { font-size:2.25rem; }
             .cta-title { font-size:1.5rem; white-space:normal; }
         }
         @media (max-width:430px) {
@@ -361,7 +360,6 @@
             .nav-link { font-size:0.75rem; }
             .nav-cta { padding:0.375rem 0.75rem; font-size:0.75rem; }
             .hero { padding:6.5rem 1rem 2.5rem; }
-            .hero-title { font-size:2.25rem; }
             .hero-subtitle { font-size:1rem; }
             .hero-cta { padding:0.75rem 1.5rem; font-size:0.875rem; width:100%; justify-content:center; }
             .slot-container { min-height:48px; justify-content:center; }
@@ -375,28 +373,6 @@
         }
         .nav-cta:active, .hero-cta:active, .cta-button:active, .apply-btn:active, .press-btn:active {
             transform: scale(0.97) translateY(1px);
-        }
-
-        /* ── PINNED DEMO — stays in view while captions swap, like scrolling past a pinned product ── */
-        .pin-stage { position: relative; }
-        .pin-sticky-wrap { position: sticky; top: 5rem; z-index: 2; }
-        .pin-trigger { height: 60vh; }
-        .pin-caption-box { position: relative; height: 2.75rem; margin-top: 1rem; }
-        .pin-caption {
-            position: absolute; top: 0; left: 0; right: 0;
-            text-align: center; font-size: 1.125rem; font-weight: 600; color: #374151;
-            opacity: 0; transform: translateY(10px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-        .pin-caption.is-active { opacity: 1; transform: translateY(0); }
-        @media (max-width: 640px) {
-            .pin-trigger { height: 40vh; }
-            .pin-sticky-wrap { top: 4.5rem; }
-            .pin-caption { font-size: 1rem; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .pin-sticky-wrap { position: static; }
-            .pin-caption { opacity: 1 !important; transform: none !important; position: static; margin-bottom: 0.5rem; }
         }
 
         /* ── QUIET REVEAL — one calm fade-in, used for the parent section and the final CTA ── */
@@ -490,44 +466,31 @@
             </div>
         </div>
 
-        <!-- ── LECTURE PREVIEW WINDOW — pinned while you scroll through what it does ── -->
-        <div class="pin-stage" style="width:100%;margin-top:3rem;">
-            <div style="max-width:1280px;margin:0 auto;">
+        <!-- ── LECTURE PREVIEW WINDOW ── -->
+        <div style="width:100%;margin-top:3rem;">
+            <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:1.25rem;">
 
-                <div class="pin-sticky-wrap">
-                    <!-- Tab label -->
-                    <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-bottom:1.5rem;">
-                        <div style="background:#111827;color:white;padding:0.625rem 1.5rem;border-radius:9999px;font-size:0.9375rem;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-0.01em;">Lectures</div>
-                        <span style="font-size:0.875rem;color:#6b7280;">Try it now</span>
-                        <span style="display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:600;color:#16a34a;background:#dcfce7;padding:4px 10px;border-radius:99px;">
-                            <span style="width:6px;height:6px;background:#16a34a;border-radius:50%;display:inline-block;"></span>
-                            Live — click anything, it actually works
-                        </span>
-                    </div>
-
-                    <!-- Preview window — live interactive lecture -->
-                    <div id="lecturePreviewWindow" style="width:100%;height:75vh;min-height:520px;border-radius:20px;border:2px solid #e5e7eb;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.1);position:relative;">
-                        <iframe
-                            src="lectures/preview/aqa-macbeth-intro-l1-meet-the-world-of-macbeth.html"
-                            style="width:100%;height:100%;border:none;display:block;"
-                            title="Live English Literature lecture — try it now"
-                            loading="lazy"
-                            allow="clipboard-write"
-                        ></iframe>
-                    </div>
-
-                    <!-- Caption that swaps as you scroll through the trigger zones below -->
-                    <div class="pin-caption-box">
-                        <p class="pin-caption is-active" data-pin="0">Marked the instant you answer — no waiting for anyone.</p>
-                        <p class="pin-caption" data-pin="1">Stuck on something? The AI Insight Guide is already there — no new tab, no new app.</p>
-                        <p class="pin-caption" data-pin="2">Works exactly the same for every subject you take — Macbeth or Physics, same experience.</p>
-                    </div>
+                <!-- Tab label -->
+                <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <div style="background:#111827;color:white;padding:0.625rem 1.5rem;border-radius:9999px;font-size:0.9375rem;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-0.01em;">Lectures</div>
+                    <span style="font-size:0.875rem;color:#6b7280;">Try it now</span>
+                    <span style="display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:600;color:#16a34a;background:#dcfce7;padding:4px 10px;border-radius:99px;">
+                        <span style="width:6px;height:6px;background:#16a34a;border-radius:50%;display:inline-block;"></span>
+                        Live — click anything, it actually works
+                    </span>
                 </div>
 
-                <!-- Invisible scroll room — each zone in view swaps the caption above -->
-                <div class="pin-trigger" data-pin="0"></div>
-                <div class="pin-trigger" data-pin="1"></div>
-                <div class="pin-trigger" data-pin="2"></div>
+                <!-- Preview window — live interactive lecture -->
+                <div id="lecturePreviewWindow" style="width:100%;height:520px;border-radius:20px;border:2px solid #e5e7eb;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.1);position:relative;">
+                    <iframe
+                        src="lectures/preview/aqa-macbeth-intro-l1-meet-the-world-of-macbeth.html"
+                        style="width:100%;height:100%;border:none;display:block;"
+                        title="Live English Literature lecture — try it now"
+                        loading="lazy"
+                        allow="clipboard-write"
+                    ></iframe>
+                </div>
+                <p style="text-align:center;font-size:1rem;color:#6b7280;margin:0;">Marked the instant you answer. The AI Insight Guide is right there if you get stuck. Same experience, every subject.</p>
 
                 <!-- CTA 1 — immediately after watching the demo -->
                 <div style="display:flex;align-items:center;justify-content:center;gap:1rem;padding:1rem 0 2rem;">
@@ -535,6 +498,15 @@
                 </div>
             </div>
         </div>
+
+        <!-- ── CHAPTER BREAK — Montura M1 ── -->
+        <section style="background:#0a0e1a;padding:clamp(5rem,12vw,9rem) 1rem;margin-top:4rem;text-align:center;">
+            <div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:1rem;">
+                <span style="font-size:0.8125rem;font-weight:700;color:#5b9df9;text-transform:uppercase;letter-spacing:0.12em;">Introducing</span>
+                <h2 style="font-size:clamp(2.5rem,7vw,4.5rem);font-weight:800;color:#ffffff;letter-spacing:-0.03em;line-height:1.05;margin:0;">Montura M1.</h2>
+                <p style="font-size:clamp(1.0625rem,2vw,1.25rem);color:#9ca3af;line-height:1.6;max-width:520px;margin:0.5rem auto 0;">The first version of the world's first fully personalised pathway to GCSE and A-Level success.</p>
+            </div>
+        </section>
 
         <!-- ── SUBJECTS TABLE ── -->
         <section style="padding:4rem 0 6rem;" id="subjects">
@@ -1258,22 +1230,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 (function() {
-    // Pinned demo — swap the caption based on which invisible trigger zone is in view
-    var triggers = document.querySelectorAll('.pin-trigger');
-    var captions = document.querySelectorAll('.pin-caption');
-    if (triggers.length && captions.length && 'IntersectionObserver' in window) {
-        var pinObserver = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (!entry.isIntersecting) return;
-                var pin = entry.target.getAttribute('data-pin');
-                captions.forEach(function(c) {
-                    c.classList.toggle('is-active', c.getAttribute('data-pin') === pin);
-                });
-            });
-        }, { threshold: 0.5 });
-        triggers.forEach(function(t) { pinObserver.observe(t); });
-    }
-
     // Quiet reveal-on-scroll — fades an element in once, the first time it's seen
     var reveals = document.querySelectorAll('.reveal-on-scroll');
     if (reveals.length) {
