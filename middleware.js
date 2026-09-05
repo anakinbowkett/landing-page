@@ -48,21 +48,6 @@ function featureNameFromPath(pathname) {
   return 'This feature';
 }
 
-// Best-effort, cosmetic only — this only feeds the blurred backdrop behind
-// the modal, never anything a screen reader or search engine would read
-// carefully, so it doesn't need to be perfect for every subject slug.
-const SUBJECT_WORD_OVERRIDES = {
-  aqa: 'AQA', ocr: 'OCR', edexcel: 'Edexcel', wjec: 'WJEC',
-  f: 'Foundation', h: 'Higher', tier: 'Tier',
-};
-function subjectNameFromPath(pathname) {
-  const slug = pathname.split('/')[2] || '';
-  return slug
-    .split('-')
-    .map((w) => SUBJECT_WORD_OVERRIDES[w] || (w.charAt(0).toUpperCase() + w.slice(1)))
-    .join(' ');
-}
-
 function featureIcon(featureName) {
   // Monoline icons, single color, kept deliberately simple - one visual
   // idea per feature rather than a generic padlock for everything.
@@ -83,10 +68,15 @@ function featureIcon(featureName) {
     <path d="M22.5 26v-4.5a5.5 5.5 0 0 1 11 0V26" fill="none" stroke="currentColor" stroke-width="2.2"/>`;
 }
 
-function lockedFeaturePage(featureName, pathname) {
-  const subjectName = subjectNameFromPath(pathname);
-  const navItem = (icon, label, isActive) =>
-    `<div class="nav-item${isActive ? ' active' : ''}"><span class="nav-icon">${icon}</span><span>${label}</span></div>`;
+function backdropImageFor(featureName) {
+  if (featureName === 'Flashtiles') return '/assets/backdrop-flashtiles.jpg';
+  if (featureName === 'Past Papers') return '/assets/backdrop-pastpapers.jpg';
+  if (featureName === 'Daily Quiz') return '/assets/backdrop-quiz.jpg';
+  return '/assets/backdrop-flashtiles.jpg';
+}
+
+function lockedFeaturePage(featureName) {
+  const backdropImage = backdropImageFor(featureName);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -103,37 +93,15 @@ function lockedFeaturePage(featureName, pathname) {
     -webkit-font-smoothing: antialiased; overflow: hidden;
   }
 
-  /* ---------- Backdrop: a generic stand-in for the real page chrome,
-     never the actual gated content, so it's safe to show to anyone ---------- */
+  /* ---------- Backdrop: a real screenshot of the actual page (blurred and
+     re-compressed into a static image ahead of time - never live HTML), so
+     what someone sees behind the card is genuinely the real product, but
+     there is no DOM/text to inspect, disable-filter, or copy out. The
+     screenshot itself never shows any signed-in student's private data -
+     it's the generic pre-content menu screen every account sees. ---------- */
   .backdrop {
-    position: fixed; inset: 0; display: flex;
-    filter: blur(5px); transform: scale(1.02); /* scale hides the blur's soft edge */
-  }
-  .sidebar {
-    width: 280px; padding: 2rem 1.5rem; margin: 20px;
-    display: flex; flex-direction: column; flex-shrink: 0;
-  }
-  .logo { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 2.5rem; }
-  .logo img { height: 22px; width: auto; }
-  .logo span { font-size: 1.0625rem; font-weight: 600; color: #111827; letter-spacing: -0.02em; }
-  .nav-item {
-    display: flex; align-items: center; gap: 0.875rem; padding: 0.875rem 1rem;
-    margin-bottom: 0.5rem; border-radius: 8px; font-size: 0.9375rem;
-    font-weight: 500; color: #374151;
-  }
-  .nav-item.active { background: #ffffff; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-  .nav-icon { font-size: 1.125rem; }
-  .main-content {
-    flex: 1; margin: 20px 20px 20px 0; background: #ffffff; border-radius: 10px;
-    overflow: hidden; border: 1px solid #e0e4e9; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  }
-  .subject-band {
-    background: #dcfce7; padding: 3rem 3rem 2rem;
-  }
-  .subject-band h2 { font-size: 1.75rem; font-weight: 700; color: #111827; letter-spacing: -0.02em; }
-  @media (max-width: 760px) {
-    .sidebar { display: none; }
-    .main-content { margin-left: 20px; }
+    position: fixed; inset: 0;
+    background-size: cover; background-position: center;
   }
 
   /* ---------- Overlay: the actual, crisp, interactive content ---------- */
@@ -192,19 +160,7 @@ function lockedFeaturePage(featureName, pathname) {
 </style>
 </head>
 <body>
-  <div class="backdrop" aria-hidden="true">
-    <div class="sidebar">
-      <div class="logo"><img src="/assets/montura-logo.png" alt=""><span>Montura Learn</span></div>
-      ${navItem('🏠', 'Dashboard', false)}
-      ${navItem('∞', 'Lectures', false)}
-      ${navItem('⚡', 'Flashtiles', featureName === 'Flashtiles')}
-      ${navItem('🕐', 'Quiz', featureName === 'Daily Quiz')}
-      ${navItem('📄', 'Past Papers', featureName === 'Past Papers')}
-    </div>
-    <div class="main-content">
-      <div class="subject-band"><h2>${subjectName}</h2></div>
-    </div>
-  </div>
+  <div class="backdrop" style="background-image: url('${backdropImage}')" aria-hidden="true"></div>
 
   <div class="overlay">
     <div class="card">
@@ -290,7 +246,7 @@ export default async function middleware(request) {
     // papers/quiz content (and any question data it would otherwise load)
     // never gets sent to the browser at all, so there's nothing to view
     // source or inspect into.
-    return new Response(lockedFeaturePage(featureNameFromPath(url.pathname), url.pathname), {
+    return new Response(lockedFeaturePage(featureNameFromPath(url.pathname)), {
       status: 200,
       headers: { 'content-type': 'text/html; charset=utf-8' },
     });
