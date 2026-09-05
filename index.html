@@ -412,28 +412,52 @@
         <!-- Hero copy — full width, no waitlist box -->
         <div style="display:flex;flex-direction:column;gap:1.5rem;max-width:900px;">
             <h1 class="hero-title">Stop guessing what to revise. We already know.</h1>
-            <p class="hero-subtitle">Your own path through your GCSEs — not the same list as everyone else in your class.</p>
             <div class="slot-container">
                 <div id="carousel"><span id="carouselText">For the home learners</span></div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:1rem;margin-top:0.5rem;max-width:640px;">
-                <p style="font-size:0.9375rem;font-weight:600;color:#374151;margin:0;">What are you studying for?</p>
-                <div style="display:flex;gap:1rem;flex-wrap:wrap;">
-                    <a class="press-btn" href="signup.html" style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:0.35rem;background:white;border:2px solid #e5e7eb;border-radius:16px;padding:1.5rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 8px 24px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
-                        <span style="font-size:1.0625rem;font-weight:700;color:#111827;">I'm studying for my GCSEs</span>
-                        <span style="font-size:0.8125rem;color:#6b7280;">Years 7–11 &middot; AQA, Edexcel, OCR</span>
-                    </a>
-                    <a class="press-btn" href="alevel/signup.html" style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:0.35rem;background:white;border:2px solid #e5e7eb;border-radius:16px;padding:1.5rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 8px 24px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
-                        <span style="font-size:1.0625rem;font-weight:700;color:#111827;">I'm studying for my A-Levels</span>
-                        <span style="font-size:0.8125rem;color:#6b7280;">Year 12&ndash;13 &middot; AQA, Edexcel, OCR</span>
-                    </a>
+        </div>
+
+        <!-- What are you studying for — full hero width, bigger, one clear choice -->
+        <div style="display:flex;flex-direction:column;gap:1rem;margin-top:1rem;">
+            <p style="font-size:1rem;font-weight:600;color:#374151;margin:0;">What are you studying for?</p>
+            <div style="display:flex;gap:1.25rem;flex-wrap:wrap;">
+                <a class="press-btn" href="signup.html" style="flex:1;min-width:280px;display:flex;align-items:center;justify-content:space-between;gap:1rem;background:white;border:2px solid #e5e7eb;border-radius:20px;padding:2rem 2.25rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 12px 32px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
+                    <span style="display:flex;flex-direction:column;gap:0.35rem;">
+                        <span style="font-size:1.375rem;font-weight:700;color:#111827;">GCSEs</span>
+                        <span style="font-size:0.875rem;color:#6b7280;">Years 7–11 &middot; AQA, Edexcel, OCR</span>
+                    </span>
+                    <span style="font-size:1.5rem;color:#1d7fe2;">→</span>
+                </a>
+                <a class="press-btn" href="alevel/signup.html" style="flex:1;min-width:280px;display:flex;align-items:center;justify-content:space-between;gap:1rem;background:white;border:2px solid #e5e7eb;border-radius:20px;padding:2rem 2.25rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 12px 32px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
+                    <span style="display:flex;flex-direction:column;gap:0.35rem;">
+                        <span style="font-size:1.375rem;font-weight:700;color:#111827;">A-Levels</span>
+                        <span style="font-size:0.875rem;color:#6b7280;">Year 12&ndash;13 &middot; AQA, Edexcel, OCR</span>
+                    </span>
+                    <span style="font-size:1.5rem;color:#1d7fe2;">→</span>
+                </a>
+            </div>
+            <span style="font-size:0.875rem;color:#9ca3af;">No credit card. No commitment.</span>
+        </div>
+
+        <!-- ── MASSIVE FULL-SCREEN DEMO — the platform, actually being used ── -->
+        <div style="width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;margin-top:2rem;">
+            <div style="width:100%;height:92vh;min-height:640px;background:#0a0e1a;position:relative;overflow:hidden;">
+                <iframe
+                    src="lectures/preview/aqa-macbeth-intro-l1-meet-the-world-of-macbeth.html"
+                    style="width:100%;height:100%;border:none;display:block;"
+                    title="Live English Literature lecture — try it now"
+                    loading="lazy"
+                    allow="clipboard-write"
+                ></iframe>
+                <div style="position:absolute;top:1.5rem;left:1.5rem;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.95);padding:6px 14px;border-radius:99px;font-size:0.75rem;font-weight:700;color:#16a34a;">
+                    <span style="width:6px;height:6px;background:#16a34a;border-radius:50%;display:inline-block;"></span>
+                    Live — click anything, it actually works
                 </div>
-                <span style="font-size:0.875rem;color:#9ca3af;">No credit card. No commitment.</span>
             </div>
         </div>
 
         <!-- ── SOCIAL PROOF MARQUEE ── -->
-        <div class="social-marquee-section">
+        <div class="social-marquee-section" style="margin-top:2rem;">
             <div class="social-marquee-wrapper">
                 <div class="social-marquee-row">
                     <div class="social-marquee-track track-ltr">
@@ -466,45 +490,13 @@
             </div>
         </div>
 
-        <!-- ── LECTURE PREVIEW WINDOW ── -->
-        <div style="width:100%;margin-top:3rem;">
-            <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:1.25rem;">
-
-                <!-- Tab label -->
-                <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-                    <div style="background:#111827;color:white;padding:0.625rem 1.5rem;border-radius:9999px;font-size:0.9375rem;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-0.01em;">Lectures</div>
-                    <span style="font-size:0.875rem;color:#6b7280;">Try it now</span>
-                    <span style="display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:600;color:#16a34a;background:#dcfce7;padding:4px 10px;border-radius:99px;">
-                        <span style="width:6px;height:6px;background:#16a34a;border-radius:50%;display:inline-block;"></span>
-                        Live — click anything, it actually works
-                    </span>
-                </div>
-
-                <!-- Preview window — live interactive lecture -->
-                <div id="lecturePreviewWindow" style="width:100%;height:520px;border-radius:20px;border:2px solid #e5e7eb;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.1);position:relative;">
-                    <iframe
-                        src="lectures/preview/aqa-macbeth-intro-l1-meet-the-world-of-macbeth.html"
-                        style="width:100%;height:100%;border:none;display:block;"
-                        title="Live English Literature lecture — try it now"
-                        loading="lazy"
-                        allow="clipboard-write"
-                    ></iframe>
-                </div>
-                <p style="text-align:center;font-size:1rem;color:#6b7280;margin:0;">Marked the instant you answer. The AI Insight Guide is right there if you get stuck. Same experience, every subject.</p>
-
-                <!-- CTA 1 — immediately after watching the demo -->
-                <div style="display:flex;align-items:center;justify-content:center;gap:1rem;padding:1rem 0 2rem;">
-                    <a class="press-btn" href="choose-path.html" style="background:#111827;color:white;padding:1rem 2.5rem;border-radius:9999px;font-size:1rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;transition:background 0.2s;display:inline-block;">Find your path →</a>
-                </div>
-            </div>
-        </div>
-
         <!-- ── CHAPTER BREAK — Montura M1 ── -->
-        <section style="background:#0a0e1a;padding:clamp(5rem,12vw,9rem) 1rem;margin-top:4rem;text-align:center;">
-            <div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:1rem;">
+        <section style="background:#0a0e1a;padding:clamp(5rem,12vw,9rem) 1rem;margin-top:2rem;text-align:center;">
+            <div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:1.25rem;align-items:center;">
                 <span style="font-size:0.8125rem;font-weight:700;color:#5b9df9;text-transform:uppercase;letter-spacing:0.12em;">Introducing</span>
                 <h2 style="font-size:clamp(2.5rem,7vw,4.5rem);font-weight:800;color:#ffffff;letter-spacing:-0.03em;line-height:1.05;margin:0;">Montura M1.</h2>
                 <p style="font-size:clamp(1.0625rem,2vw,1.25rem);color:#9ca3af;line-height:1.6;max-width:520px;margin:0.5rem auto 0;">The first version of the world's first fully personalised pathway to GCSE and A-Level success.</p>
+                <a class="press-btn" href="choose-path.html" style="margin-top:0.5rem;background:#1d7fe2;color:white;padding:1rem 2.5rem;border-radius:9999px;font-size:1rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;transition:background 0.2s;display:inline-block;">Find your path →</a>
             </div>
         </section>
 
@@ -626,47 +618,6 @@
             </div>
         </section>
 
-        <!-- ── TESTIMONIALS ── -->
-        <div class="testimonials-section">
-            <div class="accent-orb accent-orb-1"></div>
-            <div class="accent-orb accent-orb-2"></div>
-            <div class="accent-orb accent-orb-3"></div>
-            <div class="testimonials-container">
-                <div class="testimonials-header">
-                    <h2 class="testimonials-title">What the students say</h2>
-                </div>
-                <div class="testimonials-grid" id="testimonialsGrid">
-                    <div class="testimonial-column" data-direction="down">
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/1t0sSJrv/IMG-7998-(2).jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/tT8Srjxv/IMG-7991.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/B6nMZvxg/IMG-7992.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/9Ms8xh7v/IMG-7993.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/bJw3YvQ3/IMG-7994.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                    </div>
-                    <div class="testimonial-column" data-direction="up">
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/C1xmMKjr/IMG-7995.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/63pY6Qdz/IMG-7996.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/KzCq92Mq/IMG-7999.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/tT8SrjxB/IMG-8001.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/hPQzWq79/unnamed.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                    </div>
-                    <div class="testimonial-column" data-direction="down">
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_11_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_12_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_13_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_14_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_15_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                    </div>
-                    <div class="testimonial-column" data-direction="up">
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_16_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_17_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_18_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_19_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_20_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
     </div>
 </section>
@@ -974,6 +925,48 @@
 })();
 </script>
     
+<!-- ── TESTIMONIALS (moved to bottom, right before footer) ── -->
+<div class="testimonials-section">
+            <div class="accent-orb accent-orb-1"></div>
+            <div class="accent-orb accent-orb-2"></div>
+            <div class="accent-orb accent-orb-3"></div>
+            <div class="testimonials-container">
+                <div class="testimonials-header">
+                    <h2 class="testimonials-title">What the students say</h2>
+                </div>
+                <div class="testimonials-grid" id="testimonialsGrid">
+                    <div class="testimonial-column" data-direction="down">
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/1t0sSJrv/IMG-7998-(2).jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/tT8Srjxv/IMG-7991.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/B6nMZvxg/IMG-7992.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/9Ms8xh7v/IMG-7993.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/bJw3YvQ3/IMG-7994.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                    </div>
+                    <div class="testimonial-column" data-direction="up">
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/C1xmMKjr/IMG-7995.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/63pY6Qdz/IMG-7996.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/KzCq92Mq/IMG-7999.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/tT8SrjxB/IMG-8001.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/hPQzWq79/unnamed.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                    </div>
+                    <div class="testimonial-column" data-direction="down">
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_11_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_12_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_13_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_14_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_15_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                    </div>
+                    <div class="testimonial-column" data-direction="up">
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_16_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_17_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_18_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_19_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_20_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 <!-- ── FOOTER ── -->
 <footer class="site-footer">
     <div class="footer-inner">
