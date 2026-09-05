@@ -369,54 +369,44 @@
             #carouselText { display:block; text-align:center; width:100%; }
         }
 
-        /* ── LIVE DEMO SHOWCASE (auto-loops through subjects, real lecture files) ── */
-        .showcase-section { padding: 1rem 0 5rem; }
-        .showcase-header { max-width: 700px; margin: 0 auto 2.25rem; text-align: center; }
-        .showcase-title { font-size: 2rem; font-weight: 700; color: #111827; letter-spacing: -0.02em; margin: 0 0 0.75rem; }
-        .showcase-sub { font-size: 1rem; color: #6b7280; line-height: 1.6; margin: 0; }
-
-        .showcase-window {
-            position: relative; max-width: 880px; margin: 0 auto;
-            height: 560px; border-radius: 20px; border: 2px solid #e5e7eb;
-            background: #1E3F66; overflow: hidden;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+        /* ── TACTILE PRESS (matches the press-down feel used elsewhere on the platform) ── */
+        .nav-cta, .hero-cta, .cta-button, .apply-btn, .press-btn {
+            transition: background 0.2s, transform 0.12s ease;
         }
-        .demo-card {
-            position: absolute; inset: 0;
-            opacity: 0; transform: translateX(40px) scale(0.97);
-            transition: opacity 0.65s cubic-bezier(0.4,0,0.2,1), transform 0.65s cubic-bezier(0.4,0,0.2,1);
-            pointer-events: none;
-        }
-        .demo-card.is-active { opacity: 1; transform: translateX(0) scale(1); }
-        .demo-card.is-exit-left { opacity: 0; transform: translateX(-30px) scale(0.97); }
-
-        .demo-iframe-wrap {
-            position: absolute; inset: 0; overflow: hidden;
-            transition: transform 0.9s cubic-bezier(0.4,0,0.2,1);
-            transform-origin: 50% 38%;
-        }
-        .demo-real-iframe {
-            width: 100%; height: 100%; border: none; display: block;
-            background: #1E3F66; pointer-events: none; /* preview only — the real, clickable demo lives in the window above */
-            opacity: 0; transition: opacity 0.5s ease;
+        .nav-cta:active, .hero-cta:active, .cta-button:active, .apply-btn:active, .press-btn:active {
+            transform: scale(0.97) translateY(1px);
         }
 
-        .demo-caption {
-            position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
-            background: rgba(17,24,39,0.88); color: #fff; font-size: 12.5px; font-weight: 600;
-            padding: 8px 18px; border-radius: 999px; z-index: 40;
-            opacity: 0; transition: opacity 0.35s ease; letter-spacing: 0.01em;
-            max-width: 90%; text-align: center;
+        /* ── PINNED DEMO — stays in view while captions swap, like scrolling past a pinned product ── */
+        .pin-stage { position: relative; }
+        .pin-sticky-wrap { position: sticky; top: 5rem; z-index: 2; }
+        .pin-trigger { height: 60vh; }
+        .pin-caption-box { position: relative; height: 2.75rem; margin-top: 1rem; }
+        .pin-caption {
+            position: absolute; top: 0; left: 0; right: 0;
+            text-align: center; font-size: 1.125rem; font-weight: 600; color: #374151;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
-        .demo-caption.is-shown { opacity: 1; }
-
+        .pin-caption.is-active { opacity: 1; transform: translateY(0); }
         @media (max-width: 640px) {
-            .showcase-window { height: 460px; }
-            .demo-caption { font-size: 10.5px; padding: 7px 14px; max-width: 94%; }
+            .pin-trigger { height: 40vh; }
+            .pin-sticky-wrap { top: 4.5rem; }
+            .pin-caption { font-size: 1rem; }
         }
         @media (prefers-reduced-motion: reduce) {
-            .demo-card, .demo-iframe-wrap, .demo-caption { transition-duration: 0.01ms !important; }
+            .pin-sticky-wrap { position: static; }
+            .pin-caption { opacity: 1 !important; transform: none !important; position: static; margin-bottom: 0.5rem; }
         }
+
+        /* ── QUIET REVEAL — one calm fade-in, used for the parent section and the final CTA ── */
+        .reveal-on-scroll { opacity: 0; transform: translateY(16px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+
+        /* ── PATHWAY LINE — draws itself once the subjects section is in view ── */
+        .pathway-line { stroke-dasharray: 1000; stroke-dashoffset: 1000; transition: stroke-dashoffset 1s ease; }
+        .pathway-line.is-drawn { stroke-dashoffset: 0; }
+
     </style>
 </head>
 <body>
@@ -453,11 +443,11 @@
             <div style="display:flex;flex-direction:column;gap:1rem;margin-top:0.5rem;max-width:640px;">
                 <p style="font-size:0.9375rem;font-weight:600;color:#374151;margin:0;">What are you studying for?</p>
                 <div style="display:flex;gap:1rem;flex-wrap:wrap;">
-                    <a href="signup.html" style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:0.35rem;background:white;border:2px solid #e5e7eb;border-radius:16px;padding:1.5rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 8px 24px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
+                    <a class="press-btn" href="signup.html" style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:0.35rem;background:white;border:2px solid #e5e7eb;border-radius:16px;padding:1.5rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 8px 24px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
                         <span style="font-size:1.0625rem;font-weight:700;color:#111827;">I'm studying for my GCSEs</span>
                         <span style="font-size:0.8125rem;color:#6b7280;">Years 7–11 &middot; AQA, Edexcel, OCR</span>
                     </a>
-                    <a href="alevel/signup.html" style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:0.35rem;background:white;border:2px solid #e5e7eb;border-radius:16px;padding:1.5rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 8px 24px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
+                    <a class="press-btn" href="alevel/signup.html" style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:0.35rem;background:white;border:2px solid #e5e7eb;border-radius:16px;padding:1.5rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 8px 24px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
                         <span style="font-size:1.0625rem;font-weight:700;color:#111827;">I'm studying for my A-Levels</span>
                         <span style="font-size:0.8125rem;color:#6b7280;">Year 12&ndash;13 &middot; AQA, Edexcel, OCR</span>
                     </a>
@@ -500,74 +490,51 @@
             </div>
         </div>
 
-        <!-- ── LECTURE PREVIEW WINDOW ── -->
-        <div style="width:100%;margin-top:3rem;">
-            <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem;">
+        <!-- ── LECTURE PREVIEW WINDOW — pinned while you scroll through what it does ── -->
+        <div class="pin-stage" style="width:100%;margin-top:3rem;">
+            <div style="max-width:1280px;margin:0 auto;">
 
-                <!-- Tab label -->
-                <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-                    <div style="background:#111827;color:white;padding:0.625rem 1.5rem;border-radius:9999px;font-size:0.9375rem;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-0.01em;">Lectures</div>
-                    <span style="font-size:0.875rem;color:#6b7280;">Try it now</span>
-                    <span style="display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:600;color:#16a34a;background:#dcfce7;padding:4px 10px;border-radius:99px;">
-                        <span style="width:6px;height:6px;background:#16a34a;border-radius:50%;display:inline-block;"></span>
-                        Live — click anything, it actually works
-                    </span>
+                <div class="pin-sticky-wrap">
+                    <!-- Tab label -->
+                    <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+                        <div style="background:#111827;color:white;padding:0.625rem 1.5rem;border-radius:9999px;font-size:0.9375rem;font-weight:600;font-family:'Inter',sans-serif;letter-spacing:-0.01em;">Lectures</div>
+                        <span style="font-size:0.875rem;color:#6b7280;">Try it now</span>
+                        <span style="display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:600;color:#16a34a;background:#dcfce7;padding:4px 10px;border-radius:99px;">
+                            <span style="width:6px;height:6px;background:#16a34a;border-radius:50%;display:inline-block;"></span>
+                            Live — click anything, it actually works
+                        </span>
+                    </div>
+
+                    <!-- Preview window — live interactive lecture -->
+                    <div id="lecturePreviewWindow" style="width:100%;height:75vh;min-height:520px;border-radius:20px;border:2px solid #e5e7eb;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.1);position:relative;">
+                        <iframe
+                            src="lectures/preview/aqa-macbeth-intro-l1-meet-the-world-of-macbeth.html"
+                            style="width:100%;height:100%;border:none;display:block;"
+                            title="Live English Literature lecture — try it now"
+                            loading="lazy"
+                            allow="clipboard-write"
+                        ></iframe>
+                    </div>
+
+                    <!-- Caption that swaps as you scroll through the trigger zones below -->
+                    <div class="pin-caption-box">
+                        <p class="pin-caption is-active" data-pin="0">Marked the instant you answer — no waiting for anyone.</p>
+                        <p class="pin-caption" data-pin="1">Stuck on something? The AI Insight Guide is already there — no new tab, no new app.</p>
+                        <p class="pin-caption" data-pin="2">Works exactly the same for every subject you take — Macbeth or Physics, same experience.</p>
+                    </div>
                 </div>
 
-                <!-- Preview window — live interactive lecture -->
-                <div id="lecturePreviewWindow" style="width:100%;height:85vh;min-height:600px;border-radius:20px;border:2px solid #e5e7eb;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.1);position:relative;">
-                    <iframe
-                        src="lectures/preview/aqa-macbeth-intro-l1-meet-the-world-of-macbeth.html"
-                        style="width:100%;height:100%;border:none;display:block;"
-                        title="Live English Literature lecture — try it now"
-                        loading="lazy"
-                        allow="clipboard-write"
-                    ></iframe>
-                </div>
+                <!-- Invisible scroll room — each zone in view swaps the caption above -->
+                <div class="pin-trigger" data-pin="0"></div>
+                <div class="pin-trigger" data-pin="1"></div>
+                <div class="pin-trigger" data-pin="2"></div>
 
                 <!-- CTA 1 — immediately after watching the demo -->
                 <div style="display:flex;align-items:center;justify-content:center;gap:1rem;padding:1rem 0 2rem;">
-                    <a href="choose-path.html" style="background:#111827;color:white;padding:1rem 2.5rem;border-radius:9999px;font-size:1rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;transition:background 0.2s;display:inline-block;">Find your path →</a>
+                    <a class="press-btn" href="choose-path.html" style="background:#111827;color:white;padding:1rem 2.5rem;border-radius:9999px;font-size:1rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;transition:background 0.2s;display:inline-block;">Find your path →</a>
                 </div>
             </div>
         </div>
-
-        <!-- ── LIVE DEMO SHOWCASE — auto-loops through subjects ── -->
-        <section class="showcase-section" id="showcaseDemo">
-            <div class="showcase-header">
-                <h2 class="showcase-title">Watch it teach. Same experience, every subject.</h2>
-                <p class="showcase-sub">A real Monturalearn lecture — instant feedback, an AI Insight Guide, and answers explained on the spot. This is Physics. It works exactly the same for Macbeth, Frankenstein, or any of your GCSE subjects.</p>
-            </div>
-
-            <div class="showcase-window" id="showcaseWindow">
-
-                <!-- PHYSICS CARD — real lecture file, embedded exactly like the top preview -->
-                <div class="demo-card is-active" id="demoPhysics">
-                    <div class="demo-iframe-wrap" id="physicsFrameWrap">
-                        <iframe
-                            src="lectures/preview/sci-phys-p2-l12-distance-travelled-from-area-under-a-velocity-time-graph.html"
-                            class="demo-real-iframe"
-                            loading="lazy"
-                            title="Physics lecture — distance travelled from a velocity-time graph"
-                        ></iframe>
-                    </div>
-                </div>
-
-                <!-- ENGLISH LITERATURE CARD — real lecture file, embedded exactly like the top preview -->
-                <div class="demo-card" id="demoEnglish">
-                    <div class="demo-iframe-wrap" id="englishFrameWrap">
-                        <iframe
-                            src="lectures/preview/aqa-animal-farm-p3-l3-equality-and-its-betrayal.html"
-                            class="demo-real-iframe"
-                            loading="lazy"
-                            title="English Literature lecture — Animal Farm, equality and its betrayal"
-                        ></iframe>
-                    </div>
-                </div>
-
-                <div class="demo-caption" id="demoCaption"></div>
-            </div>
-        </section>
 
         <!-- ── SUBJECTS TABLE ── -->
         <section style="padding:4rem 0 6rem;" id="subjects">
@@ -575,7 +542,10 @@
 
                 <div style="margin-bottom:3rem;">
                     <h2 style="font-size:2.25rem;font-weight:700;color:#111827;letter-spacing:-0.02em;margin:0 0 0.5rem;">Every subject. Every board.</h2>
-                    <p style="font-size:1rem;color:#6b7280;margin:0;">AQA, Edexcel and OCR — Foundation and Higher. Pick yours and go.</p>
+                    <p style="font-size:1rem;color:#6b7280;margin:0 0 0.75rem;">AQA, Edexcel and OCR — Foundation and Higher. Pick yours and go.</p>
+                    <svg width="140" height="10" viewBox="0 0 140 10" style="display:block;">
+                        <path class="pathway-line" d="M2 5 H138" stroke="#1d7fe2" stroke-width="3" stroke-linecap="round" fill="none" pathLength="1000"/>
+                    </svg>
                 </div>
 
                 <div style="overflow-x:auto;">
@@ -678,7 +648,7 @@
                         <p style="font-size:1.0625rem;font-weight:700;color:#111827;margin:0 0 4px;">Ready to start?</p>
                         <p style="font-size:0.875rem;color:#6b7280;margin:0;">Pick your subject and begin your first lecture today — it's free.</p>
                     </div>
-                    <a href="choose-path.html" style="background:#111827;color:white;padding:0.875rem 2rem;border-radius:10px;font-size:0.9375rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;white-space:nowrap;display:inline-block;">Get started free →</a>
+                    <a class="press-btn" href="choose-path.html" style="background:#111827;color:white;padding:0.875rem 2rem;border-radius:10px;font-size:0.9375rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;white-space:nowrap;display:inline-block;">Get started free →</a>
                 </div>
 
             </div>
@@ -734,7 +704,7 @@
     <div class="faq-container">
         <!-- CTA 3 — before FAQ, captures anyone who scrolled past everything -->
         <div style="text-align:center;margin-bottom:4rem;">
-            <a href="choose-path.html" style="background:#1d7fe2;color:rgba(255,255,255,0.95);padding:1rem 2.25rem;font-size:1rem;font-weight:600;border-radius:9999px;text-decoration:none;display:inline-block;transition:background 0.2s;font-family:'Inter',sans-serif;">Try now for free</a>
+            <a class="press-btn" href="choose-path.html" style="background:#1d7fe2;color:rgba(255,255,255,0.95);padding:1rem 2.25rem;font-size:1rem;font-weight:600;border-radius:9999px;text-decoration:none;display:inline-block;transition:background 0.2s;font-family:'Inter',sans-serif;">Try now for free</a>
         </div>
         <div class="faq-header">
             <h2>Frequently Asked Questions</h2>
@@ -846,7 +816,7 @@
 
 <!-- ── FOR PARENTS ── -->
 <section style="padding:clamp(3rem,6vw,5rem) 1rem;background:#fafafa;border-top:1px solid #f3f4f6;border-bottom:1px solid #f3f4f6;">
-    <div style="max-width:640px;margin:0 auto;text-align:center;display:flex;flex-direction:column;gap:1rem;">
+    <div class="reveal-on-scroll" style="max-width:640px;margin:0 auto;text-align:center;display:flex;flex-direction:column;gap:1rem;">
         <span style="font-size:0.75rem;font-weight:700;color:#1d7fe2;text-transform:uppercase;letter-spacing:0.08em;">For parents</span>
         <h2 style="font-size:clamp(1.75rem,4vw,2.5rem);font-weight:700;color:#111827;letter-spacing:-0.02em;margin:0;">No shouting required.</h2>
         <p style="font-size:1.0625rem;color:#4b5563;line-height:1.6;margin:0;">A calm, clear plan for their GCSEs — so revision stops being the thing you argue about.</p>
@@ -855,7 +825,7 @@
 
 <!-- ── CTA SECTION ── -->
 <section class="cta-section">
-    <div class="cta-container">
+    <div class="cta-container reveal-on-scroll">
         <h2 class="cta-title">Confusion to Confidence at your fingertips</h2>
         <a href="choose-path.html" class="cta-button">
             <span>Try now for free</span>
@@ -1287,286 +1257,58 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-// Live demo showcase — auto-loops through the two real lecture files.
-// Runs as a sequence of real steps (click this, wait for that, type this)
-// rather than a fixed timer schedule, so the pacing follows what actually
-// happens in the real app instead of a guessed clock. The iframe's content
-// stays invisible until the "Before you start" splash is fully handled and
-// the Insight Guide (which it auto-opens) is closed again — so the splash is
-// never shown to the visitor. Never clicks the real "Ask" send button, since
-// that hits your live DeepSeek backend and firing it on every visitor's loop
-// would rack up real API calls with no one reading the reply. Also suppresses
-// the lecture's own first-visit guided tour, and force-unlocks question
-// navigation so "Next" always works regardless of reading progress. Every
-// call into the iframe is wrapped in try/catch and polls for elements, so a
-// missing/renamed element just gets skipped instead of breaking the demo.
 (function() {
-    var win = document.getElementById('showcaseWindow');
-    if (!win) return;
-
-    try { window.localStorage.setItem('montura_tutorial_seen', 'true'); } catch (e) {}
-
-    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    var physics = document.getElementById('demoPhysics');
-    var english = document.getElementById('demoEnglish');
-    var caption = document.getElementById('demoCaption');
-    var physicsFrameWrap = document.getElementById('physicsFrameWrap');
-    var englishFrameWrap = document.getElementById('englishFrameWrap');
-    var physicsIframe = physicsFrameWrap.querySelector('iframe');
-    var englishIframe = englishFrameWrap.querySelector('iframe');
-
-    var cancelled = true;
-    var captionFadeTimer = null;
-
-    function setCaption(text) {
-        caption.classList.remove('is-shown');
-        clearTimeout(captionFadeTimer);
-        captionFadeTimer = setTimeout(function() {
-            caption.textContent = text;
-            caption.classList.add('is-shown');
-        }, 180);
-    }
-
-    function waitFor(fn, cb, maxTries, intervalMs) {
-        maxTries = maxTries || 30;
-        intervalMs = intervalMs || 250;
-        var tries = 0;
-        var iv = setInterval(function() {
-            tries++;
-            var result;
-            try { result = fn(); } catch (e) { result = null; }
-            if (cancelled) { clearInterval(iv); return; }
-            if (result) { clearInterval(iv); cb(result); }
-            else if (tries >= maxTries) { clearInterval(iv); cb(null); } // give up gracefully, keep going
-        }, intervalMs);
-    }
-
-    // ── Step builders — each returns a function(next) ──
-    function wait(ms) { return function(next) { setTimeout(function() { if (!cancelled) next(); }, ms); }; }
-    function say(text) { return function(next) { setCaption(text); next(); }; }
-    function call(fn) { return function(next) { try { fn(); } catch (e) {} next(); }; }
-    function clickWhere(getDoc, finder, maxTries) {
-        return function(next) {
-            waitFor(function() { return finder(getDoc()); }, function(el) {
-                if (el) { try { el.click(); } catch (e) {} }
-                next();
-            }, maxTries || 20, 200);
-        };
-    }
-    function clickText(getDoc, selector, matchText, maxTries) {
-        return clickWhere(getDoc, function(doc) {
-            var els = doc.querySelectorAll(selector);
-            for (var i = 0; i < els.length; i++) {
-                if (els[i].textContent.indexOf(matchText) !== -1) return els[i];
-            }
-            return null;
-        }, maxTries);
-    }
-    function typeInto(getDoc, elId, text, charMs) {
-        return function(next) {
-            var doc = getDoc();
-            var input = doc && doc.getElementById(elId);
-            if (!input) { next(); return; }
-            try { input.focus(); } catch (e) {}
-            var i = 0;
-            var typer = setInterval(function() {
-                if (cancelled) { clearInterval(typer); return; }
-                try {
-                    input.value = text.slice(0, i);
-                    input.dispatchEvent(new Event('input', { bubbles: true }));
-                } catch (e) {}
-                i++;
-                if (i > text.length) { clearInterval(typer); next(); }
-            }, charMs || 55);
-        };
-    }
-    function runSteps(steps, onDone) {
-        var i = 0;
-        function step() {
-            if (cancelled) return;
-            if (i >= steps.length) { if (onDone) onDone(); return; }
-            steps[i++](step);
-        }
-        step();
-    }
-
-    // Reloads an iframe fresh (so the demo replays identically every loop),
-    // keeps its content invisible, and calls back once ready to be driven.
-    function reloadHidden(iframeEl, cb) {
-        var base = iframeEl.getAttribute('data-base-src');
-        if (!base) { base = iframeEl.src.split('?')[0]; iframeEl.setAttribute('data-base-src', base); }
-        iframeEl.style.opacity = '0';
-        iframeEl.addEventListener('load', function onLoad() {
-            iframeEl.removeEventListener('load', onLoad);
-            setTimeout(function() {
-                if (cancelled) return;
-                var docWin, doc;
-                try { docWin = iframeEl.contentWindow; doc = docWin.document; } catch (e) { cb(null, null); return; }
-                // Force question navigation open regardless of reading progress
-                try { docWin.isQuestionUnlocked = function() { return true; }; } catch (e) {}
-                cb(docWin, doc);
-            }, 400);
-        }, { once: true });
-        iframeEl.src = base + '?_r=' + Date.now();
-    }
-
-    function reveal(iframeEl) { iframeEl.style.opacity = '1'; }
-
-    // Full choreography for one subject. Never reveals the splash screen —
-    // it's dismissed and its auto-opened Insight Guide closed again while
-    // the iframe is still invisible.
-    function buildSequence(iframeEl, frameWrap, getDoc, opts) {
-        return [
-            // ── hidden setup: dismiss splash, close the insight it auto-opens ──
-            clickText(getDoc, '.start-here-btn', 'What will I learn'),
-            wait(300),
-            clickText(getDoc, '.start-here-btn', "let's go"),
-            wait(700),
-            clickWhere(getDoc, function(doc) { return doc.getElementById('insightCloseBtn'); }),
-            wait(300),
-
-            // ── reveal: question open, insight closed ──
-            call(function() { frameWrap.style.transform = 'scale(1.22)'; reveal(iframeEl); }),
-            say(opts.intro),
-            wait(2600),
-
-            // ── answer correctly ──
-            clickWhere(getDoc, function(doc) {
-                var els = doc.querySelectorAll('.az-opt, .az-tf-btn');
-                for (var i = 0; i < els.length; i++) {
-                    if (els[i].textContent.indexOf(opts.correctAnswer) !== -1) return els[i];
-                }
-                return null;
-            }),
-            say(opts.afterCorrect),
-            wait(2600),
-
-            // ── ask the AI a question (typed, never sent) ──
-            say(opts.beforeType),
-            typeInto(getDoc, 'chatInput', opts.typedQuestion, 60),
-            wait(1800),
-
-            // ── open the Insight Guide and show it ──
-            clickWhere(getDoc, function(doc) { return doc.getElementById('insightClosedCard'); }),
-            say(opts.insightOpen),
-            wait(3600),
-
-            // ── close it, move to the next question ──
-            clickWhere(getDoc, function(doc) { return doc.getElementById('insightCloseBtn'); }),
-            wait(700),
-            say(opts.nextQuestion),
-            clickWhere(getDoc, function(doc) { return doc.getElementById('nav-next-btn'); }),
-            wait(1200),
-
-            // ── answer wrong this time ──
-            clickWhere(getDoc, function(doc) {
-                var els = doc.querySelectorAll('.az-opt, .az-tf-btn');
-                for (var i = 0; i < els.length; i++) {
-                    if (els[i].textContent.indexOf(opts.wrongAnswer) !== -1) return els[i];
-                }
-                return null;
-            }),
-            say(opts.afterWrong),
-            wait(2000),
-
-            // ── the Insight Guide "opens itself" to help ──
-            clickWhere(getDoc, function(doc) { return doc.getElementById('insightClosedCard'); }),
-            say(opts.insightAutoOpen),
-            wait(3200),
-
-            // ── zoom all the way out to reveal the whole page ──
-            call(function() { frameWrap.style.transform = 'scale(1)'; }),
-            wait(2200)
-        ];
-    }
-
-    function crossfade(hideCard, showCard) {
-        hideCard.classList.remove('is-active'); hideCard.classList.add('is-exit-left');
-        showCard.classList.add('is-active');
-        caption.classList.remove('is-shown');
-    }
-
-    function loopOnce() {
-        if (cancelled) return;
-        physics.classList.add('is-active'); physics.classList.remove('is-exit-left');
-        english.classList.remove('is-active', 'is-exit-left');
-        physicsFrameWrap.style.transform = 'scale(1)';
-        englishFrameWrap.style.transform = 'scale(1)';
-        caption.classList.remove('is-shown');
-
-        reloadHidden(physicsIframe, function(docWin, doc) {
-            if (cancelled || !doc) return;
-            var getDoc = function() { return doc; };
-            runSteps(buildSequence(physicsIframe, physicsFrameWrap, getDoc, {
-                intro: 'This is a real Monturalearn lecture — Physics, Edexcel',
-                correctAnswer: 'Distance travelled',
-                afterCorrect: 'Marked instantly, the moment you answer',
-                beforeType: 'Ask anything, right inside the lecture',
-                typedQuestion: 'Why split it into shapes?',
-                insightOpen: 'One tap opens the AI Insight Guide',
-                nextQuestion: 'On to the next question',
-                wrongAnswer: 'True',
-                afterWrong: 'This time, get it wrong',
-                insightAutoOpen: 'The Insight Guide opens itself to help'
-            }), function() {
-                if (cancelled) return;
-                crossfade(physics, english);
-                reloadHidden(englishIframe, function(docWin2, doc2) {
-                    if (cancelled || !doc2) return;
-                    var getDoc2 = function() { return doc2; };
-                    runSteps(buildSequence(englishIframe, englishFrameWrap, getDoc2, {
-                        intro: 'Same experience — English Literature, AQA',
-                        correctAnswer: 'Old Major',
-                        afterCorrect: 'Marked instantly, every question',
-                        beforeType: 'The same AI guide, any subject',
-                        typedQuestion: 'How does the betrayal begin?',
-                        insightOpen: 'Highlight any line, ask about it',
-                        nextQuestion: 'On to the next question',
-                        wrongAnswer: 'True',
-                        afterWrong: 'This time, get it wrong',
-                        insightAutoOpen: 'The Insight Guide opens itself to help'
-                    }), function() {
-                        if (cancelled) return;
-                        crossfade(english, physics);
-                        loopOnce();
-                    });
+    // Pinned demo — swap the caption based on which invisible trigger zone is in view
+    var triggers = document.querySelectorAll('.pin-trigger');
+    var captions = document.querySelectorAll('.pin-caption');
+    if (triggers.length && captions.length && 'IntersectionObserver' in window) {
+        var pinObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (!entry.isIntersecting) return;
+                var pin = entry.target.getAttribute('data-pin');
+                captions.forEach(function(c) {
+                    c.classList.toggle('is-active', c.getAttribute('data-pin') === pin);
                 });
             });
-        });
+        }, { threshold: 0.5 });
+        triggers.forEach(function(t) { pinObserver.observe(t); });
     }
 
-    function loopOnceReduced() {
-        if (cancelled) return;
-        physics.classList.add('is-active'); physics.classList.remove('is-exit-left');
-        english.classList.remove('is-active', 'is-exit-left');
-        setCaption('This is a real Monturalearn lecture — Physics, Edexcel');
-        setTimeout(function() {
-            if (cancelled) return;
-            crossfade(physics, english);
-            setCaption('Same experience — English Literature, AQA');
-            setTimeout(function() {
-                if (cancelled) return;
-                crossfade(english, physics);
-                loopOnceReduced();
-            }, 9000);
-        }, 9000);
+    // Quiet reveal-on-scroll — fades an element in once, the first time it's seen
+    var reveals = document.querySelectorAll('.reveal-on-scroll');
+    if (reveals.length) {
+        if ('IntersectionObserver' in window) {
+            var revealObserver = new IntersectionObserver(function(entries, obs) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            reveals.forEach(function(el) { revealObserver.observe(el); });
+        } else {
+            reveals.forEach(function(el) { el.classList.add('is-visible'); });
+        }
     }
 
-    function startLoop() {
-        if (!cancelled) return;
-        cancelled = false;
-        if (reducedMotion) loopOnceReduced(); else loopOnce();
+    // Pathway line — draws itself once, the first time the subjects heading is in view
+    var pathwayLines = document.querySelectorAll('.pathway-line');
+    if (pathwayLines.length) {
+        if ('IntersectionObserver' in window) {
+            var pathObserver = new IntersectionObserver(function(entries, obs) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-drawn');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+            pathwayLines.forEach(function(el) { pathObserver.observe(el); });
+        } else {
+            pathwayLines.forEach(function(el) { el.classList.add('is-drawn'); });
+        }
     }
-    function stopLoop() { cancelled = true; }
-
-    var io = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) startLoop();
-            else stopLoop();
-        });
-    }, { threshold: 0.25 });
-    io.observe(win);
 })();
 </script>
 
