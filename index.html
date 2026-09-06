@@ -397,6 +397,12 @@
         .feature-bleed-left .feature-bleed-img-wrap { margin-left:-9.2vw; order:1; }
         .feature-bleed-left .feature-bleed-img-wrap img, .feature-bleed-left .feature-bleed-img-wrap video { border-radius:0 24px 24px 0; box-shadow:24px 16px 15px -10px rgba(0,0,0,0.22), 10px 6px 24px rgba(0,0,0,0.16); }
         .feature-bleed-left .feature-bleed-text { order:2; }
+        /* Specific to your syllabus + All in One — sized up */
+        .feature-slide-lg .feature-bleed-img-wrap { margin-left:-10vw; }
+        .feature-slide-lg .feature-bleed-img-wrap img, .feature-slide-lg .feature-bleed-img-wrap video { width:70vw; }
+        /* Ask for help — between the original size and the new bigger size above */
+        .feature-slide-md .feature-bleed-img-wrap { margin-left:-9.58vw; }
+        .feature-slide-md .feature-bleed-img-wrap img, .feature-slide-md .feature-bleed-img-wrap video { width:67vw; }
 
         /* ── FEATURE CAROUSEL — arrow + dots, slides swap the whole image+text pair ── */
         .feature-carousel { position:relative; }
@@ -411,7 +417,7 @@
         @media (max-width:900px) {
             .feature-bleed-row { min-height:auto; flex-direction:column; }
             .feature-bleed-img-wrap { margin:0 !important; width:100%; order:1 !important; }
-            .feature-bleed-img-wrap img, .feature-bleed-img-wrap video { width:100%; border-radius:0 !important; box-shadow:none !important; }
+            .feature-bleed-img-wrap img, .feature-bleed-img-wrap video { width:100% !important; border-radius:0 !important; box-shadow:none !important; }
             .feature-bleed-text { order:2 !important; padding:2rem 1.5rem; }
         }
 
@@ -509,7 +515,7 @@
         <section class="feature-bleed-section">
             <div class="feature-carousel" data-reverse="false">
                 <div class="feature-carousel-track">
-                    <div class="feature-bleed-row feature-bleed-left feature-slide">
+                    <div class="feature-bleed-row feature-bleed-left feature-slide feature-slide-lg">
                         <div class="feature-bleed-img-wrap">
                             <img src="assets/feature-insight-guide.jpg" alt="Exam-style question with the AI Insight Guide open beside it">
                         </div>
@@ -518,7 +524,7 @@
                             <p>Exam style questions that gradually build up in difficulty, allowing you to find your personal learning strengths and weaknesses with clarity</p>
                         </div>
                     </div>
-                    <div class="feature-bleed-row feature-bleed-left feature-slide">
+                    <div class="feature-bleed-row feature-bleed-left feature-slide feature-slide-lg">
                         <div class="feature-bleed-img-wrap">
                             <video src="assets/feature-all-in-one.mp4" autoplay muted loop playsinline></video>
                         </div>
@@ -527,7 +533,7 @@
                             <p>Every lecture is built with individual guides, the type that gets straight to the point with easy to understand context and advanced knowledge points that come as standard for every subject, tier and exam board.</p>
                         </div>
                     </div>
-                    <div class="feature-bleed-row feature-bleed-left feature-slide">
+                    <div class="feature-bleed-row feature-bleed-left feature-slide feature-slide-md">
                         <div class="feature-bleed-img-wrap">
                             <video src="assets/feature-ask-for-help.mp4" autoplay muted loop playsinline></video>
                         </div>
@@ -553,7 +559,7 @@
                     <div class="feature-bleed-row feature-bleed-right feature-slide">
                         <div class="feature-bleed-text">
                             <h2>Knowing the way you learn</h2>
-                            <p style="color:#9ca3af;font-style:italic;">Coming soon.</p>
+                            <p>Your progress and learning patterns based on your answers go into the Montura algorithm to personalise every single question to your abilities. So it's aware of the importance of testing you on the questions you struggle on the most to fill in the gaps in your learning so you can be confident of any question in any test that comes your way.</p>
                         </div>
                         <div class="feature-bleed-img-wrap" style="width:64vw;aspect-ratio:16/9;background:#f3f4f6;"></div>
                     </div>
