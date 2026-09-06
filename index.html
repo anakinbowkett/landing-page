@@ -401,15 +401,15 @@
         .feature-slide-lg .feature-bleed-img-wrap { margin-left:-10vw; }
         .feature-slide-lg .feature-bleed-img-wrap img, .feature-slide-lg .feature-bleed-img-wrap video { width:70vw; }
         /* Ask for help — between the original size and the new bigger size above */
-        .feature-slide-md .feature-bleed-img-wrap { margin-left:-9.58vw; }
-        .feature-slide-md .feature-bleed-img-wrap img, .feature-slide-md .feature-bleed-img-wrap video { width:67vw; }
+        .feature-slide-md .feature-bleed-img-wrap { margin-left:-7.15vw; }
+        .feature-slide-md .feature-bleed-img-wrap img, .feature-slide-md .feature-bleed-img-wrap video { width:50vw; }
 
         /* ── FEATURE CAROUSEL — arrow + dots, slides swap the whole image+text pair ── */
         .feature-carousel { position:relative; }
         .feature-carousel-track { display:flex; transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); width:100%; }
         .feature-slide { flex:0 0 100%; max-width:100%; }
-        .feature-carousel-nav { display:flex; align-items:center; justify-content:center; gap:1.25rem; padding:0 0 2.5rem; background:#ffffff; }
-        .feature-carousel-arrow { width:48px; height:48px; border-radius:50%; background:#f3f4f6; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#374151; font-size:1.25rem; transition:background 0.2s; }
+        .feature-carousel-nav { position:absolute; left:50%; bottom:3rem; transform:translateX(-50%); display:flex; align-items:center; justify-content:center; gap:1.25rem; z-index:10; }
+        .feature-carousel-arrow { width:48px; height:48px; border-radius:50%; background:rgba(243,244,246,0.95); border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#374151; font-size:1.25rem; transition:background 0.2s; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
         .feature-carousel-arrow:hover { background:#e5e7eb; }
         .feature-carousel-dots { display:flex; gap:8px; }
         .feature-carousel-dots .dot { width:8px; height:8px; border-radius:50%; background:#d1d5db; transition:background 0.2s; }
@@ -544,10 +544,11 @@
                     </div>
                 </div>
                 <div class="feature-carousel-nav">
-                    <button class="feature-carousel-arrow" aria-label="Next feature">→</button>
+                    <button class="feature-carousel-arrow" data-dir="prev" aria-label="Previous feature">←</button>
                     <div class="feature-carousel-dots">
                         <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
                     </div>
+                    <button class="feature-carousel-arrow" data-dir="next" aria-label="Next feature">→</button>
                 </div>
             </div>
         </section>
@@ -574,10 +575,11 @@
                     </div>
                 </div>
                 <div class="feature-carousel-nav">
-                    <button class="feature-carousel-arrow" aria-label="Next feature">→</button>
+                    <button class="feature-carousel-arrow" data-dir="prev" aria-label="Previous feature">←</button>
                     <div class="feature-carousel-dots">
                         <span class="dot active"></span><span class="dot"></span>
                     </div>
+                    <button class="feature-carousel-arrow" data-dir="next" aria-label="Next feature">→</button>
                 </div>
             </div>
         </section>
@@ -1354,7 +1356,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var track = carousel.querySelector('.feature-carousel-track');
         var slides = carousel.querySelectorAll('.feature-slide');
         var dots = carousel.querySelectorAll('.feature-carousel-dots .dot');
-        var arrow = carousel.querySelector('.feature-carousel-arrow');
+        var arrows = carousel.querySelectorAll('.feature-carousel-arrow');
         var total = slides.length;
         if (!track || !total) return;
         var reverse = carousel.getAttribute('data-reverse') === 'true';
@@ -1366,12 +1368,17 @@ document.addEventListener('DOMContentLoaded', function() {
             dots.forEach(function(d, i) { d.classList.toggle('active', i === logicalIndex); });
         }
 
-        if (arrow) {
+        arrows.forEach(function(arrow) {
             arrow.addEventListener('click', function() {
-                domIndex = reverse ? (domIndex - 1 + total) % total : (domIndex + 1) % total;
+                // "next" always advances the logical order; "prev" always goes back.
+                // For a reverse-direction carousel the DOM order is flipped, so the
+                // index step flips too — the visual left/right motion stays correct either way.
+                var step = arrow.getAttribute('data-dir') === 'prev' ? -1 : 1;
+                if (reverse) step = -step;
+                domIndex = (domIndex + step + total) % total;
                 render();
             });
-        }
+        });
         render();
     });
 })();
