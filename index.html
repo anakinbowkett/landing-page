@@ -390,17 +390,28 @@
         .feature-bleed-text h2 { font-size:clamp(1.75rem,3.5vw,2.75rem); font-weight:800; color:#111827; letter-spacing:-0.02em; margin:0 0 1rem; }
         .feature-bleed-text p { font-size:1.125rem; color:#4b5563; line-height:1.6; max-width:420px; margin:0; }
         .feature-bleed-img-wrap { flex:0 0 auto; }
-        .feature-bleed-img-wrap img { display:block; width:64vw; height:auto; }
+        .feature-bleed-img-wrap img, .feature-bleed-img-wrap video { display:block; width:64vw; height:auto; }
         .feature-bleed-right .feature-bleed-img-wrap { margin-right:-12.8vw; order:2; }
-        .feature-bleed-right .feature-bleed-img-wrap img { border-radius:24px 0 0 24px; box-shadow:-8px 0 32px rgba(0,0,0,0.06); }
+        .feature-bleed-right .feature-bleed-img-wrap img, .feature-bleed-right .feature-bleed-img-wrap video { border-radius:24px 0 0 24px; box-shadow:-24px 16px 15px -10px rgba(0,0,0,0.22), -10px 6px 24px rgba(0,0,0,0.16); }
         .feature-bleed-right .feature-bleed-text { order:1; }
         .feature-bleed-left .feature-bleed-img-wrap { margin-left:-9.2vw; order:1; }
-        .feature-bleed-left .feature-bleed-img-wrap img { border-radius:0 24px 24px 0; box-shadow:8px 0 32px rgba(0,0,0,0.06); }
+        .feature-bleed-left .feature-bleed-img-wrap img, .feature-bleed-left .feature-bleed-img-wrap video { border-radius:0 24px 24px 0; box-shadow:24px 16px 15px -10px rgba(0,0,0,0.22), 10px 6px 24px rgba(0,0,0,0.16); }
         .feature-bleed-left .feature-bleed-text { order:2; }
+
+        /* ── FEATURE CAROUSEL — arrow + dots, slides swap the whole image+text pair ── */
+        .feature-carousel { position:relative; }
+        .feature-carousel-track { display:flex; transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); width:100%; }
+        .feature-slide { flex:0 0 100%; max-width:100%; }
+        .feature-carousel-nav { display:flex; align-items:center; justify-content:center; gap:1.25rem; padding:0 0 2.5rem; background:#ffffff; }
+        .feature-carousel-arrow { width:48px; height:48px; border-radius:50%; background:#f3f4f6; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#374151; font-size:1.25rem; transition:background 0.2s; }
+        .feature-carousel-arrow:hover { background:#e5e7eb; }
+        .feature-carousel-dots { display:flex; gap:8px; }
+        .feature-carousel-dots .dot { width:8px; height:8px; border-radius:50%; background:#d1d5db; transition:background 0.2s; }
+        .feature-carousel-dots .dot.active { background:#1d7fe2; }
         @media (max-width:900px) {
             .feature-bleed-row { min-height:auto; flex-direction:column; }
             .feature-bleed-img-wrap { margin:0 !important; width:100%; order:1 !important; }
-            .feature-bleed-img-wrap img { width:100%; border-radius:0 !important; box-shadow:none !important; }
+            .feature-bleed-img-wrap img, .feature-bleed-img-wrap video { width:100%; border-radius:0 !important; box-shadow:none !important; }
             .feature-bleed-text { order:2 !important; padding:2rem 1.5rem; }
         }
 
@@ -494,41 +505,81 @@
             </div>
         </div>
 
-        <!-- ── CHAPTER BREAK — Montura M1 ── -->
-        <section style="background:#0a0e1a;padding:clamp(5rem,12vw,9rem) 1rem;margin-top:2rem;text-align:center;">
-            <div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:1.25rem;align-items:center;">
-                <span style="font-size:0.8125rem;font-weight:700;color:#5b9df9;text-transform:uppercase;letter-spacing:0.12em;">Introducing</span>
-                <h2 style="font-size:clamp(2.5rem,7vw,4.5rem);font-weight:800;color:#ffffff;letter-spacing:-0.03em;line-height:1.05;margin:0;">Montura M1.</h2>
-                <p style="font-size:clamp(1.0625rem,2vw,1.25rem);color:#9ca3af;line-height:1.6;max-width:520px;margin:0.5rem auto 0;">The first version of the world's first fully personalised pathway to GCSE and A-Level success.</p>
-                <a class="press-btn" href="choose-path.html" style="margin-top:0.5rem;background:#1d7fe2;color:white;padding:1rem 2.5rem;border-radius:9999px;font-size:1rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;transition:background 0.2s;display:inline-block;">Find your path →</a>
+        <!-- ── FEATURE: "The lectures" — 3-slide carousel, advances leftward ── -->
+        <section class="feature-bleed-section">
+            <div class="feature-carousel" data-reverse="false">
+                <div class="feature-carousel-track">
+                    <div class="feature-bleed-row feature-bleed-left feature-slide">
+                        <div class="feature-bleed-img-wrap">
+                            <img src="assets/feature-insight-guide.jpg" alt="Exam-style question with the AI Insight Guide open beside it">
+                        </div>
+                        <div class="feature-bleed-text">
+                            <h2>Specific to your syllabus</h2>
+                            <p>Exam style questions that gradually build up in difficulty, allowing you to find your personal learning strengths and weaknesses with clarity</p>
+                        </div>
+                    </div>
+                    <div class="feature-bleed-row feature-bleed-left feature-slide">
+                        <div class="feature-bleed-img-wrap">
+                            <video src="assets/feature-all-in-one.mp4" autoplay muted loop playsinline></video>
+                        </div>
+                        <div class="feature-bleed-text">
+                            <h2>All in One</h2>
+                            <p>Every lecture is built with individual guides, the type that gets straight to the point with easy to understand context and advanced knowledge points that come as standard for every subject, tier and exam board.</p>
+                        </div>
+                    </div>
+                    <div class="feature-bleed-row feature-bleed-left feature-slide">
+                        <div class="feature-bleed-img-wrap">
+                            <video src="assets/feature-ask-for-help.mp4" autoplay muted loop playsinline></video>
+                        </div>
+                        <div class="feature-bleed-text">
+                            <h2>Ask for help at any time</h2>
+                            <p>An interactive AI chat feature for the difficult questions, to help guide you onto the right path, every step of the way until you get full marks on every single question so that no stone is left unturned before the exam day.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-carousel-nav">
+                    <button class="feature-carousel-arrow" aria-label="Next feature">→</button>
+                    <div class="feature-carousel-dots">
+                        <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- ── FEATURE: Specific to your syllabus (Insight Guide) ── -->
+        <!-- ── FEATURE: Flashtiles — 2-slide carousel, advances rightward ── -->
         <section class="feature-bleed-section">
-            <div class="feature-bleed-row feature-bleed-left">
-                <div class="feature-bleed-img-wrap">
-                    <img src="assets/feature-insight-guide.jpg" alt="Exam-style question with the AI Insight Guide open beside it">
+            <div class="feature-carousel" data-reverse="true">
+                <div class="feature-carousel-track">
+                    <div class="feature-bleed-row feature-bleed-right feature-slide">
+                        <div class="feature-bleed-text">
+                            <h2>Knowing the way you learn</h2>
+                            <p style="color:#9ca3af;font-style:italic;">Coming soon.</p>
+                        </div>
+                        <div class="feature-bleed-img-wrap" style="width:64vw;aspect-ratio:16/9;background:#f3f4f6;"></div>
+                    </div>
+                    <div class="feature-bleed-row feature-bleed-right feature-slide">
+                        <div class="feature-bleed-text">
+                            <h2>Don't miss a mark</h2>
+                            <p>Bite sized knowledge cards for the topic recaps, broken down into multiple segments that test every single topic in the whole syllabus.</p>
+                        </div>
+                        <div class="feature-bleed-img-wrap">
+                            <img src="assets/feature-flashtiles.jpg" alt="Flashtiles — topic recap cards, rated Got it, Not sure, or Forgot it">
+                        </div>
+                    </div>
                 </div>
-                <div class="feature-bleed-text">
-                    <h2>Specific to your syllabus</h2>
-                    <p>Exam style questions that gradually build up in difficulty, allowing you to find your personal learning strengths and weaknesses with clarity</p>
+                <div class="feature-carousel-nav">
+                    <button class="feature-carousel-arrow" aria-label="Next feature">→</button>
+                    <div class="feature-carousel-dots">
+                        <span class="dot active"></span><span class="dot"></span>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- ── FEATURE: Don't miss a mark (Flashtiles) ── -->
-        <section class="feature-bleed-section">
-            <div class="feature-bleed-row feature-bleed-right">
-                <div class="feature-bleed-text">
-                    <h2>Don't miss a mark</h2>
-                    <p>Bite sized knowledge cards for the topic recaps, broken down into multiple segments that test every single topic in the whole syllabus.</p>
-                </div>
-                <div class="feature-bleed-img-wrap">
-                    <img src="assets/feature-flashtiles.jpg" alt="Flashtiles — topic recap cards, rated Got it, Not sure, or Forgot it">
-                </div>
-            </div>
-        </section>
+        <!-- ── CTA — after the feature carousels, before subjects (see note to Montura) ── -->
+        <div style="display:flex;align-items:center;justify-content:center;padding:1rem 0 4rem;">
+            <a class="press-btn" href="choose-path.html" style="background:#1d7fe2;color:white;padding:1rem 2.5rem;border-radius:9999px;font-size:1rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;transition:background 0.2s;display:inline-block;">Find your path →</a>
+        </div>
 
         <!-- ── SUBJECTS TABLE ── -->
         <section style="padding:4rem 0 6rem;" id="subjects">
@@ -1288,6 +1339,35 @@ document.addEventListener('DOMContentLoaded', function() {
             pathwayLines.forEach(function(el) { el.classList.add('is-drawn'); });
         }
     }
+})();
+</script>
+
+<script>
+(function() {
+    document.querySelectorAll('.feature-carousel').forEach(function(carousel) {
+        var track = carousel.querySelector('.feature-carousel-track');
+        var slides = carousel.querySelectorAll('.feature-slide');
+        var dots = carousel.querySelectorAll('.feature-carousel-dots .dot');
+        var arrow = carousel.querySelector('.feature-carousel-arrow');
+        var total = slides.length;
+        if (!track || !total) return;
+        var reverse = carousel.getAttribute('data-reverse') === 'true';
+        var domIndex = reverse ? total - 1 : 0;
+
+        function render() {
+            track.style.transform = 'translateX(-' + (domIndex * 100) + '%)';
+            var logicalIndex = reverse ? (total - 1 - domIndex) : domIndex;
+            dots.forEach(function(d, i) { d.classList.toggle('active', i === logicalIndex); });
+        }
+
+        if (arrow) {
+            arrow.addEventListener('click', function() {
+                domIndex = reverse ? (domIndex - 1 + total) % total : (domIndex + 1) % total;
+                render();
+            });
+        }
+        render();
+    });
 })();
 </script>
 
