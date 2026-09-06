@@ -408,9 +408,9 @@
         .feature-carousel { position:relative; }
         .feature-carousel-track { display:flex; transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); width:100%; }
         .feature-slide { flex:0 0 100%; max-width:100%; }
-        .feature-carousel-nav { position:relative; display:flex; align-items:center; justify-content:center; gap:1.25rem; padding:2rem 0 3rem; background:#ffffff; z-index:10; }
-        .feature-carousel-arrow { width:48px; height:48px; border-radius:50%; background:rgba(243,244,246,0.95); border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#374151; font-size:1.25rem; transition:background 0.2s; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
-        .feature-carousel-arrow:hover { background:#e5e7eb; }
+        .feature-carousel-nav { position:relative; display:flex; align-items:center; justify-content:center; gap:1.5rem; padding:3.5rem 0 4rem; background:#ffffff; z-index:10; }
+        .feature-carousel-arrow { width:48px; height:48px; border-radius:50%; background:#1d7fe2; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#ffffff; font-size:1.25rem; transition:background 0.2s; box-shadow:0 2px 10px rgba(29,127,226,0.25); }
+        .feature-carousel-arrow:hover { background:#1565c0; }
         .feature-carousel-dots { display:flex; gap:8px; }
         .feature-carousel-dots .dot { width:8px; height:8px; border-radius:50%; background:#d1d5db; transition:background 0.2s; }
         .feature-carousel-dots .dot.active { background:#1d7fe2; }
@@ -434,7 +434,7 @@
             </div>
             <div class="nav-links">
                 <a href="#faq" class="nav-link">FAQ</a>
-                <a href="#ambassador" class="nav-link content-creators-btn">Content Creators</a>
+                <a href="ambassador-signup.html" class="nav-link content-creators-btn">Content Creators</a>
                 <a href="signin.html" class="nav-cta" style="text-decoration:none;">Sign in</a>
             </div>
         </div>
@@ -459,14 +459,14 @@
         <div style="display:flex;flex-direction:column;gap:1rem;margin-top:1rem;">
             <p style="font-size:1rem;font-weight:600;color:#374151;margin:0;">What are you studying for?</p>
             <div style="display:flex;gap:1.25rem;flex-wrap:wrap;">
-                <a class="press-btn" href="signup.html" style="flex:1;min-width:280px;display:flex;align-items:center;justify-content:space-between;gap:1rem;background:white;border:2px solid #e5e7eb;border-radius:20px;padding:2rem 2.25rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 12px 32px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
+                <a class="press-btn" href="signin.html" style="flex:1;min-width:280px;display:flex;align-items:center;justify-content:space-between;gap:1rem;background:white;border:2px solid #e5e7eb;border-radius:20px;padding:2rem 2.25rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 12px 32px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
                     <span style="display:flex;flex-direction:column;gap:0.35rem;">
                         <span style="font-size:1.375rem;font-weight:700;color:#111827;">GCSEs</span>
                         <span style="font-size:0.875rem;color:#6b7280;">Years 7–11 &middot; AQA, Edexcel, OCR</span>
                     </span>
                     <span style="font-size:1.5rem;color:#1d7fe2;">→</span>
                 </a>
-                <a class="press-btn" href="alevel/signup.html" style="flex:1;min-width:280px;display:flex;align-items:center;justify-content:space-between;gap:1rem;background:white;border:2px solid #e5e7eb;border-radius:20px;padding:2rem 2.25rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 12px 32px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
+                <a class="press-btn" href="signin.html" style="flex:1;min-width:280px;display:flex;align-items:center;justify-content:space-between;gap:1rem;background:white;border:2px solid #e5e7eb;border-radius:20px;padding:2rem 2.25rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#1d7fe2';this.style.boxShadow='0 12px 32px rgba(29,127,226,0.15)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='none';">
                     <span style="display:flex;flex-direction:column;gap:0.35rem;">
                         <span style="font-size:1.375rem;font-weight:700;color:#111827;">A-Levels</span>
                         <span style="font-size:0.875rem;color:#6b7280;">Year 12&ndash;13 &middot; AQA, Edexcel, OCR</span>
@@ -474,7 +474,6 @@
                     <span style="font-size:1.5rem;color:#1d7fe2;">→</span>
                 </a>
             </div>
-            <span style="font-size:0.875rem;color:#9ca3af;">No credit card. No commitment.</span>
         </div>
 
         <!-- ── SOCIAL PROOF MARQUEE ── -->
@@ -586,7 +585,7 @@
 
         <!-- ── CTA — after the feature carousels, before subjects (see note to Montura) ── -->
         <div style="display:flex;align-items:center;justify-content:center;padding:1rem 0 4rem;">
-            <a class="press-btn" href="choose-path.html" style="background:#1d7fe2;color:white;padding:1rem 2.5rem;border-radius:9999px;font-size:1rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;transition:background 0.2s;display:inline-block;">Find your path →</a>
+            <a class="press-btn cta-unified" href="signin.html" style="background:#1d7fe2;color:white;padding:1rem 2.5rem;border-radius:9999px;font-size:1rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;transition:background 0.2s;display:inline-block;">Start learning for free →</a>
         </div>
 
         <!-- ── SUBJECTS TABLE ── -->
@@ -699,9 +698,9 @@
                 <div style="margin-top:2.5rem;padding:2rem;background:#f9fafb;border-radius:16px;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
                     <div>
                         <p style="font-size:1.0625rem;font-weight:700;color:#111827;margin:0 0 4px;">Ready to start?</p>
-                        <p style="font-size:0.875rem;color:#6b7280;margin:0;">Pick your subject and begin your first lecture today — it's free.</p>
+                        <p style="font-size:0.875rem;color:#6b7280;margin:0;">Pick your subjects, its free to get started</p>
                     </div>
-                    <a class="press-btn" href="choose-path.html" style="background:#111827;color:white;padding:0.875rem 2rem;border-radius:10px;font-size:0.9375rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;white-space:nowrap;display:inline-block;">Get started free →</a>
+                    <a class="press-btn cta-unified" href="signin.html" style="background:#1d7fe2;color:white;padding:0.875rem 2rem;border-radius:10px;font-size:0.9375rem;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;white-space:nowrap;display:inline-block;">Start learning for free →</a>
                 </div>
 
             </div>
@@ -711,12 +710,99 @@
     </div>
 </section>
 
+
+
+<!-- ── FOR PARENTS ── -->
+<section style="padding:clamp(3rem,6vw,5rem) 1rem;background:#fafafa;border-top:1px solid #f3f4f6;border-bottom:1px solid #f3f4f6;">
+    <div class="reveal-on-scroll" style="max-width:640px;margin:0 auto;text-align:center;display:flex;flex-direction:column;gap:1rem;">
+        <span style="font-size:0.75rem;font-weight:700;color:#1d7fe2;text-transform:uppercase;letter-spacing:0.08em;">For parents</span>
+        <h2 style="font-size:clamp(1.75rem,4vw,2.5rem);font-weight:700;color:#111827;letter-spacing:-0.02em;margin:0;">No shouting required.</h2>
+        <p style="font-size:1.0625rem;color:#4b5563;line-height:1.6;margin:0;">A calm, clear plan for their GCSEs — so revision stops being the thing you argue about.</p>
+    </div>
+</section>
+
+<!-- ── CTA SECTION ── -->
+<section class="cta-section">
+    <div class="cta-container reveal-on-scroll">
+        <h2 class="cta-title">Confusion to Confidence at your fingertips</h2>
+        <a href="signin.html" class="cta-button cta-unified">
+            <span>Start learning for free</span>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+        <div class="trustpilot-widget">
+            <a href="https://uk.trustpilot.com/review/gmmmaths.com" target="_blank" rel="noopener" class="trustpilot-link">
+                <div class="trustpilot-card">
+                    <div class="rating-section"><div class="rating-text">Rated <span class="rating-number">5.0</span> out<br>of 5 stars</div></div>
+                    <div class="bottom-section">
+                        <div class="left-content">
+                            <div class="review-count"><span class="review-number">4</span> reviews</div>
+                            <div class="stars-row">
+                                <div class="star-box"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+                                <div class="star-box"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+                                <div class="star-box"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+                                <div class="star-box"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+                                <div class="star-box"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+                            </div>
+                        </div>
+                        <div class="trustpilot-logo-container">
+                            <svg class="trustpilot-star-icon" viewBox="0 0 126.72 120.75"><path d="M63.36 0l16.43 39.46 42.93 3.51-32.43 27.89 10.13 42.89-36.93-23.39-37.06 23.39 10.26-42.89L4.26 42.97l42.8-3.51z"/></svg>
+                            <span class="trustpilot-text">Trustpilot</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ── TESTIMONIALS (moved to bottom, right before footer) ── -->
+<div class="testimonials-section">
+            <div class="accent-orb accent-orb-1"></div>
+            <div class="accent-orb accent-orb-2"></div>
+            <div class="accent-orb accent-orb-3"></div>
+            <div class="testimonials-container">
+                <div class="testimonials-header">
+                    <h2 class="testimonials-title">What the students say</h2>
+                </div>
+                <div class="testimonials-grid" id="testimonialsGrid">
+                    <div class="testimonial-column" data-direction="down">
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/1t0sSJrv/IMG-7998-(2).jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/tT8Srjxv/IMG-7991.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/B6nMZvxg/IMG-7992.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/9Ms8xh7v/IMG-7993.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/bJw3YvQ3/IMG-7994.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                    </div>
+                    <div class="testimonial-column" data-direction="up">
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/C1xmMKjr/IMG-7995.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/63pY6Qdz/IMG-7996.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/KzCq92Mq/IMG-7999.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/tT8SrjxB/IMG-8001.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="https://i.postimg.cc/hPQzWq79/unnamed.jpg" alt="Student testimonial" class="testimonial-image"></div>
+                    </div>
+                    <div class="testimonial-column" data-direction="down">
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_11_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_12_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_13_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_14_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_15_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                    </div>
+                    <div class="testimonial-column" data-direction="up">
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_16_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_17_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_18_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_19_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_20_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 <!-- ── FAQ ── -->
 <section id="faq" class="faq-section">
     <div class="faq-container">
         <!-- CTA 3 — before FAQ, captures anyone who scrolled past everything -->
         <div style="text-align:center;margin-bottom:4rem;">
-            <a class="press-btn" href="choose-path.html" style="background:#1d7fe2;color:rgba(255,255,255,0.95);padding:1rem 2.25rem;font-size:1rem;font-weight:600;border-radius:9999px;text-decoration:none;display:inline-block;transition:background 0.2s;font-family:'Inter',sans-serif;">Try now for free</a>
+            <a class="press-btn cta-unified" href="signin.html" style="background:#1d7fe2;color:rgba(255,255,255,0.95);padding:1rem 2.25rem;font-size:1rem;font-weight:600;border-radius:9999px;text-decoration:none;display:inline-block;transition:background 0.2s;font-family:'Inter',sans-serif;">Start learning for free</a>
         </div>
         <div class="faq-header">
             <h2>Frequently Asked Questions</h2>
@@ -765,296 +851,40 @@
             </div>
             <div class="faq-item">
                 <button class="faq-question" onclick="toggleFaq(this)"><span>How do I get started?</span><svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
-                <div class="faq-answer"><p>Simply click "Try now for free" at the top of the page, create your free account, and you'll be inside your first lecture within two minutes.</p></div>
+                <div class="faq-answer"><p>Simply click "Start learning for free" at the top of the page, create your free account, and you'll be inside your first lecture within two minutes.</p></div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ── AMBASSADOR ── -->
-<section class="ambassador-section" id="ambassador">
-    <div class="ambassador-container">
-        <div class="ambassador-header">
-            <h2 class="ambassador-title">Join the startup circle 🚀</h2>
-            <p class="ambassador-intro">We've launched a new GCSE learning platform — and we're inviting a group of students to grow their study content pages as a paid content creator with Monturalearn.</p>
-            <p class="ambassador-subtext">If you're Y9–Y11 and on TikTok or Instagram, this is your chance to be part of it early.</p>
-        </div>
-        <div class="ambassador-grid">
-            <div class="ambassador-card">
-                <h3 class="ambassador-card-title">What you'll do (for now)</h3>
-                <p class="ambassador-card-subtitle">Nothing complicated</p>
-                <p style="color:#6b7280;margin-bottom:1.25rem;font-size:1rem;">Before launch, content creators:</p>
-                <ul>
-                    <li>Share the landing page with a unique referral code</li>
-                    <li>Post a few short clips or screenshots of you using the platform</li>
-                    <li>Give honest feedback as we build</li>
-                    <li>Grow your TikTok account while you earn alongside your classes</li>
-                </ul>
-                <p style="color:#6b7280;margin-top:1.5rem;font-style:italic;">No teaching. No selling. Just helping people know it exists.</p>
-            </div>
-            <div class="ambassador-card">
-                <h3 class="ambassador-card-title">What's in it for you</h3>
-                <ul>
-                    <li>Early access to the platform as it launches</li>
-                    <li>Access to unlimited ebooks and revision strategies</li>
-                    <li>A real Project Ambassador role for your CV</li>
-                    <li>Direct contact with the founder</li>
-                    <li>Priority for uncapped paid roles once revenue starts</li>
-                    <li>You grow with the platform — not after it's finished</li>
-                </ul>
-                <p style="color:#6b7280;margin-top:1.5rem;font-style:italic;">No pressure, no contracts — find a role that works for you.</p>
-            </div>
-        </div>
-        <div class="steps-wrapper">
-            <div class="steps-header">
-                <h3 class="steps-title">How to Apply</h3>
-                <p class="steps-subtitle">Three simple steps to join as a Content Creator</p>
-            </div>
-            <div class="steps-container">
-                <div class="step-item"><div class="step-number-box">1</div><p class="step-label">Step one</p><h4 class="step-title">Click 'Apply now'</h4><p class="step-description">Hit the button below to get started</p></div>
-                <div class="step-item"><div class="step-number-box">2</div><p class="step-label">Step two</p><h4 class="step-title">Fill out a consent form</h4><p class="step-description">Under 18s need a parent's signature</p></div>
-                <div class="step-item"><div class="step-number-box">3</div><p class="step-label">Step three</p><h4 class="step-title">Start posting and earning</h4><p class="step-description">Begin making an impact immediately</p></div>
-            </div>
-        </div>
-        <a href="ambassador-signup.html" class="cta-box">
-            <div class="cta-content">
-                <div class="logo-circle"><img src="assets/montura-icon.png" alt="Monturalearn"></div>
-                <span class="cta-text">Join the Monturalearn Startup Circle</span>
-            </div>
-            <div class="apply-btn">Apply now →</div>
-        </a>
-    </div>
-</section>
-
-<!-- ── FOR PARENTS ── -->
-<section style="padding:clamp(3rem,6vw,5rem) 1rem;background:#fafafa;border-top:1px solid #f3f4f6;border-bottom:1px solid #f3f4f6;">
-    <div class="reveal-on-scroll" style="max-width:640px;margin:0 auto;text-align:center;display:flex;flex-direction:column;gap:1rem;">
-        <span style="font-size:0.75rem;font-weight:700;color:#1d7fe2;text-transform:uppercase;letter-spacing:0.08em;">For parents</span>
-        <h2 style="font-size:clamp(1.75rem,4vw,2.5rem);font-weight:700;color:#111827;letter-spacing:-0.02em;margin:0;">No shouting required.</h2>
-        <p style="font-size:1.0625rem;color:#4b5563;line-height:1.6;margin:0;">A calm, clear plan for their GCSEs — so revision stops being the thing you argue about.</p>
-    </div>
-</section>
-
-<!-- ── CTA SECTION ── -->
-<section class="cta-section">
-    <div class="cta-container reveal-on-scroll">
-        <h2 class="cta-title">Confusion to Confidence at your fingertips</h2>
-        <a href="choose-path.html" class="cta-button">
-            <span>Try now for free</span>
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-        </a>
-        <div class="trustpilot-widget">
-            <a href="https://uk.trustpilot.com/review/gmmmaths.com" target="_blank" rel="noopener" class="trustpilot-link">
-                <div class="trustpilot-card">
-                    <div class="rating-section"><div class="rating-text">Rated <span class="rating-number">5.0</span> out<br>of 5 stars</div></div>
-                    <div class="bottom-section">
-                        <div class="left-content">
-                            <div class="review-count"><span class="review-number">4</span> reviews</div>
-                            <div class="stars-row">
-                                <div class="star-box"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-                                <div class="star-box"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-                                <div class="star-box"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-                                <div class="star-box"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-                                <div class="star-box"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-                            </div>
-                        </div>
-                        <div class="trustpilot-logo-container">
-                            <svg class="trustpilot-star-icon" viewBox="0 0 126.72 120.75"><path d="M63.36 0l16.43 39.46 42.93 3.51-32.43 27.89 10.13 42.89-36.93-23.39-37.06 23.39 10.26-42.89L4.26 42.97l42.8-3.51z"/></svg>
-                            <span class="trustpilot-text">Trustpilot</span>
-                        </div>
-                    </div>
+<!-- ── FREE STUDY GUIDES — styled after the Apple "Keep exploring" card ── -->
+<section style="padding:4rem 1rem 6rem;background:#f5f5f7;">
+    <div style="max-width:1100px;margin:0 auto;">
+        <h2 style="font-size:2rem;font-weight:800;color:#111827;letter-spacing:-0.02em;margin:0 0 2rem;">Free study guides.</h2>
+        <div style="background:white;border-radius:24px;padding:clamp(2rem,5vw,4rem);">
+            <div style="display:flex;justify-content:center;gap:clamp(2rem,6vw,5rem);flex-wrap:wrap;">
+                <div style="text-align:center;max-width:280px;">
+                    <img src="assets/guide-exam-domination.png" alt="Exam Domination Blueprint" style="width:100%;max-width:220px;border-radius:12px;margin:0 auto 1.5rem;display:block;">
+                    <p style="font-size:1.0625rem;font-weight:700;color:#111827;margin:0 0 4px;">Exam Domination Blueprint</p>
+                    <p style="font-size:0.875rem;color:#6b7280;margin:0;">Free guide</p>
                 </div>
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     WAITLIST SIGNUP BOX
-═══════════════════════════════════════════════════════════════ -->
-
-<section style="padding:5rem 1rem;background:white;" id="waitlist">
-  <div style="max-width:520px;margin:0 auto;text-align:center;font-family:'Inter',sans-serif;">
-
-    <p id="waitlistCount" style="font-size:0.875rem;color:#9ca3af;font-weight:500;margin:0 0 0.5rem;letter-spacing:0.01em;">Loading...</p>
-    <p style="font-size:0.8rem;color:#9ca3af;font-weight:500;margin:0 0 1.25rem;">Limited to the <span style="color:#3b82f6;font-weight:600;">first 998 students</span> — early access closes once we're full.</p>
-
-    <h2 style="font-size:2rem;font-weight:700;color:#111827;margin:0 0 0.6rem;letter-spacing:-0.02em;">Join the waitlist</h2>
-    <p style="font-size:1rem;color:#6b7280;margin:0 0 2rem;">Be first in line when Monturalearn launches.</p>
-
-    <div id="waitlistError" style="display:none;color:#dc2626;font-size:0.85rem;margin-bottom:1rem;text-align:left;"></div>
-    <div id="waitlistSuccess" style="display:none;color:#16a34a;font-size:0.85rem;margin-bottom:1rem;text-align:left;"></div>
-
-    <form id="waitlistForm" style="display:flex;flex-direction:column;gap:0.75rem;text-align:left;">
-      <input type="email" id="waitlistEmail" required placeholder="Your email"
-             style="width:100%;padding:0.85rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:0.9375rem;font-family:'Inter',sans-serif;color:#111827;background:#f9fafb;transition:border-color 0.15s;">
-
-      <button type="submit" id="waitlistSubmitBtn"
-              style="margin-top:0.4rem;background:#111827;color:white;border:none;padding:0.9rem;border-radius:10px;font-size:0.9375rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity 0.2s;">
-        Join the waitlist
-      </button>
-    </form>
-
-    <p style="font-size:0.78rem;color:#9ca3af;margin-top:1.1rem;">We'll send you something that will help you prepare for your entry into the new year.</p>
-
-    <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid #f3f4f6;">
-      <p style="font-size:0.8rem;color:#9ca3af;font-weight:500;margin:0 0 0.5rem;text-transform:uppercase;letter-spacing:0.06em;">Launch date</p>
-      <p style="font-size:2.5rem;font-weight:800;color:#111827;margin:0 0 0.6rem;letter-spacing:-0.02em;">August 20th</p>
-      <p style="font-size:0.9375rem;color:#6b7280;margin:0;">13 GCSE subjects. 13 A Level subjects. One platform.</p>
-    </div>
-  </div>
-</section>
-
-<script>
-(function() {
-    const SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
-
-    async function loadWaitlistCount() {
-        const countEl = document.getElementById('waitlistCount');
-        try {
-            const res = await fetch(SUPABASE_URL + '/rest/v1/waitlist?select=id', {
-                method: 'GET',
-                headers: {
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-                    'Prefer': 'count=exact',
-                    'Range': '0-0'
-                }
-            });
-            const range = res.headers.get('content-range');
-            if (!res.ok) {
-                countEl.textContent = 'Join the waitlist — spaces are limited';
-                return;
-            }
-            let count = 0;
-            if (range) count = parseInt(range.split('/')[1]) || 0;
-            countEl.textContent = count === 0
-                ? 'Join the waitlist — spaces are limited'
-                : count + (count === 1 ? ' student' : ' students') + ' already on the waitlist';
-        } catch (e) {
-            countEl.textContent = 'Join the waitlist — spaces are limited';
-        }
-    }
-
-    function showWaitlistMsg(type, msg) {
-        const errEl = document.getElementById('waitlistError');
-        const okEl = document.getElementById('waitlistSuccess');
-        errEl.style.display = 'none';
-        okEl.style.display = 'none';
-        if (type === 'error') { errEl.textContent = msg; errEl.style.display = 'block'; }
-        else { okEl.textContent = msg; okEl.style.display = 'block'; }
-    }
-
-    document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const btn = document.getElementById('waitlistSubmitBtn');
-        const email = document.getElementById('waitlistEmail').value.trim();
-
-        if (!email) {
-            showWaitlistMsg('error', 'Please enter your email.');
-            return;
-        }
-
-        btn.disabled = true;
-        btn.textContent = 'Joining...';
-        btn.style.opacity = '0.7';
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const referralCode = urlParams.get('ref') || localStorage.getItem('referral_code') || null;
-
-        try {
-            const res = await fetch(SUPABASE_URL + '/rest/v1/waitlist', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-                    'Prefer': 'return=minimal'
-                },
-                body: JSON.stringify({ email: email, referral_code: referralCode })
-            });
-
-            if (!res.ok) {
-                const errBody = await res.text();
-                if (errBody.includes('duplicate') || errBody.includes('unique')) {
-                    showWaitlistMsg('error', "You're already on the waitlist with that email!");
-                } else {
-                    throw new Error(errBody);
-                }
-                btn.disabled = false;
-                btn.textContent = 'Join the waitlist';
-                btn.style.opacity = '1';
-                return;
-            }
-
-            showWaitlistMsg('success', "You're in! We'll be in touch when we launch.");
-            document.getElementById('waitlistForm').reset();
-            btn.textContent = 'Joined ✓';
-            loadWaitlistCount();
-
-            setTimeout(() => {
-                btn.disabled = false;
-                btn.textContent = 'Join the waitlist';
-                btn.style.opacity = '1';
-            }, 3000);
-
-        } catch (err) {
-            console.error('Waitlist signup error:', err);
-            showWaitlistMsg('error', 'Something went wrong. Please try again.');
-            btn.disabled = false;
-            btn.textContent = 'Join the waitlist';
-            btn.style.opacity = '1';
-        }
-    });
-
-    document.getElementById('waitlistEmail').addEventListener('focus', e => e.target.style.borderColor = '#111827');
-    document.getElementById('waitlistEmail').addEventListener('blur', e => e.target.style.borderColor = '#e5e7eb');
-    loadWaitlistCount();
-})();
-</script>
-    
-<!-- ── TESTIMONIALS (moved to bottom, right before footer) ── -->
-<div class="testimonials-section">
-            <div class="accent-orb accent-orb-1"></div>
-            <div class="accent-orb accent-orb-2"></div>
-            <div class="accent-orb accent-orb-3"></div>
-            <div class="testimonials-container">
-                <div class="testimonials-header">
-                    <h2 class="testimonials-title">What the students say</h2>
-                </div>
-                <div class="testimonials-grid" id="testimonialsGrid">
-                    <div class="testimonial-column" data-direction="down">
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/1t0sSJrv/IMG-7998-(2).jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/tT8Srjxv/IMG-7991.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/B6nMZvxg/IMG-7992.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/9Ms8xh7v/IMG-7993.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/bJw3YvQ3/IMG-7994.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                    </div>
-                    <div class="testimonial-column" data-direction="up">
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/C1xmMKjr/IMG-7995.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/63pY6Qdz/IMG-7996.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/KzCq92Mq/IMG-7999.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/tT8SrjxB/IMG-8001.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="https://i.postimg.cc/hPQzWq79/unnamed.jpg" alt="Student testimonial" class="testimonial-image"></div>
-                    </div>
-                    <div class="testimonial-column" data-direction="down">
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_11_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_12_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_13_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_14_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_15_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                    </div>
-                    <div class="testimonial-column" data-direction="up">
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_16_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_17_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_18_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_19_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                        <div class="testimonial-card"><img src="TESTIMONIAL_IMAGE_20_URL_HERE" alt="Student testimonial" class="testimonial-image"></div>
-                    </div>
+                <div style="text-align:center;max-width:280px;">
+                    <img src="assets/guide-mastering-study-game.png" alt="Mastering the Study Game" style="width:100%;max-width:220px;border-radius:12px;margin:0 auto 1.5rem;display:block;">
+                    <p style="font-size:1.0625rem;font-weight:700;color:#111827;margin:0 0 4px;">Mastering the Study Game</p>
+                    <p style="font-size:0.875rem;color:#6b7280;margin:0;">Free guide</p>
                 </div>
             </div>
+            <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid #f3f4f6;">
+                <a class="press-btn cta-unified" href="signin.html" style="display:inline-flex;align-items:center;gap:0.75rem;background:#f5f5f7;color:#111827;padding:0.875rem 0.875rem 0.875rem 1.5rem;border-radius:9999px;font-size:0.9375rem;font-weight:600;text-decoration:none;">
+                    Start learning for free
+                    <span style="width:28px;height:28px;border-radius:50%;background:#1d7fe2;display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+                    </span>
+                </a>
+            </div>
         </div>
+    </div>
+</section>
 
 <!-- ── FOOTER ── -->
 <footer class="site-footer">
@@ -1069,7 +899,7 @@
             <div class="footer-col">
                 <h4>Platform</h4>
                 <ul>
-                    <li><a href="choose-path.html">Get started free</a></li>
+                    <li><a href="signin.html">Start learning for free</a></li>
                     <li><a href="pricing.html">Pricing</a></li>
                     <li><a href="dashboard.html">Dashboard</a></li>
                     <li><a href="syllabus.html">Syllabus tracker</a></li>
@@ -1143,18 +973,6 @@ document.addEventListener('DOMContentLoaded', function() {
         faqLink.addEventListener('click', function(e) {
             e.preventDefault();
             document.getElementById('faq').scrollIntoView({ behavior:'smooth', block:'start' });
-        });
-    }
-    var ambLink = document.querySelector('a[href="#ambassador"].content-creators-btn');
-    if (ambLink) {
-        ambLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            var target = document.getElementById('ambassador');
-            if (target) {
-                var navHeight = document.querySelector('nav') ? document.querySelector('nav').offsetHeight : 80;
-                var top = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 16;
-                window.scrollTo({ top:top, behavior:'smooth' });
-            }
         });
     }
 });
