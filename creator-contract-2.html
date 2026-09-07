@@ -213,8 +213,9 @@
             </div>
         </div>
 
-        <div class="signer-block">
+        <div class="signer-block" id="parentBlock">
             <h3><span class="dot" style="background:#6b7280;"></span>Parent / Guardian</h3>
+            <p class="sig-caption" id="parentReason" style="display:none; margin-bottom: 0.75rem;">Only needed if the Creator is under 18.</p>
             <div class="details-grid">
                 <div class="field">
                     <label for="parentLegalName">Full name</label>
@@ -237,6 +238,7 @@
                 <label for="parentAgree">I've read this Agreement in full and I agree, as set out in Clause 11, to be bound by and guarantee my child's obligations under it.</label>
             </div>
         </div>
+        <p class="sig-caption" id="adultNote" style="display:none; margin: -0.5rem 0 1.25rem;">You're 18 or over, so no parent/guardian signature is needed — you're signing for yourself above.</p>
 
         <p class="date-note">Both signatures will be dated automatically with today's date (<span id="todayLabel"></span>) when submitted, along with a timestamp and device record for our files.</p>
 
@@ -293,6 +295,16 @@
         return age >= 16;
     }
 
+    function isAdult(dobStr) {
+        if (!dobStr) return false;
+        const dob = new Date(dobStr);
+        const now = new Date();
+        let age = now.getFullYear() - dob.getFullYear();
+        const m = now.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age--;
+        return age >= 18;
+    }
+
     const today = new Date();
     document.getElementById('todayLabel').textContent = today.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -308,7 +320,19 @@
     function validate() {
         const dob = $('creatorDob').value;
         const oldEnough = isOldEnough(dob);
+        const adult = isAdult(dob);
         ageGateMsg.style.display = (dob && !oldEnough) ? 'block' : 'none';
+
+        document.getElementById('parentBlock').style.display = adult ? 'none' : '';
+        document.getElementById('parentReason').style.display = (dob && !adult && oldEnough) ? 'block' : 'none';
+        document.getElementById('adultNote').style.display = adult ? 'block' : 'none';
+
+        const parentOk = adult ? true : (
+            $('parentLegalName').value.trim() &&
+            $('parentRelationship').value.trim() &&
+            namesRoughlyMatch($('parentSig').value, $('parentLegalName').value) &&
+            $('parentAgree').checked
+        );
 
         const ok = $('email').value.trim() &&
             $('tiktok').value.trim() &&
@@ -316,10 +340,7 @@
             oldEnough &&
             namesRoughlyMatch($('creatorSig').value, $('creatorLegalName').value) &&
             $('creatorAgree').checked &&
-            $('parentLegalName').value.trim() &&
-            $('parentRelationship').value.trim() &&
-            namesRoughlyMatch($('parentSig').value, $('parentLegalName').value) &&
-            $('parentAgree').checked;
+            parentOk;
 
         submitBtn.disabled = !ok;
         return ok;
@@ -335,6 +356,7 @@
         submitBtn.textContent = 'Submitting…';
         statusMsg.className = 'status-msg';
 
+        const isAdultSubmission = isAdult($('creatorDob').value);
         const payload = {
             stage: 'terms',
             identity: {
@@ -346,9 +368,9 @@
                 fullName: $('creatorLegalName').value.trim(),
                 dob: $('creatorDob').value,
                 signature: $('creatorSig').value.trim(),
-                parentName: $('parentLegalName').value.trim(),
-                parentRelationship: $('parentRelationship').value.trim(),
-                parentSignature: $('parentSig').value.trim(),
+                parentName: isAdultSubmission ? '' : $('parentLegalName').value.trim(),
+                parentRelationship: isAdultSubmission ? 'N/A — Creator signed as an adult (18+)' : $('parentRelationship').value.trim(),
+                parentSignature: isAdultSubmission ? '' : $('parentSig').value.trim(),
                 date: today.toISOString().slice(0, 10)
             }
         };

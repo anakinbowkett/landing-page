@@ -207,8 +207,9 @@
             <p class="sig-caption">Typing your name here and submitting counts as your electronic signature.</p>
         </div>
 
-        <div class="signer-block">
+        <div class="signer-block" id="parentBlock">
             <h3><span class="dot" style="background:#6b7280;"></span>Parent / Guardian</h3>
+            <p class="sig-caption" id="parentReason" style="display:none; margin-bottom: 0.75rem;">Only needed if the Creator is under 18.</p>
             <div class="details-grid">
                 <div class="field">
                     <label for="parentLegalName">Full name</label>
@@ -239,6 +240,15 @@
             <div class="agree-row">
                 <input type="checkbox" id="parentAgree">
                 <label for="parentAgree">I confirm (a)–(d) in Section 5 above, and I consent to my child taking part in the Creator Programme.</label>
+            </div>
+        </div>
+
+        <div class="signer-block" id="adultBlock" style="display:none;">
+            <h3><span class="dot" style="background:#4ade80;"></span>You're 18 or over</h3>
+            <p class="sig-caption" style="margin-bottom: 1rem;">No parent or guardian signature is needed — you can sign for yourself.</p>
+            <div class="agree-row">
+                <input type="checkbox" id="adultAgree">
+                <label for="adultAgree">I confirm I am 18 or over, this is my true name, and I have read, understood and agree with the terms above.</label>
             </div>
         </div>
 
@@ -299,6 +309,16 @@
         return age >= 16;
     }
 
+    function isAdult(dobStr) {
+        if (!dobStr) return false;
+        const dob = new Date(dobStr);
+        const now = new Date();
+        let age = now.getFullYear() - dob.getFullYear();
+        const m = now.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age--;
+        return age >= 18;
+    }
+
     const today = new Date();
     document.getElementById('todayLabel').textContent = today.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -314,25 +334,34 @@
     function validate() {
         const dob = $('creatorDob').value;
         const oldEnough = isOldEnough(dob);
+        const adult = isAdult(dob);
         ageGateMsg.style.display = (dob && !oldEnough) ? 'block' : 'none';
+
+        document.getElementById('parentBlock').style.display = adult ? 'none' : '';
+        document.getElementById('parentReason').style.display = (dob && !adult && oldEnough) ? 'block' : 'none';
+        document.getElementById('adultBlock').style.display = adult ? '' : 'none';
+
+        const parentOk = adult ? $('adultAgree').checked : (
+            $('parentLegalName').value.trim() &&
+            $('parentRelationship').value.trim() &&
+            $('parentEmail').value.trim() &&
+            $('parentPhone').value.trim() &&
+            namesRoughlyMatch($('parentSig').value, $('parentLegalName').value) &&
+            $('parentAgree').checked
+        );
 
         const ok = $('email').value.trim() &&
             $('tiktok').value.trim() &&
             $('creatorLegalName').value.trim() &&
             oldEnough &&
             namesRoughlyMatch($('creatorSig').value, $('creatorLegalName').value) &&
-            $('parentLegalName').value.trim() &&
-            $('parentRelationship').value.trim() &&
-            $('parentEmail').value.trim() &&
-            $('parentPhone').value.trim() &&
-            namesRoughlyMatch($('parentSig').value, $('parentLegalName').value) &&
-            $('parentAgree').checked;
+            parentOk;
 
         submitBtn.disabled = !ok;
         return ok;
     }
 
-    ['email','tiktok','creatorLegalName','creatorDob','creatorSig',
+    ['email','tiktok','creatorLegalName','creatorDob','creatorSig','adultAgree',
      'parentLegalName','parentRelationship','parentEmail','parentPhone','parentSig','parentAgree']
         .forEach(id => { $(id).addEventListener('input', validate); $(id).addEventListener('change', validate); });
 
@@ -342,6 +371,7 @@
         submitBtn.textContent = 'Submitting…';
         statusMsg.className = 'status-msg';
 
+        const isAdultSubmission = isAdult($('creatorDob').value);
         const payload = {
             stage: 'consent',
             docVersion: 'v2',
@@ -353,11 +383,11 @@
                 participantName: $('creatorLegalName').value.trim(),
                 participantDob: $('creatorDob').value,
                 participantSignature: $('creatorSig').value.trim(),
-                parentName: $('parentLegalName').value.trim(),
-                relationship: $('parentRelationship').value.trim(),
-                parentEmail: $('parentEmail').value.trim(),
-                parentPhone: $('parentPhone').value.trim(),
-                signature: $('parentSig').value.trim(),
+                parentName: isAdultSubmission ? '' : $('parentLegalName').value.trim(),
+                relationship: isAdultSubmission ? 'N/A — Creator signed as an adult (18+)' : $('parentRelationship').value.trim(),
+                parentEmail: isAdultSubmission ? '' : $('parentEmail').value.trim(),
+                parentPhone: isAdultSubmission ? '' : $('parentPhone').value.trim(),
+                signature: isAdultSubmission ? $('creatorSig').value.trim() : $('parentSig').value.trim(),
                 date: today.toISOString().slice(0, 10)
             }
         };
