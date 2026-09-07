@@ -304,7 +304,7 @@
         /* ── TRUSTPILOT ── */
         .trustpilot-widget { padding-top:1.5rem; display:flex; justify-content:center; }
         .trustpilot-link { text-decoration:none; display:block; }
-        .trustpilot-card { background:#2f2f2f; border-radius:8px; padding:18px 20px; width:350px; cursor:pointer; position:relative; overflow:hidden; }
+        .trustpilot-card { background:#2f2f2f; border-radius:8px; padding:18px 20px; width:350px; max-width:calc(100vw - 3rem); cursor:pointer; position:relative; overflow:hidden; }
         .trustpilot-card::before { content:''; position:absolute; top:-100px; right:-100px; width:240px; height:240px; background:rgba(200,200,200,0.15); border-radius:50%; }
         .rating-section { position:relative; z-index:1; margin-bottom:52px; }
         .rating-text { color:#ffffff; font-size:22px; font-weight:400; line-height:28px; margin:0; letter-spacing:-0.01em; text-align:left; }
@@ -366,6 +366,9 @@
             #carousel { font-size:1.125rem; line-height:1.5rem; }
             #carouselText { display:block; text-align:center; width:100%; }
             .hero-path-card { padding:1.25rem 1.5rem !important; }
+            #subjects td span > span { padding:2px 6px !important; font-size:0.6875rem !important; }
+            #subjects th, #subjects td { padding-left:6px !important; padding-right:6px !important; }
+            .trustpilot-card { padding:14px 16px !important; }
         }
         @media (max-width:600px) {
             .hero-path-card { padding:1.5rem 1.75rem !important; }
