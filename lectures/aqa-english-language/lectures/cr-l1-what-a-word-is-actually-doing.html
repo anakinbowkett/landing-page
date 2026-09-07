@@ -6311,6 +6311,141 @@ setTimeout(function(){
   }, 0);
 });
 
+// ── MOBILE BOTTOM BAR ────────────────────────────────────────
+// Only active below 768px — the CSS already hides .mobile-tab-bar
+// on wider screens, so this JS never fires on desktop.
+ 
+(function(){
+ 
+  // ── State ────────────────────────────────────────────────────
+  var mobilePanel = null; // 'insight' | 'chat' | null
+ 
+  // ── Elements (resolved once on DOMContentLoaded) ─────────────
+  var insightBtn, chatBtn, chatDoneBtn, chatSide;
+ 
+  // ── Open a panel ─────────────────────────────────────────────
+  function openMobilePanel(panel){
+    if(!chatSide) return;
+ 
+    mobilePanel = panel;
+ 
+    // Add the base active class — makes chat-side fixed full-screen
+    chatSide.classList.add('mobile-active');
+ 
+    // Remove both show classes then add the right one
+    chatSide.classList.remove('mobile-show-insight', 'mobile-show-chat');
+    chatSide.classList.add(panel === 'insight' ? 'mobile-show-insight' : 'mobile-show-chat');
+ 
+    // Lock body scroll so background doesn't drift
+    document.body.style.overflow = 'hidden';
+ 
+    // Mark active button
+    if(insightBtn) insightBtn.classList.toggle('mobile-tab-active', panel === 'insight');
+    if(chatBtn)    chatBtn.classList.toggle('mobile-tab-active', panel === 'chat');
+ 
+    // If opening insight, trigger the existing openInsightPanel()
+    // so the insight-open class is applied and chunks initialise correctly
+    if(panel === 'insight'){
+      if(typeof openInsightPanel === 'function') openInsightPanel();
+    }
+  }
+ 
+  // ── Close whichever panel is open ────────────────────────────
+  function closeMobilePanel(){
+    if(!chatSide) return;
+ 
+    // If closing insight, fire the existing closeInsightPanel()
+    // so the wrapper state stays correct
+    if(mobilePanel === 'insight'){
+      if(typeof closeInsightPanel === 'function') closeInsightPanel();
+    }
+ 
+    chatSide.classList.remove('mobile-active', 'mobile-show-insight', 'mobile-show-chat');
+    document.body.style.overflow = '';
+    mobilePanel = null;
+ 
+    if(insightBtn) insightBtn.classList.remove('mobile-tab-active');
+    if(chatBtn)    chatBtn.classList.remove('mobile-tab-active');
+  }
+ 
+  // ── Swipe down to close ───────────────────────────────────────
+  // If the student swipes down from the top of the panel, close it.
+  var swipeStartY = 0;
+  function onTouchStart(e){ swipeStartY = e.touches[0].clientY; }
+  function onTouchEnd(e){
+    var delta = e.changedTouches[0].clientY - swipeStartY;
+    // Only close on a deliberate downward swipe (80px+) from near the top
+    if(delta > 80 && swipeStartY < 80) closeMobilePanel();
+  }
+ 
+  // ── Init ─────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function(){
+ 
+    // Only wire up on mobile — skip entirely on desktop
+    if(window.innerWidth > 768) return;
+ 
+    insightBtn  = document.getElementById('mobileInsightBtn');
+    chatBtn     = document.getElementById('mobileChatBtn');
+    chatDoneBtn = document.getElementById('chatMobileCloseBtn');
+    chatSide    = document.querySelector('.chat-side');
+ 
+    if(!insightBtn || !chatBtn || !chatSide){
+      console.warn('Montura mobile-nav: expected elements not found — skipping init.');
+      return;
+    }
+ 
+    // Bottom bar button taps
+    insightBtn.addEventListener('click', function(){
+      if(mobilePanel === 'insight') closeMobilePanel();
+      else openMobilePanel('insight');
+    });
+ 
+    chatBtn.addEventListener('click', function(){
+      if(mobilePanel === 'chat') closeMobilePanel();
+      else openMobilePanel('chat');
+    });
+ 
+    // Done button inside Chat panel
+    if(chatDoneBtn){
+      chatDoneBtn.addEventListener('click', closeMobilePanel);
+    }
+ 
+    // The insight panel's own "Done — back to question" button
+    // already calls closeInsightPanel() — we just need to also
+    // close the mobile wrapper when that fires.
+    var insightCloseBtn = document.getElementById('insightCloseBtn');
+    if(insightCloseBtn){
+      insightCloseBtn.addEventListener('click', function(){
+        // closeInsightPanel() already fired via onclick=""
+        // We just clean up the mobile wrapper
+        chatSide.classList.remove('mobile-active','mobile-show-insight','mobile-show-chat');
+        document.body.style.overflow = '';
+        mobilePanel = null;
+        if(insightBtn) insightBtn.classList.remove('mobile-tab-active');
+        if(chatBtn)    chatBtn.classList.remove('mobile-tab-active');
+      });
+    }
+ 
+    // Swipe down to close
+    chatSide.addEventListener('touchstart', onTouchStart, { passive: true });
+    chatSide.addEventListener('touchend',   onTouchEnd,   { passive: true });
+ 
+    // Re-check on resize in case student rotates device
+    window.addEventListener('resize', function(){
+      if(window.innerWidth > 768 && mobilePanel){
+        closeMobilePanel();
+      }
+    });
+ 
+    console.log('Montura mobile-nav: initialised.');
+  });
+ 
+  // ── Expose for use by other scripts if needed ─────────────────
+  window.openMobilePanel  = openMobilePanel;
+  window.closeMobilePanel = closeMobilePanel;
+ 
+})();
+
 window.INSIGHT_PAGES = [
   {
     label: 'Teaching',
