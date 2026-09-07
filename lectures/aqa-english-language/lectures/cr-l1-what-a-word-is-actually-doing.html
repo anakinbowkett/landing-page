@@ -2086,7 +2086,310 @@ textarea[class^="extended-writing-input-"]{
 .insight-top-bar .mobile-relocated-icon,
 .chat-mobile-close-btn{ display:none; }  
   
-  
+/* ============================================================
+   MONTURA — MOBILE LAYOUT (iPhone & iPad)
+   Paste this entire block into english-base-template.txt
+   immediately before the closing </style> tag.
+   ============================================================ */
+
+/* ── Hidden by default — only shown inside the @media block ── */
+.mobile-tab-bar,
+.insight-top-bar .mobile-relocated-icon,
+.chat-mobile-close-btn{ display:none; }
+
+
+@media (max-width: 768px){
+
+  /* ── 1. BODY — allow scrolling on mobile ─────────────────── */
+  html, body{
+    overflow: auto !important;
+    height: auto !important;
+  }
+
+  /* ── 2. HEADER — tighten for narrow screens ──────────────── */
+  .header-bar-1{
+    padding: 0 12px;
+  }
+  .quiz-progress-container{
+    width: 40%;
+  }
+  /* Hide desktop-only header icons on mobile —
+     dark mode and report move into the insight header instead */
+  #g-nav-launcher,
+  #tutorialTriggerBtn,
+  #g-navbar{
+    display: none !important;
+  }
+
+  /* ── 3. MAIN CONTAINER — stack vertically ────────────────── */
+  .main-container{
+    position: fixed !important;
+    top: 55px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 64px !important;   /* leave room for bottom tab bar */
+    flex-direction: column !important;
+    overflow: hidden !important;
+    background: #C8DFC8;
+  }
+
+  /* ── 4. QUESTION CARD — full width green strip ───────────── */
+  .content-side{
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    border-right: none !important;
+    padding: 0 !important;
+    background: #dcfce7 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* White plate inside the green strip */
+  [class^="question-box-"]{
+    margin: 14px !important;
+    width: calc(100% - 28px) !important;
+    height: auto !important;
+    min-height: 110px !important;
+    max-width: 100% !important;
+    padding: 40px 20px 20px !important;
+    border-radius: 16px !important;
+  }
+
+  /* Question text — black, centred, readable */
+  [class^="question-title-"]{
+    font-size: 15px !important;
+    color: #111827 !important;
+    text-align: center !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Mark counter — keep top-left badge */
+  [class^="mark-counter-"]{
+    top: 10px !important;
+    left: 10px !important;
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+  }
+
+  /* Hide question number label and marks badge on mobile — clean up */
+  [class^="question-number-label-"],
+  .question-marks-badge{
+    display: none !important;
+  }
+
+  /* ── 5. ANSWER ZONE — takes remaining space, scrollable ──── */
+  .answer-zone{
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    border-top: 1px solid #f3f4f6 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 16px 0 !important;
+    border-right: none !important;
+  }
+
+  /* Answer options — bigger tap targets */
+  .az-opt{
+    padding: 14px 16px !important;
+    font-size: 15px !important;
+    min-height: 48px !important;
+  }
+
+  /* Nav bar — Previous / Question counter / Next */
+  .answer-zone-nav{
+    max-width: 100% !important;
+    padding: 10px 0 12px !important;
+  }
+  .az-nav-btn{
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+  }
+  .az-counter{
+    font-size: 12px !important;
+  }
+
+  /* ── 6. CHAT SIDE — hidden by default, full-screen on tap ── */
+  .chat-side{
+    display: none;
+    position: fixed;
+    top: 55px; left: 0; right: 0; bottom: 64px;
+    width: 100% !important;
+    flex-direction: column;
+    background: #ffffff;
+    z-index: 9400;
+  }
+  body.dark-mode .chat-side{ background: #0f1117; }
+
+  /* When opened via bottom bar button */
+  .chat-side.mobile-active{
+    display: flex !important;
+  }
+
+  /* Hide both panels by default inside the open chat-side */
+  .chat-side.mobile-active .insight-wrapper,
+  .chat-side.mobile-active .chat-messages,
+  .chat-side.mobile-active .chat-input-area{
+    display: none;
+  }
+
+  /* Show insight pane */
+  .chat-side.mobile-active.mobile-show-insight .insight-wrapper{
+    display: flex;
+    flex: 1;
+    width: 100%;
+    flex-direction: column;
+  }
+  /* Show chat pane */
+  .chat-side.mobile-active.mobile-show-chat .chat-messages{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .chat-side.mobile-active.mobile-show-chat .chat-input-area{
+    display: flex;
+  }
+
+  /* Insight panel open state — relative inside mobile-active, not fixed */
+  .insight-wrapper.insight-open{
+    position: relative !important;
+    top: auto !important; bottom: auto !important;
+    left: auto !important; right: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+  }
+
+  /* Insight content — readable padding on mobile */
+  .insight-content{
+    padding: 16px 20px !important;
+    font-size: 15px !important;
+  }
+
+  /* ── 7. INSIGHT TOP BAR — show relocated icons ───────────── */
+  .insight-top-bar{
+    height: auto !important;
+    min-height: 44px !important;
+    flex-wrap: wrap !important;
+    padding: 8px 12px !important;
+    gap: 6px !important;
+  }
+  .insight-top-bar .mobile-relocated-icon{
+    display: inline-flex !important;
+    width: 32px !important;
+    height: 32px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: none !important;
+    border: none !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+  }
+
+  /* ── 8. CHAT DONE BUTTON ─────────────────────────────────── */
+  .chat-mobile-close-btn{
+    display: flex !important;
+    justify-content: flex-end !important;
+    padding: 10px 14px 4px !important;
+    border: none !important;
+    background: none !important;
+    color: #1d7fe2 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* ── 9. BOTTOM TAB BAR ───────────────────────────────────── */
+  .mobile-tab-bar{
+    display: flex !important;
+    position: fixed !important;
+    left: 0; right: 0; bottom: 0;
+    height: 64px;
+    padding: 8px 12px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    gap: 10px;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
+    z-index: 9000;
+  }
+  body.dark-mode .mobile-tab-bar{
+    background: #0f1117;
+    border-top-color: #2d3748;
+  }
+
+  .mobile-tab-btn{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    background: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    min-height: 44px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    font-family: inherit;
+  }
+  .mobile-tab-btn.mobile-tab-active{
+    border-color: #1d7fe2;
+    background: #eff6ff;
+    color: #1d7fe2;
+  }
+  body.dark-mode .mobile-tab-btn{
+    background: #1e2330;
+    border-color: #374151;
+    color: #cbd5e1;
+  }
+  body.dark-mode .mobile-tab-btn.mobile-tab-active{
+    border-color: #1d7fe2;
+    background: #1a2540;
+    color: #60a5fa;
+  }
+
+  /* ── 10. UNLOCK OVERLAY — full width on mobile ───────────── */
+  #unlock-overlay{
+    border-radius: 0 !important;
+  }
+
+  /* ── 11. MARK SCHEME — hide on mobile (too cramped) ─────── */
+  .ms-btn{ display: none !important; }
+
+  /* ── 12. ENIGMA HEADER — shrink ─────────────────────────── */
+  .enigma-header{
+    font-size: 12px !important;
+  }
+  .enigma-header-value{
+    font-size: 13px !important;
+    min-width: 36px !important;
+  }
+
+  /* ── 13. MATCH QUESTIONS — single column on narrow screens ─ */
+  .az-match{
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── 14. END / RESULTS SCREENS — mobile padding ─────────── */
+  #quiz-results-screen{
+    padding: 40px 16px 100px !important;
+  }
+  .results-title{ font-size: 28px !important; }
+  .results-done-btn{ width: 100% !important; }
+
+}
+/* ── END MOBILE BLOCK ─────────────────────────────────────── */  
+
 </style>
 </head>
 <body>
@@ -6444,6 +6747,172 @@ setTimeout(function(){
   window.openMobilePanel  = openMobilePanel;
   window.closeMobilePanel = closeMobilePanel;
  
+})();
+
+/* ============================================================
+   MONTURA — MOBILE NAVIGATION
+   shared/mobile-nav.js
+
+   WHERE THIS GOES IN THE REPO:
+   Copy contents into english-base-template.txt, inside the
+   <script> block, just before the closing window.INSIGHT_PAGES = [
+  {
+    label: 'Teaching',
+    page: 1,
+    source: 'https://www.bbc.co.uk/bitesize/guides/zx8n39q/revision/1',
+    summary: 'Words do more than carry meaning — they create mood, suggest feelings, and influence the reader. This lecture teaches you to spot what a word is actually doing in a sentence, not just what it means in a dictionary.',
+    html: '<h3 class="insight-section-header">The Knowledge</h3><div class="insight-chunk"><p>Every word in a sentence has a job. Some words just name things — <b>table, dog, rain</b>. But other words do something more: they make you <b>feel</b> something, or they <b>change</b> how you picture the scene. This is what we mean by <span class="hi-target" data-hint="word-job">what a word is actually doing</span>.</p></div><div class="insight-chunk"><p>Think about the word <b>"crept"</b> instead of <b>"walked"</b>. Both mean moving from one place to another. But <b>"crept"</b> does something extra — it suggests <span class="hi-target" data-hint="crept-suggests">secrecy, fear, or caution</span>. The writer chose "crept" on purpose, to make you feel tense. That is what a word is doing: creating a feeling, not just describing an action.</p></div><div class="insight-chunk"><p>Here is another example. A headline says: <b>"Storm batters coastal town."</b> The word <b>"batters"</b> does not just mean "hits". It suggests <span class="hi-target" data-hint="batters-suggests">violence, force, and damage</span> — like a fist fight. The writer chose "batters" to make the storm sound aggressive and dangerous, not just windy.</p></div><div class="insight-chunk"><p>Now try a song lyric. Ed Sheeran sings: <b>"I\'m in love with the shape of you."</b> The word <b>"shape"</b> is doing something interesting. It does not say "I love everything about you" — it zooms in on one physical thing. This suggests <span class="hi-target" data-hint="shape-suggests">attraction to the body, not the whole person</span>. The word choice makes the song feel physical and immediate, not romantic in a traditional way.</p></div><div class="insight-chunk"><p>Writers also choose words to <b>match the mood</b> of their text. An advert for a luxury perfume might use words like <b>"elegant", "smooth", "timeless"</b>. These words do not just describe the perfume — they suggest <span class="hi-target" data-hint="luxury-words">wealth, class, and sophistication</span>. The writer wants you to feel like buying the perfume makes you elegant too.</p></div><div class="insight-chunk"><p>But a charity advert about homelessness might use very different words: <b>"cold", "alone", "hungry"</b>. These words do not just describe being outside — they suggest <span class="hi-target" data-hint="charity-words">pain, isolation, and desperation</span>. The writer wants you to feel sympathy and donate money.</p></div><div class="insight-chunk"><p>Here is the key idea: <b>a word\'s dictionary meaning is only the start.</b> What matters for GCSE English is what the word <b>does</b> to the reader — the feeling, the image, the judgement it creates. This is called <span class="hi-target" data-hint="connotation-intro">connotation</span>: the extra meaning a word carries beyond its basic definition.</p></div><div class="insight-chunk"><p>Let us practise with a short sentence: <b>"The old man shuffled down the street."</b> The word <b>"shuffled"</b> does not just mean "walked slowly". It suggests <span class="hi-target" data-hint="shuffled-suggests">weakness, tiredness, or lack of energy</span>. If the writer had used "strode" instead, the meaning would be completely different — strong, confident, purposeful. Same action, completely different feeling.</p></div><div class="insight-chunk"><p>Another example: <b>"The child clutched her mother\'s hand."</b> The word <b>"clutched"</b> does not just mean "held". It suggests <span class="hi-target" data-hint="clutched-suggests">fear, nervousness, or a need for safety</span>. If the writer had used "held" or "took", the feeling would be neutral. "Clutched" makes you picture a scared child holding on tightly.</p></div><div class="insight-chunk"><p>Writers also use words to <b>position you against or for something</b>. A newspaper might describe a protest as a <b>"riot"</b> or a <b>"demonstration"</b>. Both describe a group of people gathering. But <b>"riot"</b> suggests <span class="hi-target" data-hint="riot-suggests">violence, chaos, and law-breaking</span>, while <b>"demonstration"</b> suggests <span class="hi-target" data-hint="demonstration-suggests">peaceful, organised protest</span>. The same event, two completely different feelings — all from one word.</p></div><div class="insight-chunk"><p>Here is the rule to remember: <b>when you read a word, ask yourself two questions.</b> First: what does this word literally mean? Second: what is this word <b>doing</b> to me as a reader — what feeling, image, or judgement is it creating? That second question is where GCSE marks come from.</p></div><div class="insight-chunk"><p>Let us try one more. An advert says: <b>"Indulge in our rich, creamy chocolate."</b> The word <b>"indulge"</b> does not just mean "eat". It suggests <span class="hi-target" data-hint="indulge-suggests">treating yourself, luxury, and guilt-free pleasure</span>. The writer chose "indulge" instead of "eat" to make you feel like buying the chocolate is a special reward, not just a snack.</p></div><div class="insight-chunk"><p>Final point: <b>you do not need to know every word\'s dictionary definition.</b> You need to notice what the word makes you <b>feel</b> or <b>picture</b>. That feeling is the clue to what the word is actually doing. Trust your instinct — if a word feels harsh, soft, fast, slow, warm, or cold, that is the writer\'s choice working on you.</p></div><h3 class="insight-section-header">The Biggest Mistake</h3><div class="insight-chunk"><p><span class="hi-target" data-hint="biggest-mistake">The biggest mistake is treating every word as if it just means its dictionary definition.</span> If you read "crept" and think "it means walked", you miss the fear. If you read "batters" and think "it means hits", you miss the violence. GCSE English rewards you for noticing what the word <b>does</b>, not just what it <b>says</b>.</p></div><div class="insight-chunk"><p>Another mistake: <b>overthinking.</b> You do not need to find a hidden meaning in every single word. Focus on the words that stand out — the ones that feel strong, unusual, or deliberately chosen. Those are the words doing the most work.</p></div><div class="insight-chunk"><p>And the third mistake: <b>saying "the writer uses a word" without saying what it does.</b> A sentence like "The writer uses the word crept" gets zero marks. You must say what it suggests: "The word crept suggests secrecy and fear, making the reader feel tense." That is analysis.</p></div><h3 class="insight-section-header">The Arsenal</h3><div class="insight-chunk"><p>Here is your strategy for figuring out what any word is doing:</p><div class="answer-strategy"><div class="strategy-step"><span class="strategy-letter">1</span><span class="strategy-label">Spot</span><span class="strategy-plain">Find a word that stands out — it feels strong, unusual, or deliberately chosen</span></div><div class="strategy-step"><span class="strategy-letter">2</span><span class="strategy-label">Feel</span><span class="strategy-plain">Ask: what feeling or image does this word create in my head?</span></div><div class="strategy-step"><span class="strategy-letter">3</span><span class="strategy-label">Name</span><span class="strategy-plain">Use a word like suggests, implies, or reveals to describe what it does</span></div><div class="strategy-step"><span class="strategy-letter">4</span><span class="strategy-label">Connect</span><span class="strategy-plain">Say why the writer chose it — what effect did they want on the reader?</span></div></div></div><div class="insight-chunk"><p><span class="hi-target" data-hint="strategy-rule">Use this four-step strategy every time you read a word that feels important. It turns a simple observation into real analysis.</span></p></div>'
+  },
+  {
+    label: 'Exam Spec',
+    page: 2,
+    source: 'https://www.aqa.org.uk/subjects/english/gcse/english-8700/specification',
+    summary: 'AQA GCSE English Language (8700) official assessment objectives — AO2 requires analysis of language choices and their effects on the reader.',
+    html: '<div class="exam-spec-page"><div class="exam-spec-header"><span class="exam-spec-board-badge">AQA</span><span class="exam-spec-code">8700</span></div><p class="exam-spec-intro">This is what AQA officially requires you to learn for this topic.</p><div class="exam-spec-quote"><p>"Explain, comment on and analyse how writers use language and structure to achieve effects and influence readers, using relevant subject terminology to support their views."</p><span class="exam-spec-source">— AQA Specification (8700), Assessment Objective AO2</span></div><p class="exam-spec-note">This lecture builds the foundation for AO2: noticing what individual words are doing to create effects and influence how you feel as a reader.</p><a href="https://www.aqa.org.uk/subjects/english/gcse/english-8700/specification" target="_blank" class="exam-spec-link">View the official AQA specification →</a></div>'
+  }
+]
+   comment at the very end of the script.
+
+   WHAT IT DOES:
+   Wires the bottom tab bar (Insight / Ask Montura buttons),
+   the Done buttons inside each full-screen panel, and handles
+   the body scroll lock so content behind the panel doesn't
+   scroll while a panel is open.
+   ============================================================ */
+
+// ── MOBILE BOTTOM BAR ────────────────────────────────────────
+// Only active below 768px — the CSS already hides .mobile-tab-bar
+// on wider screens, so this JS never fires on desktop.
+
+(function(){
+
+  // ── State ────────────────────────────────────────────────────
+  var mobilePanel = null; // 'insight' | 'chat' | null
+
+  // ── Elements (resolved once on DOMContentLoaded) ─────────────
+  var insightBtn, chatBtn, chatDoneBtn, chatSide;
+
+  // ── Open a panel ─────────────────────────────────────────────
+  function openMobilePanel(panel){
+    if(!chatSide) return;
+
+    mobilePanel = panel;
+
+    // Add the base active class — makes chat-side fixed full-screen
+    chatSide.classList.add('mobile-active');
+
+    // Remove both show classes then add the right one
+    chatSide.classList.remove('mobile-show-insight', 'mobile-show-chat');
+    chatSide.classList.add(panel === 'insight' ? 'mobile-show-insight' : 'mobile-show-chat');
+
+    // Lock body scroll so background doesn't drift
+    document.body.style.overflow = 'hidden';
+
+    // Mark active button
+    if(insightBtn) insightBtn.classList.toggle('mobile-tab-active', panel === 'insight');
+    if(chatBtn)    chatBtn.classList.toggle('mobile-tab-active', panel === 'chat');
+
+    // If opening insight, trigger the existing openInsightPanel()
+    // so the insight-open class is applied and chunks initialise correctly
+    if(panel === 'insight'){
+      if(typeof openInsightPanel === 'function') openInsightPanel();
+    }
+  }
+
+  // ── Close whichever panel is open ────────────────────────────
+  function closeMobilePanel(){
+    if(!chatSide) return;
+
+    // If closing insight, fire the existing closeInsightPanel()
+    // so the wrapper state stays correct
+    if(mobilePanel === 'insight'){
+      if(typeof closeInsightPanel === 'function') closeInsightPanel();
+    }
+
+    chatSide.classList.remove('mobile-active', 'mobile-show-insight', 'mobile-show-chat');
+    document.body.style.overflow = '';
+    mobilePanel = null;
+
+    if(insightBtn) insightBtn.classList.remove('mobile-tab-active');
+    if(chatBtn)    chatBtn.classList.remove('mobile-tab-active');
+  }
+
+  // ── Swipe down to close ───────────────────────────────────────
+  // If the student swipes down from the top of the panel, close it.
+  var swipeStartY = 0;
+  function onTouchStart(e){ swipeStartY = e.touches[0].clientY; }
+  function onTouchEnd(e){
+    var delta = e.changedTouches[0].clientY - swipeStartY;
+    // Only close on a deliberate downward swipe (80px+) from near the top
+    if(delta > 80 && swipeStartY < 80) closeMobilePanel();
+  }
+
+  // ── Init ─────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function(){
+
+    // Only wire up on mobile — skip entirely on desktop
+    if(window.innerWidth > 768) return;
+
+    insightBtn  = document.getElementById('mobileInsightBtn');
+    chatBtn     = document.getElementById('mobileChatBtn');
+    chatDoneBtn = document.getElementById('chatMobileCloseBtn');
+    chatSide    = document.querySelector('.chat-side');
+
+    if(!insightBtn || !chatBtn || !chatSide){
+      console.warn('Montura mobile-nav: expected elements not found — skipping init.');
+      return;
+    }
+
+    // Bottom bar button taps
+    insightBtn.addEventListener('click', function(){
+      if(mobilePanel === 'insight') closeMobilePanel();
+      else openMobilePanel('insight');
+    });
+
+    chatBtn.addEventListener('click', function(){
+      if(mobilePanel === 'chat') closeMobilePanel();
+      else openMobilePanel('chat');
+    });
+
+    // Done button inside Chat panel
+    if(chatDoneBtn){
+      chatDoneBtn.addEventListener('click', closeMobilePanel);
+    }
+
+    // The insight panel's own "Done — back to question" button
+    // already calls closeInsightPanel() — we just need to also
+    // close the mobile wrapper when that fires.
+    var insightCloseBtn = document.getElementById('insightCloseBtn');
+    if(insightCloseBtn){
+      insightCloseBtn.addEventListener('click', function(){
+        // closeInsightPanel() already fired via onclick=""
+        // We just clean up the mobile wrapper
+        chatSide.classList.remove('mobile-active','mobile-show-insight','mobile-show-chat');
+        document.body.style.overflow = '';
+        mobilePanel = null;
+        if(insightBtn) insightBtn.classList.remove('mobile-tab-active');
+        if(chatBtn)    chatBtn.classList.remove('mobile-tab-active');
+      });
+    }
+
+    // Swipe down to close
+    chatSide.addEventListener('touchstart', onTouchStart, { passive: true });
+    chatSide.addEventListener('touchend',   onTouchEnd,   { passive: true });
+
+    // Re-check on resize in case student rotates device
+    window.addEventListener('resize', function(){
+      if(window.innerWidth > 768 && mobilePanel){
+        closeMobilePanel();
+      }
+    });
+
+    console.log('Montura mobile-nav: initialised.');
+  });
+
+  // ── Expose for use by other scripts if needed ─────────────────
+  window.openMobilePanel  = openMobilePanel;
+  window.closeMobilePanel = closeMobilePanel;
+
 })();
 
 window.INSIGHT_PAGES = [
