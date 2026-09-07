@@ -34,8 +34,36 @@
     .nav-logo-row { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
     .nav-logo-row img { height: 32px; width: auto; }
     .nav-brand { font-size: 1rem; font-weight: 700; color: #ffffff; }
-    .nav-back { font-size: 0.85rem; font-weight: 500; color: #9ca3af; text-decoration: none; }
-    .nav-back:hover { color: #e5e7eb; }
+    .nav-back {
+        position: relative;
+        display: inline-block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #f5f5f5;
+        text-decoration: none;
+        padding: 0.55rem 1.15rem;
+        border-radius: 999px;
+        background: #1a1b1e;
+        border: 1px solid #2c2c2f;
+        isolation: isolate;
+    }
+    .nav-back:hover { color: #ffffff; background: #202124; }
+    .nav-back::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: inherit;
+        padding: 2px;
+        background: conic-gradient(from 0deg, transparent 0%, #d64545 14%, transparent 30%);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        animation: nav-back-spin 2.2s linear infinite;
+        z-index: -1;
+    }
+    @keyframes nav-back-spin {
+        to { transform: rotate(360deg); }
+    }
 
     .doc-wrap { max-width: 720px; margin: 0 auto; padding: 6rem 1rem 0; }
 
