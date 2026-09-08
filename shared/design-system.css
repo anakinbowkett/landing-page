@@ -1,0 +1,165 @@
+/* ============================================================
+   MONTURA LEARN — DESIGN SYSTEM (single source of truth)
+   Import this AFTER any page-specific <style> block that still
+   defines its own --accent/--border/etc, or BEFORE it and let
+   these tokens be the base that page-specific CSS overrides.
+   Values below are reconciled against what's already live in
+   compiled lecture output (accent + border-radius:10px were
+   already the dominant values across subjects) — this file
+   formalises them, it doesn't replace them with something new.
+   ============================================================ */
+
+:root {
+  /* Core */
+  --bg: #ffffff;
+  --muted: #6b7280;
+  --accent: #1d7fe2;
+  --border: #e5e7eb;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --card: #f8fafc;
+
+  /* Feedback states */
+  --correct: #54d3ab;
+  --wrong: #e16280;
+  --partial: #f59e0b;
+  --ai: #8b5cf6;
+
+  /* Subject tokens */
+  --subject-english-lit: #dcfce7;
+  --subject-english-lang: #dcfce7;
+  --subject-maths: #eff6ff;
+  --subject-biology: #f0fdf4;
+  --subject-chemistry: #fefce8;
+  --subject-physics: #f0f9ff;
+  --subject-history: #fdf4ff;
+  --subject-geography: #f0fdf4;
+
+  /* Shared metrics */
+  --radius-btn: 10px;
+  --radius-card: 12px;
+  --panel-gap: 24px;
+}
+
+/* ============================================================
+   BUTTONS — default / hover / active / correct / wrong
+   Apply .ds-btn to any option/nav button to opt into the
+   standardised states. Existing per-subject classes
+   (.option-btn-N etc) can keep their layout rules — just add
+   ds-btn alongside for the shared interaction states.
+   ============================================================ */
+
+.ds-btn {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-btn);
+  background: var(--bg);
+  color: var(--text-primary);
+  transition: border-color 150ms ease, transform 100ms ease, background 150ms ease;
+  cursor: pointer;
+}
+
+.ds-btn:hover {
+  border-color: var(--accent);
+}
+
+.ds-btn:active {
+  transform: scale(0.97);
+}
+
+.ds-btn.ds-correct {
+  border-color: var(--correct);
+  background: color-mix(in srgb, var(--correct) 12%, white);
+  animation: dsNodCorrect 0.5s ease;
+}
+
+.ds-btn.ds-wrong {
+  border-color: var(--wrong);
+  background: color-mix(in srgb, var(--wrong) 10%, white);
+  animation: dsShakeWrong 0.5s ease;
+}
+
+/* Same keyframe shape as the existing shakeWrong/nodCorrect
+   live in compiled lectures — kept identical on purpose so any
+   page already calling those class names doesn't visually
+   diverge from pages using the new ds- classes. */
+@keyframes dsShakeWrong {
+  0%   { transform: translateX(0); }
+  15%  { transform: translateX(-8px); }
+  30%  { transform: translateX(8px); }
+  45%  { transform: translateX(-6px); }
+  60%  { transform: translateX(6px); }
+  75%  { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes dsNodCorrect {
+  0%   { transform: translateY(0); }
+  20%  { transform: translateY(-6px); }
+  40%  { transform: translateY(0); }
+  60%  { transform: translateY(-4px); }
+  80%  { transform: translateY(0); }
+  100% { transform: translateY(0); }
+}
+
+/* ============================================================
+   STAGE TRANSITIONS — lecture content -> results content
+   Add .ds-slide-out-left to the outgoing panel and
+   .ds-slide-in-right to the incoming panel at the same time;
+   both run on the same 600ms ease so they cross simultaneously.
+   ============================================================ */
+
+.ds-slide-out-left {
+  animation: dsSlideOutLeft 600ms ease forwards;
+}
+
+.ds-slide-in-right {
+  animation: dsSlideInRight 600ms ease forwards;
+}
+
+@keyframes dsSlideOutLeft {
+  from { transform: translateX(0);      opacity: 1; }
+  to   { transform: translateX(-40px);  opacity: 0; }
+}
+
+@keyframes dsSlideInRight {
+  from { transform: translateX(40px);   opacity: 0; }
+  to   { transform: translateX(0);      opacity: 1; }
+}
+
+/* ============================================================
+   AI vs STUDENT LAYER (Feature 1) — z-index contract only.
+   Actual annotation rendering lives in template JS once that
+   file is available; this just fixes the stacking order so
+   nothing built against it needs to guess.
+   ============================================================ */
+
+.student-layer { z-index: 10; }
+.ai-layer      { z-index: 11; pointer-events: none; }
+
+/* ============================================================
+   DRAWING PAD — "AE86" instrument-cluster mode (Feature 5)
+   Toggle by adding .drawing-mode-active to <body>.
+   ============================================================ */
+
+body.drawing-mode-active {
+  background: #0a0a0f;
+}
+
+body.drawing-mode-active .diagram-line {
+  stroke: #ffffff;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.15));
+}
+
+body.drawing-mode-active .diagram-grid {
+  stroke: #1a1a2e;
+}
+
+body.drawing-mode-active .diagram-label {
+  color: #ffffff;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+body.drawing-mode-active .draw-stroke-live {
+  stroke: #ffffff;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.35));
+}
