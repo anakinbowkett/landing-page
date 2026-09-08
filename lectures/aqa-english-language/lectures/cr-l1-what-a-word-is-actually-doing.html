@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Caveat:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared/design-system.css">
 
 <style>
 :root{
@@ -2390,6 +2391,138 @@ textarea[class^="extended-writing-input-"]{
 }
 /* ── END MOBILE BLOCK ─────────────────────────────────────── */  
 
+/* ── FEATURE 4: SUB-QUESTIONS ("Go deeper") ───────────────────────────── */
+.subq-trigger-btn{
+  display:flex; align-items:center; gap:8px;
+  margin:16px 0 0 0; padding:10px 16px;
+  background:#fff; border:1.5px solid #86efac;
+  border-radius:10px; color:#166534; font-weight:600; font-size:14px;
+  cursor:pointer; transition:border-color 150ms ease, transform 100ms ease;
+}
+.subq-trigger-btn:hover{ border-color:#16a34a; }
+.subq-trigger-btn:active{ transform:scale(0.97); }
+
+.subq-card{
+  margin-top:16px; padding:20px;
+  background:#f8fafc; border-radius:12px;
+  border-left:4px solid #16a34a;
+  box-shadow:inset 0 0 0 1px #e5e7eb;
+}
+.subq-card-label{
+  font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;
+  color:#166534; margin-bottom:10px;
+}
+.subq-question-text{ font-size:15px; font-weight:600; color:#111827; margin-bottom:6px; }
+.subq-marks{ font-size:12px; color:#6b7280; margin-bottom:12px; }
+.subq-answer-input{
+  width:100%; padding:10px 12px; border:1.5px solid #e5e7eb; border-radius:8px;
+  font-size:14px; font-family:inherit; margin-bottom:10px; resize:vertical;
+}
+.subq-reveal-btn{
+  padding:8px 14px; border-radius:8px; border:1.5px solid #1d7fe2;
+  background:#fff; color:#1d7fe2; font-weight:600; font-size:13px; cursor:pointer;
+}
+.subq-reveal-btn:hover{ background:#eff6ff; }
+.subq-examiner-note{
+  margin-top:12px; padding:10px 12px; background:#fef9c3; border-radius:8px;
+  font-size:13px; color:#713f12; line-height:1.5;
+}
+.subq-source-box{
+  margin-top:14px; padding:14px 16px; background:#eff6ff;
+  border-radius:10px; border:1px solid #bfdbfe;
+}
+.subq-source-title{
+  font-size:12px; font-weight:700; color:#1d4ed8; margin-bottom:6px;
+  display:flex; align-items:center; gap:6px;
+}
+.subq-source-location{ font-size:14px; font-weight:600; color:#111827; margin-bottom:4px; }
+.subq-source-tip{ font-size:13px; color:#374151; line-height:1.5; }
+
+body.dark-mode .subq-card{ background:#0d0f14; border-left-color:#22c55e; box-shadow:inset 0 0 0 1px #2d3748; }
+body.dark-mode .subq-question-text{ color:#f1f5f9; }
+body.dark-mode .subq-source-box{ background:#0f1117; border-color:#1e3a5f; }
+body.dark-mode .subq-source-location{ color:#f1f5f9; }
+body.dark-mode .subq-source-tip{ color:#cbd5e1; }
+
+/* ── FEATURE 1: AI ANNOTATION LAYER ───────────────────────────────────── */
+.ai-annotation-layer{ position:absolute; inset:0; z-index:11; pointer-events:none; }
+.ai-dim-overlay{
+  position:absolute; inset:0; background:rgba(0,0,0,0.3); z-index:10;
+  opacity:0; transition:opacity 300ms ease; pointer-events:none;
+}
+.ai-dim-overlay.active{ opacity:1; }
+
+.ai-circle{
+  position:absolute; border:3px solid #e16280; border-radius:50%;
+  transform:translate(-50%,-50%) scale(0); opacity:0;
+  transition:transform 400ms ease-out, opacity 400ms ease-out;
+}
+.ai-circle.grown{ transform:translate(-50%,-50%) scale(1); opacity:1; }
+.ai-circle.pulse{ animation:aiCirclePulse 500ms ease-out; }
+@keyframes aiCirclePulse{
+  0%{ box-shadow:0 0 0 0 rgba(225,98,128,0.5); }
+  100%{ box-shadow:0 0 0 14px rgba(225,98,128,0); }
+}
+
+.ai-underline{
+  position:absolute; height:3px; background:#e16280;
+  transform-origin:left center; transform:scaleX(0);
+  transition:transform 500ms ease-out;
+}
+.ai-underline.drawn{ transform:scaleX(1); }
+
+.ai-text-label{
+  position:absolute; font-family:'Caveat',cursive; font-size:22px; font-weight:600;
+  color:#8b5cf6; white-space:nowrap; transform:translate(0,-50%);
+}
+
+.ai-layer-toggle-btn{
+  position:absolute; top:8px; right:8px; z-index:12;
+  background:#fff; border:1.5px solid #8b5cf6; color:#8b5cf6;
+  border-radius:8px; padding:4px 10px; font-size:12px; font-weight:600;
+  cursor:pointer; display:none;
+}
+.ai-layer-toggle-btn.visible{ display:block; }
+
+/* TEMPORARY — remove this button once real diagnosis wiring replaces it */
+.ai-preview-test-btn{
+  position:fixed; bottom:16px; left:16px; z-index:999;
+  background:#8b5cf6; color:#fff; border:none; border-radius:10px;
+  padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* ── FEATURE 3: THOUGHT BREAKDOWN PANEL ───────────────────────────────── */
+.tb-toggle-bubble{ cursor:pointer; font-weight:600; color:#6d28d9; }
+.tb-toggle-bubble:hover{ text-decoration:underline; }
+.tb-panel{
+  margin-top:8px; background:#fff; border:1px solid #e5e7eb; border-radius:12px;
+  overflow:hidden; font-size:13px;
+}
+.tb-panel-header{
+  padding:10px 14px; font-weight:700; background:#f8fafc; border-bottom:1px solid #e5e7eb;
+}
+.tb-step{
+  display:flex; gap:8px; padding:10px 14px; border-left:4px solid transparent;
+  border-bottom:1px solid #f1f5f9; line-height:1.4;
+}
+.tb-step-correct{ border-left-color:#54d3ab; }
+.tb-step-wrong{ border-left-color:#e16280; }
+.tb-step-icon{ font-weight:700; }
+.tb-step-correct .tb-step-icon{ color:#16a34a; }
+.tb-step-wrong .tb-step-icon{ color:#e16280; }
+.tb-root-cause{
+  padding:12px 14px; background:#f5f3ff; font-size:13px; line-height:1.5; color:#4c1d95;
+}
+.tb-root-cause-label{
+  font-weight:700; font-size:11px; letter-spacing:0.04em; margin-bottom:4px; color:#6d28d9;
+}
+
+body.dark-mode .tb-panel{ background:#0d0f14; border-color:#2d3748; }
+body.dark-mode .tb-panel-header{ background:#0f1117; border-color:#2d3748; color:#f1f5f9; }
+body.dark-mode .tb-step{ border-bottom-color:#1f2937; color:#e2e8f0; }
+body.dark-mode .tb-root-cause{ background:#1e1b3a; color:#ddd6fe; }
+
 </style>
 </head>
 <body>
@@ -4353,6 +4486,8 @@ function onQuestionAnswered(qNum,result,awarded,total){
       nextBtn.style.borderColor = '#1d7fe2';
     }
   }
+  // FEATURE 4: sub-questions trigger regardless of correct/incorrect
+  checkForSubQuestions(qNum);
 }
 
 var pendingRetryQuestion = null;
@@ -6914,6 +7049,370 @@ setTimeout(function(){
   window.closeMobilePanel = closeMobilePanel;
 
 })();
+
+// ── FEATURE 4: SUB-QUESTIONS ("Go deeper") ──────────────────────────────
+// Triggered from onQuestionAnswered() for every submitted question,
+// correct or incorrect (see FEATURE 4 comment there). Reads
+// window.QUESTION_BANK[...].subQuestions per the doc's data structure.
+//
+// SCOPE NOTE: this first pass is reveal-based, not auto-marked — student
+// can type an attempt, then reveals the examiner note / knowledge source
+// themselves. Wiring sub-question answers into the real marking engine
+// (evaluateHardcoded / evaluateWithAI) is a follow-up once this shape is
+// confirmed against real content, since that engine assumes top-level
+// question numbering that sub-questions don't participate in.
+function checkForSubQuestions(qNum){
+  var qKeys = Object.keys(window.QUESTION_BANK || {});
+  var entry = window.QUESTION_BANK && window.QUESTION_BANK[qKeys[qNum - 1]];
+  if(!entry || !entry.subQuestions || !entry.subQuestions.length) return;
+
+  var box = getQuestionBox(qNum);
+  if(!box) return;
+  // don't add a duplicate trigger if the student retries the question
+  if(box.querySelector('.subq-trigger-btn') || box.querySelector('.subq-card')) return;
+
+  var btn = document.createElement('button');
+  btn.className = 'subq-trigger-btn';
+  btn.type = 'button';
+  btn.textContent = 'Go deeper →';
+  btn.addEventListener('click', function(){
+    btn.remove();
+    renderSubQuestions(box, entry.subQuestions);
+  });
+  box.appendChild(btn);
+}
+
+function renderSubQuestions(box, subQuestions){
+  subQuestions.forEach(function(sq){
+    var card = document.createElement('div');
+    card.className = 'subq-card';
+
+    var label = document.createElement('div');
+    label.className = 'subq-card-label';
+    label.textContent = sq.examinerNote ? 'Examiner insight' : 'Go deeper';
+    card.appendChild(label);
+
+    var qText = document.createElement('div');
+    qText.className = 'subq-question-text';
+    qText.textContent = sq.question;
+    card.appendChild(qText);
+
+    if(sq.marks){
+      var marks = document.createElement('div');
+      marks.className = 'subq-marks';
+      marks.textContent = sq.marks + (sq.marks === 1 ? ' mark' : ' marks');
+      card.appendChild(marks);
+    }
+
+    if(sq.type === 'type-answer'){
+      var input = document.createElement('textarea');
+      input.className = 'subq-answer-input';
+      input.rows = 2;
+      input.placeholder = 'Have a go (optional)…';
+      card.appendChild(input);
+    }
+
+    var revealArea = document.createElement('div');
+    revealArea.style.display = 'none';
+
+    var revealBtn = document.createElement('button');
+    revealBtn.className = 'subq-reveal-btn';
+    revealBtn.type = 'button';
+    revealBtn.textContent = 'Reveal guidance';
+    revealBtn.addEventListener('click', function(){
+      revealArea.style.display = 'block';
+      revealBtn.remove();
+    });
+    card.appendChild(revealBtn);
+
+    if(sq.examinerNote){
+      var note = document.createElement('div');
+      note.className = 'subq-examiner-note';
+      note.textContent = '📊 ' + sq.examinerNote;
+      revealArea.appendChild(note);
+    }
+
+    if(sq.knowledgeSource){
+      var src = document.createElement('div');
+      src.className = 'subq-source-box';
+      var srcTitle = document.createElement('div');
+      srcTitle.className = 'subq-source-title';
+      srcTitle.textContent = '📍 WHERE TO FIND THIS IN THE TEXT';
+      src.appendChild(srcTitle);
+      if(sq.knowledgeSource.location){
+        var srcLoc = document.createElement('div');
+        srcLoc.className = 'subq-source-location';
+        srcLoc.textContent = sq.knowledgeSource.location;
+        src.appendChild(srcLoc);
+      }
+      if(sq.knowledgeSource.tip){
+        var srcTip = document.createElement('div');
+        srcTip.className = 'subq-source-tip';
+        srcTip.textContent = sq.knowledgeSource.tip;
+        src.appendChild(srcTip);
+      }
+      revealArea.appendChild(src);
+    }
+
+    card.appendChild(revealArea);
+    box.appendChild(card);
+  });
+}
+
+// ── FEATURE 1: AI ANNOTATION ENGINE (test-data preview) ─────────────────
+// Renders the AI's marking on the question box: circle → arrow →
+// handwritten correction → underline, each starting 600ms after the
+// previous one finishes. Coordinates are converted to real pixels off the
+// box's current size every time this runs — never stored as pixels.
+// NOT wired to real AI yet (api/diagnose.js doesn't exist). Runs off
+// MOCK_AI_ANNOTATIONS so the motion can be checked before anything is
+// connected. The floating purple button is TEMPORARY — remove it once
+// handleWrongAnswer() calls the real endpoint instead of this mock.
+var MOCK_AI_ANNOTATIONS = [
+  { type:'circle',    target:'B', color:'#e16280' },
+  { type:'arrow',     from:{x:0.45,y:0.38}, to:{x:0.45,y:0.52}, color:'#8b5cf6' },
+  { type:'text',      x:0.50, y:0.30, text:'should be −2x', color:'#8b5cf6' },
+  { type:'underline', target:'B', color:'#e16280' }
+];
+
+function getAILayer(box){
+  var layer = box.querySelector('.ai-annotation-layer');
+  if(!layer){
+    layer = document.createElement('div');
+    layer.className = 'ai-annotation-layer';
+    box.appendChild(layer);
+  }
+  layer.innerHTML = '';
+  return layer;
+}
+
+// Real options carry data-answer="A"/"B"/etc — that's the target convention
+// this engine uses. Falls back to id/class lookup for non-MCQ questions.
+function resolveAnnotationTarget(box, target){
+  if(!target) return null;
+  return box.querySelector('[data-answer="'+target+'"]') ||
+         box.querySelector('#'+target) ||
+         box.querySelector('.'+target);
+}
+
+function relRect(box, el){
+  var boxRect = box.getBoundingClientRect();
+  var elRect  = el.getBoundingClientRect();
+  return {
+    x:(elRect.left-boxRect.left)/boxRect.width,
+    y:(elRect.top -boxRect.top )/boxRect.height,
+    w:elRect.width /boxRect.width,
+    h:elRect.height/boxRect.height
+  };
+}
+
+function playAIAnnotations(qNum, annotations){
+  var box = getQuestionBox(qNum);
+  if(!box) return;
+  if(!box.style.position) box.style.position = 'relative';
+
+  var dim = box.querySelector('.ai-dim-overlay');
+  if(!dim){
+    dim = document.createElement('div');
+    dim.className = 'ai-dim-overlay';
+    box.insertBefore(dim, box.firstChild);
+  }
+  requestAnimationFrame(function(){ dim.classList.add('active'); });
+
+  var layer = getAILayer(box);
+  var boxRect = box.getBoundingClientRect();
+
+  var i = 0;
+  function next(){
+    if(i >= annotations.length){
+      setTimeout(function(){
+        dim.classList.remove('active');
+        showAILayerToggle(box, layer);
+      }, 400);
+      return;
+    }
+    var ann = annotations[i++];
+    renderOneAnnotation(box, layer, boxRect, ann, function(){
+      setTimeout(next, 600);
+    });
+  }
+  next();
+}
+
+function renderOneAnnotation(box, layer, boxRect, ann, done){
+  if(ann.type === 'circle'){
+    var el = resolveAnnotationTarget(box, ann.target);
+    if(!el){ done(); return; }
+    var r = relRect(box, el);
+    var cx = (r.x + r.w/2) * boxRect.width;
+    var cy = (r.y + r.h/2) * boxRect.height;
+    var size = Math.max(r.w*boxRect.width, r.h*boxRect.height) * 1.15;
+    var circle = document.createElement('div');
+    circle.className = 'ai-circle';
+    circle.style.left = cx+'px'; circle.style.top = cy+'px';
+    circle.style.width = size+'px'; circle.style.height = size+'px';
+    circle.style.borderColor = ann.color || '#e16280';
+    layer.appendChild(circle);
+    requestAnimationFrame(function(){
+      circle.classList.add('grown');
+      setTimeout(function(){
+        circle.classList.add('pulse');
+        setTimeout(done, 500);
+      }, 400);
+    });
+  } else if(ann.type === 'arrow'){
+    var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('width', boxRect.width);
+    svg.setAttribute('height', boxRect.height);
+    svg.style.position = 'absolute'; svg.style.left = '0'; svg.style.top = '0';
+    var x1 = ann.from.x*boxRect.width, y1 = ann.from.y*boxRect.height;
+    var x2 = ann.to.x*boxRect.width,   y2 = ann.to.y*boxRect.height;
+    var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+    line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+    line.setAttribute('stroke', ann.color || '#8b5cf6');
+    line.setAttribute('stroke-width','3');
+    line.setAttribute('stroke-linecap','round');
+    svg.appendChild(line);
+    layer.appendChild(svg);
+    var length = Math.hypot(x2-x1,y2-y1);
+    line.style.strokeDasharray = length;
+    line.style.strokeDashoffset = length;
+    line.style.transition = 'stroke-dashoffset 600ms ease-out';
+    requestAnimationFrame(function(){
+      line.style.strokeDashoffset = 0;
+      setTimeout(done, 600);
+    });
+  } else if(ann.type === 'text'){
+    var div = document.createElement('div');
+    div.className = 'ai-text-label';
+    div.style.left = (ann.x*boxRect.width)+'px';
+    div.style.top  = (ann.y*boxRect.height)+'px';
+    div.style.color = ann.color || '#8b5cf6';
+    layer.appendChild(div);
+    var chars = (ann.text||'').split(''); var idx = 0;
+    (function typeChar(){
+      if(idx >= chars.length){ done(); return; }
+      div.textContent += chars[idx++];
+      setTimeout(typeChar, 40);
+    })();
+  } else if(ann.type === 'underline'){
+    var el2 = resolveAnnotationTarget(box, ann.target);
+    if(!el2){ done(); return; }
+    var r2 = relRect(box, el2);
+    var line2 = document.createElement('div');
+    line2.className = 'ai-underline';
+    line2.style.left = (r2.x*boxRect.width)+'px';
+    line2.style.top = ((r2.y+r2.h)*boxRect.height)+'px';
+    line2.style.width = (r2.w*boxRect.width)+'px';
+    line2.style.background = ann.color || '#e16280';
+    layer.appendChild(line2);
+    requestAnimationFrame(function(){
+      line2.classList.add('drawn');
+      setTimeout(done, 500);
+    });
+  } else { done(); }
+}
+
+function showAILayerToggle(box, layer){
+  var btn = box.querySelector('.ai-layer-toggle-btn');
+  if(!btn){
+    btn = document.createElement('button');
+    btn.className = 'ai-layer-toggle-btn';
+    btn.type = 'button';
+    btn.textContent = 'Hide AI marking';
+    btn.addEventListener('click', function(){
+      var hidden = layer.style.display === 'none';
+      layer.style.display = hidden ? '' : 'none';
+      btn.textContent = hidden ? 'Hide AI marking' : 'Show AI marking';
+    });
+    box.appendChild(btn);
+  }
+  btn.classList.add('visible');
+}
+
+// ── FEATURE 3: THOUGHT BREAKDOWN PANEL (test-data preview) ──────────────
+// Renders the collapsible "Why did my brain do that?" panel in the chat
+// column, right where it belongs in production — below the "Not quite"
+// bubble. Reads thought_steps + root_cause_explanation, same shape as the
+// diagnose.js response in the doc. Mock data only for now, wired to the
+// same test button as the annotation preview since in production both
+// come back from the same diagnose.js call.
+var MOCK_THOUGHT_STEPS = [
+  { step:1, what_student_did:'Correctly spotted the pigs walking on two legs as the key symbol', correct:true },
+  { step:2, what_student_did:'Linked this to the commandments changing across the book', correct:true },
+  { step:3, what_student_did:'Said the pigs became "just like Mr Jones" instead of the exact idea the ending makes', correct:false }
+];
+var MOCK_ROOT_CAUSE = 'You can see the corruption happening but the final answer needs the precise comparison: the pigs become indistinguishable from the humans they overthrew. "Similar to Jones" is close, but examiners mark for that exact wording.';
+
+function renderThoughtBreakdown(thoughtSteps, rootCause){
+  var messages = document.getElementById('chatMessages');
+  if(!messages) return;
+
+  var wrap = document.createElement('div');
+  wrap.className = 'chat-message assistant';
+
+  var toggleBubble = document.createElement('div');
+  toggleBubble.className = 'chat-bubble tb-toggle-bubble';
+  toggleBubble.textContent = '🧠 Why did my brain do that?';
+  wrap.appendChild(toggleBubble);
+
+  var panel = document.createElement('div');
+  panel.className = 'tb-panel';
+  panel.style.display = 'none';
+
+  var header = document.createElement('div');
+  header.className = 'tb-panel-header';
+  header.textContent = '🧠 Your thought process';
+  panel.appendChild(header);
+
+  thoughtSteps.forEach(function(s){
+    var row = document.createElement('div');
+    row.className = 'tb-step ' + (s.correct ? 'tb-step-correct' : 'tb-step-wrong');
+    var icon = document.createElement('span');
+    icon.className = 'tb-step-icon';
+    icon.textContent = s.correct ? '✓' : '✗';
+    var text = document.createElement('span');
+    text.textContent = 'Step ' + s.step + ' — ' + s.what_student_did;
+    row.appendChild(icon);
+    row.appendChild(text);
+    panel.appendChild(row);
+  });
+
+  if(rootCause){
+    var rc = document.createElement('div');
+    rc.className = 'tb-root-cause';
+    var label = document.createElement('div');
+    label.className = 'tb-root-cause-label';
+    label.textContent = 'ROOT CAUSE';
+    rc.appendChild(label);
+    rc.appendChild(document.createTextNode(rootCause));
+    panel.appendChild(rc);
+  }
+
+  wrap.appendChild(panel);
+  messages.appendChild(wrap);
+
+  toggleBubble.addEventListener('click', function(){
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  });
+
+  messages.scrollTop = messages.scrollHeight;
+}
+
+// TEMPORARY test trigger — delete this block once handleWrongAnswer() calls
+// the real api/diagnose.js instead of MOCK_AI_ANNOTATIONS.
+document.addEventListener('DOMContentLoaded', function(){
+  var testBtn = document.createElement('button');
+  testBtn.className = 'ai-preview-test-btn';
+  testBtn.type = 'button';
+  testBtn.textContent = '🧪 Preview AI marking';
+  testBtn.addEventListener('click', function(){
+    playAIAnnotations(currentQuestionIndex, MOCK_AI_ANNOTATIONS);
+    renderThoughtBreakdown(MOCK_THOUGHT_STEPS, MOCK_ROOT_CAUSE);
+  });
+  document.body.appendChild(testBtn);
+});
 
 window.INSIGHT_PAGES = [
   {
