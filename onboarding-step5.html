@@ -245,6 +245,64 @@
         .start-btn:active:not(:disabled) { transform: scale(0.97) translateY(1px); }
         .back-btn:active { transform: scale(0.97) translateY(1px); }
         .grade-btn:active { transform: scale(0.92); }
+
+        /* ── CAREER SCREEN (one more thing, before saving) ── */
+        #careerScreen {
+            display: none;
+            max-width: 780px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        #careerScreen.visible { display: block; }
+        #careerScreen.faded-in { opacity: 1; }
+
+        .career-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+        .career-card {
+            border: 2px solid #e5e7eb;
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.1rem;
+            cursor: pointer;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .career-card:hover { border-color: #3b82f6; background: #eff6ff; }
+        .career-card.selected { border-color: #3b82f6; background: #3b82f6; }
+        .career-card.selected .career-card-name { color: white; }
+        .career-card-icon { font-size: 1.6rem; flex-shrink: 0; }
+        .career-card-name { font-size: 0.95rem; font-weight: 700; color: #111827; }
+        .career-skip-btn {
+            width: 100%;
+            background: transparent;
+            color: #9ca3af;
+            border: none;
+            padding: 0.6rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            margin-top: 0.25rem;
+        }
+        .career-skip-btn:hover { color: #6b7280; }
+
+        @media (max-width: 600px) {
+            #careerScreen { padding: 2rem 1.25rem; }
+            .career-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -271,6 +329,27 @@
 
     <button class="start-btn" id="startBtn" disabled>Start</button>
     <button class="back-btn" onclick="window.location.href='onboarding-step4.html'">Back</button>
+</div>
+
+<div id="careerScreen">
+    <div class="logo">
+        <img src="assets/montura-logo.png" alt="Monturalearn">
+    </div>
+    <div class="progress-bar">
+        <div class="progress-step active"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step active"></div>
+    </div>
+
+    <h1>One more thing</h1>
+    <p class="subtitle">What career are you dreaming of? We'll show you what it actually takes to get there.</p>
+
+    <div class="career-grid" id="careerGrid"></div>
+
+    <button class="start-btn" id="careerContinueBtn" disabled>Continue</button>
+    <button class="career-skip-btn" id="careerSkipBtn" type="button">Skip for now</button>
 </div>
 
 <div id="motivationOverlay">
@@ -442,11 +521,57 @@
         });
     }
 
-    // ── Start button ──
-    document.getElementById('startBtn').addEventListener('click', async () => {
-        const btn = document.getElementById('startBtn');
-        btn.disabled = true;
-        btn.textContent = 'Saving...';
+    // ── FEATURE 8: career choice (asked after grades, before saving) ──
+    const CAREER_OPTIONS = [
+        { slug: 'doctor',          name: 'Doctor',                            icon: '🩺' },
+        { slug: 'lawyer',          name: 'Lawyer',                            icon: '⚖️' },
+        { slug: 'footballer',      name: 'Pro Footballer',                    icon: '⚽' },
+        { slug: 'vet',             name: 'Vet',                               icon: '🐾' },
+        { slug: 'games_developer', name: 'Games Developer / Software Engineer', icon: '🎮' }
+    ];
+    let selectedCareer = null;
+
+    function buildCareerGrid() {
+        const grid = document.getElementById('careerGrid');
+        CAREER_OPTIONS.forEach(opt => {
+            const card = document.createElement('button');
+            card.type = 'button';
+            card.className = 'career-card';
+            card.dataset.career = opt.slug;
+            card.innerHTML = `<span class="career-card-icon">${opt.icon}</span><span class="career-card-name">${opt.name}</span>`;
+            card.addEventListener('click', () => {
+                selectedCareer = opt.slug;
+                document.querySelectorAll('.career-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                document.getElementById('careerContinueBtn').disabled = false;
+            });
+            grid.appendChild(card);
+        });
+    }
+    buildCareerGrid();
+
+    // ── Start button: grades are done, ask the career question next ──
+    document.getElementById('startBtn').addEventListener('click', () => {
+        const gradeScreen = document.getElementById('gradeScreen');
+        const careerScreen = document.getElementById('careerScreen');
+        gradeScreen.classList.add('fade-out');
+        setTimeout(() => {
+            gradeScreen.style.display = 'none';
+            careerScreen.classList.add('visible');
+            requestAnimationFrame(() => careerScreen.classList.add('faded-in'));
+        }, 650);
+    });
+
+    document.getElementById('careerSkipBtn').addEventListener('click', () => finishOnboarding(null));
+    document.getElementById('careerContinueBtn').addEventListener('click', () => finishOnboarding(selectedCareer));
+
+    // ── Save everything (grades + career choice) and move to motivation screens ──
+    async function finishOnboarding(dreamCareer) {
+        const continueBtn = document.getElementById('careerContinueBtn');
+        const skipBtn = document.getElementById('careerSkipBtn');
+        continueBtn.disabled = true;
+        skipBtn.disabled = true;
+        continueBtn.textContent = 'Saving...';
 
         try {
             const { data: { session } } = await sbClient.auth.getSession();
@@ -474,6 +599,7 @@
                     current_grade_tier: firstSubject.tier,
                     target_grade: firstSubject.targetGrade,
                     target_grade_tier: firstSubject.tier,
+                    dream_career: dreamCareer,
                     onboarding_completed: true,
                     updated_at: new Date().toISOString()
                 })
@@ -486,10 +612,10 @@
                 .forEach(k => localStorage.removeItem(k));
 
             // Fade out → motivation screens
-            const gradeScreen = document.getElementById('gradeScreen');
-            gradeScreen.classList.add('fade-out');
+            const careerScreen = document.getElementById('careerScreen');
+            careerScreen.classList.remove('faded-in');
             setTimeout(() => {
-                gradeScreen.style.display = 'none';
+                careerScreen.style.display = 'none';
                 document.body.style.background = 'white';
                 document.body.style.display = 'flex';
                 document.body.style.alignItems = 'center';
@@ -497,14 +623,15 @@
                 document.body.style.minHeight = '100vh';
                 document.body.style.padding = '2rem';
                 startMotivation();
-            }, 650);
+            }, 500);
 
         } catch (err) {
             console.error(err);
-            btn.disabled = false;
-            btn.textContent = 'Start';
+            continueBtn.disabled = false;
+            skipBtn.disabled = false;
+            continueBtn.textContent = 'Continue';
         }
-    });
+    }
 
     // ── Motivational typewriter sequence ──
     const screens = [
