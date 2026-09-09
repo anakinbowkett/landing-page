@@ -35,13 +35,14 @@ const ALLOWED_ORIGINS = [
 // 'GCSE English Literature'), NOT a short slug. English Language and English
 // Literature are separate subjects/templates and must not share a key.
 const VOICE_IDS = {
-    'gcse english language': 'REPLACE_WITH_ELEVENLABS_VOICE_ID_ENGLISH_LANGUAGE',
-    'gcse english literature': 'REPLACE_WITH_ELEVENLABS_VOICE_ID_ENGLISH_LITERATURE',
-    'gcse maths': 'REPLACE_WITH_ELEVENLABS_VOICE_ID_MATHS',
-    'gcse biology': 'REPLACE_WITH_ELEVENLABS_VOICE_ID_BIOLOGY',
-    'gcse chemistry': 'REPLACE_WITH_ELEVENLABS_VOICE_ID_CHEMISTRY',
-    'gcse physics': 'REPLACE_WITH_ELEVENLABS_VOICE_ID_PHYSICS',
+    'gcse english language': 'kdmDKE6EkgrWrrykO9Qt',  // Alexandra
+    'gcse english literature': 'kdmDKE6EkgrWrrykO9Qt', // Alexandra
+    'gcse maths': 'InRyolULHTXjegISsXuJ',              // Alex
+    'gcse biology': 'eXpIbVcVbLo8ZJQDlDnl',            // Siren
+    'gcse chemistry': 'eXpIbVcVbLo8ZJQDlDnl',          // Siren
+    'gcse physics': 'eXpIbVcVbLo8ZJQDlDnl',            // Siren
     'gcse history': 'REPLACE_WITH_ELEVENLABS_VOICE_ID_HISTORY',
+    'gcse geography': 'REPLACE_WITH_ELEVENLABS_VOICE_ID_GEOGRAPHY',
 };
 
 export default async function handler(req, res) {
