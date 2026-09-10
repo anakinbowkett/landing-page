@@ -408,6 +408,27 @@ body.dark-mode .az-fg-chip:hover{border-color:#60a5fa;background:#1e3a5f;color:#
 .pulse-ring.incorrect{ border-color:#e16280; }
 @keyframes pulseRing{ 0%{opacity:1;transform:scale(1);} 100%{opacity:0;transform:scale(1.06);} }
 
+/* ── FEATURE 8: CAREER MOTIVATION FACT TOAST ── */
+.career-fact-toast{
+  position:fixed; bottom:24px; right:24px; max-width:320px;
+  background:#ffffff; border:1.5px solid var(--border); border-radius:14px;
+  padding:16px 18px; box-shadow:0 12px 32px rgba(0,0,0,0.14);
+  z-index:3000; display:flex; gap:12px; align-items:flex-start;
+  opacity:0; transform:translateY(12px);
+  transition:opacity 0.35s ease, transform 0.35s ease;
+  pointer-events:none;
+}
+.career-fact-toast.visible{ opacity:1; transform:translateY(0); pointer-events:auto; }
+.career-fact-toast-icon{ font-size:24px; flex-shrink:0; line-height:1; }
+.career-fact-toast-body{ flex:1; min-width:0; }
+.career-fact-toast-label{ font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#9ca3af; margin-bottom:4px; }
+.career-fact-toast-text{ font-size:13px; line-height:1.5; color:var(--text-primary); }
+.career-fact-toast-close{ background:none; border:none; color:#9ca3af; font-size:16px; cursor:pointer; line-height:1; padding:0; flex-shrink:0; }
+.career-fact-toast-close:hover{ color:#4b5563; }
+body.dark-mode .career-fact-toast{ background:#1e2330; border-color:#374151; }
+body.dark-mode .career-fact-toast-text{ color:#e2e8f0; }
+@media (max-width:600px){ .career-fact-toast{ left:16px; right:16px; max-width:none; bottom:16px; } }
+
 /* ── END / RESULTS SCREENS ── */
 #quiz-end-screen{
   position:fixed; inset:0; background:#ffffff; z-index:8000;
@@ -1695,6 +1716,17 @@ body.dark-mode .hi-target.lit{
 .chat-open-insight-btn:hover{ background:#1366c4; }
 body.dark-mode .chat-open-insight-btn{ background:#2563eb; }
 body.dark-mode .chat-open-insight-btn:hover{ background:#1d4ed8; }
+.chat-bubble-speak-btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:26px; height:26px; margin-top:4px; padding:0;
+  background:transparent; border:1px solid var(--border); border-radius:50%;
+  font-size:13px; line-height:1; cursor:pointer; color:var(--text-primary);
+  transition:background 0.15s ease;
+}
+.chat-bubble-speak-btn:hover{ background:var(--border); }
+.chat-bubble-speak-btn:disabled{ opacity:0.5; cursor:default; }
+body.dark-mode .chat-bubble-speak-btn{ border-color:#374151; color:#e2e8f0; }
+body.dark-mode .chat-bubble-speak-btn:hover{ background:#1e2330; }
 .chat-input-area{
   padding:12px 16px; border-top:1px solid var(--border);
   background:white; flex-shrink:0;
@@ -2484,14 +2516,6 @@ body.dark-mode .subq-source-tip{ color:#cbd5e1; }
 }
 .ai-layer-toggle-btn.visible{ display:block; }
 
-/* TEMPORARY — remove this button once real diagnosis wiring replaces it */
-.ai-preview-test-btn{
-  position:fixed; bottom:16px; left:16px; z-index:999;
-  background:#8b5cf6; color:#fff; border:none; border-radius:10px;
-  padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer;
-  box-shadow:0 2px 8px rgba(0,0,0,0.2);
-}
-
 /* ── FEATURE 3: THOUGHT BREAKDOWN PANEL ───────────────────────────────── */
 .tb-toggle-bubble{ cursor:pointer; font-weight:600; color:#6d28d9; }
 .tb-toggle-bubble:hover{ text-decoration:underline; }
@@ -3086,7 +3110,9 @@ body.dark-mode .tb-root-cause{ background:#1e1b3a; color:#ddd6fe; }
 // ── CONFIG ──────────────────────────────────────────────────────────────
 var topicSlug     = 'cr-l1-what-a-word-is-actually-doing';
 var LECTURE_NUM   = '1';
+var LECTURE_SUBJECT = 'GCSE English Language'; // matches the `subject` convention api/chat.js already uses; hardcoded per subject's own base template — this file is English Language's copy (not Literature)
 var API_URL       = 'https://www.monturalearn.co.uk/api/chat';
+var DIAGNOSE_API_URL = 'https://www.monturalearn.co.uk/api/diagnose'; // voice tutor (Feature 2) + future diagnosis wiring
 var SUPABASE_URL  = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 var SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
 
@@ -3266,11 +3292,328 @@ async function loadUserProfile(){
     var data=await res.json();
     if(data&&data.id){
       currentUser=data;
-      var pRes=await fetch(SUPABASE_URL+'/rest/v1/user_profiles?id=eq.'+data.id+'&select=first_name,last_name,enigma_balance,current_grade',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+getJWT()}});
+      var pRes=await fetch(SUPABASE_URL+'/rest/v1/user_profiles?id=eq.'+data.id+'&select=first_name,last_name,enigma_balance,current_grade,dream_career',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+getJWT()}});
       var profiles=await pRes.json();
       if(profiles&&profiles[0]) currentUserProfile=profiles[0];
     }
   }catch(e){console.log('Profile load failed',e);}
+}
+
+// ── FEATURE 8: CAREER MOTIVATION LAYER ──────────────────────────────────
+// Salary figures are approximate UK ranges, general knowledge as of when
+// this was written — double-check current figures (NHS pay scales, Premier
+// League averages, etc.) before relying on them, as they shift year to year.
+// Keyed by the same career slug stored in user_profiles.dream_career
+// (captured in onboarding-step5.html).
+var CAREER_FACTS = {
+  "doctor": {
+    "displayName": "Doctor",
+    "icon": "🩺",
+    "salaryRange": "£32,000 – £200,000+",
+    "facts": [
+      "Training takes at least 10 years: 5 years at med school, 2 years as a Foundation Doctor, then 3+ years of specialist training.",
+      "You need at least AAA at A-Level for most UK medical schools, including Chemistry and Biology.",
+      "A newly qualified Foundation Doctor earns around £32,000–£37,000 a year.",
+      "A GP earns on average £100,000–£110,000 a year in the UK.",
+      "A Consultant (senior specialist) can earn £105,000–£139,000+ in the NHS.",
+      "Some private consultants and surgeons earn £200,000+ a year.",
+      "The UK has around 190,000 doctors currently working in the NHS.",
+      "You'll need to pass the UCAT or BMAT admissions test to get into most medical schools.",
+      "Work experience in a hospital or care setting is expected before you even apply.",
+      "Surgeons often stand for 6+ hours during a single operation.",
+      "A&E doctors see life-or-death situations on a daily basis.",
+      "Doctors take an oath (similar to the Hippocratic Oath) to \"do no harm.\"",
+      "Medicine is one of the most competitive university courses in the UK — around 1 in 10 applicants get a place.",
+      "Many doctors specialise later — from cardiology to psychiatry to paediatrics.",
+      "The average NHS doctor works 40+ hours a week, often including night shifts.",
+      "Being a doctor means lifelong learning — even senior doctors study new research their whole career.",
+      "Doctors get to literally save lives — something very few careers can say.",
+      "Some doctors work for charities like Médecins Sans Frontières, treating patients in war zones or disaster areas.",
+      "The stethoscope was invented in 1816 — nearly 200 years later it's still a doctor's main tool.",
+      "Female doctors now outnumber male doctors in UK medical schools.",
+      "Some surgeons perform robotic-assisted surgery using machines controlled from across the room.",
+      "Doctors are legally required to keep training and pass regular assessments throughout their career.",
+      "The NHS is one of the largest employers in the world, with over 1.3 million staff.",
+      "Many top surgeons started out struggling at school before working hard to improve their grades.",
+      "Doctors specialising in emergency medicine can go from a heart attack to a broken bone in the same hour.",
+      "It's possible to become a doctor via a graduate-entry medicine course, even if you didn't do science A-Levels first.",
+      "Paediatricians (doctors for children) need extra patience and communication skills beyond medical knowledge.",
+      "Anaesthetists control whether a patient is awake, asleep, or pain-free during surgery.",
+      "Some GPs run their own practice like a small business, on top of treating patients.",
+      "Radiologists diagnose illness by reading X-rays, MRIs and CT scans.",
+      "Being a doctor is consistently ranked one of the most trusted professions in the UK.",
+      "Doctors often need to explain difficult news to patients and families — communication matters as much as medical skill.",
+      "It typically takes until your early-to-mid 30s to become a fully qualified consultant.",
+      "The NHS covers over 60 million people in England alone.",
+      "Sports medicine doctors work pitch-side at professional football and rugby matches.",
+      "Doctors can transfer their skills abroad — UK medical training is respected worldwide.",
+      "Psychiatry is a medical specialty focused entirely on mental health — you still need a full medical degree first.",
+      "Forensic pathologists are actual doctors who investigate cause of death.",
+      "Many doctors say the hardest exam of their life wasn't at school — it was during their medical training.",
+      "Doctors treat thousands of patients over a career — each one remembered differently."
+    ]
+  },
+  "lawyer": {
+    "displayName": "Lawyer",
+    "icon": "⚖️",
+    "salaryRange": "£25,000 – £1,000,000+",
+    "facts": [
+      "There are two main paths: solicitor (advises clients, handles cases) and barrister (represents clients in court).",
+      "Law degrees typically take 3 years, followed by further professional training.",
+      "Solicitors now train via the SQE (Solicitors Qualifying Exam), a newer route since 2021.",
+      "Trainee solicitors earn around £25,000–£50,000 depending on the firm.",
+      "Newly qualified solicitors at major London firms can earn £100,000+ in their first year.",
+      "Experienced partners at top law firms can earn £500,000–£1,000,000+ a year.",
+      "Barristers are self-employed and get paid per case, so income varies a lot early on.",
+      "A top criminal or commercial barrister (a KC) can earn well over £250,000 a year.",
+      "You don't need to study Law at university to become a lawyer — many convert from other degrees.",
+      "Legal work experience is almost essential before applying for training contracts.",
+      "Lawyers often work 60+ hour weeks, especially in corporate law.",
+      "Solicitors can specialise in areas like criminal law, family law, corporate law, or human rights.",
+      "Barristers wear wigs and gowns in certain UK courtrooms — a tradition going back centuries.",
+      "The UK legal system is one of the oldest and most influential in the world.",
+      "Human rights lawyers have helped change UK and international law through landmark court cases.",
+      "Corporate lawyers can work on deals worth billions of pounds.",
+      "Family lawyers deal with divorce, custody, and some of the most emotional cases in law.",
+      "Criminal defence lawyers represent people accused of crimes, even when public opinion is against them.",
+      "Lawyers must pass strict character and ethics checks before they can practise.",
+      "Being good at debating and public speaking is essential for barristers.",
+      "Several UK Prime Ministers trained as lawyers first.",
+      "Legal aid lawyers help people who can't afford representation, often for lower pay but huge social impact.",
+      "Some lawyers work entirely on international cases, flying between countries for meetings.",
+      "A single major court case can take years to reach a verdict.",
+      "Contract law affects nearly everything — from buying a phone to signing a job offer.",
+      "Intellectual property lawyers help protect inventions, music, and brands from being copied.",
+      "Sports lawyers negotiate the contracts behind football transfers and player deals.",
+      "Media lawyers help decide what newspapers and broadcasters are legally allowed to publish.",
+      "The training contract stage is often more competitive than getting into university itself.",
+      "Some solicitors never go to court at all — their entire job is advice and paperwork.",
+      "Environmental lawyers are becoming more in-demand as climate law develops worldwide.",
+      "Being a lawyer means constantly reading — new laws and rulings change what you need to know.",
+      "Some law firms now offer apprenticeships, letting you train without a traditional degree.",
+      "The Bar is famously competitive — only a fraction of law graduates make it to becoming a barrister.",
+      "Judges in the UK are almost always chosen from experienced solicitors and barristers.",
+      "Lawyers specialising in mergers and acquisitions can be involved in famous company takeovers.",
+      "A good lawyer needs to argue a case convincingly, whether or not they personally agree with it.",
+      "Some criminal barristers have represented people in the most high-profile UK court cases in the news.",
+      "Many lawyers work for 40+ years, often retiring well into their 60s.",
+      "Arguing in court, live, in front of a judge and jury, is one of the most high-pressure jobs there is."
+    ]
+  },
+  "footballer": {
+    "displayName": "Professional Footballer",
+    "icon": "⚽",
+    "salaryRange": "£25,000 – £3,000,000+",
+    "facts": [
+      "Only around 1% of academy players make it to a professional first-team contract.",
+      "The average Premier League salary is around £3 million a year — but most professional footballers earn far less.",
+      "League Two (the lowest professional tier) players often earn £30,000–£50,000 a year.",
+      "Most professional football careers only last until a player's early-to-mid 30s.",
+      "Premier League academies scout players as young as 8 or 9 years old.",
+      "The very top global players earn over £100 million a year including sponsorships.",
+      "Female footballers' salaries have grown fast — top WSL players can now earn six figures.",
+      "Most professional footballers need to retrain for a second career after football ends.",
+      "Injuries end thousands of promising football careers every year.",
+      "A footballer's career earnings often peak between ages 24–29.",
+      "Some players go on to become pundits, coaches, or club owners after retiring.",
+      "Non-league football often pays players just a few hundred pounds a week.",
+      "Top clubs have entire teams of nutritionists, physios, and psychologists just for their players.",
+      "Footballers can be transferred between clubs for over £100 million in a single deal.",
+      "A \"loan spell\" lets young players get first-team experience at another club before returning.",
+      "English football's top 5 leagues combined generate billions of pounds a year in revenue.",
+      "Many top footballers didn't get picked for their first-choice academy — early rejection is extremely common.",
+      "Agents typically take a percentage of a player's contract or transfer fee.",
+      "Some professional footballers earn more from sponsorships and social media than from playing itself.",
+      "The average professional football career is shorter than most office careers — often under 15 years total.",
+      "Goalkeepers often have the longest careers, sometimes playing into their late 30s or 40s.",
+      "Many current professional players struggled with GCSEs but caught up through academy education programmes.",
+      "Clubs run their own in-house schools so young academy players can study alongside training.",
+      "Only a small number of academy graduates from any club ever play a single first-team match.",
+      "A career-ending injury can happen in a single unlucky tackle, at any age.",
+      "Wages for youth-team players are often under £500 a week.",
+      "Many Premier League stars started out playing for lower-league or non-league clubs first.",
+      "Football scouts look at attitude and coachability as much as raw talent.",
+      "The transfer window only opens twice a year.",
+      "Some players train for 15+ years before ever playing a single professional match.",
+      "A footballer's diet, sleep, and recovery routine is stricter than most people realise.",
+      "Very few footballers become pundits or coaches — most work outside football entirely after retiring.",
+      "Mental resilience after being dropped or injured often separates long careers from short ones.",
+      "Youth players often move away from home as young as 16 to join an academy.",
+      "A single bad season can end a young player's contract, regardless of potential.",
+      "Women's football in England only turned fully professional in the WSL in 2018.",
+      "Some ex-professional footballers go on to build multi-million-pound business careers after retiring.",
+      "Players can run 10–13km in a single 90-minute match.",
+      "Becoming a professional footballer is one of the hardest, highest-risk career paths there is.",
+      "Most professional players were rejected by at least one academy before finally making it."
+    ]
+  },
+  "vet": {
+    "displayName": "Veterinarian",
+    "icon": "🐾",
+    "salaryRange": "£35,000 – £100,000+",
+    "facts": [
+      "A veterinary degree in the UK takes 5–6 years — similar in length to becoming a doctor.",
+      "You need top grades to get in — typically AAA at A-Level including Chemistry and Biology.",
+      "Newly qualified vets earn around £35,000–£40,000 a year.",
+      "Experienced vets, especially specialists or practice owners, can earn £70,000–£100,000+.",
+      "There are only a handful of vet schools in the UK, making it one of the most competitive courses to get into.",
+      "Vets treat everything from hamsters to horses, and even zoo animals.",
+      "Work experience with animals is essential before applying.",
+      "Vets often have to deliver very difficult news to pet owners — it's an emotional job, not just a medical one.",
+      "Some vets specialise entirely in one type of animal, like exotic pets or livestock.",
+      "Large-animal (farm) vets often travel between farms rather than working in one building.",
+      "Vets sometimes have to perform surgery in far less controlled conditions than human doctors — like in a barn.",
+      "Being a vet involves real physical strength — handling large or frightened animals is part of the job.",
+      "Vets are trained to be both surgeon and physician for every species they treat.",
+      "Vet students spend hundreds of hours doing supervised placements before they qualify.",
+      "Some vets work specifically with wildlife, treating injured animals before releasing them back.",
+      "Zoo vets need to know the medical differences between hundreds of different species.",
+      "Vets often deal with the cost of treatment too — not every owner can afford it.",
+      "Equine (horse) vets are often called out at all hours, including emergencies at night.",
+      "The RCVS (Royal College of Veterinary Surgeons) is the professional body all UK vets must register with.",
+      "Some vets move into research, developing new treatments and medicines for animals.",
+      "Vet nursing is a separate, shorter career path that works alongside vets in practice.",
+      "Vets need to be comfortable with surgery, disease, and sometimes end-of-life decisions in the same day.",
+      "Vets often need excellent people skills — the patient can't tell you what's wrong, but the owner can.",
+      "A career as a vet often involves physically demanding, messy, and unpredictable working conditions.",
+      "Some vets appear on TV documentaries, like at zoos or safari parks.",
+      "Vets treating racehorses or competition animals can be part of a multi-million-pound industry.",
+      "Vets in rural areas sometimes cover a huge geographic area, driving long distances between call-outs.",
+      "Studying to become a vet includes learning anatomy for dozens of completely different animal species.",
+      "Vets have one of the highest-stress jobs in the UK, partly due to the emotional weight of the role.",
+      "Some vets specialise in exotic pets like reptiles, birds, and even snakes.",
+      "Demand for vets has grown hugely since more people started owning pets in recent years.",
+      "Vets are trained in dentistry, radiography, and pharmacology, on top of general medicine.",
+      "A vet's working week can include emergency out-of-hours call-outs, unlike many 9-5 careers.",
+      "Vets often build long relationships with animals and families, treating the same pets for years.",
+      "Some vet practices are run as independent small businesses, meaning vets can become business owners too.",
+      "Vets need a strong stomach — dealing with injury and illness is a routine part of the job.",
+      "International vet charities send vets to treat animals in disaster zones and developing countries.",
+      "Vet schools receive many more applicants than places every single year.",
+      "Some advanced veterinary surgery techniques, like hip replacements for dogs, mirror human medicine almost exactly.",
+      "Being a vet means combining a love of animals with years of tough scientific study."
+    ]
+  },
+  "games_developer": {
+    "displayName": "Games Developer / Software Engineer",
+    "icon": "🎮",
+    "salaryRange": "£25,000 – £150,000+",
+    "facts": [
+      "You don't need a Computer Science degree to become a games developer or software engineer — many are self-taught.",
+      "A junior software developer in the UK typically earns £25,000–£35,000 starting out.",
+      "Experienced software engineers, especially in London, can earn £70,000–£120,000+.",
+      "Senior engineers or tech leads at top companies can earn £150,000+ including bonuses and shares.",
+      "The video game industry is worth over £7 billion a year in the UK alone.",
+      "Some of the world's best-selling games were made by teams of fewer than 20 people.",
+      "Coding bootcamps can be a faster route into software jobs than a full degree.",
+      "Games developers combine art, storytelling, maths, and programming all in one job.",
+      "Big tech companies pay some of the highest starting software salaries in the world.",
+      "You can build and publish your own game or app alone, without needing a company at all.",
+      "Some teenage game creators have made real money through in-game item sales.",
+      "Software engineers can often work fully remotely, from almost anywhere in the world.",
+      "AAA (big-budget) video games can cost over £200 million to make — similar to a Hollywood movie.",
+      "Bugs (mistakes in code) are a normal part of every developer's daily work, even for senior engineers.",
+      "Some game developers specialise entirely in sound design or character animation, not just coding.",
+      "The most in-demand programming skills change every few years — developers keep learning throughout their career.",
+      "Many successful tech founders started out as self-taught coders.",
+      "Software engineering is one of the few careers where a strong portfolio can matter more than your qualifications.",
+      "Game testing (QA) is often the first job many people get before becoming a full developer.",
+      "Some developers work on the invisible parts of apps you use every day, like the backend of a banking app.",
+      "AI and machine learning engineers are among the highest-paid specialists in tech right now.",
+      "Indie (independent) game developers sometimes hit it big with a single surprise hit game.",
+      "Cybersecurity specialists are software experts paid to find and fix weaknesses before hackers do.",
+      "Some software engineers work on things you'd never expect — traffic lights, hospital equipment, even spacecraft.",
+      "Game developers often work long hours close to a big release date.",
+      "Apprenticeships in software development let you earn a salary while training, with no university debt.",
+      "Some of the highest-paid software engineers work at companies most people have never heard of.",
+      "Learning to code is one of the few skills where you can see real results within just a few weeks.",
+      "Mobile app developers can earn money directly from an app they built themselves.",
+      "Virtual reality (VR) and augmented reality (AR) are creating entirely new types of development jobs.",
+      "Some software engineers move into management, leading whole teams instead of writing code themselves.",
+      "The tech industry has some of the fastest salary growth of any career path in the first 5 years.",
+      "Many big-name games were rejected by publishers before eventually becoming massive hits.",
+      "Freelance developers can set their own hours and choose which projects to work on.",
+      "Some school-age coders have built apps or games downloaded millions of times.",
+      "Data scientists are paid to find patterns in huge amounts of information.",
+      "Software engineers built almost everything you touch on a screen today, from school websites to games.",
+      "Some of the richest people in the world made their fortune purely from writing software.",
+      "Working in tech doesn't require being a \"maths genius\" — problem-solving and patience matter more day-to-day.",
+      "The tech industry is famously accepting of career-changers, from almost any other background."
+    ]
+  }
+};
+
+// Milestone question numbers computed once totalQuestionsCount is known —
+// roughly 25%/50%/75% through the lecture. The 4th showing (once at lecture
+// end) is fired separately from triggerEndScreen(), not from this set.
+var careerFactMilestones = null;
+var careerFactUsedIdx = [];
+var lastCareerFactToastTimer = null;
+
+function initCareerFactMilestones(){
+  if(careerFactMilestones) return;
+  var total = totalQuestionsCount || 6;
+  var raw = [Math.round(total*0.25), Math.round(total*0.5), Math.round(total*0.75)];
+  careerFactMilestones = {};
+  raw.forEach(function(n){
+    n = Math.max(1, Math.min(total, n));
+    careerFactMilestones[n] = true;
+  });
+}
+
+function pickCareerFact(career){
+  var facts = career.facts;
+  if(careerFactUsedIdx.length >= facts.length) careerFactUsedIdx = []; // seen them all — start over
+  var idx;
+  do { idx = Math.floor(Math.random()*facts.length); } while(careerFactUsedIdx.indexOf(idx) !== -1);
+  careerFactUsedIdx.push(idx);
+  return facts[idx];
+}
+
+function showCareerFactToast(){
+  if(!currentUserProfile || !currentUserProfile.dream_career) return; // no career chosen — silent no-op
+  var career = CAREER_FACTS[currentUserProfile.dream_career];
+  if(!career || !career.facts || !career.facts.length) return;
+
+  var fact = pickCareerFact(career);
+
+  var existing = document.getElementById('careerFactToast');
+  if(existing) existing.remove();
+  if(lastCareerFactToastTimer) clearTimeout(lastCareerFactToastTimer);
+
+  var toast = document.createElement('div');
+  toast.id = 'careerFactToast';
+  toast.className = 'career-fact-toast';
+  toast.innerHTML =
+    '<div class="career-fact-toast-icon">' + career.icon + '</div>' +
+    '<div class="career-fact-toast-body">' +
+      '<div class="career-fact-toast-label">On your way to becoming a ' + career.displayName + '</div>' +
+      '<div class="career-fact-toast-text">' + fact + '</div>' +
+    '</div>' +
+    '<button class="career-fact-toast-close" type="button" aria-label="Dismiss">✕</button>';
+  toast.querySelector('.career-fact-toast-close').onclick = function(){ hideCareerFactToast(); };
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(function(){ toast.classList.add('visible'); });
+  lastCareerFactToastTimer = setTimeout(hideCareerFactToast, 9000);
+}
+
+function hideCareerFactToast(){
+  var toast = document.getElementById('careerFactToast');
+  if(!toast) return;
+  toast.classList.remove('visible');
+  setTimeout(function(){ if(toast.parentNode) toast.parentNode.removeChild(toast); }, 350);
+}
+
+// Called from onQuestionAnswered for every submitted question — fires a
+// fact the ~3 times this question number lands on a milestone.
+function maybeShowCareerFactForQuestion(qNum){
+  if(!currentUserProfile || !currentUserProfile.dream_career) return;
+  initCareerFactMilestones();
+  if(careerFactMilestones[qNum]){
+    delete careerFactMilestones[qNum]; // only once per milestone, even on retry/revisit
+    showCareerFactToast();
+  }
 }
 
 async function loadRetestQuestions(){
@@ -4488,6 +4831,8 @@ function onQuestionAnswered(qNum,result,awarded,total){
   }
   // FEATURE 4: sub-questions trigger regardless of correct/incorrect
   checkForSubQuestions(qNum);
+  // FEATURE 8: career fact toast — fires on ~3 milestone questions, regardless of correct/incorrect
+  maybeShowCareerFactForQuestion(qNum);
 }
 
 var pendingRetryQuestion = null;
@@ -4551,6 +4896,7 @@ var endMessages1=['Quiz complete.','Well done.','That\'s a wrap.','You showed up
 var endMessages2=['Every quiz completed is a step closer to that next grade.','Consistency beats talent every single time.','The student who shows up wins.','Small sessions. Big results.','Hard now. Easy then.','Keep going. It adds up.'];
 function triggerEndScreen(){
   saveResultsToSupabase();
+  showCareerFactToast(); // FEATURE 8: the 4th, guaranteed showing — once at lecture end
   var audio=document.getElementById('quiz-end-audio');
   if(audio){audio.volume=0.7;audio.play().catch(function(){});}
   var screen=document.getElementById('quiz-end-screen');
@@ -5891,6 +6237,10 @@ function handleWrongAnswer(qNum, result) {
 
     var attemptCount = questionAttemptCount[qNum] || 1;
 
+    // FEATURE 1 & 3: real AI diagnosis — separate fire-and-forget call,
+    // does not touch or wait on the api/chat.js Socratic explanation below.
+    requestRealDiagnosis(qNum, qData, studentChoseText, allOptions, hintSpanText, attemptCount);
+
     var autoMsg = 'WRONG_ANSWER_NOTIFY: The student just got this wrong'
       + (attemptCount > 1 ? ' (attempt ' + attemptCount + ' on this question)' : '') + '. '
       + 'Question: "' + (qData.question || '') + '". '
@@ -5970,8 +6320,60 @@ function appendAssistantBubble(html) {
   bubble.className = 'chat-bubble';
   bubble.innerHTML = html;
   wrap.appendChild(bubble);
+
+  var speakBtn = document.createElement('button');
+  speakBtn.className = 'chat-bubble-speak-btn';
+  speakBtn.type = 'button';
+  speakBtn.setAttribute('aria-label', 'Listen to this');
+  speakBtn.textContent = '🔊';
+  speakBtn.onclick = function(){ playBubbleAudio(speakBtn, bubble.textContent); };
+  wrap.appendChild(speakBtn);
+
   messages.appendChild(wrap);
   messages.scrollTop = messages.scrollHeight;
+}
+
+// ── FEATURE 2: VOICE TUTOR ─────────────────────────────────────────────────
+// Speaks an assistant bubble's text aloud via ElevenLabs (routed through
+// api/diagnose.js, action:'tts', which picks the voice for LECTURE_SUBJECT).
+// Wrapped so a missing API key / unset voice ID / network failure is always
+// a silent no-op — the speaker button just resets, never blocks the student.
+var activeTutorAudio = null;
+
+function playBubbleAudio(btn, text) {
+  text = (text || '').trim();
+  if (!text) return;
+
+  if (activeTutorAudio) {
+    activeTutorAudio.pause();
+    activeTutorAudio = null;
+  }
+
+  var originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '⏳';
+
+  fetch(DIAGNOSE_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'tts',
+      text: text.slice(0, 800),
+      subject: LECTURE_SUBJECT
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+    if (!data || !data.audio) return; // no voice configured yet, or ElevenLabs call failed — silent no-op
+    activeTutorAudio = new Audio(data.audio);
+    activeTutorAudio.play().catch(function(){});
+  })
+  .catch(function(){
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  });
 }
   
 // ── INSIGHT CHUNK REVEAL ──────────────────────────────────────────────────
@@ -7164,16 +7566,11 @@ function renderSubQuestions(box, subQuestions){
 // handwritten correction → underline, each starting 600ms after the
 // previous one finishes. Coordinates are converted to real pixels off the
 // box's current size every time this runs — never stored as pixels.
-// NOT wired to real AI yet (api/diagnose.js doesn't exist). Runs off
-// MOCK_AI_ANNOTATIONS so the motion can be checked before anything is
-// connected. The floating purple button is TEMPORARY — remove it once
-// handleWrongAnswer() calls the real endpoint instead of this mock.
-var MOCK_AI_ANNOTATIONS = [
-  { type:'circle',    target:'B', color:'#e16280' },
-  { type:'arrow',     from:{x:0.45,y:0.38}, to:{x:0.45,y:0.52}, color:'#8b5cf6' },
-  { type:'text',      x:0.50, y:0.30, text:'should be −2x', color:'#8b5cf6' },
-  { type:'underline', target:'B', color:'#e16280' }
-];
+// Wired to the real api/diagnose.js via requestRealDiagnosis() /
+// buildAnnotationsFromCorrection(), called from handleWrongAnswer() — see
+// below. The AI only ever supplies the correction TEXT; the circle/arrow/
+// underline coordinates are always computed client-side from the wrong
+// answer's live DOM position, never from the API.
 
 function getAILayer(box){
   var layer = box.querySelector('.ai-annotation-layer');
@@ -7331,20 +7728,11 @@ function showAILayerToggle(box, layer){
   btn.classList.add('visible');
 }
 
-// ── FEATURE 3: THOUGHT BREAKDOWN PANEL (test-data preview) ──────────────
+// ── FEATURE 3: THOUGHT BREAKDOWN PANEL ───────────────────────────────────
 // Renders the collapsible "Why did my brain do that?" panel in the chat
-// column, right where it belongs in production — below the "Not quite"
-// bubble. Reads thought_steps + root_cause_explanation, same shape as the
-// diagnose.js response in the doc. Mock data only for now, wired to the
-// same test button as the annotation preview since in production both
-// come back from the same diagnose.js call.
-var MOCK_THOUGHT_STEPS = [
-  { step:1, what_student_did:'Correctly spotted the pigs walking on two legs as the key symbol', correct:true },
-  { step:2, what_student_did:'Linked this to the commandments changing across the book', correct:true },
-  { step:3, what_student_did:'Said the pigs became "just like Mr Jones" instead of the exact idea the ending makes', correct:false }
-];
-var MOCK_ROOT_CAUSE = 'You can see the corruption happening but the final answer needs the precise comparison: the pigs become indistinguishable from the humans they overthrew. "Similar to Jones" is close, but examiners mark for that exact wording.';
-
+// column, right below the "Not quite" bubble. Reads thought_steps +
+// root_cause straight off the real api/diagnose.js response — see
+// requestRealDiagnosis() below, called from handleWrongAnswer().
 function renderThoughtBreakdown(thoughtSteps, rootCause){
   var messages = document.getElementById('chatMessages');
   if(!messages) return;
@@ -7400,19 +7788,70 @@ function renderThoughtBreakdown(thoughtSteps, rootCause){
   messages.scrollTop = messages.scrollHeight;
 }
 
-// TEMPORARY test trigger — delete this block once handleWrongAnswer() calls
-// the real api/diagnose.js instead of MOCK_AI_ANNOTATIONS.
-document.addEventListener('DOMContentLoaded', function(){
-  var testBtn = document.createElement('button');
-  testBtn.className = 'ai-preview-test-btn';
-  testBtn.type = 'button';
-  testBtn.textContent = '🧪 Preview AI marking';
-  testBtn.addEventListener('click', function(){
-    playAIAnnotations(currentQuestionIndex, MOCK_AI_ANNOTATIONS);
-    renderThoughtBreakdown(MOCK_THOUGHT_STEPS, MOCK_ROOT_CAUSE);
-  });
-  document.body.appendChild(testBtn);
-});
+// ── FEATURE 1 & 3: REAL AI DIAGNOSIS ─────────────────────────────────────
+// Calls api/diagnose.js (action:'diagnose') to get a real, question-specific
+// correction note + thought-process breakdown + root cause from Claude.
+// Fire-and-forget from handleWrongAnswer() — silent no-op on any failure,
+// same "never block the student" contract as the rest of this file. Runs
+// alongside the existing api/chat.js Socratic-explanation call, not instead
+// of it — that call/response shape is unchanged.
+function requestRealDiagnosis(qNum, qData, studentChoseText, allOptions, hintSpanText, attemptCount){
+  fetch(DIAGNOSE_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'diagnose',
+      question: qData.question || '',
+      options: allOptions,
+      studentAnswer: studentChoseText,
+      correctAnswer: qData.correctAnswer,
+      subject: LECTURE_SUBJECT,
+      attemptCount: attemptCount,
+      hintText: hintSpanText || ''
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if(!data || !data.ok) return; // no key / upstream failure — silent no-op, student never sees anything missing
+
+    if(Array.isArray(data.thought_steps) && data.thought_steps.length){
+      renderThoughtBreakdown(data.thought_steps, data.root_cause || '');
+    }
+
+    var qType = qData.type || 'multiple-choice';
+    if(qType === 'multiple-choice'){
+      var annotations = buildAnnotationsFromCorrection(qNum, studentChoseText, data.correction_text || '');
+      if(annotations.length) playAIAnnotations(qNum, annotations);
+    }
+  })
+  .catch(function(){ /* silent no-op — student still has the "Not quite" bubble */ });
+}
+
+// Builds the circle/arrow/text/underline sequence around the option the
+// student actually picked, using its LIVE rendered position (relRect) — the
+// AI only ever supplies the correction text, never coordinates. Returns []
+// if the chosen answer can't be resolved to a real element (e.g. a stale
+// selectedAnswers value), in which case playAIAnnotations is simply skipped.
+function buildAnnotationsFromCorrection(qNum, chosenLetter, correctionText){
+  var box = getQuestionBox(qNum);
+  if(!box || !chosenLetter) return [];
+  var el = resolveAnnotationTarget(box, chosenLetter);
+  if(!el) return [];
+
+  var r = relRect(box, el);
+  var textX = Math.min(0.92, Math.max(0.04, r.x + r.w*0.5));
+  var textY = Math.max(0.04, r.y - 0.12);
+
+  var annotations = [
+    { type:'circle', target:chosenLetter, color:'#e16280' }
+  ];
+  if(correctionText){
+    annotations.push({ type:'arrow', from:{x:textX,y:textY+0.06}, to:{x:r.x+r.w*0.5,y:r.y}, color:'#8b5cf6' });
+    annotations.push({ type:'text', x:textX, y:textY, text:correctionText, color:'#8b5cf6' });
+  }
+  annotations.push({ type:'underline', target:chosenLetter, color:'#e16280' });
+  return annotations;
+}
 
 window.INSIGHT_PAGES = [
   {

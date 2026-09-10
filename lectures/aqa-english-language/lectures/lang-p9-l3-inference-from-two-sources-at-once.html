@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Caveat:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared/design-system.css">
 
 <style>
 :root{
@@ -406,6 +407,27 @@ body.dark-mode .az-fg-chip:hover{border-color:#60a5fa;background:#1e3a5f;color:#
 .pulse-ring.partial{ border-color:#f59e0b; }
 .pulse-ring.incorrect{ border-color:#e16280; }
 @keyframes pulseRing{ 0%{opacity:1;transform:scale(1);} 100%{opacity:0;transform:scale(1.06);} }
+
+/* ── FEATURE 8: CAREER MOTIVATION FACT TOAST ── */
+.career-fact-toast{
+  position:fixed; bottom:24px; right:24px; max-width:320px;
+  background:#ffffff; border:1.5px solid var(--border); border-radius:14px;
+  padding:16px 18px; box-shadow:0 12px 32px rgba(0,0,0,0.14);
+  z-index:3000; display:flex; gap:12px; align-items:flex-start;
+  opacity:0; transform:translateY(12px);
+  transition:opacity 0.35s ease, transform 0.35s ease;
+  pointer-events:none;
+}
+.career-fact-toast.visible{ opacity:1; transform:translateY(0); pointer-events:auto; }
+.career-fact-toast-icon{ font-size:24px; flex-shrink:0; line-height:1; }
+.career-fact-toast-body{ flex:1; min-width:0; }
+.career-fact-toast-label{ font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#9ca3af; margin-bottom:4px; }
+.career-fact-toast-text{ font-size:13px; line-height:1.5; color:var(--text-primary); }
+.career-fact-toast-close{ background:none; border:none; color:#9ca3af; font-size:16px; cursor:pointer; line-height:1; padding:0; flex-shrink:0; }
+.career-fact-toast-close:hover{ color:#4b5563; }
+body.dark-mode .career-fact-toast{ background:#1e2330; border-color:#374151; }
+body.dark-mode .career-fact-toast-text{ color:#e2e8f0; }
+@media (max-width:600px){ .career-fact-toast{ left:16px; right:16px; max-width:none; bottom:16px; } }
 
 /* ── END / RESULTS SCREENS ── */
 #quiz-end-screen{
@@ -1694,6 +1716,17 @@ body.dark-mode .hi-target.lit{
 .chat-open-insight-btn:hover{ background:#1366c4; }
 body.dark-mode .chat-open-insight-btn{ background:#2563eb; }
 body.dark-mode .chat-open-insight-btn:hover{ background:#1d4ed8; }
+.chat-bubble-speak-btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:26px; height:26px; margin-top:4px; padding:0;
+  background:transparent; border:1px solid var(--border); border-radius:50%;
+  font-size:13px; line-height:1; cursor:pointer; color:var(--text-primary);
+  transition:background 0.15s ease;
+}
+.chat-bubble-speak-btn:hover{ background:var(--border); }
+.chat-bubble-speak-btn:disabled{ opacity:0.5; cursor:default; }
+body.dark-mode .chat-bubble-speak-btn{ border-color:#374151; color:#e2e8f0; }
+body.dark-mode .chat-bubble-speak-btn:hover{ background:#1e2330; }
 .chat-input-area{
   padding:12px 16px; border-top:1px solid var(--border);
   background:white; flex-shrink:0;
@@ -2086,7 +2119,434 @@ textarea[class^="extended-writing-input-"]{
 .insight-top-bar .mobile-relocated-icon,
 .chat-mobile-close-btn{ display:none; }  
   
-  
+/* ============================================================
+   MONTURA — MOBILE LAYOUT (iPhone & iPad)
+   Paste this entire block into english-base-template.txt
+   immediately before the closing </style> tag.
+   ============================================================ */
+
+/* ── Hidden by default — only shown inside the @media block ── */
+.mobile-tab-bar,
+.insight-top-bar .mobile-relocated-icon,
+.chat-mobile-close-btn{ display:none; }
+
+
+@media (max-width: 768px){
+
+  /* ── 1. BODY — allow scrolling on mobile ─────────────────── */
+  html, body{
+    overflow: auto !important;
+    height: auto !important;
+  }
+
+  /* ── 2. HEADER — tighten for narrow screens ──────────────── */
+  .header-bar-1{
+    padding: 0 12px;
+  }
+  .quiz-progress-container{
+    width: 40%;
+  }
+  /* Hide desktop-only header icons on mobile —
+     dark mode and report move into the insight header instead */
+  #g-nav-launcher,
+  #tutorialTriggerBtn,
+  #g-navbar{
+    display: none !important;
+  }
+
+  /* ── 3. MAIN CONTAINER — stack vertically ────────────────── */
+  .main-container{
+    position: fixed !important;
+    top: 55px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 64px !important;   /* leave room for bottom tab bar */
+    flex-direction: column !important;
+    overflow: hidden !important;
+    background: #C8DFC8;
+  }
+
+  /* ── 4. QUESTION CARD — full width green strip ───────────── */
+  .content-side{
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    border-right: none !important;
+    padding: 0 !important;
+    background: #dcfce7 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* White plate inside the green strip */
+  [class^="question-box-"]{
+    margin: 14px !important;
+    width: calc(100% - 28px) !important;
+    height: auto !important;
+    min-height: 110px !important;
+    max-width: 100% !important;
+    padding: 40px 20px 20px !important;
+    border-radius: 16px !important;
+  }
+
+  /* Question text — black, centred, readable */
+  [class^="question-title-"]{
+    font-size: 15px !important;
+    color: #111827 !important;
+    text-align: center !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Mark counter — keep top-left badge */
+  [class^="mark-counter-"]{
+    top: 10px !important;
+    left: 10px !important;
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+  }
+
+  /* Hide question number label and marks badge on mobile — clean up */
+  [class^="question-number-label-"],
+  .question-marks-badge{
+    display: none !important;
+  }
+
+  /* ── 5. ANSWER ZONE — takes remaining space, scrollable ──── */
+  .answer-zone{
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    border-top: 1px solid #f3f4f6 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 16px 0 !important;
+    border-right: none !important;
+  }
+
+  /* Answer options — bigger tap targets */
+  .az-opt{
+    padding: 14px 16px !important;
+    font-size: 15px !important;
+    min-height: 48px !important;
+  }
+
+  /* Nav bar — Previous / Question counter / Next */
+  .answer-zone-nav{
+    max-width: 100% !important;
+    padding: 10px 0 12px !important;
+  }
+  .az-nav-btn{
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+  }
+  .az-counter{
+    font-size: 12px !important;
+  }
+
+  /* ── 6. CHAT SIDE — hidden by default, full-screen on tap ── */
+  .chat-side{
+    display: none;
+    position: fixed;
+    top: 55px; left: 0; right: 0; bottom: 64px;
+    width: 100% !important;
+    flex-direction: column;
+    background: #ffffff;
+    z-index: 9400;
+  }
+  body.dark-mode .chat-side{ background: #0f1117; }
+
+  /* When opened via bottom bar button */
+  .chat-side.mobile-active{
+    display: flex !important;
+  }
+
+  /* Hide both panels by default inside the open chat-side */
+  .chat-side.mobile-active .insight-wrapper,
+  .chat-side.mobile-active .chat-messages,
+  .chat-side.mobile-active .chat-input-area{
+    display: none;
+  }
+
+  /* Show insight pane */
+  .chat-side.mobile-active.mobile-show-insight .insight-wrapper{
+    display: flex;
+    flex: 1;
+    width: 100%;
+    flex-direction: column;
+  }
+  /* Show chat pane */
+  .chat-side.mobile-active.mobile-show-chat .chat-messages{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .chat-side.mobile-active.mobile-show-chat .chat-input-area{
+    display: flex;
+  }
+
+  /* Insight panel open state — relative inside mobile-active, not fixed */
+  .insight-wrapper.insight-open{
+    position: relative !important;
+    top: auto !important; bottom: auto !important;
+    left: auto !important; right: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+  }
+
+  /* Insight content — readable padding on mobile */
+  .insight-content{
+    padding: 16px 20px !important;
+    font-size: 15px !important;
+  }
+
+  /* ── 7. INSIGHT TOP BAR — show relocated icons ───────────── */
+  .insight-top-bar{
+    height: auto !important;
+    min-height: 44px !important;
+    flex-wrap: wrap !important;
+    padding: 8px 12px !important;
+    gap: 6px !important;
+  }
+  .insight-top-bar .mobile-relocated-icon{
+    display: inline-flex !important;
+    width: 32px !important;
+    height: 32px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: none !important;
+    border: none !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+  }
+
+  /* ── 8. CHAT DONE BUTTON ─────────────────────────────────── */
+  .chat-mobile-close-btn{
+    display: flex !important;
+    justify-content: flex-end !important;
+    padding: 10px 14px 4px !important;
+    border: none !important;
+    background: none !important;
+    color: #1d7fe2 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* ── 9. BOTTOM TAB BAR ───────────────────────────────────── */
+  .mobile-tab-bar{
+    display: flex !important;
+    position: fixed !important;
+    left: 0; right: 0; bottom: 0;
+    height: 64px;
+    padding: 8px 12px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    gap: 10px;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
+    z-index: 9000;
+  }
+  body.dark-mode .mobile-tab-bar{
+    background: #0f1117;
+    border-top-color: #2d3748;
+  }
+
+  .mobile-tab-btn{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    background: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    min-height: 44px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    font-family: inherit;
+  }
+  .mobile-tab-btn.mobile-tab-active{
+    border-color: #1d7fe2;
+    background: #eff6ff;
+    color: #1d7fe2;
+  }
+  body.dark-mode .mobile-tab-btn{
+    background: #1e2330;
+    border-color: #374151;
+    color: #cbd5e1;
+  }
+  body.dark-mode .mobile-tab-btn.mobile-tab-active{
+    border-color: #1d7fe2;
+    background: #1a2540;
+    color: #60a5fa;
+  }
+
+  /* ── 10. UNLOCK OVERLAY — full width on mobile ───────────── */
+  #unlock-overlay{
+    border-radius: 0 !important;
+  }
+
+  /* ── 11. MARK SCHEME — hide on mobile (too cramped) ─────── */
+  .ms-btn{ display: none !important; }
+
+  /* ── 12. ENIGMA HEADER — shrink ─────────────────────────── */
+  .enigma-header{
+    font-size: 12px !important;
+  }
+  .enigma-header-value{
+    font-size: 13px !important;
+    min-width: 36px !important;
+  }
+
+  /* ── 13. MATCH QUESTIONS — single column on narrow screens ─ */
+  .az-match{
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── 14. END / RESULTS SCREENS — mobile padding ─────────── */
+  #quiz-results-screen{
+    padding: 40px 16px 100px !important;
+  }
+  .results-title{ font-size: 28px !important; }
+  .results-done-btn{ width: 100% !important; }
+
+}
+/* ── END MOBILE BLOCK ─────────────────────────────────────── */  
+
+/* ── FEATURE 4: SUB-QUESTIONS ("Go deeper") ───────────────────────────── */
+.subq-trigger-btn{
+  display:flex; align-items:center; gap:8px;
+  margin:16px 0 0 0; padding:10px 16px;
+  background:#fff; border:1.5px solid #86efac;
+  border-radius:10px; color:#166534; font-weight:600; font-size:14px;
+  cursor:pointer; transition:border-color 150ms ease, transform 100ms ease;
+}
+.subq-trigger-btn:hover{ border-color:#16a34a; }
+.subq-trigger-btn:active{ transform:scale(0.97); }
+
+.subq-card{
+  margin-top:16px; padding:20px;
+  background:#f8fafc; border-radius:12px;
+  border-left:4px solid #16a34a;
+  box-shadow:inset 0 0 0 1px #e5e7eb;
+}
+.subq-card-label{
+  font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;
+  color:#166534; margin-bottom:10px;
+}
+.subq-question-text{ font-size:15px; font-weight:600; color:#111827; margin-bottom:6px; }
+.subq-marks{ font-size:12px; color:#6b7280; margin-bottom:12px; }
+.subq-answer-input{
+  width:100%; padding:10px 12px; border:1.5px solid #e5e7eb; border-radius:8px;
+  font-size:14px; font-family:inherit; margin-bottom:10px; resize:vertical;
+}
+.subq-reveal-btn{
+  padding:8px 14px; border-radius:8px; border:1.5px solid #1d7fe2;
+  background:#fff; color:#1d7fe2; font-weight:600; font-size:13px; cursor:pointer;
+}
+.subq-reveal-btn:hover{ background:#eff6ff; }
+.subq-examiner-note{
+  margin-top:12px; padding:10px 12px; background:#fef9c3; border-radius:8px;
+  font-size:13px; color:#713f12; line-height:1.5;
+}
+.subq-source-box{
+  margin-top:14px; padding:14px 16px; background:#eff6ff;
+  border-radius:10px; border:1px solid #bfdbfe;
+}
+.subq-source-title{
+  font-size:12px; font-weight:700; color:#1d4ed8; margin-bottom:6px;
+  display:flex; align-items:center; gap:6px;
+}
+.subq-source-location{ font-size:14px; font-weight:600; color:#111827; margin-bottom:4px; }
+.subq-source-tip{ font-size:13px; color:#374151; line-height:1.5; }
+
+body.dark-mode .subq-card{ background:#0d0f14; border-left-color:#22c55e; box-shadow:inset 0 0 0 1px #2d3748; }
+body.dark-mode .subq-question-text{ color:#f1f5f9; }
+body.dark-mode .subq-source-box{ background:#0f1117; border-color:#1e3a5f; }
+body.dark-mode .subq-source-location{ color:#f1f5f9; }
+body.dark-mode .subq-source-tip{ color:#cbd5e1; }
+
+/* ── FEATURE 1: AI ANNOTATION LAYER ───────────────────────────────────── */
+.ai-annotation-layer{ position:absolute; inset:0; z-index:11; pointer-events:none; }
+.ai-dim-overlay{
+  position:absolute; inset:0; background:rgba(0,0,0,0.3); z-index:10;
+  opacity:0; transition:opacity 300ms ease; pointer-events:none;
+}
+.ai-dim-overlay.active{ opacity:1; }
+
+.ai-circle{
+  position:absolute; border:3px solid #e16280; border-radius:50%;
+  transform:translate(-50%,-50%) scale(0); opacity:0;
+  transition:transform 400ms ease-out, opacity 400ms ease-out;
+}
+.ai-circle.grown{ transform:translate(-50%,-50%) scale(1); opacity:1; }
+.ai-circle.pulse{ animation:aiCirclePulse 500ms ease-out; }
+@keyframes aiCirclePulse{
+  0%{ box-shadow:0 0 0 0 rgba(225,98,128,0.5); }
+  100%{ box-shadow:0 0 0 14px rgba(225,98,128,0); }
+}
+
+.ai-underline{
+  position:absolute; height:3px; background:#e16280;
+  transform-origin:left center; transform:scaleX(0);
+  transition:transform 500ms ease-out;
+}
+.ai-underline.drawn{ transform:scaleX(1); }
+
+.ai-text-label{
+  position:absolute; font-family:'Caveat',cursive; font-size:22px; font-weight:600;
+  color:#8b5cf6; white-space:nowrap; transform:translate(0,-50%);
+}
+
+.ai-layer-toggle-btn{
+  position:absolute; top:8px; right:8px; z-index:12;
+  background:#fff; border:1.5px solid #8b5cf6; color:#8b5cf6;
+  border-radius:8px; padding:4px 10px; font-size:12px; font-weight:600;
+  cursor:pointer; display:none;
+}
+.ai-layer-toggle-btn.visible{ display:block; }
+
+/* ── FEATURE 3: THOUGHT BREAKDOWN PANEL ───────────────────────────────── */
+.tb-toggle-bubble{ cursor:pointer; font-weight:600; color:#6d28d9; }
+.tb-toggle-bubble:hover{ text-decoration:underline; }
+.tb-panel{
+  margin-top:8px; background:#fff; border:1px solid #e5e7eb; border-radius:12px;
+  overflow:hidden; font-size:13px;
+}
+.tb-panel-header{
+  padding:10px 14px; font-weight:700; background:#f8fafc; border-bottom:1px solid #e5e7eb;
+}
+.tb-step{
+  display:flex; gap:8px; padding:10px 14px; border-left:4px solid transparent;
+  border-bottom:1px solid #f1f5f9; line-height:1.4;
+}
+.tb-step-correct{ border-left-color:#54d3ab; }
+.tb-step-wrong{ border-left-color:#e16280; }
+.tb-step-icon{ font-weight:700; }
+.tb-step-correct .tb-step-icon{ color:#16a34a; }
+.tb-step-wrong .tb-step-icon{ color:#e16280; }
+.tb-root-cause{
+  padding:12px 14px; background:#f5f3ff; font-size:13px; line-height:1.5; color:#4c1d95;
+}
+.tb-root-cause-label{
+  font-weight:700; font-size:11px; letter-spacing:0.04em; margin-bottom:4px; color:#6d28d9;
+}
+
+body.dark-mode .tb-panel{ background:#0d0f14; border-color:#2d3748; }
+body.dark-mode .tb-panel-header{ background:#0f1117; border-color:#2d3748; color:#f1f5f9; }
+body.dark-mode .tb-step{ border-bottom-color:#1f2937; color:#e2e8f0; }
+body.dark-mode .tb-root-cause{ background:#1e1b3a; color:#ddd6fe; }
+
 </style>
 </head>
 <body>
@@ -2707,7 +3167,9 @@ textarea[class^="extended-writing-input-"]{
 // ── CONFIG ──────────────────────────────────────────────────────────────
 var topicSlug     = 'lang-p9-l3-inference-from-two-sources-at-once';
 var LECTURE_NUM   = '3';
+var LECTURE_SUBJECT = 'GCSE English Language'; // matches the `subject` convention api/chat.js already uses; hardcoded per subject's own base template — this file is English Language's copy (not Literature)
 var API_URL       = 'https://www.monturalearn.co.uk/api/chat';
+var DIAGNOSE_API_URL = 'https://www.monturalearn.co.uk/api/diagnose'; // voice tutor (Feature 2) + future diagnosis wiring
 var SUPABASE_URL  = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
 var SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
 
@@ -2902,11 +3364,328 @@ async function loadUserProfile(){
     var data=await res.json();
     if(data&&data.id){
       currentUser=data;
-      var pRes=await fetch(SUPABASE_URL+'/rest/v1/user_profiles?id=eq.'+data.id+'&select=first_name,last_name,enigma_balance,current_grade',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+getJWT()}});
+      var pRes=await fetch(SUPABASE_URL+'/rest/v1/user_profiles?id=eq.'+data.id+'&select=first_name,last_name,enigma_balance,current_grade,dream_career',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+getJWT()}});
       var profiles=await pRes.json();
       if(profiles&&profiles[0]) currentUserProfile=profiles[0];
     }
   }catch(e){console.log('Profile load failed',e);}
+}
+
+// ── FEATURE 8: CAREER MOTIVATION LAYER ──────────────────────────────────
+// Salary figures are approximate UK ranges, general knowledge as of when
+// this was written — double-check current figures (NHS pay scales, Premier
+// League averages, etc.) before relying on them, as they shift year to year.
+// Keyed by the same career slug stored in user_profiles.dream_career
+// (captured in onboarding-step5.html).
+var CAREER_FACTS = {
+  "doctor": {
+    "displayName": "Doctor",
+    "icon": "🩺",
+    "salaryRange": "£32,000 – £200,000+",
+    "facts": [
+      "Training takes at least 10 years: 5 years at med school, 2 years as a Foundation Doctor, then 3+ years of specialist training.",
+      "You need at least AAA at A-Level for most UK medical schools, including Chemistry and Biology.",
+      "A newly qualified Foundation Doctor earns around £32,000–£37,000 a year.",
+      "A GP earns on average £100,000–£110,000 a year in the UK.",
+      "A Consultant (senior specialist) can earn £105,000–£139,000+ in the NHS.",
+      "Some private consultants and surgeons earn £200,000+ a year.",
+      "The UK has around 190,000 doctors currently working in the NHS.",
+      "You'll need to pass the UCAT or BMAT admissions test to get into most medical schools.",
+      "Work experience in a hospital or care setting is expected before you even apply.",
+      "Surgeons often stand for 6+ hours during a single operation.",
+      "A&E doctors see life-or-death situations on a daily basis.",
+      "Doctors take an oath (similar to the Hippocratic Oath) to \"do no harm.\"",
+      "Medicine is one of the most competitive university courses in the UK — around 1 in 10 applicants get a place.",
+      "Many doctors specialise later — from cardiology to psychiatry to paediatrics.",
+      "The average NHS doctor works 40+ hours a week, often including night shifts.",
+      "Being a doctor means lifelong learning — even senior doctors study new research their whole career.",
+      "Doctors get to literally save lives — something very few careers can say.",
+      "Some doctors work for charities like Médecins Sans Frontières, treating patients in war zones or disaster areas.",
+      "The stethoscope was invented in 1816 — nearly 200 years later it's still a doctor's main tool.",
+      "Female doctors now outnumber male doctors in UK medical schools.",
+      "Some surgeons perform robotic-assisted surgery using machines controlled from across the room.",
+      "Doctors are legally required to keep training and pass regular assessments throughout their career.",
+      "The NHS is one of the largest employers in the world, with over 1.3 million staff.",
+      "Many top surgeons started out struggling at school before working hard to improve their grades.",
+      "Doctors specialising in emergency medicine can go from a heart attack to a broken bone in the same hour.",
+      "It's possible to become a doctor via a graduate-entry medicine course, even if you didn't do science A-Levels first.",
+      "Paediatricians (doctors for children) need extra patience and communication skills beyond medical knowledge.",
+      "Anaesthetists control whether a patient is awake, asleep, or pain-free during surgery.",
+      "Some GPs run their own practice like a small business, on top of treating patients.",
+      "Radiologists diagnose illness by reading X-rays, MRIs and CT scans.",
+      "Being a doctor is consistently ranked one of the most trusted professions in the UK.",
+      "Doctors often need to explain difficult news to patients and families — communication matters as much as medical skill.",
+      "It typically takes until your early-to-mid 30s to become a fully qualified consultant.",
+      "The NHS covers over 60 million people in England alone.",
+      "Sports medicine doctors work pitch-side at professional football and rugby matches.",
+      "Doctors can transfer their skills abroad — UK medical training is respected worldwide.",
+      "Psychiatry is a medical specialty focused entirely on mental health — you still need a full medical degree first.",
+      "Forensic pathologists are actual doctors who investigate cause of death.",
+      "Many doctors say the hardest exam of their life wasn't at school — it was during their medical training.",
+      "Doctors treat thousands of patients over a career — each one remembered differently."
+    ]
+  },
+  "lawyer": {
+    "displayName": "Lawyer",
+    "icon": "⚖️",
+    "salaryRange": "£25,000 – £1,000,000+",
+    "facts": [
+      "There are two main paths: solicitor (advises clients, handles cases) and barrister (represents clients in court).",
+      "Law degrees typically take 3 years, followed by further professional training.",
+      "Solicitors now train via the SQE (Solicitors Qualifying Exam), a newer route since 2021.",
+      "Trainee solicitors earn around £25,000–£50,000 depending on the firm.",
+      "Newly qualified solicitors at major London firms can earn £100,000+ in their first year.",
+      "Experienced partners at top law firms can earn £500,000–£1,000,000+ a year.",
+      "Barristers are self-employed and get paid per case, so income varies a lot early on.",
+      "A top criminal or commercial barrister (a KC) can earn well over £250,000 a year.",
+      "You don't need to study Law at university to become a lawyer — many convert from other degrees.",
+      "Legal work experience is almost essential before applying for training contracts.",
+      "Lawyers often work 60+ hour weeks, especially in corporate law.",
+      "Solicitors can specialise in areas like criminal law, family law, corporate law, or human rights.",
+      "Barristers wear wigs and gowns in certain UK courtrooms — a tradition going back centuries.",
+      "The UK legal system is one of the oldest and most influential in the world.",
+      "Human rights lawyers have helped change UK and international law through landmark court cases.",
+      "Corporate lawyers can work on deals worth billions of pounds.",
+      "Family lawyers deal with divorce, custody, and some of the most emotional cases in law.",
+      "Criminal defence lawyers represent people accused of crimes, even when public opinion is against them.",
+      "Lawyers must pass strict character and ethics checks before they can practise.",
+      "Being good at debating and public speaking is essential for barristers.",
+      "Several UK Prime Ministers trained as lawyers first.",
+      "Legal aid lawyers help people who can't afford representation, often for lower pay but huge social impact.",
+      "Some lawyers work entirely on international cases, flying between countries for meetings.",
+      "A single major court case can take years to reach a verdict.",
+      "Contract law affects nearly everything — from buying a phone to signing a job offer.",
+      "Intellectual property lawyers help protect inventions, music, and brands from being copied.",
+      "Sports lawyers negotiate the contracts behind football transfers and player deals.",
+      "Media lawyers help decide what newspapers and broadcasters are legally allowed to publish.",
+      "The training contract stage is often more competitive than getting into university itself.",
+      "Some solicitors never go to court at all — their entire job is advice and paperwork.",
+      "Environmental lawyers are becoming more in-demand as climate law develops worldwide.",
+      "Being a lawyer means constantly reading — new laws and rulings change what you need to know.",
+      "Some law firms now offer apprenticeships, letting you train without a traditional degree.",
+      "The Bar is famously competitive — only a fraction of law graduates make it to becoming a barrister.",
+      "Judges in the UK are almost always chosen from experienced solicitors and barristers.",
+      "Lawyers specialising in mergers and acquisitions can be involved in famous company takeovers.",
+      "A good lawyer needs to argue a case convincingly, whether or not they personally agree with it.",
+      "Some criminal barristers have represented people in the most high-profile UK court cases in the news.",
+      "Many lawyers work for 40+ years, often retiring well into their 60s.",
+      "Arguing in court, live, in front of a judge and jury, is one of the most high-pressure jobs there is."
+    ]
+  },
+  "footballer": {
+    "displayName": "Professional Footballer",
+    "icon": "⚽",
+    "salaryRange": "£25,000 – £3,000,000+",
+    "facts": [
+      "Only around 1% of academy players make it to a professional first-team contract.",
+      "The average Premier League salary is around £3 million a year — but most professional footballers earn far less.",
+      "League Two (the lowest professional tier) players often earn £30,000–£50,000 a year.",
+      "Most professional football careers only last until a player's early-to-mid 30s.",
+      "Premier League academies scout players as young as 8 or 9 years old.",
+      "The very top global players earn over £100 million a year including sponsorships.",
+      "Female footballers' salaries have grown fast — top WSL players can now earn six figures.",
+      "Most professional footballers need to retrain for a second career after football ends.",
+      "Injuries end thousands of promising football careers every year.",
+      "A footballer's career earnings often peak between ages 24–29.",
+      "Some players go on to become pundits, coaches, or club owners after retiring.",
+      "Non-league football often pays players just a few hundred pounds a week.",
+      "Top clubs have entire teams of nutritionists, physios, and psychologists just for their players.",
+      "Footballers can be transferred between clubs for over £100 million in a single deal.",
+      "A \"loan spell\" lets young players get first-team experience at another club before returning.",
+      "English football's top 5 leagues combined generate billions of pounds a year in revenue.",
+      "Many top footballers didn't get picked for their first-choice academy — early rejection is extremely common.",
+      "Agents typically take a percentage of a player's contract or transfer fee.",
+      "Some professional footballers earn more from sponsorships and social media than from playing itself.",
+      "The average professional football career is shorter than most office careers — often under 15 years total.",
+      "Goalkeepers often have the longest careers, sometimes playing into their late 30s or 40s.",
+      "Many current professional players struggled with GCSEs but caught up through academy education programmes.",
+      "Clubs run their own in-house schools so young academy players can study alongside training.",
+      "Only a small number of academy graduates from any club ever play a single first-team match.",
+      "A career-ending injury can happen in a single unlucky tackle, at any age.",
+      "Wages for youth-team players are often under £500 a week.",
+      "Many Premier League stars started out playing for lower-league or non-league clubs first.",
+      "Football scouts look at attitude and coachability as much as raw talent.",
+      "The transfer window only opens twice a year.",
+      "Some players train for 15+ years before ever playing a single professional match.",
+      "A footballer's diet, sleep, and recovery routine is stricter than most people realise.",
+      "Very few footballers become pundits or coaches — most work outside football entirely after retiring.",
+      "Mental resilience after being dropped or injured often separates long careers from short ones.",
+      "Youth players often move away from home as young as 16 to join an academy.",
+      "A single bad season can end a young player's contract, regardless of potential.",
+      "Women's football in England only turned fully professional in the WSL in 2018.",
+      "Some ex-professional footballers go on to build multi-million-pound business careers after retiring.",
+      "Players can run 10–13km in a single 90-minute match.",
+      "Becoming a professional footballer is one of the hardest, highest-risk career paths there is.",
+      "Most professional players were rejected by at least one academy before finally making it."
+    ]
+  },
+  "vet": {
+    "displayName": "Veterinarian",
+    "icon": "🐾",
+    "salaryRange": "£35,000 – £100,000+",
+    "facts": [
+      "A veterinary degree in the UK takes 5–6 years — similar in length to becoming a doctor.",
+      "You need top grades to get in — typically AAA at A-Level including Chemistry and Biology.",
+      "Newly qualified vets earn around £35,000–£40,000 a year.",
+      "Experienced vets, especially specialists or practice owners, can earn £70,000–£100,000+.",
+      "There are only a handful of vet schools in the UK, making it one of the most competitive courses to get into.",
+      "Vets treat everything from hamsters to horses, and even zoo animals.",
+      "Work experience with animals is essential before applying.",
+      "Vets often have to deliver very difficult news to pet owners — it's an emotional job, not just a medical one.",
+      "Some vets specialise entirely in one type of animal, like exotic pets or livestock.",
+      "Large-animal (farm) vets often travel between farms rather than working in one building.",
+      "Vets sometimes have to perform surgery in far less controlled conditions than human doctors — like in a barn.",
+      "Being a vet involves real physical strength — handling large or frightened animals is part of the job.",
+      "Vets are trained to be both surgeon and physician for every species they treat.",
+      "Vet students spend hundreds of hours doing supervised placements before they qualify.",
+      "Some vets work specifically with wildlife, treating injured animals before releasing them back.",
+      "Zoo vets need to know the medical differences between hundreds of different species.",
+      "Vets often deal with the cost of treatment too — not every owner can afford it.",
+      "Equine (horse) vets are often called out at all hours, including emergencies at night.",
+      "The RCVS (Royal College of Veterinary Surgeons) is the professional body all UK vets must register with.",
+      "Some vets move into research, developing new treatments and medicines for animals.",
+      "Vet nursing is a separate, shorter career path that works alongside vets in practice.",
+      "Vets need to be comfortable with surgery, disease, and sometimes end-of-life decisions in the same day.",
+      "Vets often need excellent people skills — the patient can't tell you what's wrong, but the owner can.",
+      "A career as a vet often involves physically demanding, messy, and unpredictable working conditions.",
+      "Some vets appear on TV documentaries, like at zoos or safari parks.",
+      "Vets treating racehorses or competition animals can be part of a multi-million-pound industry.",
+      "Vets in rural areas sometimes cover a huge geographic area, driving long distances between call-outs.",
+      "Studying to become a vet includes learning anatomy for dozens of completely different animal species.",
+      "Vets have one of the highest-stress jobs in the UK, partly due to the emotional weight of the role.",
+      "Some vets specialise in exotic pets like reptiles, birds, and even snakes.",
+      "Demand for vets has grown hugely since more people started owning pets in recent years.",
+      "Vets are trained in dentistry, radiography, and pharmacology, on top of general medicine.",
+      "A vet's working week can include emergency out-of-hours call-outs, unlike many 9-5 careers.",
+      "Vets often build long relationships with animals and families, treating the same pets for years.",
+      "Some vet practices are run as independent small businesses, meaning vets can become business owners too.",
+      "Vets need a strong stomach — dealing with injury and illness is a routine part of the job.",
+      "International vet charities send vets to treat animals in disaster zones and developing countries.",
+      "Vet schools receive many more applicants than places every single year.",
+      "Some advanced veterinary surgery techniques, like hip replacements for dogs, mirror human medicine almost exactly.",
+      "Being a vet means combining a love of animals with years of tough scientific study."
+    ]
+  },
+  "games_developer": {
+    "displayName": "Games Developer / Software Engineer",
+    "icon": "🎮",
+    "salaryRange": "£25,000 – £150,000+",
+    "facts": [
+      "You don't need a Computer Science degree to become a games developer or software engineer — many are self-taught.",
+      "A junior software developer in the UK typically earns £25,000–£35,000 starting out.",
+      "Experienced software engineers, especially in London, can earn £70,000–£120,000+.",
+      "Senior engineers or tech leads at top companies can earn £150,000+ including bonuses and shares.",
+      "The video game industry is worth over £7 billion a year in the UK alone.",
+      "Some of the world's best-selling games were made by teams of fewer than 20 people.",
+      "Coding bootcamps can be a faster route into software jobs than a full degree.",
+      "Games developers combine art, storytelling, maths, and programming all in one job.",
+      "Big tech companies pay some of the highest starting software salaries in the world.",
+      "You can build and publish your own game or app alone, without needing a company at all.",
+      "Some teenage game creators have made real money through in-game item sales.",
+      "Software engineers can often work fully remotely, from almost anywhere in the world.",
+      "AAA (big-budget) video games can cost over £200 million to make — similar to a Hollywood movie.",
+      "Bugs (mistakes in code) are a normal part of every developer's daily work, even for senior engineers.",
+      "Some game developers specialise entirely in sound design or character animation, not just coding.",
+      "The most in-demand programming skills change every few years — developers keep learning throughout their career.",
+      "Many successful tech founders started out as self-taught coders.",
+      "Software engineering is one of the few careers where a strong portfolio can matter more than your qualifications.",
+      "Game testing (QA) is often the first job many people get before becoming a full developer.",
+      "Some developers work on the invisible parts of apps you use every day, like the backend of a banking app.",
+      "AI and machine learning engineers are among the highest-paid specialists in tech right now.",
+      "Indie (independent) game developers sometimes hit it big with a single surprise hit game.",
+      "Cybersecurity specialists are software experts paid to find and fix weaknesses before hackers do.",
+      "Some software engineers work on things you'd never expect — traffic lights, hospital equipment, even spacecraft.",
+      "Game developers often work long hours close to a big release date.",
+      "Apprenticeships in software development let you earn a salary while training, with no university debt.",
+      "Some of the highest-paid software engineers work at companies most people have never heard of.",
+      "Learning to code is one of the few skills where you can see real results within just a few weeks.",
+      "Mobile app developers can earn money directly from an app they built themselves.",
+      "Virtual reality (VR) and augmented reality (AR) are creating entirely new types of development jobs.",
+      "Some software engineers move into management, leading whole teams instead of writing code themselves.",
+      "The tech industry has some of the fastest salary growth of any career path in the first 5 years.",
+      "Many big-name games were rejected by publishers before eventually becoming massive hits.",
+      "Freelance developers can set their own hours and choose which projects to work on.",
+      "Some school-age coders have built apps or games downloaded millions of times.",
+      "Data scientists are paid to find patterns in huge amounts of information.",
+      "Software engineers built almost everything you touch on a screen today, from school websites to games.",
+      "Some of the richest people in the world made their fortune purely from writing software.",
+      "Working in tech doesn't require being a \"maths genius\" — problem-solving and patience matter more day-to-day.",
+      "The tech industry is famously accepting of career-changers, from almost any other background."
+    ]
+  }
+};
+
+// Milestone question numbers computed once totalQuestionsCount is known —
+// roughly 25%/50%/75% through the lecture. The 4th showing (once at lecture
+// end) is fired separately from triggerEndScreen(), not from this set.
+var careerFactMilestones = null;
+var careerFactUsedIdx = [];
+var lastCareerFactToastTimer = null;
+
+function initCareerFactMilestones(){
+  if(careerFactMilestones) return;
+  var total = totalQuestionsCount || 6;
+  var raw = [Math.round(total*0.25), Math.round(total*0.5), Math.round(total*0.75)];
+  careerFactMilestones = {};
+  raw.forEach(function(n){
+    n = Math.max(1, Math.min(total, n));
+    careerFactMilestones[n] = true;
+  });
+}
+
+function pickCareerFact(career){
+  var facts = career.facts;
+  if(careerFactUsedIdx.length >= facts.length) careerFactUsedIdx = []; // seen them all — start over
+  var idx;
+  do { idx = Math.floor(Math.random()*facts.length); } while(careerFactUsedIdx.indexOf(idx) !== -1);
+  careerFactUsedIdx.push(idx);
+  return facts[idx];
+}
+
+function showCareerFactToast(){
+  if(!currentUserProfile || !currentUserProfile.dream_career) return; // no career chosen — silent no-op
+  var career = CAREER_FACTS[currentUserProfile.dream_career];
+  if(!career || !career.facts || !career.facts.length) return;
+
+  var fact = pickCareerFact(career);
+
+  var existing = document.getElementById('careerFactToast');
+  if(existing) existing.remove();
+  if(lastCareerFactToastTimer) clearTimeout(lastCareerFactToastTimer);
+
+  var toast = document.createElement('div');
+  toast.id = 'careerFactToast';
+  toast.className = 'career-fact-toast';
+  toast.innerHTML =
+    '<div class="career-fact-toast-icon">' + career.icon + '</div>' +
+    '<div class="career-fact-toast-body">' +
+      '<div class="career-fact-toast-label">On your way to becoming a ' + career.displayName + '</div>' +
+      '<div class="career-fact-toast-text">' + fact + '</div>' +
+    '</div>' +
+    '<button class="career-fact-toast-close" type="button" aria-label="Dismiss">✕</button>';
+  toast.querySelector('.career-fact-toast-close').onclick = function(){ hideCareerFactToast(); };
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(function(){ toast.classList.add('visible'); });
+  lastCareerFactToastTimer = setTimeout(hideCareerFactToast, 9000);
+}
+
+function hideCareerFactToast(){
+  var toast = document.getElementById('careerFactToast');
+  if(!toast) return;
+  toast.classList.remove('visible');
+  setTimeout(function(){ if(toast.parentNode) toast.parentNode.removeChild(toast); }, 350);
+}
+
+// Called from onQuestionAnswered for every submitted question — fires a
+// fact the ~3 times this question number lands on a milestone.
+function maybeShowCareerFactForQuestion(qNum){
+  if(!currentUserProfile || !currentUserProfile.dream_career) return;
+  initCareerFactMilestones();
+  if(careerFactMilestones[qNum]){
+    delete careerFactMilestones[qNum]; // only once per milestone, even on retry/revisit
+    showCareerFactToast();
+  }
 }
 
 async function loadRetestQuestions(){
@@ -4122,6 +4901,10 @@ function onQuestionAnswered(qNum,result,awarded,total){
       nextBtn.style.borderColor = '#1d7fe2';
     }
   }
+  // FEATURE 4: sub-questions trigger regardless of correct/incorrect
+  checkForSubQuestions(qNum);
+  // FEATURE 8: career fact toast — fires on ~3 milestone questions, regardless of correct/incorrect
+  maybeShowCareerFactForQuestion(qNum);
 }
 
 var pendingRetryQuestion = null;
@@ -4185,6 +4968,7 @@ var endMessages1=['Quiz complete.','Well done.','That\'s a wrap.','You showed up
 var endMessages2=['Every quiz completed is a step closer to that next grade.','Consistency beats talent every single time.','The student who shows up wins.','Small sessions. Big results.','Hard now. Easy then.','Keep going. It adds up.'];
 function triggerEndScreen(){
   saveResultsToSupabase();
+  showCareerFactToast(); // FEATURE 8: the 4th, guaranteed showing — once at lecture end
   var audio=document.getElementById('quiz-end-audio');
   if(audio){audio.volume=0.7;audio.play().catch(function(){});}
   var screen=document.getElementById('quiz-end-screen');
@@ -5525,6 +6309,10 @@ function handleWrongAnswer(qNum, result) {
 
     var attemptCount = questionAttemptCount[qNum] || 1;
 
+    // FEATURE 1 & 3: real AI diagnosis — separate fire-and-forget call,
+    // does not touch or wait on the api/chat.js Socratic explanation below.
+    requestRealDiagnosis(qNum, qData, studentChoseText, allOptions, hintSpanText, attemptCount);
+
     var autoMsg = 'WRONG_ANSWER_NOTIFY: The student just got this wrong'
       + (attemptCount > 1 ? ' (attempt ' + attemptCount + ' on this question)' : '') + '. '
       + 'Question: "' + (qData.question || '') + '". '
@@ -5604,8 +6392,60 @@ function appendAssistantBubble(html) {
   bubble.className = 'chat-bubble';
   bubble.innerHTML = html;
   wrap.appendChild(bubble);
+
+  var speakBtn = document.createElement('button');
+  speakBtn.className = 'chat-bubble-speak-btn';
+  speakBtn.type = 'button';
+  speakBtn.setAttribute('aria-label', 'Listen to this');
+  speakBtn.textContent = '🔊';
+  speakBtn.onclick = function(){ playBubbleAudio(speakBtn, bubble.textContent); };
+  wrap.appendChild(speakBtn);
+
   messages.appendChild(wrap);
   messages.scrollTop = messages.scrollHeight;
+}
+
+// ── FEATURE 2: VOICE TUTOR ─────────────────────────────────────────────────
+// Speaks an assistant bubble's text aloud via ElevenLabs (routed through
+// api/diagnose.js, action:'tts', which picks the voice for LECTURE_SUBJECT).
+// Wrapped so a missing API key / unset voice ID / network failure is always
+// a silent no-op — the speaker button just resets, never blocks the student.
+var activeTutorAudio = null;
+
+function playBubbleAudio(btn, text) {
+  text = (text || '').trim();
+  if (!text) return;
+
+  if (activeTutorAudio) {
+    activeTutorAudio.pause();
+    activeTutorAudio = null;
+  }
+
+  var originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '⏳';
+
+  fetch(DIAGNOSE_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'tts',
+      text: text.slice(0, 800),
+      subject: LECTURE_SUBJECT
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+    if (!data || !data.audio) return; // no voice configured yet, or ElevenLabs call failed — silent no-op
+    activeTutorAudio = new Audio(data.audio);
+    activeTutorAudio.play().catch(function(){});
+  })
+  .catch(function(){
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  });
 }
   
 // ── INSIGHT CHUNK REVEAL ──────────────────────────────────────────────────
@@ -6382,6 +7222,708 @@ setTimeout(function(){
     // student closes the insight panel afterward.
   }, 0);
 });
+
+// ── MOBILE BOTTOM BAR ────────────────────────────────────────
+// Only active below 768px — the CSS already hides .mobile-tab-bar
+// on wider screens, so this JS never fires on desktop.
+ 
+(function(){
+ 
+  // ── State ────────────────────────────────────────────────────
+  var mobilePanel = null; // 'insight' | 'chat' | null
+ 
+  // ── Elements (resolved once on DOMContentLoaded) ─────────────
+  var insightBtn, chatBtn, chatDoneBtn, chatSide;
+ 
+  // ── Open a panel ─────────────────────────────────────────────
+  function openMobilePanel(panel){
+    if(!chatSide) return;
+ 
+    mobilePanel = panel;
+ 
+    // Add the base active class — makes chat-side fixed full-screen
+    chatSide.classList.add('mobile-active');
+ 
+    // Remove both show classes then add the right one
+    chatSide.classList.remove('mobile-show-insight', 'mobile-show-chat');
+    chatSide.classList.add(panel === 'insight' ? 'mobile-show-insight' : 'mobile-show-chat');
+ 
+    // Lock body scroll so background doesn't drift
+    document.body.style.overflow = 'hidden';
+ 
+    // Mark active button
+    if(insightBtn) insightBtn.classList.toggle('mobile-tab-active', panel === 'insight');
+    if(chatBtn)    chatBtn.classList.toggle('mobile-tab-active', panel === 'chat');
+ 
+    // If opening insight, trigger the existing openInsightPanel()
+    // so the insight-open class is applied and chunks initialise correctly
+    if(panel === 'insight'){
+      if(typeof openInsightPanel === 'function') openInsightPanel();
+    }
+  }
+ 
+  // ── Close whichever panel is open ────────────────────────────
+  function closeMobilePanel(){
+    if(!chatSide) return;
+ 
+    // If closing insight, fire the existing closeInsightPanel()
+    // so the wrapper state stays correct
+    if(mobilePanel === 'insight'){
+      if(typeof closeInsightPanel === 'function') closeInsightPanel();
+    }
+ 
+    chatSide.classList.remove('mobile-active', 'mobile-show-insight', 'mobile-show-chat');
+    document.body.style.overflow = '';
+    mobilePanel = null;
+ 
+    if(insightBtn) insightBtn.classList.remove('mobile-tab-active');
+    if(chatBtn)    chatBtn.classList.remove('mobile-tab-active');
+  }
+ 
+  // ── Swipe down to close ───────────────────────────────────────
+  // If the student swipes down from the top of the panel, close it.
+  var swipeStartY = 0;
+  function onTouchStart(e){ swipeStartY = e.touches[0].clientY; }
+  function onTouchEnd(e){
+    var delta = e.changedTouches[0].clientY - swipeStartY;
+    // Only close on a deliberate downward swipe (80px+) from near the top
+    if(delta > 80 && swipeStartY < 80) closeMobilePanel();
+  }
+ 
+  // ── Init ─────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function(){
+ 
+    // Only wire up on mobile — skip entirely on desktop
+    if(window.innerWidth > 768) return;
+ 
+    insightBtn  = document.getElementById('mobileInsightBtn');
+    chatBtn     = document.getElementById('mobileChatBtn');
+    chatDoneBtn = document.getElementById('chatMobileCloseBtn');
+    chatSide    = document.querySelector('.chat-side');
+ 
+    if(!insightBtn || !chatBtn || !chatSide){
+      console.warn('Montura mobile-nav: expected elements not found — skipping init.');
+      return;
+    }
+ 
+    // Bottom bar button taps
+    insightBtn.addEventListener('click', function(){
+      if(mobilePanel === 'insight') closeMobilePanel();
+      else openMobilePanel('insight');
+    });
+ 
+    chatBtn.addEventListener('click', function(){
+      if(mobilePanel === 'chat') closeMobilePanel();
+      else openMobilePanel('chat');
+    });
+ 
+    // Done button inside Chat panel
+    if(chatDoneBtn){
+      chatDoneBtn.addEventListener('click', closeMobilePanel);
+    }
+ 
+    // The insight panel's own "Done — back to question" button
+    // already calls closeInsightPanel() — we just need to also
+    // close the mobile wrapper when that fires.
+    var insightCloseBtn = document.getElementById('insightCloseBtn');
+    if(insightCloseBtn){
+      insightCloseBtn.addEventListener('click', function(){
+        // closeInsightPanel() already fired via onclick=""
+        // We just clean up the mobile wrapper
+        chatSide.classList.remove('mobile-active','mobile-show-insight','mobile-show-chat');
+        document.body.style.overflow = '';
+        mobilePanel = null;
+        if(insightBtn) insightBtn.classList.remove('mobile-tab-active');
+        if(chatBtn)    chatBtn.classList.remove('mobile-tab-active');
+      });
+    }
+ 
+    // Swipe down to close
+    chatSide.addEventListener('touchstart', onTouchStart, { passive: true });
+    chatSide.addEventListener('touchend',   onTouchEnd,   { passive: true });
+ 
+    // Re-check on resize in case student rotates device
+    window.addEventListener('resize', function(){
+      if(window.innerWidth > 768 && mobilePanel){
+        closeMobilePanel();
+      }
+    });
+ 
+    console.log('Montura mobile-nav: initialised.');
+  });
+ 
+  // ── Expose for use by other scripts if needed ─────────────────
+  window.openMobilePanel  = openMobilePanel;
+  window.closeMobilePanel = closeMobilePanel;
+ 
+})();
+
+/* ============================================================
+   MONTURA — MOBILE NAVIGATION
+   shared/mobile-nav.js
+
+   WHERE THIS GOES IN THE REPO:
+   Copy contents into english-base-template.txt, inside the
+   <script> block, just before the closing window.INSIGHT_PAGES = [
+  {
+    label: 'Teaching',
+    page: 1,
+    source: 'https://www.aqa.org.uk/subjects/english/gcse/english-8700/specification',
+    summary: 'Inference from two sources means reading between the lines of BOTH texts at once. You combine what each source suggests to build a bigger idea. Use SIR verbs (suggests, implies, reveals) to show you are inferring, not just copying. The examiner rewards ideas that use evidence from both sources together.',
+    html: '<h3 class="insight-section-header">The Knowledge</h3><div class="insight-chunk"><p>Inference means <b>reading between the lines</b> — working out what the writer is suggesting without saying it directly. When you infer from TWO sources, you are doing this with both texts at the same time, and combining what they suggest to build a bigger idea.</p></div><div class="insight-chunk"><p>Here is the key difference: in Question 2, you are not just finding facts from each source separately. You are <span class="hi-target" data-hint="combine-inference">combining what both sources suggest to make a new point that neither source says out loud</span>. That is what gets you into the top mark band.</p></div><div class="insight-chunk"><p>For example, if Source A describes a beach as "crammed with sunbathers" and Source B describes the same beach as "a sardine tin of humanity", neither source says "this beach is too crowded" — but <b>together they imply it</b>. That is inference from two sources.</p></div><div class="insight-chunk"><p>To show you are inferring, use <span class="hi-target" data-hint="sir-verbs-two">SIR verbs: suggests, implies, reveals</span>. These words tell the examiner you are reading between the lines, not just copying what is on the page. "This suggests..." is far stronger than "This says...".</p></div><div class="insight-chunk"><p>When you infer from two sources, you are looking for <span class="hi-target" data-hint="shared-implication">what both texts point towards together</span>. This could be a shared attitude, a shared feeling, or a shared judgement about the topic — even if the two writers express it in completely different ways.</p></div><div class="insight-chunk"><p>Here is a worked example. Source A says: "The queue stretched around the block." Source B says: "We waited for what felt like hours." Neither source says "the service was slow" — but <b>both imply it</b>. Your inference: "Both sources suggest the experience involved long waits, implying the service was frustratingly slow."</p></div><div class="insight-chunk"><p>The examiner is looking for <span class="hi-target" data-hint="ao1-inference">AO1: your ability to identify and interpret ideas from both texts</span>. Inference is the "interpret" part — showing you understand what the writers are getting at, not just what they literally say.</p></div><h3 class="insight-section-header">The Biggest Mistake</h3><div class="insight-chunk"><p><span class="hi-target" data-hint="biggest-mistake-inference">The biggest mistake is copying a fact from each source without combining them into a new idea.</span> If you write "Source A says X and Source B says Y" with no connection, you are retrieving, not inferring — and you will cap out at the lower mark bands.</p></div><div class="insight-chunk"><p>Another common mistake is <span class="hi-target" data-hint="one-source-mistake">inferring from only ONE source</span>. The question asks for both. If you only use Source A, you are missing half the marks, no matter how good your inference is.</p></div><div class="insight-chunk"><p>A third mistake is <b>over-inferring</b> — reading too much into the text and making claims the sources do not actually support. Stick to what the evidence reasonably suggests. If the source says "the room was cold", do not infer "the writer hated winter" — that is a leap too far.</p></div><h3 class="insight-section-header">The Arsenal</h3><div class="insight-chunk"><p>Here is the strategy for inferring from two sources. It is a three-step process:</p><div class="answer-strategy"><div class="strategy-step"><span class="strategy-letter">1</span><span class="strategy-label">Spot</span><span class="strategy-plain">Find a detail in Source A that suggests something beyond what it literally says</span></div><div class="strategy-step"><span class="strategy-letter">2</span><span class="strategy-label">Match</span><span class="strategy-plain">Find a detail in Source B that points towards the same idea</span></div><div class="strategy-step"><span class="strategy-letter">3</span><span class="strategy-label">Combine</span><span class="strategy-plain">Write one sentence that uses BOTH details to make a new point — using suggests or implies</span></div></div></div><div class="insight-chunk"><p>Here is a wrong version and a right version, using the beach example:</p><div class="chunk-example-box"><p><b>WRONG:</b> "Source A says the beach was crammed with sunbathers. Source B says it was like a sardine tin."</p><p><b>RIGHT:</b> "Both sources suggest the beach was overcrowded. Source A describes it as \'crammed with sunbathers\', while Source B compares it to \'a sardine tin of humanity\' — together these imply the experience was uncomfortable and claustrophobic."</p></div></div><div class="insight-chunk"><p>The right version gets more marks because it <b>combines the evidence and adds an inference</b> — "uncomfortable and claustrophobic" is the new idea that neither source states directly.</p></div><div class="insight-chunk"><p>Remember: <span class="hi-target" data-hint="both-sources-rule">you must use BOTH sources in every point you make</span>. One source alone is not enough for the top marks. The examiner wants to see the two texts working together.</p></div>'
+  },
+  {
+    label: 'Exam Spec',
+    page: 2,
+    source: 'https://www.aqa.org.uk/subjects/english/gcse/english-8700/specification',
+    summary: 'AQA GCSE English Language (8700) Paper 2 Question 2 tests AO1: identifying and interpreting ideas from both sources. Worth 8 marks. You must synthesise — combine ideas from both texts, not just describe each separately.',
+    html: '<div class="exam-spec-page"><div class="exam-spec-header"><span class="exam-spec-board-badge">AQA</span><span class="exam-spec-code">8700</span></div><p class="exam-spec-intro">This is what AQA officially requires for Paper 2, Question 2.</p><div class="exam-spec-quote"><p>"Identify and interpret explicit and implicit information and ideas. Select and synthesise evidence from different texts."</p><span class="exam-spec-source">— AQA Specification (8700), Assessment Objective AO1</span></div><p class="exam-spec-detail"><b>Question 2 is worth 8 marks.</b> The word "synthesise" means combining ideas from different texts — which is exactly what inference from two sources is about.</p><a href="https://www.aqa.org.uk/subjects/english/gcse/english-8700/specification" target="_blank" class="exam-spec-link">View the official AQA specification →</a></div>'
+  }
+]
+   comment at the very end of the script.
+
+   WHAT IT DOES:
+   Wires the bottom tab bar (Insight / Ask Montura buttons),
+   the Done buttons inside each full-screen panel, and handles
+   the body scroll lock so content behind the panel doesn't
+   scroll while a panel is open.
+   ============================================================ */
+
+// ── MOBILE BOTTOM BAR ────────────────────────────────────────
+// Only active below 768px — the CSS already hides .mobile-tab-bar
+// on wider screens, so this JS never fires on desktop.
+
+(function(){
+
+  // ── State ────────────────────────────────────────────────────
+  var mobilePanel = null; // 'insight' | 'chat' | null
+
+  // ── Elements (resolved once on DOMContentLoaded) ─────────────
+  var insightBtn, chatBtn, chatDoneBtn, chatSide;
+
+  // ── Open a panel ─────────────────────────────────────────────
+  function openMobilePanel(panel){
+    if(!chatSide) return;
+
+    mobilePanel = panel;
+
+    // Add the base active class — makes chat-side fixed full-screen
+    chatSide.classList.add('mobile-active');
+
+    // Remove both show classes then add the right one
+    chatSide.classList.remove('mobile-show-insight', 'mobile-show-chat');
+    chatSide.classList.add(panel === 'insight' ? 'mobile-show-insight' : 'mobile-show-chat');
+
+    // Lock body scroll so background doesn't drift
+    document.body.style.overflow = 'hidden';
+
+    // Mark active button
+    if(insightBtn) insightBtn.classList.toggle('mobile-tab-active', panel === 'insight');
+    if(chatBtn)    chatBtn.classList.toggle('mobile-tab-active', panel === 'chat');
+
+    // If opening insight, trigger the existing openInsightPanel()
+    // so the insight-open class is applied and chunks initialise correctly
+    if(panel === 'insight'){
+      if(typeof openInsightPanel === 'function') openInsightPanel();
+    }
+  }
+
+  // ── Close whichever panel is open ────────────────────────────
+  function closeMobilePanel(){
+    if(!chatSide) return;
+
+    // If closing insight, fire the existing closeInsightPanel()
+    // so the wrapper state stays correct
+    if(mobilePanel === 'insight'){
+      if(typeof closeInsightPanel === 'function') closeInsightPanel();
+    }
+
+    chatSide.classList.remove('mobile-active', 'mobile-show-insight', 'mobile-show-chat');
+    document.body.style.overflow = '';
+    mobilePanel = null;
+
+    if(insightBtn) insightBtn.classList.remove('mobile-tab-active');
+    if(chatBtn)    chatBtn.classList.remove('mobile-tab-active');
+  }
+
+  // ── Swipe down to close ───────────────────────────────────────
+  // If the student swipes down from the top of the panel, close it.
+  var swipeStartY = 0;
+  function onTouchStart(e){ swipeStartY = e.touches[0].clientY; }
+  function onTouchEnd(e){
+    var delta = e.changedTouches[0].clientY - swipeStartY;
+    // Only close on a deliberate downward swipe (80px+) from near the top
+    if(delta > 80 && swipeStartY < 80) closeMobilePanel();
+  }
+
+  // ── Init ─────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function(){
+
+    // Only wire up on mobile — skip entirely on desktop
+    if(window.innerWidth > 768) return;
+
+    insightBtn  = document.getElementById('mobileInsightBtn');
+    chatBtn     = document.getElementById('mobileChatBtn');
+    chatDoneBtn = document.getElementById('chatMobileCloseBtn');
+    chatSide    = document.querySelector('.chat-side');
+
+    if(!insightBtn || !chatBtn || !chatSide){
+      console.warn('Montura mobile-nav: expected elements not found — skipping init.');
+      return;
+    }
+
+    // Bottom bar button taps
+    insightBtn.addEventListener('click', function(){
+      if(mobilePanel === 'insight') closeMobilePanel();
+      else openMobilePanel('insight');
+    });
+
+    chatBtn.addEventListener('click', function(){
+      if(mobilePanel === 'chat') closeMobilePanel();
+      else openMobilePanel('chat');
+    });
+
+    // Done button inside Chat panel
+    if(chatDoneBtn){
+      chatDoneBtn.addEventListener('click', closeMobilePanel);
+    }
+
+    // The insight panel's own "Done — back to question" button
+    // already calls closeInsightPanel() — we just need to also
+    // close the mobile wrapper when that fires.
+    var insightCloseBtn = document.getElementById('insightCloseBtn');
+    if(insightCloseBtn){
+      insightCloseBtn.addEventListener('click', function(){
+        // closeInsightPanel() already fired via onclick=""
+        // We just clean up the mobile wrapper
+        chatSide.classList.remove('mobile-active','mobile-show-insight','mobile-show-chat');
+        document.body.style.overflow = '';
+        mobilePanel = null;
+        if(insightBtn) insightBtn.classList.remove('mobile-tab-active');
+        if(chatBtn)    chatBtn.classList.remove('mobile-tab-active');
+      });
+    }
+
+    // Swipe down to close
+    chatSide.addEventListener('touchstart', onTouchStart, { passive: true });
+    chatSide.addEventListener('touchend',   onTouchEnd,   { passive: true });
+
+    // Re-check on resize in case student rotates device
+    window.addEventListener('resize', function(){
+      if(window.innerWidth > 768 && mobilePanel){
+        closeMobilePanel();
+      }
+    });
+
+    console.log('Montura mobile-nav: initialised.');
+  });
+
+  // ── Expose for use by other scripts if needed ─────────────────
+  window.openMobilePanel  = openMobilePanel;
+  window.closeMobilePanel = closeMobilePanel;
+
+})();
+
+// ── FEATURE 4: SUB-QUESTIONS ("Go deeper") ──────────────────────────────
+// Triggered from onQuestionAnswered() for every submitted question,
+// correct or incorrect (see FEATURE 4 comment there). Reads
+// window.QUESTION_BANK[...].subQuestions per the doc's data structure.
+//
+// SCOPE NOTE: this first pass is reveal-based, not auto-marked — student
+// can type an attempt, then reveals the examiner note / knowledge source
+// themselves. Wiring sub-question answers into the real marking engine
+// (evaluateHardcoded / evaluateWithAI) is a follow-up once this shape is
+// confirmed against real content, since that engine assumes top-level
+// question numbering that sub-questions don't participate in.
+function checkForSubQuestions(qNum){
+  var qKeys = Object.keys(window.QUESTION_BANK || {});
+  var entry = window.QUESTION_BANK && window.QUESTION_BANK[qKeys[qNum - 1]];
+  if(!entry || !entry.subQuestions || !entry.subQuestions.length) return;
+
+  var box = getQuestionBox(qNum);
+  if(!box) return;
+  // don't add a duplicate trigger if the student retries the question
+  if(box.querySelector('.subq-trigger-btn') || box.querySelector('.subq-card')) return;
+
+  var btn = document.createElement('button');
+  btn.className = 'subq-trigger-btn';
+  btn.type = 'button';
+  btn.textContent = 'Go deeper →';
+  btn.addEventListener('click', function(){
+    btn.remove();
+    renderSubQuestions(box, entry.subQuestions);
+  });
+  box.appendChild(btn);
+}
+
+function renderSubQuestions(box, subQuestions){
+  subQuestions.forEach(function(sq){
+    var card = document.createElement('div');
+    card.className = 'subq-card';
+
+    var label = document.createElement('div');
+    label.className = 'subq-card-label';
+    label.textContent = sq.examinerNote ? 'Examiner insight' : 'Go deeper';
+    card.appendChild(label);
+
+    var qText = document.createElement('div');
+    qText.className = 'subq-question-text';
+    qText.textContent = sq.question;
+    card.appendChild(qText);
+
+    if(sq.marks){
+      var marks = document.createElement('div');
+      marks.className = 'subq-marks';
+      marks.textContent = sq.marks + (sq.marks === 1 ? ' mark' : ' marks');
+      card.appendChild(marks);
+    }
+
+    if(sq.type === 'type-answer'){
+      var input = document.createElement('textarea');
+      input.className = 'subq-answer-input';
+      input.rows = 2;
+      input.placeholder = 'Have a go (optional)…';
+      card.appendChild(input);
+    }
+
+    var revealArea = document.createElement('div');
+    revealArea.style.display = 'none';
+
+    var revealBtn = document.createElement('button');
+    revealBtn.className = 'subq-reveal-btn';
+    revealBtn.type = 'button';
+    revealBtn.textContent = 'Reveal guidance';
+    revealBtn.addEventListener('click', function(){
+      revealArea.style.display = 'block';
+      revealBtn.remove();
+    });
+    card.appendChild(revealBtn);
+
+    if(sq.examinerNote){
+      var note = document.createElement('div');
+      note.className = 'subq-examiner-note';
+      note.textContent = '📊 ' + sq.examinerNote;
+      revealArea.appendChild(note);
+    }
+
+    if(sq.knowledgeSource){
+      var src = document.createElement('div');
+      src.className = 'subq-source-box';
+      var srcTitle = document.createElement('div');
+      srcTitle.className = 'subq-source-title';
+      srcTitle.textContent = '📍 WHERE TO FIND THIS IN THE TEXT';
+      src.appendChild(srcTitle);
+      if(sq.knowledgeSource.location){
+        var srcLoc = document.createElement('div');
+        srcLoc.className = 'subq-source-location';
+        srcLoc.textContent = sq.knowledgeSource.location;
+        src.appendChild(srcLoc);
+      }
+      if(sq.knowledgeSource.tip){
+        var srcTip = document.createElement('div');
+        srcTip.className = 'subq-source-tip';
+        srcTip.textContent = sq.knowledgeSource.tip;
+        src.appendChild(srcTip);
+      }
+      revealArea.appendChild(src);
+    }
+
+    card.appendChild(revealArea);
+    box.appendChild(card);
+  });
+}
+
+// ── FEATURE 1: AI ANNOTATION ENGINE (test-data preview) ─────────────────
+// Renders the AI's marking on the question box: circle → arrow →
+// handwritten correction → underline, each starting 600ms after the
+// previous one finishes. Coordinates are converted to real pixels off the
+// box's current size every time this runs — never stored as pixels.
+// Wired to the real api/diagnose.js via requestRealDiagnosis() /
+// buildAnnotationsFromCorrection(), called from handleWrongAnswer() — see
+// below. The AI only ever supplies the correction TEXT; the circle/arrow/
+// underline coordinates are always computed client-side from the wrong
+// answer's live DOM position, never from the API.
+
+function getAILayer(box){
+  var layer = box.querySelector('.ai-annotation-layer');
+  if(!layer){
+    layer = document.createElement('div');
+    layer.className = 'ai-annotation-layer';
+    box.appendChild(layer);
+  }
+  layer.innerHTML = '';
+  return layer;
+}
+
+// Real options carry data-answer="A"/"B"/etc — that's the target convention
+// this engine uses. Falls back to id/class lookup for non-MCQ questions.
+function resolveAnnotationTarget(box, target){
+  if(!target) return null;
+  return box.querySelector('[data-answer="'+target+'"]') ||
+         box.querySelector('#'+target) ||
+         box.querySelector('.'+target);
+}
+
+function relRect(box, el){
+  var boxRect = box.getBoundingClientRect();
+  var elRect  = el.getBoundingClientRect();
+  return {
+    x:(elRect.left-boxRect.left)/boxRect.width,
+    y:(elRect.top -boxRect.top )/boxRect.height,
+    w:elRect.width /boxRect.width,
+    h:elRect.height/boxRect.height
+  };
+}
+
+function playAIAnnotations(qNum, annotations){
+  var box = getQuestionBox(qNum);
+  if(!box) return;
+  if(!box.style.position) box.style.position = 'relative';
+
+  var dim = box.querySelector('.ai-dim-overlay');
+  if(!dim){
+    dim = document.createElement('div');
+    dim.className = 'ai-dim-overlay';
+    box.insertBefore(dim, box.firstChild);
+  }
+  requestAnimationFrame(function(){ dim.classList.add('active'); });
+
+  var layer = getAILayer(box);
+  var boxRect = box.getBoundingClientRect();
+
+  var i = 0;
+  function next(){
+    if(i >= annotations.length){
+      setTimeout(function(){
+        dim.classList.remove('active');
+        showAILayerToggle(box, layer);
+      }, 400);
+      return;
+    }
+    var ann = annotations[i++];
+    renderOneAnnotation(box, layer, boxRect, ann, function(){
+      setTimeout(next, 600);
+    });
+  }
+  next();
+}
+
+function renderOneAnnotation(box, layer, boxRect, ann, done){
+  if(ann.type === 'circle'){
+    var el = resolveAnnotationTarget(box, ann.target);
+    if(!el){ done(); return; }
+    var r = relRect(box, el);
+    var cx = (r.x + r.w/2) * boxRect.width;
+    var cy = (r.y + r.h/2) * boxRect.height;
+    var size = Math.max(r.w*boxRect.width, r.h*boxRect.height) * 1.15;
+    var circle = document.createElement('div');
+    circle.className = 'ai-circle';
+    circle.style.left = cx+'px'; circle.style.top = cy+'px';
+    circle.style.width = size+'px'; circle.style.height = size+'px';
+    circle.style.borderColor = ann.color || '#e16280';
+    layer.appendChild(circle);
+    requestAnimationFrame(function(){
+      circle.classList.add('grown');
+      setTimeout(function(){
+        circle.classList.add('pulse');
+        setTimeout(done, 500);
+      }, 400);
+    });
+  } else if(ann.type === 'arrow'){
+    var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('width', boxRect.width);
+    svg.setAttribute('height', boxRect.height);
+    svg.style.position = 'absolute'; svg.style.left = '0'; svg.style.top = '0';
+    var x1 = ann.from.x*boxRect.width, y1 = ann.from.y*boxRect.height;
+    var x2 = ann.to.x*boxRect.width,   y2 = ann.to.y*boxRect.height;
+    var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+    line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+    line.setAttribute('stroke', ann.color || '#8b5cf6');
+    line.setAttribute('stroke-width','3');
+    line.setAttribute('stroke-linecap','round');
+    svg.appendChild(line);
+    layer.appendChild(svg);
+    var length = Math.hypot(x2-x1,y2-y1);
+    line.style.strokeDasharray = length;
+    line.style.strokeDashoffset = length;
+    line.style.transition = 'stroke-dashoffset 600ms ease-out';
+    requestAnimationFrame(function(){
+      line.style.strokeDashoffset = 0;
+      setTimeout(done, 600);
+    });
+  } else if(ann.type === 'text'){
+    var div = document.createElement('div');
+    div.className = 'ai-text-label';
+    div.style.left = (ann.x*boxRect.width)+'px';
+    div.style.top  = (ann.y*boxRect.height)+'px';
+    div.style.color = ann.color || '#8b5cf6';
+    layer.appendChild(div);
+    var chars = (ann.text||'').split(''); var idx = 0;
+    (function typeChar(){
+      if(idx >= chars.length){ done(); return; }
+      div.textContent += chars[idx++];
+      setTimeout(typeChar, 40);
+    })();
+  } else if(ann.type === 'underline'){
+    var el2 = resolveAnnotationTarget(box, ann.target);
+    if(!el2){ done(); return; }
+    var r2 = relRect(box, el2);
+    var line2 = document.createElement('div');
+    line2.className = 'ai-underline';
+    line2.style.left = (r2.x*boxRect.width)+'px';
+    line2.style.top = ((r2.y+r2.h)*boxRect.height)+'px';
+    line2.style.width = (r2.w*boxRect.width)+'px';
+    line2.style.background = ann.color || '#e16280';
+    layer.appendChild(line2);
+    requestAnimationFrame(function(){
+      line2.classList.add('drawn');
+      setTimeout(done, 500);
+    });
+  } else { done(); }
+}
+
+function showAILayerToggle(box, layer){
+  var btn = box.querySelector('.ai-layer-toggle-btn');
+  if(!btn){
+    btn = document.createElement('button');
+    btn.className = 'ai-layer-toggle-btn';
+    btn.type = 'button';
+    btn.textContent = 'Hide AI marking';
+    btn.addEventListener('click', function(){
+      var hidden = layer.style.display === 'none';
+      layer.style.display = hidden ? '' : 'none';
+      btn.textContent = hidden ? 'Hide AI marking' : 'Show AI marking';
+    });
+    box.appendChild(btn);
+  }
+  btn.classList.add('visible');
+}
+
+// ── FEATURE 3: THOUGHT BREAKDOWN PANEL ───────────────────────────────────
+// Renders the collapsible "Why did my brain do that?" panel in the chat
+// column, right below the "Not quite" bubble. Reads thought_steps +
+// root_cause straight off the real api/diagnose.js response — see
+// requestRealDiagnosis() below, called from handleWrongAnswer().
+function renderThoughtBreakdown(thoughtSteps, rootCause){
+  var messages = document.getElementById('chatMessages');
+  if(!messages) return;
+
+  var wrap = document.createElement('div');
+  wrap.className = 'chat-message assistant';
+
+  var toggleBubble = document.createElement('div');
+  toggleBubble.className = 'chat-bubble tb-toggle-bubble';
+  toggleBubble.textContent = '🧠 Why did my brain do that?';
+  wrap.appendChild(toggleBubble);
+
+  var panel = document.createElement('div');
+  panel.className = 'tb-panel';
+  panel.style.display = 'none';
+
+  var header = document.createElement('div');
+  header.className = 'tb-panel-header';
+  header.textContent = '🧠 Your thought process';
+  panel.appendChild(header);
+
+  thoughtSteps.forEach(function(s){
+    var row = document.createElement('div');
+    row.className = 'tb-step ' + (s.correct ? 'tb-step-correct' : 'tb-step-wrong');
+    var icon = document.createElement('span');
+    icon.className = 'tb-step-icon';
+    icon.textContent = s.correct ? '✓' : '✗';
+    var text = document.createElement('span');
+    text.textContent = 'Step ' + s.step + ' — ' + s.what_student_did;
+    row.appendChild(icon);
+    row.appendChild(text);
+    panel.appendChild(row);
+  });
+
+  if(rootCause){
+    var rc = document.createElement('div');
+    rc.className = 'tb-root-cause';
+    var label = document.createElement('div');
+    label.className = 'tb-root-cause-label';
+    label.textContent = 'ROOT CAUSE';
+    rc.appendChild(label);
+    rc.appendChild(document.createTextNode(rootCause));
+    panel.appendChild(rc);
+  }
+
+  wrap.appendChild(panel);
+  messages.appendChild(wrap);
+
+  toggleBubble.addEventListener('click', function(){
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  });
+
+  messages.scrollTop = messages.scrollHeight;
+}
+
+// ── FEATURE 1 & 3: REAL AI DIAGNOSIS ─────────────────────────────────────
+// Calls api/diagnose.js (action:'diagnose') to get a real, question-specific
+// correction note + thought-process breakdown + root cause from Claude.
+// Fire-and-forget from handleWrongAnswer() — silent no-op on any failure,
+// same "never block the student" contract as the rest of this file. Runs
+// alongside the existing api/chat.js Socratic-explanation call, not instead
+// of it — that call/response shape is unchanged.
+function requestRealDiagnosis(qNum, qData, studentChoseText, allOptions, hintSpanText, attemptCount){
+  fetch(DIAGNOSE_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'diagnose',
+      question: qData.question || '',
+      options: allOptions,
+      studentAnswer: studentChoseText,
+      correctAnswer: qData.correctAnswer,
+      subject: LECTURE_SUBJECT,
+      attemptCount: attemptCount,
+      hintText: hintSpanText || ''
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if(!data || !data.ok) return; // no key / upstream failure — silent no-op, student never sees anything missing
+
+    if(Array.isArray(data.thought_steps) && data.thought_steps.length){
+      renderThoughtBreakdown(data.thought_steps, data.root_cause || '');
+    }
+
+    var qType = qData.type || 'multiple-choice';
+    if(qType === 'multiple-choice'){
+      var annotations = buildAnnotationsFromCorrection(qNum, studentChoseText, data.correction_text || '');
+      if(annotations.length) playAIAnnotations(qNum, annotations);
+    }
+  })
+  .catch(function(){ /* silent no-op — student still has the "Not quite" bubble */ });
+}
+
+// Builds the circle/arrow/text/underline sequence around the option the
+// student actually picked, using its LIVE rendered position (relRect) — the
+// AI only ever supplies the correction text, never coordinates. Returns []
+// if the chosen answer can't be resolved to a real element (e.g. a stale
+// selectedAnswers value), in which case playAIAnnotations is simply skipped.
+function buildAnnotationsFromCorrection(qNum, chosenLetter, correctionText){
+  var box = getQuestionBox(qNum);
+  if(!box || !chosenLetter) return [];
+  var el = resolveAnnotationTarget(box, chosenLetter);
+  if(!el) return [];
+
+  var r = relRect(box, el);
+  var textX = Math.min(0.92, Math.max(0.04, r.x + r.w*0.5));
+  var textY = Math.max(0.04, r.y - 0.12);
+
+  var annotations = [
+    { type:'circle', target:chosenLetter, color:'#e16280' }
+  ];
+  if(correctionText){
+    annotations.push({ type:'arrow', from:{x:textX,y:textY+0.06}, to:{x:r.x+r.w*0.5,y:r.y}, color:'#8b5cf6' });
+    annotations.push({ type:'text', x:textX, y:textY, text:correctionText, color:'#8b5cf6' });
+  }
+  annotations.push({ type:'underline', target:chosenLetter, color:'#e16280' });
+  return annotations;
+}
 
 window.INSIGHT_PAGES = [
   {
