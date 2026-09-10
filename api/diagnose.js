@@ -7,21 +7,24 @@
 //
 //   action: 'tts'      -> Feature 2, live. ElevenLabs text-to-speech, one
 //                          voice per subject (see VOICE_IDS below).
-//   action: 'diagnose' -> Feature 1/3 real wiring. NOT built yet — the
-//                          English Language template still runs on mock data
-//                          (MOCK_AI_ANNOTATIONS / MOCK_THOUGHT_STEPS /
-//                          MOCK_ROOT_CAUSE) via the temporary test rig.
-//                          Returns 501 until that session happens.
+//   action: 'diagnose' -> Feature 1/3, live. Claude (Anthropic) reconstructs
+//                          why the student got this question wrong: a short
+//                          handwritten-style correction note, a step-by-step
+//                          thought-process breakdown, and a one-sentence root
+//                          cause. The client (english-base-template.txt)
+//                          builds the actual on-screen annotation positions
+//                          itself from the DOM — this endpoint never receives
+//                          or returns pixel/fraction coordinates, only text.
 //
 // CORS is locked to the same origin allowlist as api/chat.js (not '*') —
 // this calls a paid ElevenLabs API, so an open origin would let any site
 // burn API credits on this endpoint.
 //
 // Every branch is wrapped so a missing/bad API key, an unset voice ID, or a
-// failed upstream call degrades to a soft response — never a thrown error —
-// per the "never block the student" rule in the handoff notes.
-// ELEVENLABS_API_KEY is not set in Vercel yet, so 'tts' silently no-ops
-// until Montura adds it.
+// failed upstream call degrades to a soft response ({ok:false} / {audio:null})
+// — never a thrown error — per the "never block the student" rule in the
+// handoff notes. Both ELEVENLABS_API_KEY and ANTHROPIC_API_KEY are now set
+// in Vercel and confirmed working end-to-end in production.
 
 const ALLOWED_ORIGINS = [
   'https://www.monturalearn.co.uk',
@@ -66,7 +69,98 @@ export default async function handler(req, res) {
         return handleTTS(req, res);
     }
 
-    return res.status(501).json({ error: 'diagnose action not implemented yet' });
+    return handleDiagnose(req, res);
+}
+
+async function handleDiagnose(req, res) {
+    try {
+        const {
+            question, options, studentAnswer, correctAnswer,
+            subject, attemptCount, hintText
+        } = req.body || {};
+
+        if (!question || !studentAnswer) {
+            return res.status(200).json({ ok: false });
+        }
+
+        if (!process.env.ANTHROPIC_API_KEY) {
+            // Key not added in Vercel yet — silent no-op, same contract as 'tts'.
+            return res.status(200).json({ ok: false });
+        }
+
+        const systemPrompt = 'You are diagnosing why a UK GCSE student just got a question wrong, for '
+            + (subject || 'a GCSE subject') + '. Reconstruct their most likely thought process in 2-4 steps, '
+            + 'marking each step correct or incorrect (the final step should be where it went wrong), then give '
+            + 'one root-cause sentence explaining the core misunderstanding. Also give one short handwritten-style '
+            + 'correction note (under 12 words, like something scribbled next to their wrong answer). Be specific '
+            + 'to THIS question and THIS mistake — never generic. Warm tone, never harsh or condescending.';
+
+        const userPromptLines = [
+            'Question: ' + question,
+            Array.isArray(options) && options.length ? 'Options: ' + options.join(' | ') : null,
+            'Student\'s answer: ' + studentAnswer,
+            'Correct answer: ' + (typeof correctAnswer === 'string' ? correctAnswer : JSON.stringify(correctAnswer)),
+            hintText ? 'The exact teaching text the student was shown for this question: "' + hintText + '"' : null,
+            attemptCount > 1 ? 'This is attempt ' + attemptCount + ' — they have been here before.' : null
+        ].filter(Boolean);
+
+        const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01',
+            },
+            body: JSON.stringify({
+                model: 'claude-haiku-4-5-20251001',
+                max_tokens: 500,
+                system: systemPrompt,
+                messages: [{ role: 'user', content: userPromptLines.join('\n') }],
+                tools: [{
+                    name: 'record_diagnosis',
+                    description: 'Record the diagnosis of why the student got this question wrong.',
+                    input_schema: {
+                        type: 'object',
+                        properties: {
+                            correction_text: { type: 'string', description: 'Short handwritten-style correction note, under 12 words' },
+                            thought_steps: {
+                                type: 'array',
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        step: { type: 'integer' },
+                                        what_student_did: { type: 'string' },
+                                        correct: { type: 'boolean' },
+                                    },
+                                    required: ['step', 'what_student_did', 'correct'],
+                                },
+                            },
+                            root_cause: { type: 'string' },
+                        },
+                        required: ['correction_text', 'thought_steps', 'root_cause'],
+                    },
+                }],
+                tool_choice: { type: 'tool', name: 'record_diagnosis' },
+            }),
+        });
+
+        if (!anthropicRes.ok) {
+            console.error('Anthropic error:', anthropicRes.status, await anthropicRes.text());
+            return res.status(200).json({ ok: false });
+        }
+
+        const data = await anthropicRes.json();
+        const toolUse = (data.content || []).find(block => block.type === 'tool_use');
+        if (!toolUse || !toolUse.input) {
+            return res.status(200).json({ ok: false });
+        }
+
+        return res.status(200).json({ ok: true, ...toolUse.input });
+
+    } catch (error) {
+        console.error('Diagnose error:', error);
+        return res.status(200).json({ ok: false });
+    }
 }
 
 async function handleTTS(req, res) {
