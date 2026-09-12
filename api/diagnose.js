@@ -69,6 +69,10 @@ export default async function handler(req, res) {
         return handleTTS(req, res);
     }
 
+    if (action === 'mark') {
+        return handleMark(req, res);
+    }
+
     return handleDiagnose(req, res);
 }
 
@@ -160,6 +164,133 @@ async function handleDiagnose(req, res) {
     } catch (error) {
         console.error('Diagnose error:', error);
         return res.status(200).json({ ok: false });
+    }
+}
+
+async function handleMark(req, res) {
+    // Feature: Phase 2-4 wrong-answer marking flow.
+    // Receives the question, student answer, correct answer, and mark scheme.
+    // Returns an array of { annotation, weakness, worked_step } pairs — one
+    // pair per mistake — that the client plays back one at a time on Continue.
+    //
+    // annotation: what to draw on the student's work (type, target, text)
+    // weakness:   { title, body, apply } — first-principles explanation
+    // worked_step: the correct working for this step (shown alongside)
+    //
+    // Never throws — degrades silently to {ok:false} so the retry buttons
+    // always appear even if the AI call fails.
+    try {
+        const {
+            question, student_answer, correct_answer,
+            mark_scheme, subject
+        } = req.body || {};
+
+        if (!question || !student_answer) {
+            return res.status(200).json({ ok: false, pairs: [] });
+        }
+
+        if (!process.env.ANTHROPIC_API_KEY) {
+            return res.status(200).json({ ok: false, pairs: [] });
+        }
+
+        const subjectLabel = subject || 'GCSE Maths';
+        const markSchemeText = Array.isArray(mark_scheme) && mark_scheme.length
+            ? mark_scheme.join('\n')
+            : 'No mark scheme provided.';
+
+        const systemPrompt =
+            'You are an expert ' + subjectLabel + ' tutor marking a GCSE student\'s wrong answer. '
+            + 'Apply Elon Musk\'s first-principles thinking: strip each mistake back to the irreducible rule it breaks. '
+            + 'Be specific to THIS question and THIS mistake — never generic. '
+            + 'Warm, direct tone. Never condescending. Max 2-3 weaknesses.';
+
+        const userPrompt =
+            'Question: ' + question + '\n'
+            + 'Student\'s answer: ' + student_answer + '\n'
+            + 'Correct answer: ' + correct_answer + '\n'
+            + 'Mark scheme:\n' + markSchemeText;
+
+        const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01',
+            },
+            body: JSON.stringify({
+                model: 'claude-haiku-4-5-20251001',
+                max_tokens: 800,
+                system: systemPrompt,
+                messages: [{ role: 'user', content: userPrompt }],
+                tools: [{
+                    name: 'record_marking',
+                    description: 'Record the marking pairs for each mistake the student made.',
+                    input_schema: {
+                        type: 'object',
+                        properties: {
+                            pairs: {
+                                type: 'array',
+                                description: 'One entry per mistake, in order of importance.',
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        annotation: {
+                                            type: 'object',
+                                            description: 'What to draw on the student\'s work for this mistake.',
+                                            properties: {
+                                                type: {
+                                                    type: 'string',
+                                                    enum: ['text', 'underline', 'circle'],
+                                                    description: 'text = write a correction note; underline = underline the error; circle = circle the error'
+                                                },
+                                                text: { type: 'string', description: 'The correction note text (max 10 words, handwritten style). Required for type:text.' },
+                                                target: { type: 'string', description: 'data-answer value (A/B/C/D) to target for circle/underline. Omit for type:text.' },
+                                                color: { type: 'string', description: 'Hex colour. Use #e16280 for errors, #8b5cf6 for corrections.' }
+                                            },
+                                            required: ['type']
+                                        },
+                                        weakness: {
+                                            type: 'object',
+                                            description: 'First-principles explanation of the underlying gap.',
+                                            properties: {
+                                                title: { type: 'string', description: 'The root rule broken, in 5 words or fewer.' },
+                                                body: { type: 'string', description: 'One sentence: why this specific answer broke that rule.' },
+                                                apply: { type: 'string', description: 'Exactly what to do next time this comes up. One sentence.' }
+                                            },
+                                            required: ['title', 'body', 'apply']
+                                        },
+                                        worked_step: {
+                                            type: 'string',
+                                            description: 'The correct working for this step, as a student would write it. Null if not applicable.'
+                                        }
+                                    },
+                                    required: ['annotation', 'weakness']
+                                }
+                            }
+                        },
+                        required: ['pairs']
+                    }
+                }],
+                tool_choice: { type: 'tool', name: 'record_marking' },
+            }),
+        });
+
+        if (!anthropicRes.ok) {
+            console.error('Anthropic mark error:', anthropicRes.status, await anthropicRes.text());
+            return res.status(200).json({ ok: false, pairs: [] });
+        }
+
+        const data = await anthropicRes.json();
+        const toolUse = (data.content || []).find(block => block.type === 'tool_use');
+        if (!toolUse || !toolUse.input || !toolUse.input.pairs) {
+            return res.status(200).json({ ok: false, pairs: [] });
+        }
+
+        return res.status(200).json({ ok: true, pairs: toolUse.input.pairs });
+
+    } catch (error) {
+        console.error('Mark error:', error);
+        return res.status(200).json({ ok: false, pairs: [] });
     }
 }
 
