@@ -31,8 +31,9 @@ html,body{
   background:var(--bg);
   font-family:Inter,system-ui,Segoe UI,Arial;
   color:#111;
-  padding-top:110px;
-  padding-bottom:60px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
 }
 
 .wrap{
@@ -245,32 +246,50 @@ html,body{
   font-weight: bold;
 }
 
+#mathBgPattern {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+#mathBgPattern svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+  
 .main-container {
   display: flex;
-  height: calc(100vh - 110px);
+  flex: 1;
+  min-height: 0;
   width: 100%;
-  margin-top: 110px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  padding: 0 8px 8px;
+  gap: 0;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 .content-side {
-  width: 66.666%;
+  flex: 2;
   height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: #e0f2fe;
+  overflow: hidden;
+  background: #ffffff;
+  border-radius: 16px 0 0 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-side {
-  width: 33.333%;
+  flex: 1;
   height: 100%;
+  overflow: hidden;
   background: #ffffff;
-  border-left: 1px solid #e5e7eb;
+  border-radius: 0 16px 16px 0;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
 }
 
 .chat-header {
@@ -297,7 +316,7 @@ html,body{
   flex: 1;
   overflow-y: auto;
   padding: 24px;
-  background: #f9fafb;
+  background: #ffffff;
 }
 
 .message {
@@ -352,9 +371,7 @@ html,body{
 }
 
 .chat-input-area {
-  padding: 16px 24px;
-  border-top: 1px solid var(--border);
-  background: white;
+  padding: 16px 14px;
   flex-shrink: 0;
 }
 
@@ -380,47 +397,82 @@ html,body{
 
 .chat-input-wrapper {
   display: flex;
+  align-items: center;
+  background: #f1f3f5;
+  border-radius: 999px;
+  padding: 6px 6px 6px 18px;
   gap: 8px;
-  align-items: flex-end;
+  flex: 1;
+  min-width: 0;
 }
 
 .chat-input {
   flex: 1;
-  padding: 12px 16px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  padding: 0;
+  border: none;
+  background: transparent;
   font-size: 14px;
   font-family: 'Inter', sans-serif;
   resize: none;
-  min-height: 56px;
-  max-height: 120px;
+  height: 28px;
   outline: none;
-  transition: border-color 0.2s;
-  line-height: 1.5;
+  line-height: 28px;
+  color: var(--text-primary);
+  overflow: hidden;
 }
 
-.chat-input:focus {
-  border-color: var(--accent);
-}
+.chat-input::placeholder { color: #9ca3af; }
+.chat-input:focus { border: none; outline: none; }
 
 .chat-send-btn {
-  padding: 12px 20px;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
   background: var(--accent);
   color: white;
   border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, transform 0.1s;
+  padding: 0;
 }
 
-.chat-send-btn:hover {
-  background: #1d6fd1;
+.chat-send-btn:hover  { background: #1d6fd1; }
+.chat-send-btn:active { transform: scale(0.93); }
+.chat-send-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+.chat-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.chat-send-btn:disabled {
-  background: #cbd5e1;
+.chat-nav-btn {
+  width: 44px;
+  height: 48px;
+  flex-shrink: 0;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+}
+
+.chat-nav-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #f0f9ff;
+}
+
+.chat-nav-btn:disabled {
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
@@ -1485,55 +1537,41 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
 </head>
 <body>
 
-<div class="lecture-objective-box">
-  <div class="objective-content-wrapper">
-    <h1 class="lecture-objective-title">Product of Prime Factors</h1>
-    <div class="lecture-objective-content">
-      <p style="margin: 0 0 8px 0; font-weight: 600; color: #0b2546;">Lecture Objective:</p>
-      <ul class="lecture-objective-list">
-        <li>Master the full principles of the Product of Prime Factors</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<div class="header-bar-1">
-  <a href="#" class="lectures-back-btn">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-      <polyline points="9 22 9 12 15 12 15 22"></polyline>
-    </svg>
-    <span>Lectures</span>
-  </a>
-  
-  <div class="quiz-progress-container">
-    <div class="quiz-progress-segments" id="progress-segments">
-    </div>
-  </div>
-  
-  <button class="reference-btn" id="referenceBtn">
-  Reference
-</button>
-
-<button class="formula-sheet-btn" id="formulaSheetBtn">
-  Formula Sheet
-</button>
-</div>
-
-<div class="header-bar-2">
-  <div class="format-toggle">
-    <button class="format-btn active" id="multipleChoiceBtn" onclick="switchFormat('multiple-choice')">
-      Multiple Choice
-    </button>
-    <div class="format-divider"></div>
-    <button class="format-btn" id="examFormatBtn" onclick="switchFormat('exam')">
-      Exam Format
-    </button>
-  </div>
+<div id="mathBgPattern" aria-hidden="true">
+<svg xmlns="http://www.w3.org/2000/svg">
+  <defs>
+        <pattern id="mathDoodle" width="260" height="260" patternUnits="userSpaceOnUse">
+  <animateTransform attributeName="patternTransform" type="translate" dur="28s" repeatCount="indefinite"
+    calcMode="spline"
+    keyTimes="0;0.2;0.45;0.7;0.88;1"
+    keySplines="0.42 0 0.58 1;0.42 0 0.58 1;0.42 0 0.58 1;0.42 0 0.58 1;0.42 0 0.58 1"
+    values="0,0; 15,-10; 30,15; 10,30; -15,10; 0,0"/>
+  <text x="10" y="42" font-family="Caveat, cursive" font-size="34" fill="#e6a9c4" transform="rotate(-18 10 42)">π<animateTransform attributeName="transform" type="translate" additive="sum" dur="5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; 12,8; 0,0"/></text>
+  <text x="160" y="32" font-family="Caveat, cursive" font-size="32" fill="#e6a9c4" transform="rotate(12 160 32)">Σ<animateTransform attributeName="transform" type="translate" additive="sum" dur="6.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; -10,10; 0,0"/></text>
+  <text x="65" y="98" font-family="Caveat, cursive" font-size="28" fill="#e6a9c4" transform="rotate(-10 65 98)">√x<animateTransform attributeName="transform" type="translate" additive="sum" dur="4.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; 14,-6; 0,0"/></text>
+  <text x="205" y="120" font-family="Caveat, cursive" font-size="28" fill="#e6a9c4" transform="rotate(20 205 120)">x²<animateTransform attributeName="transform" type="translate" additive="sum" dur="7s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; -13,-9; 0,0"/></text>
+  <text x="20" y="160" font-family="Caveat, cursive" font-size="32" fill="#e6a9c4" transform="rotate(-25 20 160)">½<animateTransform attributeName="transform" type="translate" additive="sum" dur="5.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; 9,11; 0,0"/></text>
+  <path d="M115 158 L137 200 L93 200 Z" fill="none" stroke="#e6a9c4" stroke-width="2" transform="rotate(15 115 179)"><animateTransform attributeName="transform" type="translate" additive="sum" dur="8s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; -11,7; 0,0"/></path>
+  <circle cx="210" cy="185" r="17" fill="none" stroke="#e6a9c4" stroke-width="2"><animateTransform attributeName="transform" type="translate" additive="sum" dur="4s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; -14,-4; 0,0"/></circle>
+  <text x="30" y="232" font-family="Caveat, cursive" font-size="32" fill="#e6a9c4" transform="rotate(8 30 232)">=<animateTransform attributeName="transform" type="translate" additive="sum" dur="6s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; 10,-8; 0,0"/></text>
+  <text x="95" y="236" font-family="Caveat, cursive" font-size="28" fill="#e6a9c4" transform="rotate(-15 95 236)">+<animateTransform attributeName="transform" type="translate" additive="sum" dur="5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; -12,9; 0,0"/></text>
+  <text x="155" y="242" font-family="Caveat, cursive" font-size="32" fill="#e6a9c4" transform="rotate(18 155 242)">÷<animateTransform attributeName="transform" type="translate" additive="sum" dur="7.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; 13,6; 0,0"/></text>
+  <text x="215" y="60" font-family="Caveat, cursive" font-size="28" fill="#e6a9c4" transform="rotate(-12 215 60)">∫<animateTransform attributeName="transform" type="translate" additive="sum" dur="4.8s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; -9,-11; 0,0"/></text>
+</pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#mathDoodle)"/>
+</svg>
 </div>
 
 <div class="main-container">
   <div class="content-side" id="contentSide">
+
+  <div class="top-progress-bar">
+    <div class="quiz-progress-container">
+      <div class="quiz-progress-segments" id="progress-segments">
+      </div>
+    </div>
+  </div>
 
 
     <!-- QUESTION 1 -->
@@ -1803,7 +1841,20 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
 </div>
 
 
-    
+    <!-- ── BOTTOM NAV STRIP ──────────────────────────────── -->
+<div class="nav-strip-zone" id="navStripZone">
+  <div class="nav-strip-bar">
+    <button class="nav-btn" id="nav-connect-btn" onclick="alert('Pair your iPhone — coming soon')" title="Connect iPhone">
+      <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="1" width="10" height="22" rx="3" ry="3"/><circle cx="12" cy="19.5" r="0.9" fill="currentColor"/><line x1="9.5" y1="4" x2="14.5" y2="4" stroke-width="1.5"/></svg></span>
+      <span class="nav-label">Connect</span>
+    </button>
+    <div class="nav-counter" id="question-counter">1 / 20</div>
+    <button class="nav-btn" id="nav-help-btn" onclick="typeof startTutorial === 'function' ? startTutorial() : null" title="Page tour">
+      <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg></span>
+      <span class="nav-label">Help</span>
+    </button>
+  </div>
+</div>
     
     
     
@@ -1817,23 +1868,27 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   </div>
 
   <div class="chat-side">
-    <div class="chat-header">
-      <div class="chat-title"></div>
-      <div class="chat-subtitle" id="chatSubtitle">Click a question to get help</div>
-    </div>
 
     <div class="chat-messages" id="chatMessages"></div>
 
-    <div class="chat-input-area">
-      <button class="prompts-btn" id="promptsBtn">Prompts</button>
-      
-      <div class="chat-input-wrapper">
-        <textarea id="chatInput" class="chat-input" placeholder="Ask a question..." rows="2"></textarea>
-        <button id="sendBtn" class="chat-send-btn">Execute</button>
+        <div class="chat-input-area">
+      <div class="chat-input-row">
+        <button class="chat-nav-btn" id="nav-prev-btn" onclick="previousQuestion()" title="Previous question">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="chat-nav-btn" id="nav-next-btn" onclick="nextQuestion()" title="Next question">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="chat-input-wrapper">
+          <textarea id="chatInput" class="chat-input" placeholder="Ask a question..." rows="1"></textarea>
+          <button id="sendBtn" class="chat-send-btn" title="Send">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
   
   
@@ -2452,8 +2507,92 @@ body.dark-mode #guideContent .g-paper-head-right { color: #64748b; }
   #guideContent .g-tree-row { flex-direction: column; }
   #guideContent .g-check-box { padding: 20px 16px; }
 }
-</style>
+/* ── TOP PROGRESS BAR ──────────────────────────── */
+.top-progress-bar { flex-shrink: 0; padding: 10px 8px 8px; }
+.quiz-progress-segments { display: flex; width: 100%; height: 100%; gap: 3px; }
+.quiz-segment { height: 100%; transition: all 1s ease-out; position: relative; background-color: transparent; }
 
+/* ── BOTTOM NAV STRIP ──────────────────────────── */
+.nav-strip-zone {
+  position: sticky; bottom: 0; height: 22px;
+  display: flex; align-items: flex-end; justify-content: center;
+  z-index: 10; pointer-events: none; margin-top: auto;
+}
+.nav-strip-zone:hover .nav-strip-bar { transform: translateY(0); opacity: 1; }
+.nav-strip-bar {
+  display: flex; gap: 8px; background: #ffffff;
+  border: 1px solid #e5e7eb; border-bottom: none; border-radius: 14px 14px 0 0;
+  padding: 6px 10px; pointer-events: all;
+  transform: translateY(100%); opacity: 0;
+  transition: transform 200ms ease, opacity 200ms ease;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+}
+.nav-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  min-width: 52px; height: 38px; padding: 0 14px; border: none;
+  background: transparent; border-radius: 10px;
+  font-size: 13px; font-weight: 600; color: #374151;
+  cursor: pointer; transition: background 150ms ease, color 150ms ease; white-space: nowrap;
+}
+.nav-btn:hover { background: #f3f4f6; color: #111827; }
+.nav-btn:disabled { opacity: 0.35; cursor: default; }
+.nav-btn:disabled:hover { background: transparent; }
+.nav-btn svg { flex-shrink: 0; }
+.nav-btn .nav-label { display: none; }
+.nav-btn:hover .nav-label { display: inline; }
+.nav-btn:hover .nav-icon { display: none; }
+.nav-counter { display: flex; align-items: center; font-size: 12px; color: #9ca3af; padding: 0 6px; user-select: none; }
+/* \u2500\u2500 PHASE 2-4: WRONG ANSWER FLOW \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+.marking-continue-btn {
+  display: block; width: 100%; padding: 14px;
+  background: #1d7fe2; color: #fff; border: none; border-radius: 10px;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: background 150ms ease, transform 100ms ease;
+  margin-bottom: 10px;
+}
+.marking-continue-btn:hover { background: #1d6fd1; }
+.marking-continue-btn:active { transform: scale(0.98); }
+.marking-continue-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+.weakness-panel {
+  padding: 14px 14px 10px; border-bottom: 1px solid #f1f5f9; flex-shrink: 0;
+}
+.weakness-panel-title {
+  font-size: 11px; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; color: #6b7280; margin-bottom: 10px;
+}
+.weakness-card {
+  border-radius: 10px; border-left: 4px solid #8b5cf6;
+  background: #f5f3ff; padding: 10px 12px; margin-bottom: 8px;
+  font-size: 13px; line-height: 1.5;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+.weakness-card.revealed { opacity: 1; transform: translateY(0); }
+.weakness-card-num { font-size: 10px; font-weight: 700; color: #6d28d9; letter-spacing: .04em; margin-bottom: 3px; }
+.weakness-card-title { font-weight: 600; color: #1e1b4b; margin-bottom: 4px; }
+.weakness-card-body { color: #4c1d95; margin-bottom: 6px; }
+.weakness-card-apply {
+  background: #fff; border-radius: 6px; padding: 6px 8px;
+  font-size: 12px; color: #374151; border: 1px solid #e5e7eb;
+}
+.weakness-card-apply-label {
+  font-size: 10px; font-weight: 700; color: #6d28d9;
+  letter-spacing: .04em; margin-bottom: 2px;
+}
+
+.retry-btn-row { display: flex; gap: 8px; padding: 10px 14px; flex-shrink: 0; }
+.retry-btn {
+  flex: 1; padding: 10px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid;
+  transition: background 150ms ease;
+}
+.retry-btn-blank { background: #fff; border-color: #e5e7eb; color: #374151; }
+.retry-btn-blank:hover { background: #f9fafb; border-color: #1d7fe2; }
+.retry-btn-working { background: #fff; border-color: #8b5cf6; color: #6d28d9; }
+.retry-btn-working:hover { background: #f5f3ff; }
+
+</style>
 <div class="g-container">
 
 <h1 class="g-title">Angles in Polygons</h1>
@@ -5013,7 +5152,7 @@ return replies; // return the array
     chatInput.value = '';
     
     sendBtn.disabled = true;
-    sendBtn.textContent = 'Thinking...';
+    sendBtn.style.opacity = '0.5';
     
     const responses = await sendToDeepSeek(message);
 const bubbles = Array.isArray(responses) ? responses : [responses];
@@ -5022,7 +5161,7 @@ bubbles.forEach(function(b, idx) {
 });
     
     sendBtn.disabled = false;
-    sendBtn.textContent = 'Execute';
+    sendBtn.style.opacity = '1';
   }
   
   if (sendBtn) {
@@ -5150,10 +5289,7 @@ window.setCurrentQuestion = function(questionNumber) {
   }, 1000);
   
   initializeProgressBar();
-  // REMOVED 2026-08 — initializeQuestionNavigation() and the click-to-
-  // select-question wiring that used to sit here both depended on the
-  // duplicate-declared totalQuestionsCount removed above; see that note.
-  // Questions now simply display in order on the page instead.
+  initializeQuestionNavigation();
 
 const formulaBtn = document.getElementById('formulaSheetBtn');
 if (formulaBtn) {
@@ -5597,5 +5733,266 @@ async function submitReport() {
 (function(){var lastText="",bubble;function getSC(c){var sel=window.getSelection();if(!sel||sel.isCollapsed)return"";var el=sel.getRangeAt(0).startContainer;el=(el.nodeType===3)?el.parentElement:el;while(el&&el!==c){var p=el.previousElementSibling;while(p){var t=p.tagName||"";if(/^H[1-4]$/.test(t)||p.classList.contains("g-step-title")||p.classList.contains("g-title")||p.classList.contains("g-section-label"))return(p.innerText||p.textContent||"").trim();p=p.previousElementSibling;}el=el.parentElement;}return"";}function showB(r){if(!bubble||!r)return;bubble.style.display="flex";var bw=bubble.offsetWidth||160;bubble.style.left=Math.max(8,Math.min(r.left+r.width/2-bw/2,window.innerWidth-bw-8))+"px";bubble.style.top=(r.top+window.scrollY-52)+"px";}function hideB(){if(bubble)bubble.style.display="none";lastText="";}function tryShow(){var sel=window.getSelection();if(!sel||sel.isCollapsed){hideB();return;}var t=sel.toString().trim();if(t.length<2){hideB();return;}lastText=t;try{showB(sel.getRangeAt(0).getBoundingClientRect());}catch(e){hideB();}}function attach(c){if(!c)return;c.addEventListener("mouseup",function(){setTimeout(tryShow,20);});c.addEventListener("touchend",function(){setTimeout(tryShow,50);});}function send(c){if(!lastText)return;var gt=typeof getCurrentGuideText==="function"?getCurrentGuideText():"";var sec=getSC(c);var ci=document.getElementById("chatInput");if(!ci)return;var msg='I highlighted this from the guide: "'+lastText+'"';
 if(sec)msg+=" (from the section: "+sec+")";hideB();window.getSelection().removeAllRanges();var m=document.getElementById("referenceModal");if(m&&m.style.display!=="none"){m.style.display="none";document.body.style.overflow="auto";}ci.value=msg;var sb=document.getElementById("sendBtn");if(sb)sb.click();}document.addEventListener("DOMContentLoaded",function(){bubble=document.getElementById("hl-guide-bubble");if(!bubble)return;attach(document.getElementById("guideContent"));attach(document.getElementById("referenceModal"));bubble.addEventListener("mousedown",function(e){e.preventDefault();});bubble.addEventListener("click",function(){var sel=window.getSelection();var c=document.getElementById("guideContent");if(sel&&sel.rangeCount>0){var n=sel.getRangeAt(0).startContainer;var m=document.getElementById("referenceModal");if(m&&m.contains(n))c=m;}send(c);});document.addEventListener("mousedown",function(e){if(bubble&&!bubble.contains(e.target))hideB();});});})();
 </script>
+
+<script>
+// ── NAV FUNCTIONS ──────────────────────────────────────────────────────
+let currentQuestionIndex = 1;
+
+function initializeQuestionNavigation() {
+  const totalQuestionsCount = Object.keys(window.QUESTION_BANK || {}).length || 6;
+  for (let i = 1; i <= totalQuestionsCount; i++) {
+    const questionBox = document.getElementById(`question-box-${i}`);
+    if (questionBox) questionBox.style.display = i === 1 ? 'block' : 'none';
+    const submitBtn = document.getElementById(`submit-button-${i}`);
+    if (submitBtn) submitBtn.disabled = true;
+  }
+  updateNavigationButtons();
+}
+
+function showQuestion(questionNumber) {
+  const totalQuestionsCount = Object.keys(window.QUESTION_BANK || {}).length || 6;
+  if (questionNumber < 1 || questionNumber > totalQuestionsCount) return;
+  for (let i = 1; i <= totalQuestionsCount; i++) {
+    const questionBox = document.getElementById(`question-box-${i}`);
+    if (questionBox) questionBox.style.display = 'none';
+  }
+  const selectedBox = document.getElementById(`question-box-${questionNumber}`);
+  if (selectedBox) {
+    selectedBox.style.display = 'block';
+    setTimeout(() => { selectedBox.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+  }
+  currentQuestionIndex = questionNumber;
+  if (typeof window.setCurrentQuestion === 'function') window.setCurrentQuestion(questionNumber);
+  updateNavigationButtons();
+}
+
+function nextQuestion() {
+  const totalQuestionsCount = Object.keys(window.QUESTION_BANK || {}).length || 6;
+  if (currentQuestionIndex < totalQuestionsCount) showQuestion(currentQuestionIndex + 1);
+}
+
+function previousQuestion() {
+  if (currentQuestionIndex > 1) showQuestion(currentQuestionIndex - 1);
+}
+
+function updateNavigationButtons() {
+  const totalQuestionsCount = Object.keys(window.QUESTION_BANK || {}).length || 6;
+  const prevBtn = document.getElementById('nav-prev-btn');
+  const nextBtn = document.getElementById('nav-next-btn');
+  const counter = document.getElementById('question-counter');
+  if (prevBtn) { prevBtn.disabled = currentQuestionIndex === 1; prevBtn.style.opacity = currentQuestionIndex === 1 ? '0.4' : '1'; }
+  if (nextBtn) { nextBtn.disabled = currentQuestionIndex === totalQuestionsCount; nextBtn.style.opacity = currentQuestionIndex === totalQuestionsCount ? '0.4' : '1'; }
+  if (counter) counter.textContent = `${currentQuestionIndex} / ${totalQuestionsCount}`;
+}
+</script>
+
+<script>
+// PHASE 2-4: WRONG ANSWER MARKING FLOW
+// Hooks into window.notifyWrongAnswer(qNum, studentAnswer, correctAnswer)
+// already called by every submitAnswerN() on a wrong answer.
+// NO layout changes — only adds behaviour on top of existing DOM.
+
+var MarkingFlow = (function(){
+  var _queue = [];
+  var _step = 0;
+  var _qNum = null;
+
+  function getChatSide(){ return document.querySelector('.chat-side'); }
+
+  function fadeOutOptions(qNum){
+    var box = document.getElementById('question-box-' + qNum);
+    if (!box) return;
+    var btns = box.querySelectorAll('[class*="answer-option-' + qNum + '"]');
+    btns.forEach(function(b){
+      b.style.transition = 'opacity 300ms ease, transform 300ms ease';
+      b.style.opacity = '0';
+      b.style.transform = 'translateY(6px)';
+    });
+    var submit = document.getElementById('submit-button-' + qNum);
+    if (submit){ submit.style.transition = 'opacity 300ms ease'; submit.style.opacity = '0'; }
+  }
+
+  function buildRightBox(){
+    var side = getChatSide();
+    if (!side) return;
+    side.innerHTML = '';
+
+    var wp = document.createElement('div');
+    wp.className = 'weakness-panel';
+    wp.id = 'weaknessPanel';
+    var wt = document.createElement('div');
+    wt.className = 'weakness-panel-title';
+    wt.textContent = 'Your weaknesses';
+    wp.appendChild(wt);
+    side.appendChild(wp);
+
+    var body = document.createElement('div');
+    body.id = 'markingBody';
+    body.style.cssText = 'flex:1;overflow-y:auto;padding:14px;';
+    side.appendChild(body);
+
+    var btn = document.createElement('button');
+    btn.className = 'marking-continue-btn';
+    btn.id = 'continueBtn';
+    btn.textContent = 'Loading AI marking...';
+    btn.disabled = true;
+    body.appendChild(btn);
+    btn.addEventListener('click', advanceStep);
+
+    var rr = document.createElement('div');
+    rr.className = 'retry-btn-row';
+    rr.id = 'retryRow';
+    rr.style.display = 'none';
+    var rb1 = document.createElement('button');
+    rb1.className = 'retry-btn retry-btn-blank';
+    rb1.textContent = 'Retry blank';
+    rb1.addEventListener('click', function(){ retryBlank(_qNum); });
+    var rb2 = document.createElement('button');
+    rb2.className = 'retry-btn retry-btn-working';
+    rb2.textContent = 'Retry with working';
+    rb2.addEventListener('click', function(){ retryWithWorking(_qNum); });
+    rr.appendChild(rb1);
+    rr.appendChild(rb2);
+    side.appendChild(rr);
+  }
+
+  function enableContinue(label){
+    var btn = document.getElementById('continueBtn');
+    if (!btn) return;
+    btn.textContent = label || 'Continue';
+    btn.disabled = false;
+  }
+
+  function start(qNum, studentAnswer, correctAnswer){
+    _qNum = qNum;
+    _queue = [];
+    _step = 0;
+    fadeOutOptions(qNum);
+    buildRightBox();
+
+    var qKeys = Object.keys(window.QUESTION_BANK || {});
+    var entry = window.QUESTION_BANK && window.QUESTION_BANK[qKeys[qNum - 1]];
+    var questionText = entry ? (entry.question || '') : '';
+    var markScheme = entry ? (entry.mark_scheme || []) : [];
+
+    fetch('/api/diagnose', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'mark',
+        subject: 'maths',
+        question: questionText,
+        student_answer: studentAnswer,
+        correct_answer: correctAnswer,
+        mark_scheme: markScheme
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data && data.pairs && data.pairs.length){
+        _queue = data.pairs;
+      } else {
+        _queue = [{ annotation: null, weakness: { title: 'Review needed', body: 'Compare your answer to the correct answer shown.', apply: 'Re-read the mark scheme and try again.' }, worked_step: null }];
+      }
+      enableContinue('See where you went wrong');
+    })
+    .catch(function(){
+      _queue = [{ annotation: null, weakness: { title: 'Marking unavailable', body: 'Could not reach AI marking right now.', apply: 'Compare your answer to the correct answer shown.' }, worked_step: null }];
+      enableContinue('Continue');
+    });
+  }
+
+  function advanceStep(){
+    if (_step >= _queue.length){ showRetry(); return; }
+    var pair = _queue[_step];
+    _step++;
+    if (pair.weakness) revealWeaknessCard(_step, pair.weakness);
+    var remaining = _queue.length - _step;
+    enableContinue(remaining > 0 ? 'Next (' + remaining + ' more)' : 'See retry options');
+  }
+
+  function revealWeaknessCard(num, weakness){
+    var panel = document.getElementById('weaknessPanel');
+    if (!panel) return;
+    var card = document.createElement('div');
+    card.className = 'weakness-card';
+
+    var numEl = document.createElement('div');
+    numEl.className = 'weakness-card-num';
+    numEl.textContent = 'WEAKNESS ' + num;
+    card.appendChild(numEl);
+
+    var title = document.createElement('div');
+    title.className = 'weakness-card-title';
+    title.textContent = weakness.title || '';
+    card.appendChild(title);
+
+    var body = document.createElement('div');
+    body.className = 'weakness-card-body';
+    body.textContent = weakness.body || '';
+    card.appendChild(body);
+
+    if (weakness.apply){
+      var aw = document.createElement('div');
+      aw.className = 'weakness-card-apply';
+      var al = document.createElement('div');
+      al.className = 'weakness-card-apply-label';
+      al.textContent = 'HOW TO APPLY IT';
+      aw.appendChild(al);
+      aw.appendChild(document.createTextNode(weakness.apply));
+      card.appendChild(aw);
+    }
+    panel.appendChild(card);
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ card.classList.add('revealed'); });
+    });
+    panel.scrollTop = panel.scrollHeight;
+  }
+
+  function showRetry(){
+    var btn = document.getElementById('continueBtn');
+    if (btn) btn.style.display = 'none';
+    var rr = document.getElementById('retryRow');
+    if (rr) rr.style.display = 'flex';
+  }
+
+  function restoreOptions(qNum){
+    var box = document.getElementById('question-box-' + qNum);
+    if (!box) return;
+    var btns = box.querySelectorAll('[class*="answer-option-' + qNum + '"]');
+    btns.forEach(function(b){ b.style.opacity = '1'; b.style.transform = ''; });
+    var submit = document.getElementById('submit-button-' + qNum);
+    if (submit) submit.style.opacity = '1';
+  }
+
+  function restoreChatBox(){
+    var side = getChatSide();
+    if (!side) return;
+    side.innerHTML =
+      '<div class="chat-messages" id="chatMessages"></div>' +
+      '<div class="chat-input-area"><div class="chat-input-row">' +
+      '<button class="chat-nav-btn" id="nav-prev-btn" onclick="previousQuestion()" title="Previous question"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>' +
+      '<button class="chat-nav-btn" id="nav-next-btn" onclick="nextQuestion()" title="Next question"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>' +
+      '<div class="chat-input-wrapper"><textarea id="chatInput" class="chat-input" placeholder="Ask a question..." rows="1"></textarea>' +
+      '<button id="sendBtn" class="chat-send-btn" title="Send"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>' +
+      '</div></div></div>';
+  }
+
+  function retryBlank(qNum){
+    var fn = window['resetQuestion' + qNum];
+    if (typeof fn === 'function') fn();
+    restoreOptions(qNum);
+    restoreChatBox();
+  }
+
+  function retryWithWorking(qNum){
+    retryBlank(qNum);
+  }
+
+  window.notifyWrongAnswer = function(qNum, studentAnswer, correctAnswer){
+    start(qNum, studentAnswer, correctAnswer);
+  };
+})();
+</script>
+
 </body>
-</html>
