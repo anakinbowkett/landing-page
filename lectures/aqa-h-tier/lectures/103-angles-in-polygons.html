@@ -1579,12 +1579,14 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-1">Q1 of 16</div>
   <div class="mark-counter-1" id="mark-counter-1">0/1</div>
   <div class="question-title-1">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 226.6,88.4 201.2,166.6 118.8,166.6 93.4,88.4" fill="none" stroke="#374151" stroke-width="2"/><path d="M240,80 A18,18 0 0 1 228,100" fill="none" stroke="#1d7fe2" stroke-width="1.5"/><path d="M210,178 A18,18 0 0 1 190,178" fill="none" stroke="#1d7fe2" stroke-width="1.5"/></svg>
-    The diagram shows a pentagon with its exterior angles marked around the outside. True or False: the exterior angles of any polygon always add up to 360°.
+    <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg"><line x1="60" y1="326.07886451968966" x2="440" y2="326.07886451968966" stroke="#1e293b" stroke-width="2"></line><line x1="440" y1="326.07886451968966" x2="60.000000000000014" y2="60" stroke="#1e293b" stroke-width="2"></line><line x1="60.000000000000014" y1="60" x2="60" y2="326.07886451968966" stroke="#1e293b" stroke-width="2"></line><text x="41.97865502564218" y="338.69754611941266" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">A</text><text x="460.7642119123193" y="333.3484933726846" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">B</text><text x="47.215269761176245" y="42.09607102559595" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">C</text><path d="M 78 326.07886451968966 L 78 308.07886451968966 L 60 308.07886451968966" stroke="#1e293b" stroke-width="2" fill="none"></path><text x="407.5736236745603" y="315.8548673365444" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="15" fill="#1e293b">35°</text><text x="75.69945284999116" y="90.15836832805954" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="15" fill="#1e293b">55°</text></svg>
+    TEMP TEST QUESTION (auto-diagram pipeline integration test) — A triangle has one angle of 90 degrees and another angle of 35 degrees. What is the size of the third angle?
   </div>
   <div class="answer-container-1">
-    <button class="answer-option-1-1" onclick="toggleSingleAnswer1('opt1', this)">True</button>
-    <button class="answer-option-1-2" onclick="toggleSingleAnswer1('opt2', this)">False</button>
+    <button class="answer-option-1-1" onclick="toggleSingleAnswer1('opt1', this)">35°</button>
+    <button class="answer-option-1-2" onclick="toggleSingleAnswer1('opt2', this)">55°</button>
+    <button class="answer-option-1-3" onclick="toggleSingleAnswer1('opt3', this)">65°</button>
+    <button class="answer-option-1-4" onclick="toggleSingleAnswer1('opt4', this)">125°</button>
   </div>
   <button class="submit-button-1" id="submit-button-1" onclick="submitAnswer1()" disabled>Submit</button>
 </div>
@@ -3612,7 +3614,7 @@ function toggleSingleAnswer1(answer, button) {
 }
 
 function submitAnswer1() {
-  const correctAnswer = 'True';
+  const correctAnswer = '55°';
   const questionBox = document.getElementById('question-box-1');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-1"].selected');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-1"]');
@@ -4588,7 +4590,7 @@ function toggleSingleAnswer17(answer, button) {
 }
 
 function submitAnswer17() {
-  const correctAnswer = 'True';
+  const correctAnswer = '55°';
   const questionBox = document.getElementById('question-box-17');
   const selectedButtons = questionBox.querySelectorAll('[class^="answer-option-17"].selected');
   const allButtons = questionBox.querySelectorAll('[class^="answer-option-17"]');
@@ -5004,10 +5006,10 @@ document.addEventListener('DOMContentLoaded', function() {
   
   window.QUESTION_BANK = {
   'Mathematics_Higher_Geometry_L103_Q1': {
-    question: 'The diagram shows a pentagon with its exterior angles marked around the outside. True or False: the exterior angles of any polygon always add up to 360°.',
-    correctAnswer: 'True',
-    topic: 'Exterior Angles of Polygons',
-    skillTag: 'diagram-interpretation'
+    question: 'TEMP TEST QUESTION (auto-diagram pipeline integration test) — A triangle has one angle of 90 degrees and another angle of 35 degrees. What is the size of the third angle?',
+    correctAnswer: '55°',
+    topic: 'Angles in Triangles',
+    skillTag: 'calculation'
   },
   'Mathematics_Higher_Geometry_L103_Q2': {
     question: 'The diagram shows quadrilateral ABCD. What is the sum of the interior angles of any quadrilateral?',
