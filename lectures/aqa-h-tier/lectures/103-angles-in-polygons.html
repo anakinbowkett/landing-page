@@ -5240,30 +5240,6 @@ function injectChatDivider(qNum) {
   msgs.scrollTop = msgs.scrollHeight;
 }
 
-window.notifyWrongAnswer = async function(questionNum, studentAnswer, correctAnswer) {
-  if (!window.currentQuestion) return;
-  var q = window.currentQuestion;
-  var msg = 'The student just answered question ' + questionNum + ' wrong. '
-    + 'The question was: "' + (q.question || '') + '". '
-    + 'The student chose: "' + studentAnswer + '". '
-    + 'The correct answer is: "' + correctAnswer + '". '
-    + 'Tell the student specifically what was wrong about their answer and why, '
-    + 'then give one small hint to help them figure out the right answer. '
-    + 'Do not give the answer away directly.';
-  addMessageToChat('Hmm, let me help with that...', false);
-  var responses = await sendToDeepSeek(msg);
-  var bubbles = Array.isArray(responses) ? responses : [responses];
-  var chatMessages = document.getElementById('chatMessages');
-  if (chatMessages) {
-    var all = chatMessages.querySelectorAll('.message-assistant');
-    var last = all[all.length - 1];
-    if (last) last.remove();
-  }
-  bubbles.forEach(function(b, idx) {
-    setTimeout(function() { addMessageToChat(b, false); }, idx * 600);
-  });
-};
-
 window.setCurrentQuestion = function(questionNumber) {
   console.log('Setting current question to:', questionNumber);
   window.conversationHistory = [];
