@@ -5802,24 +5802,14 @@ var MarkingFlow = (function(){
   function fadeOutOptions(qNum){
     var box = document.getElementById('question-box-' + qNum);
     if (!box) return;
-    // Fade the entire options area — works regardless of exact class names
-    var allBtns = box.querySelectorAll('button:not(#submit-button-' + qNum + ')');
-    allBtns.forEach(function(b){
-      b.style.transition = 'opacity 300ms ease';
-      b.style.opacity = '0.2';
+    var btns = box.querySelectorAll('[class*="answer-option-' + qNum + '"]');
+    btns.forEach(function(b){
+      b.style.transition = 'opacity 300ms ease, transform 300ms ease';
+      b.style.opacity = '0';
+      b.style.transform = 'translateY(6px)';
     });
-    // Also fade the submit button
     var submit = document.getElementById('submit-button-' + qNum);
     if (submit){ submit.style.transition = 'opacity 300ms ease'; submit.style.opacity = '0'; }
-
-    // Add a visible "marking" banner at the bottom of the question box
-    var existing = box.querySelector('.marking-banner');
-    if (existing) existing.remove();
-    var banner = document.createElement('div');
-    banner.className = 'marking-banner';
-    banner.style.cssText = 'margin-top:16px;padding:12px 16px;background:#f5f3ff;border-radius:10px;border-left:4px solid #8b5cf6;font-size:14px;font-weight:600;color:#6d28d9;text-align:center;';
-    banner.textContent = '🧠 AI is marking your answer...';
-    box.appendChild(banner);
   }
 
   function buildRightBox(){
@@ -5905,9 +5895,6 @@ var MarkingFlow = (function(){
         _queue = [{ annotation: null, weakness: { title: 'Review needed', body: 'Compare your answer to the correct answer shown.', apply: 'Re-read the mark scheme and try again.' }, worked_step: null }];
       }
       enableContinue('See where you went wrong');
-      // Update the in-question banner
-      var box2 = document.getElementById('question-box-' + _qNum);
-      if (box2){ var b2 = box2.querySelector('.marking-banner'); if(b2) b2.textContent = '✓ Marked — see weaknesses →'; }
     })
     .catch(function(){
       _queue = [{ annotation: null, weakness: { title: 'Marking unavailable', body: 'Could not reach AI marking right now.', apply: 'Compare your answer to the correct answer shown.' }, worked_step: null }];
@@ -5972,12 +5959,10 @@ var MarkingFlow = (function(){
   function restoreOptions(qNum){
     var box = document.getElementById('question-box-' + qNum);
     if (!box) return;
-    var allBtns = box.querySelectorAll('button');
-    allBtns.forEach(function(b){ b.style.opacity = '1'; b.style.transform = ''; });
+    var btns = box.querySelectorAll('[class*="answer-option-' + qNum + '"]');
+    btns.forEach(function(b){ b.style.opacity = '1'; b.style.transform = ''; });
     var submit = document.getElementById('submit-button-' + qNum);
     if (submit) submit.style.opacity = '1';
-    var banner = box.querySelector('.marking-banner');
-    if (banner) banner.remove();
   }
 
   function restoreChatBox(){
