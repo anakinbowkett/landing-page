@@ -2543,42 +2543,39 @@ body.dark-mode #guideContent .g-paper-head-right { color: #64748b; }
 .nav-btn:hover .nav-icon { display: none; }
 .nav-counter { display: flex; align-items: center; font-size: 12px; color: #9ca3af; padding: 0 6px; user-select: none; }
 /* \u2500\u2500 PHASE 2-4: WRONG ANSWER FLOW \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-.marking-continue-btn {
-  display: block; width: 100%; padding: 14px;
-  background: #1d7fe2; color: #fff; border: none; border-radius: 10px;
-  font-size: 15px; font-weight: 600; cursor: pointer;
-  transition: background 150ms ease, transform 100ms ease;
-  margin-bottom: 10px;
-}
-.marking-continue-btn:hover { background: #1d6fd1; }
-.marking-continue-btn:active { transform: scale(0.98); }
-.marking-continue-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
-
 .weakness-panel {
-  padding: 14px 14px 10px; border-bottom: 1px solid #f1f5f9; flex-shrink: 0;
+  padding: 18px 20px 10px; flex-shrink: 0;
 }
 .weakness-panel-title {
   font-size: 11px; font-weight: 700; letter-spacing: .05em;
-  text-transform: uppercase; color: #6b7280; margin-bottom: 10px;
+  text-transform: uppercase; color: #6b7280; margin-bottom: 2px;
 }
+.weakness-panel-model {
+  font-size: 11px; color: #b3b3b3; margin-bottom: 14px;
+}
+.marking-loading {
+  font-family: 'Caveat', cursive; font-size: 22px; color: #9ca3af;
+  padding: 4px;
+}
+/* Handwritten-on-the-page look: no boxes, no borders, no card background —
+   just Caveat-font text as if a teacher marked it by hand. */
 .weakness-card {
-  border-radius: 10px; border-left: 4px solid #8b5cf6;
-  background: #f5f3ff; padding: 10px 12px; margin-bottom: 8px;
-  font-size: 13px; line-height: 1.5;
+  padding: 4px 4px 20px; margin-bottom: 2px;
+  font-family: 'Caveat', cursive; font-size: 23px; line-height: 1.45;
+  color: #1e293b;
   opacity: 0; transform: translateY(6px);
-  transition: opacity 300ms ease, transform 300ms ease;
+  transition: opacity 350ms ease, transform 350ms ease;
 }
 .weakness-card.revealed { opacity: 1; transform: translateY(0); }
-.weakness-card-num { font-size: 10px; font-weight: 700; color: #6d28d9; letter-spacing: .04em; margin-bottom: 3px; }
-.weakness-card-title { font-weight: 600; color: #1e1b4b; margin-bottom: 4px; }
-.weakness-card-body { color: #4c1d95; margin-bottom: 6px; }
+.weakness-card-num { font-size: 16px; font-weight: 700; color: #8b5cf6; margin-bottom: 0; }
+.weakness-card-title { font-size: 27px; font-weight: 700; color: #111827; margin-bottom: 2px; }
+.weakness-card-body { color: #1e293b; margin-bottom: 6px; }
 .weakness-card-apply {
-  background: #fff; border-radius: 6px; padding: 6px 8px;
-  font-size: 12px; color: #374151; border: 1px solid #e5e7eb;
+  font-size: 21px; color: #374151;
 }
 .weakness-card-apply-label {
-  font-size: 10px; font-weight: 700; color: #6d28d9;
-  letter-spacing: .04em; margin-bottom: 2px;
+  font-size: 16px; font-weight: 700; color: #8b5cf6;
+  margin-bottom: 0;
 }
 
 .retry-btn-row { display: flex; gap: 8px; padding: 10px 14px; flex-shrink: 0; }
@@ -5800,20 +5797,22 @@ var MarkingFlow = (function(){
     wt.className = 'weakness-panel-title';
     wt.textContent = 'Your weaknesses';
     wp.appendChild(wt);
+    var model = document.createElement('div');
+    model.className = 'weakness-panel-model';
+    model.textContent = 'Marked by Claude Haiku 4.5';
+    wp.appendChild(model);
     side.appendChild(wp);
 
     var body = document.createElement('div');
     body.id = 'markingBody';
-    body.style.cssText = 'flex:1;overflow-y:auto;padding:14px;';
+    body.style.cssText = 'flex:1;overflow-y:auto;padding:0 6px 14px;';
     side.appendChild(body);
 
-    var btn = document.createElement('button');
-    btn.className = 'marking-continue-btn';
-    btn.id = 'continueBtn';
-    btn.textContent = 'Loading AI marking...';
-    btn.disabled = true;
-    body.appendChild(btn);
-    btn.addEventListener('click', advanceStep);
+    var loading = document.createElement('div');
+    loading.className = 'marking-loading';
+    loading.id = 'markingLoading';
+    loading.textContent = 'marking your answer…';
+    body.appendChild(loading);
 
     var rr = document.createElement('div');
     rr.className = 'retry-btn-row';
@@ -5830,13 +5829,6 @@ var MarkingFlow = (function(){
     rr.appendChild(rb1);
     rr.appendChild(rb2);
     side.appendChild(rr);
-  }
-
-  function enableContinue(label){
-    var btn = document.getElementById('continueBtn');
-    if (!btn) return;
-    btn.textContent = label || 'Continue';
-    btn.disabled = false;
   }
 
   function start(qNum, studentAnswer, correctAnswer){
@@ -5870,21 +5862,26 @@ var MarkingFlow = (function(){
       } else {
         _queue = [{ annotation: null, weakness: { title: 'Review needed', body: 'Compare your answer to the correct answer shown.', apply: 'Re-read the mark scheme and try again.' }, worked_step: null }];
       }
-      enableContinue('See where you went wrong');
+      revealAll();
     })
     .catch(function(){
       _queue = [{ annotation: null, weakness: { title: 'Marking unavailable', body: 'Could not reach AI marking right now.', apply: 'Compare your answer to the correct answer shown.' }, worked_step: null }];
-      enableContinue('Continue');
+      revealAll();
     });
   }
 
-  function advanceStep(){
-    if (_step >= _queue.length){ showRetry(); return; }
-    var pair = _queue[_step];
-    _step++;
-    if (pair.weakness) revealWeaknessCard(_step, pair.weakness);
-    var remaining = _queue.length - _step;
-    enableContinue(remaining > 0 ? 'Next (' + remaining + ' more)' : 'See retry options');
+  // Shows every weakness card straight away, one after another with a short
+  // stagger for the handwriting-in animation — no button click required.
+  function revealAll(){
+    var loading = document.getElementById('markingLoading');
+    if (loading) loading.remove();
+    _queue.forEach(function(pair, idx){
+      setTimeout(function(){
+        _step = idx + 1;
+        if (pair.weakness) revealWeaknessCard(_step, pair.weakness);
+        if (idx === _queue.length - 1) showRetry();
+      }, idx * 400);
+    });
   }
 
   function revealWeaknessCard(num, weakness){
@@ -5926,8 +5923,6 @@ var MarkingFlow = (function(){
   }
 
   function showRetry(){
-    var btn = document.getElementById('continueBtn');
-    if (btn) btn.style.display = 'none';
     var rr = document.getElementById('retryRow');
     if (rr) rr.style.display = 'flex';
   }
