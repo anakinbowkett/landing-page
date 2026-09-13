@@ -15,6 +15,10 @@
 //                          builds the actual on-screen annotation positions
 //                          itself from the DOM — this endpoint never receives
 //                          or returns pixel/fraction coordinates, only text.
+//   action: 'mark'      -> Phase 2-4 wrong-answer flow (Maths base-template.txt,
+//                          added by a separate Maths-focused session, lives
+//                          in this same shared file to stay under the 12-file
+//                          cap). See handleMark() below for the full contract.
 //
 // CORS is locked to the same origin allowlist as api/chat.js (not '*') —
 // this calls a paid ElevenLabs API, so an open origin would let any site
@@ -171,10 +175,17 @@ async function handleMark(req, res) {
     // Feature: Phase 2-4 wrong-answer marking flow.
     // Receives the question, student answer, correct answer, and mark scheme.
     // Returns an array of { annotation, weakness, worked_step } pairs — one
-    // pair per mistake — that the client plays back one at a time on Continue.
+    // pair per mistake — that the client plays back one trio (annotation +
+    // weakness + numbered apply step) at a time on each Continue press.
     //
-    // annotation: what to draw on the student's work (type, target, text)
-    // weakness:   { title, body, apply } — first-principles explanation
+    // annotation: what to draw (type: text/underline/circle, text, color) —
+    //   no `target` field; the client always resolves the wrong-answer
+    //   button itself from the already-known studentAnswer text, since this
+    //   template's answer buttons carry no data-answer attribute to target.
+    // weakness:   { title, body, apply } — first-principles, 12-year-old-
+    //   reading-level explanation. May be 1-4 entries: one per genuinely
+    //   distinct root cause, never artificially split, never so many it
+    //   overwhelms the student on a complex multi-step topic.
     // worked_step: the correct working for this step (shown alongside)
     //
     // Never throws — degrades silently to {ok:false} so the retry buttons
@@ -199,10 +210,24 @@ async function handleMark(req, res) {
             : 'No mark scheme provided.';
 
         const systemPrompt =
-            'You are an expert ' + subjectLabel + ' tutor marking a GCSE student\'s wrong answer. '
-            + 'Apply Elon Musk\'s first-principles thinking: strip each mistake back to the irreducible rule it breaks. '
-            + 'Be specific to THIS question and THIS mistake — never generic. '
-            + 'Warm, direct tone. Never condescending. Max 2-3 weaknesses.';
+            'You are explaining to a 12-year-old exactly why they got a GCSE ' + subjectLabel + ' question wrong. '
+            + 'Use first-principles thinking: strip the mistake back to the simplest true rule or fact it breaks, '
+            + 'and explain that rule from scratch as if the student has never heard it before. '
+            + 'Use only simple, everyday words — no jargon, no exam-speak, nothing beyond what a bright 12-year-old '
+            + 'already knows. Short sentences. No complex words where a simple one will do. '
+            + 'If the mistake genuinely involves more than one separate misunderstanding — e.g. a multi-step '
+            + 'problem like simultaneous equations where several different things went wrong — split it into '
+            + 'that many separate weaknesses, one per distinct root cause, in the order the steps happen. '
+            + 'But do NOT invent extra weaknesses that are not really there: if it is genuinely one simple '
+            + 'mistake, give exactly one weakness. Never overwhelm the student — even on a complex multi-step '
+            + 'topic, only include a weakness for something that was ACTUALLY wrong, keep each one focused on '
+            + 'one single idea, and prefer fewer, clearer weaknesses over many small ones. '
+            + 'Every weakness needs an "apply" step that is a concrete, specific action — specific enough that '
+            + 'a 12-year-old could actually go and do it, never vague advice like "be more careful" or "check '
+            + 'your work". '
+            + 'Specific to THIS question and THIS mistake — never generic. Warm, direct, encouraging tone. '
+            + 'Never condescending. Prefer 1-2 weaknesses; only go to 3-4 if the mistake truly has that many '
+            + 'genuinely distinct root causes.';
 
         const userPrompt =
             'Question: ' + question + '\n'
@@ -219,7 +244,7 @@ async function handleMark(req, res) {
             },
             body: JSON.stringify({
                 model: 'claude-haiku-4-5-20251001',
-                max_tokens: 800,
+                max_tokens: 1200,
                 system: systemPrompt,
                 messages: [{ role: 'user', content: userPrompt }],
                 tools: [{
@@ -243,19 +268,18 @@ async function handleMark(req, res) {
                                                     enum: ['text', 'underline', 'circle'],
                                                     description: 'text = write a correction note; underline = underline the error; circle = circle the error'
                                                 },
-                                                text: { type: 'string', description: 'The correction note text (max 10 words, handwritten style). Required for type:text.' },
-                                                target: { type: 'string', description: 'data-answer value (A/B/C/D) to target for circle/underline. Omit for type:text.' },
+                                                text: { type: 'string', description: 'The correction note text (max 10 words, handwritten style, simple words a 12-year-old would use). Required for type:text.' },
                                                 color: { type: 'string', description: 'Hex colour. Use #e16280 for errors, #8b5cf6 for corrections.' }
                                             },
                                             required: ['type']
                                         },
                                         weakness: {
                                             type: 'object',
-                                            description: 'First-principles explanation of the underlying gap.',
+                                            description: 'First-principles explanation of the underlying gap, written for a 12-year-old.',
                                             properties: {
-                                                title: { type: 'string', description: 'The root rule broken, in 5 words or fewer.' },
-                                                body: { type: 'string', description: 'One sentence: why this specific answer broke that rule.' },
-                                                apply: { type: 'string', description: 'Exactly what to do next time this comes up. One sentence.' }
+                                                title: { type: 'string', description: 'The root rule broken, in 5 words or fewer, plain simple language.' },
+                                                body: { type: 'string', description: 'One or two short sentences: explain the true rule simply from scratch, then say exactly why this answer broke it. No jargon, no complex words — a 12-year-old who is not confident at maths must be able to understand it completely.' },
+                                                apply: { type: 'string', description: 'The exact, concrete action to do differently next time — specific enough for a 12-year-old to actually follow, not vague advice. One sentence.' }
                                             },
                                             required: ['title', 'body', 'apply']
                                         },

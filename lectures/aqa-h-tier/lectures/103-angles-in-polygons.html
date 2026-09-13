@@ -2548,35 +2548,66 @@ body.dark-mode #guideContent .g-paper-head-right { color: #64748b; }
 }
 .weakness-panel-title {
   font-size: 11px; font-weight: 700; letter-spacing: .05em;
-  text-transform: uppercase; color: #6b7280; margin-bottom: 2px;
+  text-transform: uppercase; color: #6b7280; margin-bottom: 14px;
 }
-.weakness-panel-model {
-  font-size: 11px; color: #b3b3b3; margin-bottom: 14px;
+.marking-continue-btn {
+  display: block; width: calc(100% - 12px); margin: 0 6px 10px; padding: 14px;
+  background: #1d7fe2; color: #fff; border: none; border-radius: 10px;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: background 150ms ease, transform 100ms ease;
 }
-.marking-loading {
-  font-family: 'Caveat', cursive; font-size: 22px; color: #9ca3af;
-  padding: 4px;
-}
+.marking-continue-btn:hover { background: #1d6fd1; }
+.marking-continue-btn:active { transform: scale(0.98); }
+.marking-continue-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
 /* Handwritten-on-the-page look: no boxes, no borders, no card background —
    just Caveat-font text as if a teacher marked it by hand. */
 .weakness-card {
-  padding: 4px 4px 20px; margin-bottom: 2px;
-  font-family: 'Caveat', cursive; font-size: 23px; line-height: 1.45;
+  padding: 4px 4px 22px; margin-bottom: 2px;
+  font-family: 'Caveat', cursive; font-size: 25px; line-height: 1.45;
   color: #1e293b;
   opacity: 0; transform: translateY(6px);
   transition: opacity 350ms ease, transform 350ms ease;
 }
 .weakness-card.revealed { opacity: 1; transform: translateY(0); }
-.weakness-card-num { font-size: 16px; font-weight: 700; color: #8b5cf6; margin-bottom: 0; }
-.weakness-card-title { font-size: 27px; font-weight: 700; color: #111827; margin-bottom: 2px; }
-.weakness-card-body { color: #1e293b; margin-bottom: 6px; }
+.weakness-card-num { font-size: 17px; font-weight: 700; color: #8b5cf6; margin-bottom: 0; }
+.weakness-card-title { font-size: 29px; font-weight: 700; color: #111827; margin-bottom: 2px; }
+.weakness-card-body { color: #1e293b; margin-bottom: 8px; }
 .weakness-card-apply {
-  font-size: 21px; color: #374151;
+  font-size: 23px; color: #374151;
 }
 .weakness-card-apply-label {
-  font-size: 16px; font-weight: 700; color: #8b5cf6;
+  font-size: 17px; font-weight: 700; color: #8b5cf6;
   margin-bottom: 0;
 }
+
+/* ── ANNOTATION ON THE WRONG-ANSWER BUTTON ──
+   The AI only ever supplies annotation type/text/color — the button itself
+   is always resolved client-side from the already-known studentAnswer text
+   (this template's answer buttons carry no data-answer attribute), same
+   never-trust-AI-for-coordinates rule as the English annotation engine. */
+.ai-dim-overlay{
+  position:absolute; inset:0; background:rgba(255,255,255,0.55); z-index:10;
+  opacity:0; transition:opacity 250ms ease; pointer-events:none;
+}
+.ai-dim-overlay.active{ opacity:1; }
+.ai-annotation-layer{ position:absolute; inset:0; z-index:11; pointer-events:none; }
+.ai-circle{
+  position:absolute; border:3px solid #e16280; border-radius:50%;
+  transform:translate(-50%,-50%) scale(0.6); opacity:0;
+  transition:transform 400ms cubic-bezier(.34,1.56,.64,1), opacity 250ms ease;
+}
+.ai-circle.grown{ transform:translate(-50%,-50%) scale(1); opacity:1; }
+.ai-underline{
+  position:absolute; height:3px; background:#e16280;
+  transform:scaleX(0); transform-origin:left; transition:transform 400ms ease;
+}
+.ai-underline.drawn{ transform:scaleX(1); }
+.ai-text-label{
+  position:absolute; font-family:'Caveat',cursive; font-size:21px; font-weight:600;
+  color:#8b5cf6; max-width:220px; line-height:1.3; transform:translate(-50%,0);
+  opacity:0; transition:opacity 250ms ease;
+}
+.ai-text-label.shown{ opacity:1; }
 
 .retry-btn-row { display: flex; gap: 8px; padding: 10px 14px; flex-shrink: 0; }
 .retry-btn {
@@ -5769,8 +5800,102 @@ var MarkingFlow = (function(){
   var _queue = [];
   var _step = 0;
   var _qNum = null;
+  var _studentAnswer = null;
 
   function getChatSide(){ return document.querySelector('.chat-side'); }
+
+  // Resolves the actual button the student picked, purely from its visible
+  // text (submitAnswerN() already passes textContent.trim() as
+  // studentAnswer — there's no data-answer attribute in this template to
+  // rely on instead). Returns null (silent no-op for annotation) if it
+  // can't find exactly one match, e.g. a multi-select "A, B" answer.
+  function resolveWrongAnswerButton(qNum, studentAnswer){
+    var box = document.getElementById('question-box-' + qNum);
+    if (!box || !studentAnswer) return null;
+    var btns = box.querySelectorAll('[class*="answer-option-' + qNum + '-"]');
+    var match = null;
+    btns.forEach(function(b){ if (b.textContent.trim() === studentAnswer) match = b; });
+    return match;
+  }
+
+  function getAILayer(box){
+    var layer = box.querySelector('.ai-annotation-layer');
+    if (!layer){
+      layer = document.createElement('div');
+      layer.className = 'ai-annotation-layer';
+      box.appendChild(layer);
+    }
+    return layer;
+  }
+
+  // Draws one annotation (circle/underline the wrong button, or float a
+  // correction note near it) on the question box. Marks accumulate across
+  // Continue presses — each one lands on the same persistent layer, so a
+  // second weakness's mark appears alongside the first, not replacing it.
+  function playAnnotation(qNum, studentAnswer, annotation){
+    if (!annotation) return;
+    var box = document.getElementById('question-box-' + qNum);
+    if (!box) return;
+    if (!box.style.position) box.style.position = 'relative';
+
+    var dim = box.querySelector('.ai-dim-overlay');
+    if (!dim){
+      dim = document.createElement('div');
+      dim.className = 'ai-dim-overlay';
+      box.insertBefore(dim, box.firstChild);
+    }
+    requestAnimationFrame(function(){ dim.classList.add('active'); });
+
+    var el = resolveWrongAnswerButton(qNum, studentAnswer);
+    var layer = getAILayer(box);
+    var boxRect = box.getBoundingClientRect();
+    var color = annotation.color || '#e16280';
+
+    if ((annotation.type === 'circle' || annotation.type === 'underline') && el){
+      var er = el.getBoundingClientRect();
+      var relX = er.left - boxRect.left, relY = er.top - boxRect.top;
+      if (annotation.type === 'circle'){
+        var size = Math.max(er.width, er.height) * 1.3;
+        var circle = document.createElement('div');
+        circle.className = 'ai-circle';
+        circle.style.left = (relX + er.width / 2) + 'px';
+        circle.style.top = (relY + er.height / 2) + 'px';
+        circle.style.width = size + 'px';
+        circle.style.height = size + 'px';
+        circle.style.borderColor = color;
+        layer.appendChild(circle);
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){ circle.classList.add('grown'); }); });
+      } else {
+        var underline = document.createElement('div');
+        underline.className = 'ai-underline';
+        underline.style.left = relX + 'px';
+        underline.style.top = (relY + er.height + 2) + 'px';
+        underline.style.width = er.width + 'px';
+        underline.style.background = color;
+        layer.appendChild(underline);
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){ underline.classList.add('drawn'); }); });
+      }
+    }
+
+    if (annotation.type === 'text' && annotation.text){
+      var tx, ty;
+      if (el){
+        var er2 = el.getBoundingClientRect();
+        tx = (er2.left - boxRect.left) + er2.width / 2;
+        ty = (er2.top - boxRect.top) - 30;
+      } else {
+        tx = boxRect.width / 2; ty = 16;
+      }
+      var label = document.createElement('div');
+      label.className = 'ai-text-label';
+      label.style.left = tx + 'px';
+      label.style.top = Math.max(4, ty) + 'px';
+      label.style.color = color;
+      label.textContent = annotation.text;
+      layer.appendChild(label);
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ label.classList.add('shown'); }); });
+    }
+  }
 
   function fadeOutOptions(qNum){
     var box = document.getElementById('question-box-' + qNum);
@@ -5797,10 +5922,6 @@ var MarkingFlow = (function(){
     wt.className = 'weakness-panel-title';
     wt.textContent = 'Your weaknesses';
     wp.appendChild(wt);
-    var model = document.createElement('div');
-    model.className = 'weakness-panel-model';
-    model.textContent = 'Marked by Claude Haiku 4.5';
-    wp.appendChild(model);
     side.appendChild(wp);
 
     var body = document.createElement('div');
@@ -5808,11 +5929,13 @@ var MarkingFlow = (function(){
     body.style.cssText = 'flex:1;overflow-y:auto;padding:0 6px 14px;';
     side.appendChild(body);
 
-    var loading = document.createElement('div');
-    loading.className = 'marking-loading';
-    loading.id = 'markingLoading';
-    loading.textContent = 'marking your answer…';
-    body.appendChild(loading);
+    var btn = document.createElement('button');
+    btn.className = 'marking-continue-btn';
+    btn.id = 'continueBtn';
+    btn.textContent = 'Marking your answer…';
+    btn.disabled = true;
+    body.appendChild(btn);
+    btn.addEventListener('click', advanceStep);
 
     var rr = document.createElement('div');
     rr.className = 'retry-btn-row';
@@ -5833,6 +5956,7 @@ var MarkingFlow = (function(){
 
   function start(qNum, studentAnswer, correctAnswer){
     _qNum = qNum;
+    _studentAnswer = studentAnswer;
     _queue = [];
     _step = 0;
     fadeOutOptions(qNum);
@@ -5862,26 +5986,33 @@ var MarkingFlow = (function(){
       } else {
         _queue = [{ annotation: null, weakness: { title: 'Review needed', body: 'Compare your answer to the correct answer shown.', apply: 'Re-read the mark scheme and try again.' }, worked_step: null }];
       }
-      revealAll();
+      enableContinue();
     })
     .catch(function(){
       _queue = [{ annotation: null, weakness: { title: 'Marking unavailable', body: 'Could not reach AI marking right now.', apply: 'Compare your answer to the correct answer shown.' }, worked_step: null }];
-      revealAll();
+      enableContinue();
     });
   }
 
-  // Shows every weakness card straight away, one after another with a short
-  // stagger for the handwriting-in animation — no button click required.
-  function revealAll(){
-    var loading = document.getElementById('markingLoading');
-    if (loading) loading.remove();
-    _queue.forEach(function(pair, idx){
-      setTimeout(function(){
-        _step = idx + 1;
-        if (pair.weakness) revealWeaknessCard(_step, pair.weakness);
-        if (idx === _queue.length - 1) showRetry();
-      }, idx * 400);
-    });
+  function enableContinue(){
+    var btn = document.getElementById('continueBtn');
+    if (!btn) return;
+    btn.textContent = 'Continue';
+    btn.disabled = false;
+  }
+
+  // Each press reveals exactly one matched trio: the annotation on the
+  // question, the weakness card, and its numbered "how to apply it" step —
+  // all from the same pair, all at once, per the intended design.
+  function advanceStep(){
+    if (_step >= _queue.length){ showRetry(); return; }
+    var pair = _queue[_step];
+    _step++;
+    playAnnotation(_qNum, _studentAnswer, pair.annotation);
+    if (pair.weakness) revealWeaknessCard(_step, pair.weakness);
+    var remaining = _queue.length - _step;
+    var btn = document.getElementById('continueBtn');
+    if (btn) btn.textContent = remaining > 0 ? 'Next (' + remaining + ' more)' : 'See retry options';
   }
 
   function revealWeaknessCard(num, weakness){
@@ -5910,7 +6041,7 @@ var MarkingFlow = (function(){
       aw.className = 'weakness-card-apply';
       var al = document.createElement('div');
       al.className = 'weakness-card-apply-label';
-      al.textContent = 'HOW TO APPLY IT';
+      al.textContent = 'APPLICATION STEP ' + num;
       aw.appendChild(al);
       aw.appendChild(document.createTextNode(weakness.apply));
       card.appendChild(aw);
@@ -5923,6 +6054,8 @@ var MarkingFlow = (function(){
   }
 
   function showRetry(){
+    var btn = document.getElementById('continueBtn');
+    if (btn) btn.style.display = 'none';
     var rr = document.getElementById('retryRow');
     if (rr) rr.style.display = 'flex';
   }
@@ -5934,6 +6067,10 @@ var MarkingFlow = (function(){
     btns.forEach(function(b){ b.style.opacity = '1'; b.style.transform = ''; });
     var submit = document.getElementById('submit-button-' + qNum);
     if (submit) submit.style.opacity = '1';
+    var dim = box.querySelector('.ai-dim-overlay');
+    if (dim) dim.remove();
+    var layer = box.querySelector('.ai-annotation-layer');
+    if (layer) layer.remove();
   }
 
   function restoreChatBox(){
