@@ -173,15 +173,26 @@ async function handleDiagnose(req, res) {
 
 async function handleMark(req, res) {
     // Feature: Phase 2-4 wrong-answer marking flow.
-    // Receives the question, student answer, correct answer, and mark scheme.
-    // Returns an array of { annotation, weakness, worked_step } pairs — one
-    // pair per mistake — that the client plays back one trio (annotation +
-    // weakness + numbered apply step) at a time on each Continue press.
+    // Receives the question, student answer, correct answer, mark scheme,
+    // and (new) an optional rasterized PNG of the question's diagram —
+    // Claude Haiku 4.5 has real vision input, so when a diagram is present
+    // it SEES the actual diagram, not just text, and can point annotations
+    // at a specific spot in it (diagram_x/diagram_y), not only at the
+    // answer button. Returns an array of { annotation, weakness,
+    // worked_step } pairs — one pair per mistake — that the client plays
+    // back one trio (annotation + weakness + numbered apply step) at a
+    // time on each Continue press.
     //
-    // annotation: what to draw (type: text/underline/circle, text, color) —
-    //   no `target` field; the client always resolves the wrong-answer
+    // annotation: what to draw (type: text/underline/circle, text, color,
+    //   optional diagram_x/diagram_y). No `target` field — for the
+    //   answer-button case the client always resolves the wrong-answer
     //   button itself from the already-known studentAnswer text, since this
     //   template's answer buttons carry no data-answer attribute to target.
+    //   diagram_x/diagram_y (0-1 fractions of the diagram image, from the
+    //   top-left) are set instead when the mistake is about something
+    //   actually shown in the diagram — only meaningful when diagram_image
+    //   was sent; the client positions the mark against the live SVG's
+    //   bounding box using the same fraction.
     // weakness:   { title, body, apply } — first-principles, 12-year-old-
     //   reading-level explanation. May be 1-4 entries: one per genuinely
     //   distinct root cause, never artificially split, never so many it
@@ -193,7 +204,7 @@ async function handleMark(req, res) {
     try {
         const {
             question, student_answer, correct_answer,
-            mark_scheme, subject
+            mark_scheme, subject, diagram_image
         } = req.body || {};
 
         if (!question || !student_answer) {
@@ -208,6 +219,7 @@ async function handleMark(req, res) {
         const markSchemeText = Array.isArray(mark_scheme) && mark_scheme.length
             ? mark_scheme.join('\n')
             : 'No mark scheme provided.';
+        const hasDiagram = typeof diagram_image === 'string' && diagram_image.length > 0;
 
         const systemPrompt =
             'You are explaining to a 12-year-old exactly why they got a GCSE ' + subjectLabel + ' question wrong. '
@@ -227,13 +239,29 @@ async function handleMark(req, res) {
             + 'your work". '
             + 'Specific to THIS question and THIS mistake — never generic. Warm, direct, encouraging tone. '
             + 'Never condescending. Prefer 1-2 weaknesses; only go to 3-4 if the mistake truly has that many '
-            + 'genuinely distinct root causes.';
+            + 'genuinely distinct root causes.'
+            + (hasDiagram
+                ? ' You can SEE an image of this question\'s actual diagram — look at it directly. When the '
+                  + 'mistake is about something shown in the diagram (which angle, which side, which point), '
+                  + 'point at the EXACT spot in the image using annotation.diagram_x and annotation.diagram_y '
+                  + '(0 to 1, fraction of the image width/height from the top-left corner) instead of just '
+                  + 'marking the answer button — be precise, look at where that specific feature actually sits '
+                  + 'in the image before giving coordinates.'
+                : '');
 
-        const userPrompt =
+        const userPromptText =
             'Question: ' + question + '\n'
             + 'Student\'s answer: ' + student_answer + '\n'
             + 'Correct answer: ' + correct_answer + '\n'
-            + 'Mark scheme:\n' + markSchemeText;
+            + 'Mark scheme:\n' + markSchemeText
+            + (hasDiagram ? '\n\nThe image attached is this question\'s actual diagram — look at it before answering.' : '');
+
+        const userContent = hasDiagram
+            ? [
+                { type: 'image', source: { type: 'base64', media_type: 'image/png', data: diagram_image } },
+                { type: 'text', text: userPromptText },
+              ]
+            : userPromptText;
 
         const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
@@ -246,7 +274,7 @@ async function handleMark(req, res) {
                 model: 'claude-haiku-4-5-20251001',
                 max_tokens: 1200,
                 system: systemPrompt,
-                messages: [{ role: 'user', content: userPrompt }],
+                messages: [{ role: 'user', content: userContent }],
                 tools: [{
                     name: 'record_marking',
                     description: 'Record the marking pairs for each mistake the student made.',
@@ -269,7 +297,9 @@ async function handleMark(req, res) {
                                                     description: 'text = write a correction note; underline = underline the error; circle = circle the error'
                                                 },
                                                 text: { type: 'string', description: 'The correction note text (max 10 words, handwritten style, simple words a 12-year-old would use). Required for type:text.' },
-                                                color: { type: 'string', description: 'Hex colour. Use #e16280 for errors, #8b5cf6 for corrections.' }
+                                                color: { type: 'string', description: 'Hex colour. Use #e16280 for errors, #8b5cf6 for corrections.' },
+                                                diagram_x: { type: 'number', description: 'Fraction 0-1 across the diagram image (left to right) — ONLY set if a diagram image was provided AND this mark points at something in the diagram itself, not the answer button.' },
+                                                diagram_y: { type: 'number', description: 'Fraction 0-1 down the diagram image (top to bottom) — pair with diagram_x. Omit both for an answer-button annotation.' }
                                             },
                                             required: ['type']
                                         },
