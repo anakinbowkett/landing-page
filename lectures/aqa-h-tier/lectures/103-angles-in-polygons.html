@@ -526,7 +526,7 @@ html,body{
 .question-number-label-6 {
   position: absolute;
   top: 16px;
-  right: 16px;
+  left: 16px;
   font-size: 13px;
   font-weight: 600;
   color: #6b7280;
@@ -543,7 +543,7 @@ html,body{
 .mark-counter-6 {
   position: absolute;
   bottom: 32px;
-  left: 32px;
+  right: 32px;
   font-size: 14px;
   font-weight: 600;
   color: #6b7280;
@@ -585,8 +585,7 @@ html,body{
   font-size: 16px !important;
   font-weight: 500;
   color: #111827;
-  text-align: center;
-  margin: 32px 0 28px 0;
+  text-align: left; margin: 32px 0 28px 0;
   line-height: 1.6;
 }
 
@@ -599,8 +598,7 @@ html,body{
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin: 0 auto;
-  max-width: 600px;
+  margin: 0; max-width: 460px;
 }
 
 .answer-option-1-1,
@@ -627,19 +625,23 @@ html,body{
 .answer-option-6-2,
 .answer-option-6-3,
 .answer-option-6-4 {
-  padding: 16px 20px !important;
-  border: 2px solid #e5e7eb !important;
-  border-radius: 10px !important;
+  padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
   font-size: 15px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
-  background: #ffffff !important;
+  background: transparent !important;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.15s ease;
   text-align: left !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
-  line-height: 1.55 !important;
+  line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .answer-option-1-1:hover:not(:disabled),
@@ -666,8 +668,7 @@ html,body{
 .answer-option-6-2:hover:not(:disabled),
 .answer-option-6-3:hover:not(:disabled),
 .answer-option-6-4:hover:not(:disabled) {
-  border-color: #1d7fe2 !important;
-  background: #f0f9ff !important;
+  background: #f8fafc !important;
 }
 
 .answer-option-1-1.selected,
@@ -694,9 +695,8 @@ html,body{
 .answer-option-6-2.selected,
 .answer-option-6-3.selected,
 .answer-option-6-4.selected {
-  border-color: #1d7fe2 !important;
-  background: #1d7fe2 !important;
-  color: white !important;
+  background: transparent !important;
+  color: #1f2937 !important;
 }
 
 .answer-option-1-1.correct-answer,
@@ -723,9 +723,57 @@ html,body{
 .answer-option-6-2.correct-answer,
 .answer-option-6-3.correct-answer,
 .answer-option-6-4.correct-answer {
-  border-color: #54d3ab !important;
-  background: #54d3ab !important;
-  color: white !important;
+  background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important;
+}
+
+
+/* Exam-paper tickbox — one rule covers every answer-option-N-M element,
+   however many questions/options exist, instead of duplicating this per
+   question number. */
+[class*="answer-option-"]::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border: 2px solid #9ca3af;
+  border-radius: 3px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+[class*="answer-option-"].selected::before {
+  background: #1d7fe2;
+  border-color: #1d7fe2;
+}
+[class*="answer-option-"].selected::after {
+  content: '';
+  position: absolute;
+  left: 19.5px;
+  top: 47%;
+  width: 5px;
+  height: 9px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-60%) rotate(45deg);
+}
+[class*="answer-option-"].correct-answer::before {
+  background: #54d3ab;
+  border-color: #54d3ab;
+}
+[class*="answer-option-"].correct-answer::after {
+  content: '';
+  position: absolute;
+  left: 19.5px;
+  top: 47%;
+  width: 5px;
+  height: 9px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-60%) rotate(45deg);
 }
 
 .submit-button-1,
@@ -788,16 +836,37 @@ html,body{
 }
 .question-box-7.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-7.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-7 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-7 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-7 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-7 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-7.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-7.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-7 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-7 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-7-1, .answer-option-7-2, .answer-option-7-3, .answer-option-7-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-7-1:hover:not(:disabled), .answer-option-7-2:hover:not(:disabled), .answer-option-7-3:hover:not(:disabled), .answer-option-7-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-7-1.selected, .answer-option-7-2.selected, .answer-option-7-3.selected, .answer-option-7-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-7-1.correct-answer, .answer-option-7-2.correct-answer, .answer-option-7-3.correct-answer, .answer-option-7-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-7 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-7 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-7-1, .answer-option-7-2, .answer-option-7-3, .answer-option-7-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-7-1:hover:not(:disabled), .answer-option-7-2:hover:not(:disabled), .answer-option-7-3:hover:not(:disabled), .answer-option-7-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-7-1.selected, .answer-option-7-2.selected, .answer-option-7-3.selected, .answer-option-7-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-7-1.correct-answer, .answer-option-7-2.correct-answer, .answer-option-7-3.correct-answer, .answer-option-7-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-7 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-7:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-7:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -820,16 +889,37 @@ html,body{
 }
 .question-box-8.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-8.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-8 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-8 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-8 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-8 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-8.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-8.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-8 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-8 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-8-1, .answer-option-8-2, .answer-option-8-3, .answer-option-8-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-8-1:hover:not(:disabled), .answer-option-8-2:hover:not(:disabled), .answer-option-8-3:hover:not(:disabled), .answer-option-8-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-8-1.selected, .answer-option-8-2.selected, .answer-option-8-3.selected, .answer-option-8-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-8-1.correct-answer, .answer-option-8-2.correct-answer, .answer-option-8-3.correct-answer, .answer-option-8-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-8 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-8 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-8-1, .answer-option-8-2, .answer-option-8-3, .answer-option-8-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-8-1:hover:not(:disabled), .answer-option-8-2:hover:not(:disabled), .answer-option-8-3:hover:not(:disabled), .answer-option-8-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-8-1.selected, .answer-option-8-2.selected, .answer-option-8-3.selected, .answer-option-8-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-8-1.correct-answer, .answer-option-8-2.correct-answer, .answer-option-8-3.correct-answer, .answer-option-8-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-8 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-8:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-8:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -852,16 +942,37 @@ html,body{
 }
 .question-box-9.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-9.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-9 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-9 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-9 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-9 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-9.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-9.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-9 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-9 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-9-1, .answer-option-9-2, .answer-option-9-3, .answer-option-9-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-9-1:hover:not(:disabled), .answer-option-9-2:hover:not(:disabled), .answer-option-9-3:hover:not(:disabled), .answer-option-9-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-9-1.selected, .answer-option-9-2.selected, .answer-option-9-3.selected, .answer-option-9-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-9-1.correct-answer, .answer-option-9-2.correct-answer, .answer-option-9-3.correct-answer, .answer-option-9-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-9 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-9 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-9-1, .answer-option-9-2, .answer-option-9-3, .answer-option-9-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-9-1:hover:not(:disabled), .answer-option-9-2:hover:not(:disabled), .answer-option-9-3:hover:not(:disabled), .answer-option-9-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-9-1.selected, .answer-option-9-2.selected, .answer-option-9-3.selected, .answer-option-9-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-9-1.correct-answer, .answer-option-9-2.correct-answer, .answer-option-9-3.correct-answer, .answer-option-9-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-9 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-9:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-9:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -884,16 +995,37 @@ html,body{
 }
 .question-box-10.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-10.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-10 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-10 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-10 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-10 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-10.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-10.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-10 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-10 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-10-1, .answer-option-10-2, .answer-option-10-3, .answer-option-10-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-10-1:hover:not(:disabled), .answer-option-10-2:hover:not(:disabled), .answer-option-10-3:hover:not(:disabled), .answer-option-10-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-10-1.selected, .answer-option-10-2.selected, .answer-option-10-3.selected, .answer-option-10-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-10-1.correct-answer, .answer-option-10-2.correct-answer, .answer-option-10-3.correct-answer, .answer-option-10-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-10 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-10 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-10-1, .answer-option-10-2, .answer-option-10-3, .answer-option-10-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-10-1:hover:not(:disabled), .answer-option-10-2:hover:not(:disabled), .answer-option-10-3:hover:not(:disabled), .answer-option-10-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-10-1.selected, .answer-option-10-2.selected, .answer-option-10-3.selected, .answer-option-10-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-10-1.correct-answer, .answer-option-10-2.correct-answer, .answer-option-10-3.correct-answer, .answer-option-10-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-10 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-10:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-10:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -916,16 +1048,37 @@ html,body{
 }
 .question-box-11.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-11.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-11 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-11 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-11 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-11 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-11.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-11.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-11 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-11 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-11-1, .answer-option-11-2, .answer-option-11-3, .answer-option-11-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-11-1:hover:not(:disabled), .answer-option-11-2:hover:not(:disabled), .answer-option-11-3:hover:not(:disabled), .answer-option-11-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-11-1.selected, .answer-option-11-2.selected, .answer-option-11-3.selected, .answer-option-11-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-11-1.correct-answer, .answer-option-11-2.correct-answer, .answer-option-11-3.correct-answer, .answer-option-11-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-11 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-11 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-11-1, .answer-option-11-2, .answer-option-11-3, .answer-option-11-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-11-1:hover:not(:disabled), .answer-option-11-2:hover:not(:disabled), .answer-option-11-3:hover:not(:disabled), .answer-option-11-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-11-1.selected, .answer-option-11-2.selected, .answer-option-11-3.selected, .answer-option-11-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-11-1.correct-answer, .answer-option-11-2.correct-answer, .answer-option-11-3.correct-answer, .answer-option-11-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-11 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-11:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-11:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -948,16 +1101,37 @@ html,body{
 }
 .question-box-12.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-12.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-12 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-12 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-12 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-12 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-12.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-12.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-12 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-12 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-12-1, .answer-option-12-2, .answer-option-12-3, .answer-option-12-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-12-1:hover:not(:disabled), .answer-option-12-2:hover:not(:disabled), .answer-option-12-3:hover:not(:disabled), .answer-option-12-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-12-1.selected, .answer-option-12-2.selected, .answer-option-12-3.selected, .answer-option-12-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-12-1.correct-answer, .answer-option-12-2.correct-answer, .answer-option-12-3.correct-answer, .answer-option-12-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-12 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-12 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-12-1, .answer-option-12-2, .answer-option-12-3, .answer-option-12-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-12-1:hover:not(:disabled), .answer-option-12-2:hover:not(:disabled), .answer-option-12-3:hover:not(:disabled), .answer-option-12-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-12-1.selected, .answer-option-12-2.selected, .answer-option-12-3.selected, .answer-option-12-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-12-1.correct-answer, .answer-option-12-2.correct-answer, .answer-option-12-3.correct-answer, .answer-option-12-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-12 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-12:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-12:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -980,16 +1154,37 @@ html,body{
 }
 .question-box-13.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-13.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-13 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-13 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-13 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-13 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-13.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-13.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-13 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-13 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-13-1, .answer-option-13-2, .answer-option-13-3, .answer-option-13-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-13-1:hover:not(:disabled), .answer-option-13-2:hover:not(:disabled), .answer-option-13-3:hover:not(:disabled), .answer-option-13-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-13-1.selected, .answer-option-13-2.selected, .answer-option-13-3.selected, .answer-option-13-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-13-1.correct-answer, .answer-option-13-2.correct-answer, .answer-option-13-3.correct-answer, .answer-option-13-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-13 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-13 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-13-1, .answer-option-13-2, .answer-option-13-3, .answer-option-13-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-13-1:hover:not(:disabled), .answer-option-13-2:hover:not(:disabled), .answer-option-13-3:hover:not(:disabled), .answer-option-13-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-13-1.selected, .answer-option-13-2.selected, .answer-option-13-3.selected, .answer-option-13-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-13-1.correct-answer, .answer-option-13-2.correct-answer, .answer-option-13-3.correct-answer, .answer-option-13-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-13 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-13:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-13:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1012,16 +1207,37 @@ html,body{
 }
 .question-box-14.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-14.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-14 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-14 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-14 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-14 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-14.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-14.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-14 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-14 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-14-1, .answer-option-14-2, .answer-option-14-3, .answer-option-14-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-14-1:hover:not(:disabled), .answer-option-14-2:hover:not(:disabled), .answer-option-14-3:hover:not(:disabled), .answer-option-14-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-14-1.selected, .answer-option-14-2.selected, .answer-option-14-3.selected, .answer-option-14-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-14-1.correct-answer, .answer-option-14-2.correct-answer, .answer-option-14-3.correct-answer, .answer-option-14-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-14 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-14 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-14-1, .answer-option-14-2, .answer-option-14-3, .answer-option-14-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-14-1:hover:not(:disabled), .answer-option-14-2:hover:not(:disabled), .answer-option-14-3:hover:not(:disabled), .answer-option-14-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-14-1.selected, .answer-option-14-2.selected, .answer-option-14-3.selected, .answer-option-14-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-14-1.correct-answer, .answer-option-14-2.correct-answer, .answer-option-14-3.correct-answer, .answer-option-14-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-14 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-14:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-14:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1044,16 +1260,37 @@ html,body{
 }
 .question-box-15.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-15.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-15 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-15 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-15 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-15 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-15.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-15.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-15 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-15 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-15-1, .answer-option-15-2, .answer-option-15-3, .answer-option-15-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-15-1:hover:not(:disabled), .answer-option-15-2:hover:not(:disabled), .answer-option-15-3:hover:not(:disabled), .answer-option-15-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-15-1.selected, .answer-option-15-2.selected, .answer-option-15-3.selected, .answer-option-15-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-15-1.correct-answer, .answer-option-15-2.correct-answer, .answer-option-15-3.correct-answer, .answer-option-15-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-15 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-15 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-15-1, .answer-option-15-2, .answer-option-15-3, .answer-option-15-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-15-1:hover:not(:disabled), .answer-option-15-2:hover:not(:disabled), .answer-option-15-3:hover:not(:disabled), .answer-option-15-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-15-1.selected, .answer-option-15-2.selected, .answer-option-15-3.selected, .answer-option-15-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-15-1.correct-answer, .answer-option-15-2.correct-answer, .answer-option-15-3.correct-answer, .answer-option-15-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-15 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-15:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-15:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1076,16 +1313,37 @@ html,body{
 }
 .question-box-16.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-16.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-16 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-16 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-16 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-16 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-16.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-16.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-16 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-16 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-16-1, .answer-option-16-2, .answer-option-16-3, .answer-option-16-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-16-1:hover:not(:disabled), .answer-option-16-2:hover:not(:disabled), .answer-option-16-3:hover:not(:disabled), .answer-option-16-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-16-1.selected, .answer-option-16-2.selected, .answer-option-16-3.selected, .answer-option-16-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-16-1.correct-answer, .answer-option-16-2.correct-answer, .answer-option-16-3.correct-answer, .answer-option-16-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-16 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-16 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-16-1, .answer-option-16-2, .answer-option-16-3, .answer-option-16-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-16-1:hover:not(:disabled), .answer-option-16-2:hover:not(:disabled), .answer-option-16-3:hover:not(:disabled), .answer-option-16-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-16-1.selected, .answer-option-16-2.selected, .answer-option-16-3.selected, .answer-option-16-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-16-1.correct-answer, .answer-option-16-2.correct-answer, .answer-option-16-3.correct-answer, .answer-option-16-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-16 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-16:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-16:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1108,16 +1366,37 @@ html,body{
 }
 .question-box-17.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-17.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-17 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-17 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-17 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-17 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-17.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-17.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-17 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-17 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-17-1, .answer-option-17-2, .answer-option-17-3, .answer-option-17-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-17-1:hover:not(:disabled), .answer-option-17-2:hover:not(:disabled), .answer-option-17-3:hover:not(:disabled), .answer-option-17-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-17-1.selected, .answer-option-17-2.selected, .answer-option-17-3.selected, .answer-option-17-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-17-1.correct-answer, .answer-option-17-2.correct-answer, .answer-option-17-3.correct-answer, .answer-option-17-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-17 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-17 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-17-1, .answer-option-17-2, .answer-option-17-3, .answer-option-17-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-17-1:hover:not(:disabled), .answer-option-17-2:hover:not(:disabled), .answer-option-17-3:hover:not(:disabled), .answer-option-17-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-17-1.selected, .answer-option-17-2.selected, .answer-option-17-3.selected, .answer-option-17-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-17-1.correct-answer, .answer-option-17-2.correct-answer, .answer-option-17-3.correct-answer, .answer-option-17-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-17 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-17:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-17:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1140,16 +1419,37 @@ html,body{
 }
 .question-box-18.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-18.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-18 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-18 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-18 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-18 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-18.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-18.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-18 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-18 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-18-1, .answer-option-18-2, .answer-option-18-3, .answer-option-18-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-18-1:hover:not(:disabled), .answer-option-18-2:hover:not(:disabled), .answer-option-18-3:hover:not(:disabled), .answer-option-18-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-18-1.selected, .answer-option-18-2.selected, .answer-option-18-3.selected, .answer-option-18-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-18-1.correct-answer, .answer-option-18-2.correct-answer, .answer-option-18-3.correct-answer, .answer-option-18-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-18 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-18 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-18-1, .answer-option-18-2, .answer-option-18-3, .answer-option-18-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-18-1:hover:not(:disabled), .answer-option-18-2:hover:not(:disabled), .answer-option-18-3:hover:not(:disabled), .answer-option-18-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-18-1.selected, .answer-option-18-2.selected, .answer-option-18-3.selected, .answer-option-18-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-18-1.correct-answer, .answer-option-18-2.correct-answer, .answer-option-18-3.correct-answer, .answer-option-18-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-18 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-18:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-18:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1172,16 +1472,37 @@ html,body{
 }
 .question-box-19.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-19.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-19 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-19 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-19 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-19 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-19.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-19.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-19 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-19 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-19-1, .answer-option-19-2, .answer-option-19-3, .answer-option-19-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-19-1:hover:not(:disabled), .answer-option-19-2:hover:not(:disabled), .answer-option-19-3:hover:not(:disabled), .answer-option-19-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-19-1.selected, .answer-option-19-2.selected, .answer-option-19-3.selected, .answer-option-19-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-19-1.correct-answer, .answer-option-19-2.correct-answer, .answer-option-19-3.correct-answer, .answer-option-19-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-19 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-19 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-19-1, .answer-option-19-2, .answer-option-19-3, .answer-option-19-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-19-1:hover:not(:disabled), .answer-option-19-2:hover:not(:disabled), .answer-option-19-3:hover:not(:disabled), .answer-option-19-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-19-1.selected, .answer-option-19-2.selected, .answer-option-19-3.selected, .answer-option-19-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-19-1.correct-answer, .answer-option-19-2.correct-answer, .answer-option-19-3.correct-answer, .answer-option-19-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-19 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-19:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-19:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1204,16 +1525,37 @@ html,body{
 }
 .question-box-20.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-20.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-20 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-20 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-20 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-20 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-20.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-20.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-20 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-20 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-20-1, .answer-option-20-2, .answer-option-20-3, .answer-option-20-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-20-1:hover:not(:disabled), .answer-option-20-2:hover:not(:disabled), .answer-option-20-3:hover:not(:disabled), .answer-option-20-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-20-1.selected, .answer-option-20-2.selected, .answer-option-20-3.selected, .answer-option-20-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-20-1.correct-answer, .answer-option-20-2.correct-answer, .answer-option-20-3.correct-answer, .answer-option-20-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-20 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-20 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-20-1, .answer-option-20-2, .answer-option-20-3, .answer-option-20-4 { padding: 9px 14px 9px 42px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-20-1:hover:not(:disabled), .answer-option-20-2:hover:not(:disabled), .answer-option-20-3:hover:not(:disabled), .answer-option-20-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-20-1.selected, .answer-option-20-2.selected, .answer-option-20-3.selected, .answer-option-20-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-20-1.correct-answer, .answer-option-20-2.correct-answer, .answer-option-20-3.correct-answer, .answer-option-20-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-20 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-20:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-20:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1579,7 +1921,7 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-1">Q1 of 16</div>
   <div class="mark-counter-1" id="mark-counter-1">0/1</div>
   <div class="question-title-1">
-    <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg"><line x1="60" y1="326.07886451968966" x2="440" y2="326.07886451968966" stroke="#1e293b" stroke-width="2"></line><line x1="440" y1="326.07886451968966" x2="60.000000000000014" y2="60" stroke="#1e293b" stroke-width="2"></line><line x1="60.000000000000014" y1="60" x2="60" y2="326.07886451968966" stroke="#1e293b" stroke-width="2"></line><text x="41.97865502564218" y="338.69754611941266" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">A</text><text x="460.7642119123193" y="333.3484933726846" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">B</text><text x="47.215269761176245" y="42.09607102559595" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">C</text><path d="M 78 326.07886451968966 L 78 308.07886451968966 L 60 308.07886451968966" stroke="#1e293b" stroke-width="2" fill="none"></path><text x="407.5736236745603" y="315.8548673365444" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="15" fill="#1e293b">35°</text><text x="75.69945284999116" y="90.15836832805954" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="15" fill="#1e293b">55°</text></svg>
+    <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg"><line x1="60" y1="326.07886451968966" x2="440" y2="326.07886451968966" stroke="#1e293b" stroke-width="2"></line><line x1="440" y1="326.07886451968966" x2="60.000000000000014" y2="60" stroke="#1e293b" stroke-width="2"></line><line x1="60.000000000000014" y1="60" x2="60" y2="326.07886451968966" stroke="#1e293b" stroke-width="2"></line><text x="41.97865502564218" y="338.69754611941266" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">A</text><text x="460.7642119123193" y="333.3484933726846" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">B</text><text x="47.215269761176245" y="42.09607102559595" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">C</text><path d="M 78 326.07886451968966 L 78 308.07886451968966 L 60 308.07886451968966" stroke="#1e293b" stroke-width="2" fill="none"></path><text x="407.5736236745603" y="315.8548673365444" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="22" fill="#1e293b">35°</text><text x="75.69945284999116" y="90.15836832805954" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="22" fill="#1e293b">55°</text></svg>
     TEMP TEST QUESTION (auto-diagram pipeline integration test) — A triangle has one angle of 90 degrees and another angle of 35 degrees. What is the size of the third angle?
   </div>
   <div class="answer-container-1">
@@ -5282,11 +5624,6 @@ window.setCurrentQuestion = function(questionNumber) {
   if (questionData && chatSubtitle) {
     chatSubtitle.textContent = 'Q' + questionNumber + ': ' + (questionData.topic || '');
   }
-  document.querySelectorAll('[class^="question-box-"]').forEach(function(box) {
-    box.style.borderColor = '#e5e7eb';
-  });
-  var activeBox = document.getElementById('question-box-' + questionNumber);
-  if (activeBox) activeBox.style.borderColor = '#1d7fe2';
   injectChatDivider(questionNumber);
 };
   
