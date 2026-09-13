@@ -5986,24 +5986,23 @@ var MarkingFlow = (function(){
       } else {
         _queue = [{ annotation: null, weakness: { title: 'Review needed', body: 'Compare your answer to the correct answer shown.', apply: 'Re-read the mark scheme and try again.' }, worked_step: null }];
       }
-      enableContinue();
+      var btn = document.getElementById('continueBtn');
+      if (btn) btn.disabled = false;
+      advanceStep(); // the AI has already spoken — show the first weakness + application step immediately, no click needed
     })
     .catch(function(){
       _queue = [{ annotation: null, weakness: { title: 'Marking unavailable', body: 'Could not reach AI marking right now.', apply: 'Compare your answer to the correct answer shown.' }, worked_step: null }];
-      enableContinue();
+      var btn = document.getElementById('continueBtn');
+      if (btn) btn.disabled = false;
+      advanceStep();
     });
-  }
-
-  function enableContinue(){
-    var btn = document.getElementById('continueBtn');
-    if (!btn) return;
-    btn.textContent = 'Continue';
-    btn.disabled = false;
   }
 
   // Each press reveals exactly one matched trio: the annotation on the
   // question, the weakness card, and its numbered "how to apply it" step —
-  // all from the same pair, all at once, per the intended design.
+  // all from the same pair, all at once. The FIRST trio shows automatically
+  // as soon as the AI responds (called directly above, not from a click) —
+  // only the SECOND trio onward needs an actual Continue press.
   function advanceStep(){
     if (_step >= _queue.length){ showRetry(); return; }
     var pair = _queue[_step];
