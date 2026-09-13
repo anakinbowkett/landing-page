@@ -5832,6 +5832,31 @@ var MarkingFlow = (function(){
   // correction note near it) on the question box. Marks accumulate across
   // Continue presses — each one lands on the same persistent layer, so a
   // second weakness's mark appears alongside the first, not replacing it.
+  // The AI targets one of two things: the wrong answer button (as before),
+  // or — when a diagram image was sent and the mistake is about something
+  // actually shown in it — a point INSIDE THE DIAGRAM via diagram_x/
+  // diagram_y (0-1 fractions Claude gave back after actually looking at
+  // the image). Resolves both to the same {left, top, width, height} shape
+  // relative to the question box, so the rest of playAnnotation doesn't
+  // need to know which one it got.
+  function resolveAnnotationRect(qNum, studentAnswer, annotation, boxRect){
+    if (typeof annotation.diagram_x === 'number' && typeof annotation.diagram_y === 'number'){
+      var titleEl = document.querySelector('.question-title-' + qNum);
+      var svg = titleEl ? titleEl.querySelector('svg') : null;
+      if (svg){
+        var sr = svg.getBoundingClientRect();
+        var px = sr.left - boxRect.left + annotation.diagram_x * sr.width;
+        var py = sr.top - boxRect.top + annotation.diagram_y * sr.height;
+        var mark = Math.max(20, Math.min(sr.width, sr.height) * 0.12);
+        return { left: px - mark / 2, top: py - mark / 2, width: mark, height: mark };
+      }
+    }
+    var el = resolveWrongAnswerButton(qNum, studentAnswer);
+    if (!el) return null;
+    var er = el.getBoundingClientRect();
+    return { left: er.left - boxRect.left, top: er.top - boxRect.top, width: er.width, height: er.height };
+  }
+
   function playAnnotation(qNum, studentAnswer, annotation){
     if (!annotation) return;
     var box = document.getElementById('question-box-' + qNum);
@@ -5846,20 +5871,18 @@ var MarkingFlow = (function(){
     }
     requestAnimationFrame(function(){ dim.classList.add('active'); });
 
-    var el = resolveWrongAnswerButton(qNum, studentAnswer);
     var layer = getAILayer(box);
     var boxRect = box.getBoundingClientRect();
     var color = annotation.color || '#e16280';
+    var target = resolveAnnotationRect(qNum, studentAnswer, annotation, boxRect);
 
-    if ((annotation.type === 'circle' || annotation.type === 'underline') && el){
-      var er = el.getBoundingClientRect();
-      var relX = er.left - boxRect.left, relY = er.top - boxRect.top;
+    if ((annotation.type === 'circle' || annotation.type === 'underline') && target){
       if (annotation.type === 'circle'){
-        var size = Math.max(er.width, er.height) * 1.3;
+        var size = Math.max(target.width, target.height) * 1.3;
         var circle = document.createElement('div');
         circle.className = 'ai-circle';
-        circle.style.left = (relX + er.width / 2) + 'px';
-        circle.style.top = (relY + er.height / 2) + 'px';
+        circle.style.left = (target.left + target.width / 2) + 'px';
+        circle.style.top = (target.top + target.height / 2) + 'px';
         circle.style.width = size + 'px';
         circle.style.height = size + 'px';
         circle.style.borderColor = color;
@@ -5868,9 +5891,9 @@ var MarkingFlow = (function(){
       } else {
         var underline = document.createElement('div');
         underline.className = 'ai-underline';
-        underline.style.left = relX + 'px';
-        underline.style.top = (relY + er.height + 2) + 'px';
-        underline.style.width = er.width + 'px';
+        underline.style.left = target.left + 'px';
+        underline.style.top = (target.top + target.height + 2) + 'px';
+        underline.style.width = target.width + 'px';
         underline.style.background = color;
         layer.appendChild(underline);
         requestAnimationFrame(function(){ requestAnimationFrame(function(){ underline.classList.add('drawn'); }); });
@@ -5879,10 +5902,9 @@ var MarkingFlow = (function(){
 
     if (annotation.type === 'text' && annotation.text){
       var tx, ty;
-      if (el){
-        var er2 = el.getBoundingClientRect();
-        tx = (er2.left - boxRect.left) + er2.width / 2;
-        ty = (er2.top - boxRect.top) - 30;
+      if (target){
+        tx = target.left + target.width / 2;
+        ty = target.top - 30;
       } else {
         tx = boxRect.width / 2; ty = 16;
       }
@@ -5954,6 +5976,48 @@ var MarkingFlow = (function(){
     side.appendChild(rr);
   }
 
+  // Rasterizes this question's diagram <svg> (if it has one) to a base64
+  // PNG (no data: prefix) so it can be sent to Claude's vision input —
+  // Claude's Messages API accepts JPEG/PNG/GIF/WEBP, not raw SVG. Resolves
+  // null (not rejects) when there's no diagram or rasterizing fails for any
+  // reason — vision is an enhancement, never a requirement for marking to
+  // work. Rendered at 2x the SVG's own viewBox size for legibility, capped
+  // so the image stays small and fast over the wire.
+  function rasterizeDiagram(qNum){
+    return new Promise(function(resolve){
+      try {
+        var titleEl = document.querySelector('.question-title-' + qNum);
+        var svg = titleEl ? titleEl.querySelector('svg') : null;
+        if (!svg) { resolve(null); return; }
+
+        var vb = (svg.getAttribute('viewBox') || '').split(/\s+/).map(Number);
+        var w = (vb.length === 4 && vb[2]) ? vb[2] : (svg.width && svg.width.baseVal ? svg.width.baseVal.value : 300);
+        var h = (vb.length === 4 && vb[3]) ? vb[3] : (svg.height && svg.height.baseVal ? svg.height.baseVal.value : 300);
+        var scale = Math.min(2, 900 / Math.max(w, h));
+        var cw = Math.round(w * scale), ch = Math.round(h * scale);
+
+        var serialized = new XMLSerializer().serializeToString(svg);
+        var svgDataUri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(serialized)));
+
+        var img = new Image();
+        img.onload = function(){
+          try {
+            var canvas = document.createElement('canvas');
+            canvas.width = cw; canvas.height = ch;
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff'; // flatten onto white — no transparent PNG to the API
+            ctx.fillRect(0, 0, cw, ch);
+            ctx.drawImage(img, 0, 0, cw, ch);
+            var dataUrl = canvas.toDataURL('image/png');
+            resolve(dataUrl.replace(/^data:image\/png;base64,/, ''));
+          } catch (e) { resolve(null); }
+        };
+        img.onerror = function(){ resolve(null); };
+        img.src = svgDataUri;
+      } catch (e) { resolve(null); }
+    });
+  }
+
   function start(qNum, studentAnswer, correctAnswer){
     _qNum = qNum;
     _studentAnswer = studentAnswer;
@@ -5967,17 +6031,20 @@ var MarkingFlow = (function(){
     var questionText = entry ? (entry.question || '') : '';
     var markScheme = entry ? (entry.mark_scheme || []) : [];
 
-    fetch('/api/diagnose', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'mark',
-        subject: 'maths',
-        question: questionText,
-        student_answer: studentAnswer,
-        correct_answer: correctAnswer,
-        mark_scheme: markScheme
-      })
+    rasterizeDiagram(qNum).then(function(diagramImage){
+      return fetch('/api/diagnose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'mark',
+          subject: 'maths',
+          question: questionText,
+          student_answer: studentAnswer,
+          correct_answer: correctAnswer,
+          mark_scheme: markScheme,
+          diagram_image: diagramImage || undefined
+        })
+      });
     })
     .then(function(r){ return r.json(); })
     .then(function(data){
