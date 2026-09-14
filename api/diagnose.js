@@ -251,7 +251,11 @@ async function handleMark(req, res) {
             + (hasImage
                 ? ' You can SEE a real screenshot of the exact question box the student was looking at — the '
                   + 'diagram, the question text, AND the answer options/tickboxes together, exactly as they left '
-                  + 'it. Look at it directly before answering. '
+                  + 'it. The student may also have drawn on the diagram themselves in blue pen (freehand, e.g. '
+                  + 'marking angles, sides, or working) — look for this and take it into account: if their own '
+                  + 'drawing already shows correct understanding of one part, don\'t re-explain that part; if it '
+                  + 'shows a misunderstanding, that IS the mistake to diagnose. Look at the whole image directly '
+                  + 'before answering. '
                   + 'CRITICAL RULE: every mark you draw must land on the DIAGRAM or the QUESTION TEXT — never on '
                   + 'the answer options or tickboxes underneath. The answer options are just the list of choices; '
                   + 'they are not what caused the mistake and must never be circled, underlined, or pointed at. '
