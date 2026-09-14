@@ -6396,31 +6396,29 @@ var MarkingFlow = (function(){
       } else {
         _queue = [{ marks: [], weakness: { title: 'Review needed', body: 'Compare your answer to the correct answer shown.', apply: 'Re-read the mark scheme and try again.' }, worked_step: null }];
       }
-      enableContinue();
+      revealFirstAndArm();
     })
     .catch(function(){
       if (!document.getElementById('continueBtn')) buildRightBox();
       fadeOutOptions(qNum);
       _queue = [{ marks: [], weakness: { title: 'Marking unavailable', body: 'Could not reach AI marking right now.', apply: 'Compare your answer to the correct answer shown.' }, worked_step: null }];
-      enableContinue();
+      revealFirstAndArm();
     });
   }
 
-  // Every single weakness/application-step trio — including the first —
-  // requires its own Continue press. The AI call itself still fires
-  // automatically the moment the student gets it wrong; only the REVEAL of
-  // each trio is click-gated.
-  function enableContinue(){
+  // The first weakness/application-step trio shows the moment marking
+  // finishes — no Continue press needed for it, since the student already
+  // "asked" for it by submitting a wrong answer. Only a SECOND (or later)
+  // weakness on the same wrong answer needs an actual Continue press.
+  function revealFirstAndArm(){
     var btn = document.getElementById('continueBtn');
-    if (!btn) return;
-    btn.textContent = 'Continue';
-    btn.disabled = false;
+    if (btn) btn.disabled = false;
+    advanceStep();
   }
 
   // Each press reveals exactly one matched trio: the mark(s) on the
   // diagram/question, the weakness card, and its numbered "how to apply
-  // it" step — all from the same pair. Every press, including the first,
-  // needs an actual Continue click. A weakness can carry several marks
+  // it" step — all from the same pair. A weakness can carry several marks
   // (e.g. one circle per angle corner) — they're played in a quick
   // stagger, not all at once, so the student can actually follow each one
   // landing rather than seeing a single flash of clutter.
