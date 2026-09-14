@@ -179,22 +179,23 @@ async function handleMark(req, res) {
     // client-side via html2canvas (real Canvas can only draw what it's
     // told to, not screenshot arbitrary DOM/CSS). Claude Haiku 4.5 has
     // real vision input, so when this image is present it SEES the whole
-    // box as the student left it, not just text, and can point an
-    // annotation at ANY specific spot in it (x/y), not only at the answer
-    // button. Returns an array of { annotation, weakness, worked_step }
-    // pairs — one pair per mistake — that the client plays back one trio
-    // (annotation + weakness + numbered apply step) at a time on each
-    // Continue press.
+    // box as the student left it, not just text, and can point marks at
+    // ANY specific spot in the diagram or question text (x/y) — never at
+    // the answer options/tickboxes, which are just the answer choices and
+    // have nothing to do with the mistake. Returns an array of
+    // { marks, weakness, worked_step } pairs — one pair per mistake — that
+    // the client plays back one trio (marks + weakness + numbered apply
+    // step) at a time on each Continue press.
     //
-    // annotation: what to draw — type: text/underline/circle/arrow, text,
-    //   color, optional x/y (+ to_x/to_y for arrow). No `target` field —
-    //   for the answer-button case the client always resolves the wrong-
-    //   answer button itself from the already-known studentAnswer text,
-    //   since this template's answer buttons carry no data-answer
-    //   attribute to target. x/y (0-1 fractions of the captured box image,
-    //   from the top-left) are set instead when the mistake is about
-    //   something visible anywhere in the box — only meaningful when
-    //   question_box_image was sent; the client positions the mark
+    // marks: array of 1-4 things to draw — each { type: text/underline/
+    //   circle/arrow, text, color, x, y (+ to_x/to_y for arrow) }. x/y
+    //   (0-1 fractions of the captured box image, from the top-left) are
+    //   REQUIRED per mark and must target the diagram or question text —
+    //   never the answer options. Multiple marks let one weakness explain
+    //   itself across several diagram features at once (e.g. one circle
+    //   per angle corner for "angles in a triangle sum to 180°"). Only
+    //   present when question_box_image was sent (the model has nothing
+    //   real to point at otherwise) — the client positions each mark
     //   against the live box's own bounding rect using the same fraction,
     //   so it's correct regardless of what size the box actually renders
     //   at (deliberately NOT raw pixel coordinates, which would break the
@@ -249,14 +250,21 @@ async function handleMark(req, res) {
             + 'genuinely distinct root causes.'
             + (hasImage
                 ? ' You can SEE a real screenshot of the exact question box the student was looking at — the '
-                  + 'diagram AND the answer options/tickboxes together, exactly as they left it. Look at it '
-                  + 'directly before answering. For every weakness, prefer annotating something in this image over '
-                  + 'plain text alone — this is a real, working annotation system, not decoration: circle a wrong '
-                  + 'tickbox, underline the specific number in the diagram that matters, or draw an arrow from one '
-                  + 'part of the image to another to connect a cause to its effect. Give x and y (0 to 1, fraction '
-                  + 'of the image width/height from the top-left corner) for exactly where that feature sits — be '
-                  + 'precise, look at where it actually is before giving coordinates. For type:arrow also give '
-                  + 'to_x/to_y for where the arrow points TO.'
+                  + 'diagram, the question text, AND the answer options/tickboxes together, exactly as they left '
+                  + 'it. Look at it directly before answering. '
+                  + 'CRITICAL RULE: every mark you draw must land on the DIAGRAM or the QUESTION TEXT — never on '
+                  + 'the answer options or tickboxes underneath. The answer options are just the list of choices; '
+                  + 'they are not what caused the mistake and must never be circled, underlined, or pointed at. '
+                  + 'The diagram (or, if there is no diagram, the specific number/word/phrase in the question '
+                  + 'text) is where the actual maths lives — that is what every mark must explain. '
+                  + 'Mark specific real features, not empty space: if there is a diagram, circle or underline the '
+                  + 'actual angle, side, label or number the weakness is about. If a weakness is a general rule '
+                  + '(e.g. "angles in a triangle sum to 180°"), mark EACH relevant feature on the diagram — for '
+                  + 'that example, one small circle at every angle corner of the triangle — so the rule is shown, '
+                  + 'not just told. Use the "marks" array for this: one entry per feature marked, all belonging '
+                  + 'to the same weakness. Give x and y (0 to 1, fraction of the image width/height from the '
+                  + 'top-left corner) for exactly where that feature sits — be precise, look at where it actually '
+                  + 'is before giving coordinates. For type:arrow also give to_x/to_y for where the arrow points TO.'
                 : '');
 
         const userPromptText =
@@ -296,41 +304,51 @@ async function handleMark(req, res) {
                                 description: 'One entry per mistake, in order of importance.',
                                 items: {
                                     type: 'object',
-                                    properties: {
-                                        annotation: {
-                                            type: 'object',
-                                            description: 'What to draw on the student\'s work for this mistake.',
-                                            properties: {
-                                                type: {
-                                                    type: 'string',
-                                                    enum: ['text', 'underline', 'circle', 'arrow'],
-                                                    description: 'text = write a correction note; underline = underline the error; circle = circle the error; arrow = draw a line from one point to another (e.g. connecting a cause to its effect, or pointing from a note to the exact feature it explains).'
+                                    properties: Object.assign(
+                                        {},
+                                        hasImage ? {
+                                            marks: {
+                                                type: 'array',
+                                                description: 'One or more marks to draw on the DIAGRAM or QUESTION TEXT for this weakness — never on the answer options/tickboxes. Usually 1 mark; use more when the weakness is a general rule that applies to several features at once (e.g. one circle per angle corner of a triangle for "angles sum to 180°").',
+                                                minItems: 1,
+                                                maxItems: 4,
+                                                items: {
+                                                    type: 'object',
+                                                    properties: {
+                                                        type: {
+                                                            type: 'string',
+                                                            enum: ['text', 'underline', 'circle', 'arrow'],
+                                                            description: 'text = write a correction note; underline = underline the error; circle = circle the error; arrow = draw a line from one point to another (e.g. connecting a cause to its effect, or pointing from a note to the exact feature it explains).'
+                                                        },
+                                                        text: { type: 'string', description: 'The correction note text (max 10 words, handwritten style, simple words a 12-year-old would use). Required for type:text.' },
+                                                        color: { type: 'string', description: 'Hex colour. Use #e16280 for errors, #8b5cf6 for corrections.' },
+                                                        x: { type: 'number', description: 'REQUIRED. Fraction 0-1 across the question box image (left to right) — the exact diagram feature or question-text word/number this mark points at. Must NOT land on the answer options/tickboxes. For type:arrow, this is the START point.' },
+                                                        y: { type: 'number', description: 'REQUIRED. Fraction 0-1 down the question box image (top to bottom) — pair with x.' },
+                                                        to_x: { type: 'number', description: 'Fraction 0-1 — ONLY for type:arrow, the END point the arrow points to. Required for type:arrow.' },
+                                                        to_y: { type: 'number', description: 'Fraction 0-1 — pair with to_x. Required for type:arrow.' }
+                                                    },
+                                                    required: ['type', 'x', 'y']
+                                                }
+                                            }
+                                        } : {},
+                                        {
+                                            weakness: {
+                                                type: 'object',
+                                                description: 'First-principles explanation of the underlying gap, written for a 12-year-old.',
+                                                properties: {
+                                                    title: { type: 'string', description: 'The root rule broken, in 5 words or fewer, plain simple language.' },
+                                                    body: { type: 'string', description: 'One or two short sentences: explain the true rule simply from scratch, then say exactly why this answer broke it. No jargon, no complex words — a 12-year-old who is not confident at maths must be able to understand it completely.' },
+                                                    apply: { type: 'string', description: 'The exact, concrete action to do differently next time — specific enough for a 12-year-old to actually follow, not vague advice. One sentence.' }
                                                 },
-                                                text: { type: 'string', description: 'The correction note text (max 10 words, handwritten style, simple words a 12-year-old would use). Required for type:text.' },
-                                                color: { type: 'string', description: 'Hex colour. Use #e16280 for errors, #8b5cf6 for corrections.' },
-                                                x: { type: 'number', description: 'Fraction 0-1 across the question box image (left to right) — ONLY set if the image was provided AND this mark points at something visible in it, not the answer button. For type:arrow, this is the START point.' },
-                                                y: { type: 'number', description: 'Fraction 0-1 down the question box image (top to bottom) — pair with x. Omit x/y for an answer-button annotation.' },
-                                                to_x: { type: 'number', description: 'Fraction 0-1 — ONLY for type:arrow, the END point the arrow points to. Required for type:arrow.' },
-                                                to_y: { type: 'number', description: 'Fraction 0-1 — pair with to_x. Required for type:arrow.' }
+                                                required: ['title', 'body', 'apply']
                                             },
-                                            required: ['type']
-                                        },
-                                        weakness: {
-                                            type: 'object',
-                                            description: 'First-principles explanation of the underlying gap, written for a 12-year-old.',
-                                            properties: {
-                                                title: { type: 'string', description: 'The root rule broken, in 5 words or fewer, plain simple language.' },
-                                                body: { type: 'string', description: 'One or two short sentences: explain the true rule simply from scratch, then say exactly why this answer broke it. No jargon, no complex words — a 12-year-old who is not confident at maths must be able to understand it completely.' },
-                                                apply: { type: 'string', description: 'The exact, concrete action to do differently next time — specific enough for a 12-year-old to actually follow, not vague advice. One sentence.' }
-                                            },
-                                            required: ['title', 'body', 'apply']
-                                        },
-                                        worked_step: {
-                                            type: 'string',
-                                            description: 'The correct working for this step, as a student would write it. Null if not applicable.'
+                                            worked_step: {
+                                                type: 'string',
+                                                description: 'The correct working for this step, as a student would write it. Null if not applicable.'
+                                            }
                                         }
-                                    },
-                                    required: ['annotation', 'weakness']
+                                    ),
+                                    required: hasImage ? ['marks', 'weakness'] : ['weakness']
                                 }
                             }
                         },
@@ -354,15 +372,23 @@ async function handleMark(req, res) {
 
         // Defensive: tool-use schema enforcement is reliable for structure
         // (valid JSON, required fields) but NOT guaranteed for optional
-        // property naming — observed Haiku occasionally emit the old
+        // property naming — observed Haiku occasionally emit legacy
         // diagram_x/diagram_y names from an earlier schema version even
         // though the current schema only defines x/y. Normalize rather
         // than let a good coordinate silently go unused because of a
-        // naming mismatch the model made up on its own.
+        // naming mismatch the model made up on its own. Also drop any
+        // mark missing real x/y outright (rather than let the client fall
+        // back to guessing a target) — a mark with no confirmed position
+        // must never be drawn on the answer options.
         const pairs = toolUse.input.pairs.map(pair => {
-            const a = pair.annotation;
-            if (a && typeof a.x !== 'number' && typeof a.diagram_x === 'number') a.x = a.diagram_x;
-            if (a && typeof a.y !== 'number' && typeof a.diagram_y === 'number') a.y = a.diagram_y;
+            const marks = Array.isArray(pair.marks) ? pair.marks : [];
+            pair.marks = marks
+                .map(m => {
+                    if (typeof m.x !== 'number' && typeof m.diagram_x === 'number') m.x = m.diagram_x;
+                    if (typeof m.y !== 'number' && typeof m.diagram_y === 'number') m.y = m.diagram_y;
+                    return m;
+                })
+                .filter(m => typeof m.x === 'number' && typeof m.y === 'number');
             return pair;
         });
 
