@@ -15,6 +15,13 @@
      (checkboxes, pseudo-elements) — html2canvas is the standard, reliable
      way to do that. -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- FEATURE: hand-drawn annotation rendering — draws circles/underlines/
+     arrows with genuine sketchy, wobbly, human-pen-like strokes (procedural
+     randomised jitter on real geometry) instead of perfect CSS shapes. This
+     is a deterministic rendering technique, not an AI model — the AI still
+     only ever supplies WHERE to mark (via the diagram-element manifold);
+     Rough.js only changes what that mark looks like once drawn. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rough.js/3.1.0/rough.umd.js"></script>
   
 <style>
 :root{
@@ -2962,17 +2969,7 @@ body.dark-mode #guideContent .g-paper-head-right { color: #64748b; }
 }
 .ai-dim-overlay.active{ opacity:1; }
 .ai-annotation-layer{ position:absolute; inset:0; z-index:11; pointer-events:none; }
-.ai-circle{
-  position:absolute; border:3px solid #e16280; border-radius:50%;
-  transform:translate(-50%,-50%) scale(0.6); opacity:0;
-  transition:transform 400ms cubic-bezier(.34,1.56,.64,1), opacity 250ms ease;
-}
-.ai-circle.grown{ transform:translate(-50%,-50%) scale(1); opacity:1; }
-.ai-underline{
-  position:absolute; height:3px; background:#e16280;
-  transform:scaleX(0); transform-origin:left; transition:transform 400ms ease;
-}
-.ai-underline.drawn{ transform:scaleX(1); }
+.ai-annotation-svg{ position:absolute; left:0; top:0; pointer-events:none; overflow:visible; }
 .ai-text-label{
   position:absolute; font-family:'Caveat',cursive; font-size:21px; font-weight:600;
   color:#8b5cf6; max-width:220px; line-height:1.3; transform:translate(-50%,0);
@@ -6180,6 +6177,51 @@ var MarkingFlow = (function(){
     return layer;
   }
 
+  // One shared SVG canvas per question box that all rough-drawn marks
+  // (circle/underline/arrow) get appended into, so they layer correctly
+  // rather than each creating its own tiny SVG.
+  function getAnnotationSvg(box, layer, boxRect){
+    var svg = layer.querySelector('.ai-annotation-svg');
+    if (!svg){
+      svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'ai-annotation-svg');
+      svg.setAttribute('width', boxRect.width);
+      svg.setAttribute('height', boxRect.height);
+      layer.appendChild(svg);
+    }
+    return svg;
+  }
+
+  // Animates a rough.js node's actual strokes drawing themselves on —
+  // rough.js output is one or more real SVG <path> elements (a hand-drawn
+  // shape is usually 2+ overlapping wobbly strokes, which is exactly what
+  // makes it read as "sketched" rather than "computer-perfect"), so the
+  // same stroke-dashoffset technique used elsewhere in this engine still
+  // applies — it just animates every path in the group in sync.
+  function animateRoughNode(node, duration){
+    var paths = node.querySelectorAll('path');
+    paths.forEach(function(p){
+      try {
+        var len = p.getTotalLength();
+        if (!len) return;
+        p.style.strokeDasharray = len;
+        p.style.strokeDashoffset = len;
+        p.getBoundingClientRect(); // force layout so the transition below actually animates
+        p.style.transition = 'stroke-dashoffset ' + (duration || 500) + 'ms ease-out';
+        requestAnimationFrame(function(){ p.style.strokeDashoffset = 0; });
+      } catch (e) {}
+    });
+  }
+
+  // Draws with genuine hand-drawn wobble (rough.js — procedural jitter on
+  // real geometry, not an AI-generated sketch) rather than a perfect CSS
+  // circle/line — reads as an actual teacher's pen mark, not a UI shape.
+  // Falls back to a plain SVG shape if rough.js hasn't loaded for any
+  // reason, so a slow/blocked CDN never breaks marking entirely.
+  function roughGenerator(svg){
+    return (typeof rough !== 'undefined') ? rough.svg(svg, { options: { roughness: 1.8, bowing: 1.4, strokeWidth: 2.5 } }) : null;
+  }
+
   // Draws one annotation on the question box. Marks accumulate across
   // Continue presses — each one lands on the same persistent layer, so a
   // second weakness's mark appears alongside the first, not replacing it.
@@ -6223,52 +6265,70 @@ var MarkingFlow = (function(){
     var target = resolveAnnotationRect(qNum, studentAnswer, annotation, boxRect);
 
     if ((annotation.type === 'circle' || annotation.type === 'underline') && target){
+      var svgShapes = getAnnotationSvg(box, layer, boxRect);
+      var rcShapes = roughGenerator(svgShapes);
       if (annotation.type === 'circle'){
-        var size = Math.max(target.width, target.height) * 1.3;
-        var circle = document.createElement('div');
-        circle.className = 'ai-circle';
-        circle.style.left = (target.left + target.width / 2) + 'px';
-        circle.style.top = (target.top + target.height / 2) + 'px';
-        circle.style.width = size + 'px';
-        circle.style.height = size + 'px';
-        circle.style.borderColor = color;
-        layer.appendChild(circle);
-        requestAnimationFrame(function(){ requestAnimationFrame(function(){ circle.classList.add('grown'); }); });
+        var cx = target.left + target.width / 2;
+        var cy = target.top + target.height / 2;
+        var diameter = Math.max(target.width, target.height) * 1.3;
+        if (rcShapes){
+          var circleNode = rcShapes.circle(cx, cy, diameter, { stroke: color, strokeWidth: 2.5, roughness: 1.9, bowing: 1.6, fill: 'none' });
+          svgShapes.appendChild(circleNode);
+          animateRoughNode(circleNode, 450);
+        } else {
+          var circleEl = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circleEl.setAttribute('cx', cx); circleEl.setAttribute('cy', cy); circleEl.setAttribute('r', diameter / 2);
+          circleEl.setAttribute('stroke', color); circleEl.setAttribute('stroke-width', '3'); circleEl.setAttribute('fill', 'none');
+          svgShapes.appendChild(circleEl);
+        }
       } else {
-        var underline = document.createElement('div');
-        underline.className = 'ai-underline';
-        underline.style.left = target.left + 'px';
-        underline.style.top = (target.top + target.height + 2) + 'px';
-        underline.style.width = target.width + 'px';
-        underline.style.background = color;
-        layer.appendChild(underline);
-        requestAnimationFrame(function(){ requestAnimationFrame(function(){ underline.classList.add('drawn'); }); });
+        var ux1 = target.left, uy1 = target.top + target.height + 2;
+        var ux2 = target.left + target.width, uy2 = uy1;
+        if (rcShapes){
+          var underlineNode = rcShapes.line(ux1, uy1, ux2, uy2, { stroke: color, strokeWidth: 2.5, roughness: 1.5 });
+          svgShapes.appendChild(underlineNode);
+          animateRoughNode(underlineNode, 350);
+        } else {
+          var lineEl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          lineEl.setAttribute('x1', ux1); lineEl.setAttribute('y1', uy1); lineEl.setAttribute('x2', ux2); lineEl.setAttribute('y2', uy2);
+          lineEl.setAttribute('stroke', color); lineEl.setAttribute('stroke-width', '3');
+          svgShapes.appendChild(lineEl);
+        }
       }
     }
 
     // Arrow: connects two points (e.g. a wrong tickbox to the diagram
-    // feature that disproves it) — an animated SVG line, dashoffset drawn
-    // from start to end, same technique as the English template's engine.
+    // feature that disproves it) — a hand-drawn shaft plus a small sketchy
+    // arrowhead (two short rough strokes forming a V), drawn on the same
+    // shared SVG canvas as circles/underlines.
     if (annotation.type === 'arrow' && typeof annotation.to_x === 'number' && typeof annotation.to_y === 'number'){
       var fromX = target ? (target.left + target.width / 2) : boxRect.width / 2;
       var fromY = target ? (target.top + target.height / 2) : 16;
       var toX = annotation.to_x * boxRect.width;
       var toY = annotation.to_y * boxRect.height;
-      var svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svgEl.setAttribute('width', boxRect.width);
-      svgEl.setAttribute('height', boxRect.height);
-      svgEl.style.position = 'absolute'; svgEl.style.left = '0'; svgEl.style.top = '0'; svgEl.style.pointerEvents = 'none';
-      var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      line.setAttribute('x1', fromX); line.setAttribute('y1', fromY);
-      line.setAttribute('x2', toX); line.setAttribute('y2', toY);
-      line.setAttribute('stroke', color); line.setAttribute('stroke-width', '3'); line.setAttribute('stroke-linecap', 'round');
-      svgEl.appendChild(line);
-      layer.appendChild(svgEl);
-      var length = Math.hypot(toX - fromX, toY - fromY);
-      line.style.strokeDasharray = length;
-      line.style.strokeDashoffset = length;
-      line.style.transition = 'stroke-dashoffset 600ms ease-out';
-      requestAnimationFrame(function(){ line.style.strokeDashoffset = 0; });
+      var svgArrow = getAnnotationSvg(box, layer, boxRect);
+      var rcArrow = roughGenerator(svgArrow);
+      var angle = Math.atan2(toY - fromY, toX - fromX);
+      var headLen = 12;
+      var h1x = toX - headLen * Math.cos(angle - Math.PI / 7), h1y = toY - headLen * Math.sin(angle - Math.PI / 7);
+      var h2x = toX - headLen * Math.cos(angle + Math.PI / 7), h2y = toY - headLen * Math.sin(angle + Math.PI / 7);
+      if (rcArrow){
+        var shaftNode = rcArrow.line(fromX, fromY, toX, toY, { stroke: color, strokeWidth: 2.5, roughness: 1.6 });
+        svgArrow.appendChild(shaftNode);
+        animateRoughNode(shaftNode, 550);
+        setTimeout(function(){
+          var head1 = rcArrow.line(toX, toY, h1x, h1y, { stroke: color, strokeWidth: 2.5, roughness: 1.3 });
+          var head2 = rcArrow.line(toX, toY, h2x, h2y, { stroke: color, strokeWidth: 2.5, roughness: 1.3 });
+          svgArrow.appendChild(head1); svgArrow.appendChild(head2);
+          animateRoughNode(head1, 150); animateRoughNode(head2, 150);
+        }, 550);
+      } else {
+        var shaftEl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        shaftEl.setAttribute('x1', fromX); shaftEl.setAttribute('y1', fromY);
+        shaftEl.setAttribute('x2', toX); shaftEl.setAttribute('y2', toY);
+        shaftEl.setAttribute('stroke', color); shaftEl.setAttribute('stroke-width', '3'); shaftEl.setAttribute('stroke-linecap', 'round');
+        svgArrow.appendChild(shaftEl);
+      }
     }
 
     // Text: types itself out character by character (like the English
