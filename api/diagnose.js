@@ -171,6 +171,37 @@ async function handleDiagnose(req, res) {
     }
 }
 
+// Prompt-only "don't stack marks" guidance is not reliably followed — a
+// plain-diagram question (e.g. a sector with just r/θ labelled, no filled
+// example) gives the model few genuinely distinct targets, so it tends to
+// re-mark almost the same spot near the question text for every step,
+// producing illegible overlapping text labels. Deterministically nudge
+// any mark that lands within MIN_DIST of one already placed earlier in
+// the response, in reading order (weakness → step → mark), rather than
+// trusting the model's coordinates alone — same reasoning as computing
+// triangle vertices by trig instead of asking the model to guess pixels.
+function deconflictMarks(weaknesses) {
+    const MIN_DIST = 0.08;
+    const NUDGE = 0.07;
+    const placed = [];
+    weaknesses.forEach(weakness => {
+        (weakness.steps || []).forEach(step => {
+            (step.marks || []).forEach(mark => {
+                let guard = 0;
+                while (guard < 10 && placed.some(p => Math.hypot(p.x - mark.x, p.y - mark.y) < MIN_DIST)) {
+                    guard++;
+                    const candidate = mark.y + NUDGE * guard;
+                    // Once it would run off the bottom, wrap back near the top
+                    // rather than oscillating — each wrap lands a little lower
+                    // than the last so repeated wraps still separate.
+                    mark.y = candidate <= 0.95 ? candidate : 0.05 + (guard % 5) * 0.03;
+                }
+                placed.push({ x: mark.x, y: mark.y });
+            });
+        });
+    });
+}
+
 async function handleMark(req, res) {
     // Feature: Phase 2-4 wrong-answer marking flow.
     // Receives the question, student answer, correct answer, mark scheme,
@@ -271,6 +302,22 @@ async function handleMark(req, res) {
                   + 'sync. As the steps progress, marks can build on each other (e.g. step 1 circles corner A, '
                   + 'step 2 circles corner B, step 3 draws an arrow connecting them) so the diagram fills in '
                   + 'piece by piece exactly as the explanation does. '
+                  + 'PREFER THE DIAGRAM\'S OWN PARTS over the question text whenever there is a diagram: a real '
+                  + 'diagram usually has several distinct labelled things you can each point at separately — a '
+                  + 'radius or side (a straight line), an angle (often marked with a small arc and a letter like '
+                  + 'θ), a curved edge, a specific labelled length. Use THOSE as separate targets, one per '
+                  + 'step, like a teacher\'s pen moving to a new part of the diagram for each new idea — e.g. for '
+                  + 'an arc-length mistake: one step circles the angle label, the next underlines the radius '
+                  + 'label, the next traces the curved edge itself to show what "arc" physically means, the next '
+                  + 'points at the straight edges to show what the radius lines actually are. Only fall back to '
+                  + 'marking the question text when the diagram genuinely has no more distinct parts left to '
+                  + 'point at for that idea. '
+                  + 'NEVER STACK MARKS: every mark in this whole response must sit in a different spot on the '
+                  + 'image — never reuse the same x/y (or a spot within about 0.08 of one already used), even '
+                  + 'across different steps. Two marks landing on top of each other becomes unreadable, like two '
+                  + 'people trying to write on the same line of a page at once. Spread marks out across the '
+                  + 'whole diagram/question the way a real teacher\'s red-pen marks would be scattered wherever '
+                  + 'each one is actually relevant, never clustered in one small area. '
                   + 'Give x and y (0 to 1, fraction of the image width/height from the top-left corner) for '
                   + 'exactly where that feature sits — be precise, look at where it actually is before giving '
                   + 'coordinates. For type:arrow also give to_x/to_y for where the arrow points TO.'
@@ -402,6 +449,8 @@ async function handleMark(req, res) {
             });
             return weakness;
         });
+
+        deconflictMarks(weaknesses);
 
         return res.status(200).json({ ok: true, weaknesses });
 
