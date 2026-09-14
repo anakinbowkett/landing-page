@@ -589,6 +589,14 @@ html,body{
   line-height: 1.6;
 }
 
+.question-diagram {
+  text-align: center;
+}
+.question-text {
+  text-align: left;
+  max-width: 520px;
+}
+
 .answer-container-1,
 .answer-container-2,
 .answer-container-3,
@@ -625,17 +633,16 @@ html,body{
 .answer-option-6-2,
 .answer-option-6-3,
 .answer-option-6-4 {
-  padding: 9px 14px 9px 42px !important;
+  padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -735,29 +742,29 @@ html,body{
 [class*="answer-option-"]::before {
   content: '';
   position: absolute;
-  left: 14px;
+  left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  border: 2px solid #9ca3af;
+  width: 26px;
+  height: 26px;
+  border: 2.5px solid #000000;
   border-radius: 3px;
   background: #ffffff;
   box-sizing: border-box;
 }
 [class*="answer-option-"].selected::before {
-  background: #1d7fe2;
-  border-color: #1d7fe2;
+  background: #000000;
+  border-color: #000000;
 }
 [class*="answer-option-"].selected::after {
   content: '';
   position: absolute;
-  left: 19.5px;
+  left: 24.5px;
   top: 47%;
-  width: 5px;
-  height: 9px;
+  width: 7px;
+  height: 13px;
   border: solid #ffffff;
-  border-width: 0 2px 2px 0;
+  border-width: 0 3px 3px 0;
   transform: translateY(-60%) rotate(45deg);
 }
 [class*="answer-option-"].correct-answer::before {
@@ -767,12 +774,12 @@ html,body{
 [class*="answer-option-"].correct-answer::after {
   content: '';
   position: absolute;
-  left: 19.5px;
+  left: 24.5px;
   top: 47%;
-  width: 5px;
-  height: 9px;
+  width: 7px;
+  height: 13px;
   border: solid #ffffff;
-  border-width: 0 2px 2px 0;
+  border-width: 0 3px 3px 0;
   transform: translateY(-60%) rotate(45deg);
 }
 
@@ -844,17 +851,16 @@ html,body{
 .mark-counter-7.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-7 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-7 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-7-1, .answer-option-7-2, .answer-option-7-3, .answer-option-7-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-7-1, .answer-option-7-2, .answer-option-7-3, .answer-option-7-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -897,17 +903,16 @@ html,body{
 .mark-counter-8.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-8 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-8 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-8-1, .answer-option-8-2, .answer-option-8-3, .answer-option-8-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-8-1, .answer-option-8-2, .answer-option-8-3, .answer-option-8-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -950,17 +955,16 @@ html,body{
 .mark-counter-9.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-9 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-9 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-9-1, .answer-option-9-2, .answer-option-9-3, .answer-option-9-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-9-1, .answer-option-9-2, .answer-option-9-3, .answer-option-9-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -1003,17 +1007,16 @@ html,body{
 .mark-counter-10.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-10 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-10 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-10-1, .answer-option-10-2, .answer-option-10-3, .answer-option-10-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-10-1, .answer-option-10-2, .answer-option-10-3, .answer-option-10-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -1056,17 +1059,16 @@ html,body{
 .mark-counter-11.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-11 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-11 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-11-1, .answer-option-11-2, .answer-option-11-3, .answer-option-11-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-11-1, .answer-option-11-2, .answer-option-11-3, .answer-option-11-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -1109,17 +1111,16 @@ html,body{
 .mark-counter-12.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-12 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-12 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-12-1, .answer-option-12-2, .answer-option-12-3, .answer-option-12-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-12-1, .answer-option-12-2, .answer-option-12-3, .answer-option-12-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -1162,17 +1163,16 @@ html,body{
 .mark-counter-13.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-13 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-13 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-13-1, .answer-option-13-2, .answer-option-13-3, .answer-option-13-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-13-1, .answer-option-13-2, .answer-option-13-3, .answer-option-13-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -1215,17 +1215,16 @@ html,body{
 .mark-counter-14.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-14 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-14 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-14-1, .answer-option-14-2, .answer-option-14-3, .answer-option-14-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-14-1, .answer-option-14-2, .answer-option-14-3, .answer-option-14-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -1268,17 +1267,16 @@ html,body{
 .mark-counter-15.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-15 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-15 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-15-1, .answer-option-15-2, .answer-option-15-3, .answer-option-15-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-15-1, .answer-option-15-2, .answer-option-15-3, .answer-option-15-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -1321,17 +1319,16 @@ html,body{
 .mark-counter-16.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-16 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-16 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-16-1, .answer-option-16-2, .answer-option-16-3, .answer-option-16-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-16-1, .answer-option-16-2, .answer-option-16-3, .answer-option-16-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -1374,17 +1371,16 @@ html,body{
 .mark-counter-17.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-17 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-17 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-17-1, .answer-option-17-2, .answer-option-17-3, .answer-option-17-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-17-1, .answer-option-17-2, .answer-option-17-3, .answer-option-17-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -1427,17 +1423,16 @@ html,body{
 .mark-counter-18.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-18 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-18 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-18-1, .answer-option-18-2, .answer-option-18-3, .answer-option-18-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-18-1, .answer-option-18-2, .answer-option-18-3, .answer-option-18-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -1480,17 +1475,16 @@ html,body{
 .mark-counter-19.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-19 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-19 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-19-1, .answer-option-19-2, .answer-option-19-3, .answer-option-19-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-19-1, .answer-option-19-2, .answer-option-19-3, .answer-option-19-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -1533,17 +1527,16 @@ html,body{
 .mark-counter-20.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
 .question-title-20 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
 .answer-container-20 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
-.answer-option-20-1, .answer-option-20-2, .answer-option-20-3, .answer-option-20-4 { padding: 9px 14px 9px 42px !important;
+.answer-option-20-1, .answer-option-20-2, .answer-option-20-3, .answer-option-20-4 { padding: 11px 16px 11px 56px !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
   background: transparent !important;
   cursor: pointer;
   transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
   line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
   position: relative;
@@ -1921,8 +1914,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-1">Q1 of 16</div>
   <div class="mark-counter-1" id="mark-counter-1">0/1</div>
   <div class="question-title-1">
-    <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg"><line x1="60" y1="326.07886451968966" x2="440" y2="326.07886451968966" stroke="#1e293b" stroke-width="2"></line><line x1="440" y1="326.07886451968966" x2="60.000000000000014" y2="60" stroke="#1e293b" stroke-width="2"></line><line x1="60.000000000000014" y1="60" x2="60" y2="326.07886451968966" stroke="#1e293b" stroke-width="2"></line><text x="41.97865502564218" y="338.69754611941266" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">A</text><text x="460.7642119123193" y="333.3484933726846" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">B</text><text x="47.215269761176245" y="42.09607102559595" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">C</text><path d="M 78 326.07886451968966 L 78 308.07886451968966 L 60 308.07886451968966" stroke="#1e293b" stroke-width="2" fill="none"></path><text x="407.5736236745603" y="315.8548673365444" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="22" fill="#1e293b">35°</text><text x="75.69945284999116" y="90.15836832805954" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="22" fill="#1e293b">55°</text></svg>
-    TEMP TEST QUESTION (auto-diagram pipeline integration test) — A triangle has one angle of 90 degrees and another angle of 35 degrees. What is the size of the third angle?
+    <div class="question-diagram"><svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg"><line x1="60" y1="326.07886451968966" x2="440" y2="326.07886451968966" stroke="#1e293b" stroke-width="2"></line><line x1="440" y1="326.07886451968966" x2="60.000000000000014" y2="60" stroke="#1e293b" stroke-width="2"></line><line x1="60.000000000000014" y1="60" x2="60" y2="326.07886451968966" stroke="#1e293b" stroke-width="2"></line><text x="41.97865502564218" y="338.69754611941266" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">A</text><text x="460.7642119123193" y="333.3484933726846" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">B</text><text x="47.215269761176245" y="42.09607102559595" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">C</text><path d="M 78 326.07886451968966 L 78 308.07886451968966 L 60 308.07886451968966" stroke="#1e293b" stroke-width="2" fill="none"></path><text x="407.5736236745603" y="315.8548673365444" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="22" fill="#1e293b">35°</text><text x="75.69945284999116" y="90.15836832805954" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="22" fill="#1e293b">55°</text></svg></div>
+    <div class="question-text">TEMP TEST QUESTION (auto-diagram pipeline integration test) — A triangle has one angle of 90 degrees and another angle of 35 degrees. What is the size of the third angle?</div>
   </div>
   <div class="answer-container-1">
     <button class="answer-option-1-1" onclick="toggleSingleAnswer1('opt1', this)">35°</button>
@@ -1938,8 +1931,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-2">Q2 of 16</div>
   <div class="mark-counter-2" id="mark-counter-2">0/1</div>
   <div class="question-title-2">
-    <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><polygon points="70,160 260,160 230,50 90,60" fill="none" stroke="#374151" stroke-width="2"/></svg>
-    The diagram shows quadrilateral ABCD. What is the sum of the interior angles of any quadrilateral?
+    <div class="question-diagram"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><polygon points="70,160 260,160 230,50 90,60" fill="none" stroke="#374151" stroke-width="2"/></svg></div>
+    <div class="question-text">The diagram shows quadrilateral ABCD. What is the sum of the interior angles of any quadrilateral?</div>
   </div>
   <div class="answer-container-2">
     <button class="answer-option-2-1" onclick="toggleSingleAnswer2('opt1', this)">360°</button>
@@ -1955,8 +1948,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-3">Q3 of 16</div>
   <div class="mark-counter-3" id="mark-counter-3">0/1</div>
   <div class="question-title-3">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 220.6,75 220.6,145 160,180 99.4,145 99.4,75" fill="none" stroke="#374151" stroke-width="2"/><line x1="190" y1="57" x2="196" y2="47" stroke="#374151" stroke-width="1.5"/><line x1="190" y1="163" x2="196" y2="173" stroke="#374151" stroke-width="1.5"/><line x1="130" y1="57" x2="124" y2="47" stroke="#374151" stroke-width="1.5"/></svg>
-    The diagram shows a regular hexagon with all sides marked equal using tick marks and all angles marked equal using arcs. True or False: a regular polygon has all sides and all angles equal.
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 220.6,75 220.6,145 160,180 99.4,145 99.4,75" fill="none" stroke="#374151" stroke-width="2"/><line x1="190" y1="57" x2="196" y2="47" stroke="#374151" stroke-width="1.5"/><line x1="190" y1="163" x2="196" y2="173" stroke="#374151" stroke-width="1.5"/><line x1="130" y1="57" x2="124" y2="47" stroke="#374151" stroke-width="1.5"/></svg></div>
+    <div class="question-text">The diagram shows a regular hexagon with all sides marked equal using tick marks and all angles marked equal using arcs. True or False: a regular polygon has all sides and all angles equal.</div>
   </div>
   <div class="answer-container-3">
     <button class="answer-option-3-1" onclick="toggleSingleAnswer3('opt1', this)">True</button>
@@ -1970,8 +1963,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-4">Q4 of 16</div>
   <div class="mark-counter-4" id="mark-counter-4">0/1</div>
   <div class="question-title-4">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 226.6,88.4 201.2,166.6 118.8,166.6 93.4,88.4" fill="none" stroke="#374151" stroke-width="2"/></svg>
-    The diagram shows a pentagon (5 sides). Using the formula (n − 2) × 180°, work out the sum of its interior angles.
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 226.6,88.4 201.2,166.6 118.8,166.6 93.4,88.4" fill="none" stroke="#374151" stroke-width="2"/></svg></div>
+    <div class="question-text">The diagram shows a pentagon (5 sides). Using the formula (n − 2) × 180°, work out the sum of its interior angles.</div>
   </div>
   <div class="answer-container-4">
     <button class="answer-option-4-1" onclick="toggleSingleAnswer4('opt1', this)">540°</button>
@@ -1987,8 +1980,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-5">Q5 of 16</div>
   <div class="mark-counter-5" id="mark-counter-5">0/1</div>
   <div class="question-title-5">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 220.6,75 220.6,145 160,180 99.4,145 99.4,75" fill="none" stroke="#374151" stroke-width="2"/><line x1="220.6" y1="145" x2="260" y2="170" stroke="#374151" stroke-width="1.5" stroke-dasharray="3 3"/><text x="230" y="165" font-size="14" font-family="Inter,sans-serif" fill="#1d7fe2">x</text></svg>
-    The diagram shows a regular hexagon (6 equal sides) with one exterior angle marked x. Work out the size of x.
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 220.6,75 220.6,145 160,180 99.4,145 99.4,75" fill="none" stroke="#374151" stroke-width="2"/><line x1="220.6" y1="145" x2="260" y2="170" stroke="#374151" stroke-width="1.5" stroke-dasharray="3 3"/><text x="230" y="165" font-size="14" font-family="Inter,sans-serif" fill="#1d7fe2">x</text></svg></div>
+    <div class="question-text">The diagram shows a regular hexagon (6 equal sides) with one exterior angle marked x. Work out the size of x.</div>
   </div>
   <div class="answer-container-5">
     <button class="answer-option-5-1" onclick="toggleSingleAnswer5('opt1', this)">60°</button>
@@ -2004,8 +1997,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-6">Q6 of 16</div>
   <div class="mark-counter-6" id="mark-counter-6">0/1</div>
   <div class="question-title-6">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 209.5,60.5 230,110 209.5,159.5 160,180 110.5,159.5 90,110 110.5,60.5" fill="none" stroke="#374151" stroke-width="2"/><line x1="209.5" y1="159.5" x2="245" y2="180" stroke="#374151" stroke-width="1.5" stroke-dasharray="3 3"/><text x="220" y="178" font-size="14" font-family="Inter,sans-serif" fill="#1d7fe2">40°</text></svg>
-    The diagram shows a regular polygon with an exterior angle of 40°. Work out the number of sides.
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 209.5,60.5 230,110 209.5,159.5 160,180 110.5,159.5 90,110 110.5,60.5" fill="none" stroke="#374151" stroke-width="2"/><line x1="209.5" y1="159.5" x2="245" y2="180" stroke="#374151" stroke-width="1.5" stroke-dasharray="3 3"/><text x="220" y="178" font-size="14" font-family="Inter,sans-serif" fill="#1d7fe2">40°</text></svg></div>
+    <div class="question-text">The diagram shows a regular polygon with an exterior angle of 40°. Work out the number of sides.</div>
   </div>
   <div class="answer-container-6">
     <button class="answer-option-6-1" onclick="toggleSingleAnswer6('opt1', this)">9</button>
@@ -2021,8 +2014,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-7">Q7 of 16</div>
   <div class="mark-counter-7" id="mark-counter-7">0/1</div>
   <div class="question-title-7">
-    <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><polygon points="70,165 220,165 150,50" fill="none" stroke="#374151" stroke-width="2"/><line x1="70" y1="165" x2="290" y2="165" stroke="#374151" stroke-width="1" stroke-dasharray="3 3"/><text x="180" y="155" font-size="15" font-family="Inter,sans-serif" fill="#1d7fe2">a</text><text x="240" y="155" font-size="15" font-family="Inter,sans-serif" fill="#1d7fe2">b</text></svg>
-    The diagram shows one vertex of a polygon with the interior angle a and the exterior angle b marked, where the side has been extended to form b. True or False: the interior and exterior angle at the same vertex always add up to 180°.
+    <div class="question-diagram"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><polygon points="70,165 220,165 150,50" fill="none" stroke="#374151" stroke-width="2"/><line x1="70" y1="165" x2="290" y2="165" stroke="#374151" stroke-width="1" stroke-dasharray="3 3"/><text x="180" y="155" font-size="15" font-family="Inter,sans-serif" fill="#1d7fe2">a</text><text x="240" y="155" font-size="15" font-family="Inter,sans-serif" fill="#1d7fe2">b</text></svg></div>
+    <div class="question-text">The diagram shows one vertex of a polygon with the interior angle a and the exterior angle b marked, where the side has been extended to form b. True or False: the interior and exterior angle at the same vertex always add up to 180°.</div>
   </div>
   <div class="answer-container-7">
     <button class="answer-option-7-1" onclick="toggleSingleAnswer7('opt1', this)">True</button>
@@ -2036,8 +2029,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-8">Q8 of 16</div>
   <div class="mark-counter-8" id="mark-counter-8">0/1</div>
   <div class="question-title-8">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 209.5,60.5 230,110 209.5,159.5 160,180 110.5,159.5 90,110 110.5,60.5" fill="none" stroke="#374151" stroke-width="2"/><path d="M175,53 A22,22 0 0 1 195,72" fill="none" stroke="#1d7fe2" stroke-width="1.5"/></svg>
-    The diagram shows a regular octagon (8 sides). Work out the size of one interior angle.
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 209.5,60.5 230,110 209.5,159.5 160,180 110.5,159.5 90,110 110.5,60.5" fill="none" stroke="#374151" stroke-width="2"/><path d="M175,53 A22,22 0 0 1 195,72" fill="none" stroke="#1d7fe2" stroke-width="1.5"/></svg></div>
+    <div class="question-text">The diagram shows a regular octagon (8 sides). Work out the size of one interior angle.</div>
   </div>
   <div class="answer-container-8">
     <button class="answer-option-8-1" onclick="toggleSingleAnswer8('opt1', this)">135°</button>
@@ -2053,8 +2046,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-9">Q9 of 16</div>
   <div class="mark-counter-9" id="mark-counter-9">0/1</div>
   <div class="question-title-9">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 214.7,66.3 228.3,125.6 190.4,173.1 129.6,173.1 91.7,125.6 105.3,66.3" fill="none" stroke="#374151" stroke-width="2"/></svg>
-    The diagram shows a heptagon (7 sides). Since the sum of interior angles = (n − 2) × 180° = (7 − 2) × 180 = 5 × 180 = ?
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 214.7,66.3 228.3,125.6 190.4,173.1 129.6,173.1 91.7,125.6 105.3,66.3" fill="none" stroke="#374151" stroke-width="2"/></svg></div>
+    <div class="question-text">The diagram shows a heptagon (7 sides). Since the sum of interior angles = (n − 2) × 180° = (7 − 2) × 180 = 5 × 180 = ?</div>
   </div>
   <div class="answer-container-9">
     <button class="answer-option-9-1" onclick="toggleSingleAnswer9('opt1', this)">900°</button>
@@ -2070,8 +2063,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-10">Q10 of 16</div>
   <div class="mark-counter-10" id="mark-counter-10">0/1</div>
   <div class="question-title-10">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 209.5,60.5 230,110 209.5,159.5 160,180 110.5,159.5 90,110 110.5,60.5" fill="none" stroke="#374151" stroke-width="2"/><line x1="209.5" y1="159.5" x2="245" y2="180" stroke="#374151" stroke-width="1.5" stroke-dasharray="3 3"/><text x="215" y="178" font-size="13" font-family="Inter,sans-serif" fill="#1d7fe2">30°</text><text x="205" y="120" text-anchor="end" font-size="12" font-family="Inter,sans-serif" fill="#374151">Diagram NOT accurately drawn</text></svg>
-    The diagram shows a regular dodecagon (12 sides) with one exterior angle marked. A regular polygon has an interior angle of 150°. Since interior + exterior = 180°, exterior = 180 − 150 = 30°. Since exterior angles sum to 360°, number of sides = 360 ÷ 30 = ?
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 209.5,60.5 230,110 209.5,159.5 160,180 110.5,159.5 90,110 110.5,60.5" fill="none" stroke="#374151" stroke-width="2"/><line x1="209.5" y1="159.5" x2="245" y2="180" stroke="#374151" stroke-width="1.5" stroke-dasharray="3 3"/><text x="215" y="178" font-size="13" font-family="Inter,sans-serif" fill="#1d7fe2">30°</text><text x="205" y="120" text-anchor="end" font-size="12" font-family="Inter,sans-serif" fill="#374151">Diagram NOT accurately drawn</text></svg></div>
+    <div class="question-text">The diagram shows a regular dodecagon (12 sides) with one exterior angle marked. A regular polygon has an interior angle of 150°. Since interior + exterior = 180°, exterior = 180 − 150 = 30°. Since exterior angles sum to 360°, number of sides = 360 ÷ 30 = ?</div>
   </div>
   <div class="answer-container-10">
     <button class="answer-option-10-1" onclick="toggleSingleAnswer10('opt1', this)">12</button>
@@ -2087,8 +2080,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-11">Q11 of 16</div>
   <div class="mark-counter-11" id="mark-counter-11">0/1</div>
   <div class="question-title-11">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 226.6,88.4 201.2,166.6 118.8,166.6 93.4,88.4" fill="none" stroke="#374151" stroke-width="2"/><text x="165" y="60" font-size="12" font-family="Inter,sans-serif" fill="#374151">100°</text><text x="195" y="105" font-size="12" font-family="Inter,sans-serif" fill="#374151">110°</text><text x="160" y="160" font-size="12" font-family="Inter,sans-serif" fill="#374151">95°</text><text x="105" y="160" font-size="12" font-family="Inter,sans-serif" fill="#1d7fe2">x</text><text x="95" y="105" font-size="12" font-family="Inter,sans-serif" fill="#374151">105°</text></svg>
-    The diagram shows an irregular pentagon with angles 100°, 110°, 95°, 105°, and x. Since the sum is 540°: x = 540 − 100 − 110 − 95 − 105 = ?
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 226.6,88.4 201.2,166.6 118.8,166.6 93.4,88.4" fill="none" stroke="#374151" stroke-width="2"/><text x="165" y="60" font-size="12" font-family="Inter,sans-serif" fill="#374151">100°</text><text x="195" y="105" font-size="12" font-family="Inter,sans-serif" fill="#374151">110°</text><text x="160" y="160" font-size="12" font-family="Inter,sans-serif" fill="#374151">95°</text><text x="105" y="160" font-size="12" font-family="Inter,sans-serif" fill="#1d7fe2">x</text><text x="95" y="105" font-size="12" font-family="Inter,sans-serif" fill="#374151">105°</text></svg></div>
+    <div class="question-text">The diagram shows an irregular pentagon with angles 100°, 110°, 95°, 105°, and x. Since the sum is 540°: x = 540 − 100 − 110 − 95 − 105 = ?</div>
   </div>
   <div class="answer-container-11">
     <button class="answer-option-11-1" onclick="toggleSingleAnswer11('opt1', this)">130°</button>
@@ -2104,8 +2097,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-12">Q12 of 16</div>
   <div class="mark-counter-12" id="mark-counter-12">0/1</div>
   <div class="question-title-12">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 209.5,60.5 230,110 209.5,159.5 160,180 110.5,159.5 90,110 110.5,60.5" fill="none" stroke="#374151" stroke-width="2"/><line x1="209.5" y1="159.5" x2="245" y2="180" stroke="#374151" stroke-width="1.5" stroke-dasharray="3 3"/><text x="215" y="178" font-size="13" font-family="Inter,sans-serif" fill="#1d7fe2">24°</text><text x="205" y="115" text-anchor="end" font-size="12" font-family="Inter,sans-serif" fill="#374151">Diagram NOT accurately drawn</text></svg>
-    The diagram shows a regular polygon with exterior angle 24°. Since exterior angles sum to 360°: number of sides = 360 ÷ 24 = ?
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 209.5,60.5 230,110 209.5,159.5 160,180 110.5,159.5 90,110 110.5,60.5" fill="none" stroke="#374151" stroke-width="2"/><line x1="209.5" y1="159.5" x2="245" y2="180" stroke="#374151" stroke-width="1.5" stroke-dasharray="3 3"/><text x="215" y="178" font-size="13" font-family="Inter,sans-serif" fill="#1d7fe2">24°</text><text x="205" y="115" text-anchor="end" font-size="12" font-family="Inter,sans-serif" fill="#374151">Diagram NOT accurately drawn</text></svg></div>
+    <div class="question-text">The diagram shows a regular polygon with exterior angle 24°. Since exterior angles sum to 360°: number of sides = 360 ÷ 24 = ?</div>
   </div>
   <div class="answer-container-12">
     <button class="answer-option-12-1" onclick="toggleSingleAnswer12('opt1', this)">15</button>
@@ -2121,8 +2114,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-13">Q13 of 16</div>
   <div class="mark-counter-13" id="mark-counter-13">0/1</div>
   <div class="question-title-13">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 220.6,75 220.6,145 160,180 99.4,145 99.4,75" fill="none" stroke="#374151" stroke-width="2"/><text x="165" y="60" font-size="11" font-family="Inter,sans-serif" fill="#374151">130°</text><text x="195" y="85" font-size="11" font-family="Inter,sans-serif" fill="#374151">140°</text><text x="195" y="140" font-size="11" font-family="Inter,sans-serif" fill="#374151">115°</text><text x="150" y="165" font-size="11" font-family="Inter,sans-serif" fill="#1d7fe2">x</text><text x="90" y="140" font-size="11" font-family="Inter,sans-serif" fill="#374151">125°</text><text x="90" y="85" font-size="11" font-family="Inter,sans-serif" fill="#374151">150°</text></svg>
-    The diagram shows an irregular hexagon. Five of its interior angles are 130°, 140°, 115°, 125°, and 150°. Work out the sixth angle.
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 220.6,75 220.6,145 160,180 99.4,145 99.4,75" fill="none" stroke="#374151" stroke-width="2"/><text x="165" y="60" font-size="11" font-family="Inter,sans-serif" fill="#374151">130°</text><text x="195" y="85" font-size="11" font-family="Inter,sans-serif" fill="#374151">140°</text><text x="195" y="140" font-size="11" font-family="Inter,sans-serif" fill="#374151">115°</text><text x="150" y="165" font-size="11" font-family="Inter,sans-serif" fill="#1d7fe2">x</text><text x="90" y="140" font-size="11" font-family="Inter,sans-serif" fill="#374151">125°</text><text x="90" y="85" font-size="11" font-family="Inter,sans-serif" fill="#374151">150°</text></svg></div>
+    <div class="question-text">The diagram shows an irregular hexagon. Five of its interior angles are 130°, 140°, 115°, 125°, and 150°. Work out the sixth angle.</div>
   </div>
   <div class="answer-container-13">
     <button class="answer-option-13-1" onclick="toggleSingleAnswer13('opt1', this)">60°</button>
@@ -2138,8 +2131,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-14">Q14 of 16</div>
   <div class="mark-counter-14" id="mark-counter-14">0/1</div>
   <div class="question-title-14">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 209.5,60.5 230,110 209.5,159.5 160,180 110.5,159.5 90,110 110.5,60.5" fill="none" stroke="#374151" stroke-width="2"/><path d="M175,53 A22,22 0 0 1 195,72" fill="none" stroke="#1d7fe2" stroke-width="1.5"/><text x="178" y="60" font-size="12" font-family="Inter,sans-serif" fill="#1d7fe2">5x</text><line x1="209.5" y1="60.5" x2="240" y2="45" stroke="#374151" stroke-width="1.5" stroke-dasharray="3 3"/><text x="218" y="45" font-size="11" font-family="Inter,sans-serif" fill="#374151">x+12</text></svg>
-    The diagram shows a regular polygon with interior angle 5x and exterior angle (x + 12)°. Work out the number of sides of the polygon.
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 209.5,60.5 230,110 209.5,159.5 160,180 110.5,159.5 90,110 110.5,60.5" fill="none" stroke="#374151" stroke-width="2"/><path d="M175,53 A22,22 0 0 1 195,72" fill="none" stroke="#1d7fe2" stroke-width="1.5"/><text x="178" y="60" font-size="12" font-family="Inter,sans-serif" fill="#1d7fe2">5x</text><line x1="209.5" y1="60.5" x2="240" y2="45" stroke="#374151" stroke-width="1.5" stroke-dasharray="3 3"/><text x="218" y="45" font-size="11" font-family="Inter,sans-serif" fill="#374151">x+12</text></svg></div>
+    <div class="question-text">The diagram shows a regular polygon with interior angle 5x and exterior angle (x + 12)°. Work out the number of sides of the polygon.</div>
   </div>
   <div class="answer-container-14">
     <button class="answer-option-14-1" onclick="toggleSingleAnswer14('opt1', this)">9</button>
@@ -2155,8 +2148,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-15">Q15 of 16</div>
   <div class="mark-counter-15" id="mark-counter-15">0/1</div>
   <div class="question-title-15">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 209.5,60.5 230,110 209.5,159.5 160,180 110.5,159.5 90,110 110.5,60.5" fill="none" stroke="#374151" stroke-width="2"/><text x="205" y="115" text-anchor="end" font-size="12" font-family="Inter,sans-serif" fill="#374151">Diagram NOT accurately drawn</text></svg>
-    The diagram shows a regular polygon whose interior angle is 8 times the size of its exterior angle. Work out the number of sides.
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 209.5,60.5 230,110 209.5,159.5 160,180 110.5,159.5 90,110 110.5,60.5" fill="none" stroke="#374151" stroke-width="2"/><text x="205" y="115" text-anchor="end" font-size="12" font-family="Inter,sans-serif" fill="#374151">Diagram NOT accurately drawn</text></svg></div>
+    <div class="question-text">The diagram shows a regular polygon whose interior angle is 8 times the size of its exterior angle. Work out the number of sides.</div>
   </div>
   <div class="answer-container-15">
     <button class="answer-option-15-1" onclick="toggleSingleAnswer15('opt1', this)">18</button>
@@ -2172,8 +2165,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-16">Q16 of 16</div>
   <div class="mark-counter-16" id="mark-counter-16">0/1</div>
   <div class="question-title-16">
-    <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,110 190,90 220,110 220,145 190,165 160,145" fill="none" stroke="#374151" stroke-width="2"/><polygon points="160,110 130,90 100,110 100,145 130,165 160,145" fill="none" stroke="#374151" stroke-width="2"/><polygon points="160,110 130,90 160,65 190,90" fill="none" stroke="#374151" stroke-width="2"/><text x="150" y="105" font-size="11" font-family="Inter,sans-serif" fill="#1d7fe2">120°</text></svg>
-    The diagram shows part of a tessellation where three identical regular hexagons meet exactly at a point with no gaps, each contributing its interior angle. Work out the interior angle of each hexagon.
+    <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,110 190,90 220,110 220,145 190,165 160,145" fill="none" stroke="#374151" stroke-width="2"/><polygon points="160,110 130,90 100,110 100,145 130,165 160,145" fill="none" stroke="#374151" stroke-width="2"/><polygon points="160,110 130,90 160,65 190,90" fill="none" stroke="#374151" stroke-width="2"/><text x="150" y="105" font-size="11" font-family="Inter,sans-serif" fill="#1d7fe2">120°</text></svg></div>
+    <div class="question-text">The diagram shows part of a tessellation where three identical regular hexagons meet exactly at a point with no gaps, each contributing its interior angle. Work out the interior angle of each hexagon.</div>
   </div>
   <div class="answer-container-16">
     <button class="answer-option-16-1" onclick="toggleSingleAnswer16('opt1', this)">120°</button>
