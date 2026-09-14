@@ -6142,20 +6142,6 @@ var MarkingFlow = (function(){
 
   function getChatSide(){ return document.querySelector('.chat-side'); }
 
-  // Resolves the actual button the student picked, purely from its visible
-  // text (submitAnswerN() already passes textContent.trim() as
-  // studentAnswer — there's no data-answer attribute in this template to
-  // rely on instead). Returns null (silent no-op for annotation) if it
-  // can't find exactly one match, e.g. a multi-select "A, B" answer.
-  function resolveWrongAnswerButton(qNum, studentAnswer){
-    var box = document.getElementById('question-box-' + qNum);
-    if (!box || !studentAnswer) return null;
-    var btns = box.querySelectorAll('[class*="answer-option-' + qNum + '-"]');
-    var match = null;
-    btns.forEach(function(b){ if (b.textContent.trim() === studentAnswer) match = b; });
-    return match;
-  }
-
   function getAILayer(box){
     var layer = box.querySelector('.ai-annotation-layer');
     if (!layer){
@@ -6169,26 +6155,24 @@ var MarkingFlow = (function(){
   // Draws one annotation on the question box. Marks accumulate across
   // Continue presses — each one lands on the same persistent layer, so a
   // second weakness's mark appears alongside the first, not replacing it.
-  // The AI targets one of two things: the wrong answer button (as before),
-  // or — when a screenshot of the box was sent and the mistake is about
-  // something visible anywhere in it — a point via x/y (0-1 fractions
-  // Claude gave back after actually looking at the image). Resolves both
-  // to the same {left, top, width, height} shape relative to the question
-  // box, so the rest of playAnnotation doesn't need to know which one it
-  // got. Deliberately fractions of the box's OWN live rect, not raw pixel
+  // Annotations only ever target the diagram/question content — never the
+  // answer options/tickboxes, which are just the answer choices and have
+  // nothing to do with explaining the mistake. x/y (0-1 fractions of the
+  // box, from the top-left) are where Claude looked at the actual
+  // screenshot and pointed at the specific diagram feature or question
+  // text that the weakness is about. If the AI didn't return coordinates
+  // (should not normally happen — the prompt requires them), the mark is
+  // silently skipped rather than falling back to circling an answer
+  // button — the weakness text/apply-step still shows either way.
+  // Deliberately fractions of the box's OWN live rect, not raw pixel
   // coordinates from the captured image — correct regardless of what size
   // the box actually renders at.
   function resolveAnnotationRect(qNum, studentAnswer, annotation, boxRect){
-    if (typeof annotation.x === 'number' && typeof annotation.y === 'number'){
-      var px = annotation.x * boxRect.width;
-      var py = annotation.y * boxRect.height;
-      var mark = Math.max(20, Math.min(boxRect.width, boxRect.height) * 0.08);
-      return { left: px - mark / 2, top: py - mark / 2, width: mark, height: mark };
-    }
-    var el = resolveWrongAnswerButton(qNum, studentAnswer);
-    if (!el) return null;
-    var er = el.getBoundingClientRect();
-    return { left: er.left - boxRect.left, top: er.top - boxRect.top, width: er.width, height: er.height };
+    if (typeof annotation.x !== 'number' || typeof annotation.y !== 'number') return null;
+    var px = annotation.x * boxRect.width;
+    var py = annotation.y * boxRect.height;
+    var mark = Math.max(20, Math.min(boxRect.width, boxRect.height) * 0.08);
+    return { left: px - mark / 2, top: py - mark / 2, width: mark, height: mark };
   }
 
   function playAnnotation(qNum, studentAnswer, annotation){
@@ -6410,14 +6394,14 @@ var MarkingFlow = (function(){
       if (data && data.pairs && data.pairs.length){
         _queue = data.pairs;
       } else {
-        _queue = [{ annotation: null, weakness: { title: 'Review needed', body: 'Compare your answer to the correct answer shown.', apply: 'Re-read the mark scheme and try again.' }, worked_step: null }];
+        _queue = [{ marks: [], weakness: { title: 'Review needed', body: 'Compare your answer to the correct answer shown.', apply: 'Re-read the mark scheme and try again.' }, worked_step: null }];
       }
       enableContinue();
     })
     .catch(function(){
       if (!document.getElementById('continueBtn')) buildRightBox();
       fadeOutOptions(qNum);
-      _queue = [{ annotation: null, weakness: { title: 'Marking unavailable', body: 'Could not reach AI marking right now.', apply: 'Compare your answer to the correct answer shown.' }, worked_step: null }];
+      _queue = [{ marks: [], weakness: { title: 'Marking unavailable', body: 'Could not reach AI marking right now.', apply: 'Compare your answer to the correct answer shown.' }, worked_step: null }];
       enableContinue();
     });
   }
@@ -6433,16 +6417,21 @@ var MarkingFlow = (function(){
     btn.disabled = false;
   }
 
-  // Each press reveals exactly one matched trio: the annotation on the
-  // question, the weakness card, and its numbered "how to apply it" step —
-  // all from the same pair, all at once. The FIRST trio shows automatically
-  // as soon as the AI responds (called directly above, not from a click) —
-  // only the SECOND trio onward needs an actual Continue press.
+  // Each press reveals exactly one matched trio: the mark(s) on the
+  // diagram/question, the weakness card, and its numbered "how to apply
+  // it" step — all from the same pair. Every press, including the first,
+  // needs an actual Continue click. A weakness can carry several marks
+  // (e.g. one circle per angle corner) — they're played in a quick
+  // stagger, not all at once, so the student can actually follow each one
+  // landing rather than seeing a single flash of clutter.
   function advanceStep(){
     if (_step >= _queue.length){ showRetry(); return; }
     var pair = _queue[_step];
     _step++;
-    playAnnotation(_qNum, _studentAnswer, pair.annotation);
+    var marks = Array.isArray(pair.marks) ? pair.marks : [];
+    marks.forEach(function(mark, i){
+      setTimeout(function(){ playAnnotation(_qNum, _studentAnswer, mark); }, i * 500);
+    });
     if (pair.weakness) revealWeaknessCard(_step, pair.weakness);
     var remaining = _queue.length - _step;
     var btn = document.getElementById('continueBtn');
