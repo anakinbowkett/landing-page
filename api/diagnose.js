@@ -171,30 +171,34 @@ async function handleDiagnose(req, res) {
     }
 }
 
-// Prompt-only "don't stack marks" guidance is not reliably followed — a
-// plain-diagram question (e.g. a sector with just r/θ labelled, no filled
-// example) gives the model few genuinely distinct targets, so it tends to
-// re-mark almost the same spot near the question text for every step,
-// producing illegible overlapping text labels. Deterministically nudge
-// any mark that lands within MIN_DIST of one already placed earlier in
-// the response, in reading order (weakness → step → mark), rather than
-// trusting the model's coordinates alone — same reasoning as computing
-// triangle vertices by trig instead of asking the model to guess pixels.
+// Prompt-only "don't stack marks" guidance is not reliably followed — the
+// model sometimes picks the same element (often the generic "question_text"
+// fallback) for several steps in a row, producing illegible overlapping
+// marks. Deterministically nudge any mark that lands within MIN_DIST of one
+// already placed earlier in the response, in reading order (weakness → step
+// → mark), rather than trusting the model's spacing alone — same reasoning
+// as computing triangle vertices by trig instead of asking the model to
+// guess pixels. Nudges spiral OUTWARD FROM THE MARK'S OWN ORIGINAL POINT
+// (not wherever the previous nudge landed) — a mark that collides 4-5 times
+// must still end up near what it was actually pointing at, not teleported
+// across the page. An earlier version nudged y-only and wrapped back to the
+// top of the image once it ran past the bottom, which put marks nowhere
+// near their real target when several steps collided (visible live as a
+// mark landing up near the question-number badge instead of the diagram).
 function deconflictMarks(weaknesses) {
     const MIN_DIST = 0.08;
-    const NUDGE = 0.07;
     const placed = [];
     weaknesses.forEach(weakness => {
         (weakness.steps || []).forEach(step => {
             (step.marks || []).forEach(mark => {
+                const baseX = mark.x, baseY = mark.y;
                 let guard = 0;
-                while (guard < 10 && placed.some(p => Math.hypot(p.x - mark.x, p.y - mark.y) < MIN_DIST)) {
+                while (guard < 8 && placed.some(p => Math.hypot(p.x - mark.x, p.y - mark.y) < MIN_DIST)) {
                     guard++;
-                    const candidate = mark.y + NUDGE * guard;
-                    // Once it would run off the bottom, wrap back near the top
-                    // rather than oscillating — each wrap lands a little lower
-                    // than the last so repeated wraps still separate.
-                    mark.y = candidate <= 0.95 ? candidate : 0.05 + (guard % 5) * 0.03;
+                    const radius = MIN_DIST * (0.9 + guard * 0.5);
+                    const angle = guard * 2.4; // ~golden angle so successive nudges don't re-collide with each other
+                    mark.x = Math.max(0.03, Math.min(0.97, baseX + radius * Math.cos(angle)));
+                    mark.y = Math.max(0.03, Math.min(0.97, baseY + radius * Math.sin(angle)));
                 }
                 placed.push({ x: mark.x, y: mark.y });
             });
@@ -275,16 +279,26 @@ async function handleMark(req, res) {
         // in empty space: general vision models are not reliable at
         // pixel-grounding from a flat screenshot, so that step is removed
         // entirely rather than prompted around.
+        const rawEntries = (Array.isArray(diagram_elements) ? diagram_elements : []).filter(el =>
+            el && typeof el.id === 'string' && typeof el.x === 'number' && typeof el.y === 'number'
+        );
+        const realDiagramEntries = rawEntries.filter(el => el.id !== 'question_text');
+        // Live testing showed the model taking the easy option: given a
+        // choice, it picked the generic "question_text" fallback for
+        // nearly every step instead of engaging with the diagram's real
+        // parts. Once the diagram has 2+ genuine parts to work with,
+        // remove "question_text" from what it's even allowed to pick —
+        // structurally forcing diagram engagement is more reliable than
+        // asking nicely. Only keep it as a fallback when the diagram
+        // genuinely has too few real parts (0-1) to explain a mistake
+        // with alone.
+        const usableEntries = realDiagramEntries.length >= 2 ? realDiagramEntries : rawEntries;
         const elementMap = new Map();
-        (Array.isArray(diagram_elements) ? diagram_elements : []).forEach(el => {
-            if (el && typeof el.id === 'string' && typeof el.x === 'number' && typeof el.y === 'number') {
-                elementMap.set(el.id, { x: el.x, y: el.y });
-            }
-        });
+        usableEntries.forEach(el => elementMap.set(el.id, { x: el.x, y: el.y }));
         const hasManifest = elementMap.size > 0;
         const manifestDescription = Array.from(elementMap.keys())
             .map(id => {
-                const el = diagram_elements.find(e => e.id === id);
+                const el = usableEntries.find(e => e.id === id);
                 return '- ' + id + ': ' + (el.text ? 'the text "' + el.text + '"' : (el.kind || 'a diagram element'));
             })
             .join('\n');
