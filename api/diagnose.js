@@ -352,7 +352,21 @@ async function handleMark(req, res) {
             return res.status(200).json({ ok: false, pairs: [] });
         }
 
-        return res.status(200).json({ ok: true, pairs: toolUse.input.pairs });
+        // Defensive: tool-use schema enforcement is reliable for structure
+        // (valid JSON, required fields) but NOT guaranteed for optional
+        // property naming — observed Haiku occasionally emit the old
+        // diagram_x/diagram_y names from an earlier schema version even
+        // though the current schema only defines x/y. Normalize rather
+        // than let a good coordinate silently go unused because of a
+        // naming mismatch the model made up on its own.
+        const pairs = toolUse.input.pairs.map(pair => {
+            const a = pair.annotation;
+            if (a && typeof a.x !== 'number' && typeof a.diagram_x === 'number') a.x = a.diagram_x;
+            if (a && typeof a.y !== 'number' && typeof a.diagram_y === 'number') a.y = a.diagram_y;
+            return pair;
+        });
+
+        return res.status(200).json({ ok: true, pairs });
 
     } catch (error) {
         console.error('Mark error:', error);
