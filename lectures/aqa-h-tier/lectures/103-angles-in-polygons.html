@@ -9,6 +9,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!-- FEATURE: Vision marking — captures the whole question box (diagram +
+     answer options) as a real screenshot for Claude to look at. Raw Canvas
+     can only draw what it's told to draw, not screenshot arbitrary DOM/CSS
+     (checkboxes, pseudo-elements) — html2canvas is the standard, reliable
+     way to do that. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
 <style>
 :root{
@@ -6160,28 +6166,24 @@ var MarkingFlow = (function(){
     return layer;
   }
 
-  // Draws one annotation (circle/underline the wrong button, or float a
-  // correction note near it) on the question box. Marks accumulate across
+  // Draws one annotation on the question box. Marks accumulate across
   // Continue presses — each one lands on the same persistent layer, so a
   // second weakness's mark appears alongside the first, not replacing it.
   // The AI targets one of two things: the wrong answer button (as before),
-  // or — when a diagram image was sent and the mistake is about something
-  // actually shown in it — a point INSIDE THE DIAGRAM via diagram_x/
-  // diagram_y (0-1 fractions Claude gave back after actually looking at
-  // the image). Resolves both to the same {left, top, width, height} shape
-  // relative to the question box, so the rest of playAnnotation doesn't
-  // need to know which one it got.
+  // or — when a screenshot of the box was sent and the mistake is about
+  // something visible anywhere in it — a point via x/y (0-1 fractions
+  // Claude gave back after actually looking at the image). Resolves both
+  // to the same {left, top, width, height} shape relative to the question
+  // box, so the rest of playAnnotation doesn't need to know which one it
+  // got. Deliberately fractions of the box's OWN live rect, not raw pixel
+  // coordinates from the captured image — correct regardless of what size
+  // the box actually renders at.
   function resolveAnnotationRect(qNum, studentAnswer, annotation, boxRect){
-    if (typeof annotation.diagram_x === 'number' && typeof annotation.diagram_y === 'number'){
-      var titleEl = document.querySelector('.question-title-' + qNum);
-      var svg = titleEl ? titleEl.querySelector('svg') : null;
-      if (svg){
-        var sr = svg.getBoundingClientRect();
-        var px = sr.left - boxRect.left + annotation.diagram_x * sr.width;
-        var py = sr.top - boxRect.top + annotation.diagram_y * sr.height;
-        var mark = Math.max(20, Math.min(sr.width, sr.height) * 0.12);
-        return { left: px - mark / 2, top: py - mark / 2, width: mark, height: mark };
-      }
+    if (typeof annotation.x === 'number' && typeof annotation.y === 'number'){
+      var px = annotation.x * boxRect.width;
+      var py = annotation.y * boxRect.height;
+      var mark = Math.max(20, Math.min(boxRect.width, boxRect.height) * 0.08);
+      return { left: px - mark / 2, top: py - mark / 2, width: mark, height: mark };
     }
     var el = resolveWrongAnswerButton(qNum, studentAnswer);
     if (!el) return null;
@@ -6232,6 +6234,34 @@ var MarkingFlow = (function(){
       }
     }
 
+    // Arrow: connects two points (e.g. a wrong tickbox to the diagram
+    // feature that disproves it) — an animated SVG line, dashoffset drawn
+    // from start to end, same technique as the English template's engine.
+    if (annotation.type === 'arrow' && typeof annotation.to_x === 'number' && typeof annotation.to_y === 'number'){
+      var fromX = target ? (target.left + target.width / 2) : boxRect.width / 2;
+      var fromY = target ? (target.top + target.height / 2) : 16;
+      var toX = annotation.to_x * boxRect.width;
+      var toY = annotation.to_y * boxRect.height;
+      var svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svgEl.setAttribute('width', boxRect.width);
+      svgEl.setAttribute('height', boxRect.height);
+      svgEl.style.position = 'absolute'; svgEl.style.left = '0'; svgEl.style.top = '0'; svgEl.style.pointerEvents = 'none';
+      var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', fromX); line.setAttribute('y1', fromY);
+      line.setAttribute('x2', toX); line.setAttribute('y2', toY);
+      line.setAttribute('stroke', color); line.setAttribute('stroke-width', '3'); line.setAttribute('stroke-linecap', 'round');
+      svgEl.appendChild(line);
+      layer.appendChild(svgEl);
+      var length = Math.hypot(toX - fromX, toY - fromY);
+      line.style.strokeDasharray = length;
+      line.style.strokeDashoffset = length;
+      line.style.transition = 'stroke-dashoffset 600ms ease-out';
+      requestAnimationFrame(function(){ line.style.strokeDashoffset = 0; });
+    }
+
+    // Text: types itself out character by character (like the English
+    // template's engine) rather than fading in all at once — reads more
+    // like a teacher writing the note live, not a UI popup appearing.
     if (annotation.type === 'text' && annotation.text){
       var tx, ty;
       if (target){
@@ -6241,13 +6271,18 @@ var MarkingFlow = (function(){
         tx = boxRect.width / 2; ty = 16;
       }
       var label = document.createElement('div');
-      label.className = 'ai-text-label';
+      label.className = 'ai-text-label shown';
       label.style.left = tx + 'px';
       label.style.top = Math.max(4, ty) + 'px';
       label.style.color = color;
-      label.textContent = annotation.text;
       layer.appendChild(label);
-      requestAnimationFrame(function(){ requestAnimationFrame(function(){ label.classList.add('shown'); }); });
+      var chars = annotation.text.split('');
+      var idx = 0;
+      (function typeChar(){
+        if (idx >= chars.length) return;
+        label.textContent += chars[idx++];
+        setTimeout(typeChar, 35);
+      })();
     }
   }
 
@@ -6308,44 +6343,33 @@ var MarkingFlow = (function(){
     side.appendChild(rr);
   }
 
-  // Rasterizes this question's diagram <svg> (if it has one) to a base64
-  // PNG (no data: prefix) so it can be sent to Claude's vision input —
-  // Claude's Messages API accepts JPEG/PNG/GIF/WEBP, not raw SVG. Resolves
-  // null (not rejects) when there's no diagram or rasterizing fails for any
-  // reason — vision is an enhancement, never a requirement for marking to
-  // work. Rendered at 2x the SVG's own viewBox size for legibility, capped
-  // so the image stays small and fast over the wire.
-  function rasterizeDiagram(qNum){
+  // Captures the WHOLE question box (diagram + answer options/tickboxes
+  // together, exactly as the student left it) as a base64 PNG (no data:
+  // prefix) so it can be sent to Claude's vision input — Claude's Messages
+  // API accepts JPEG/PNG/GIF/WEBP, not raw HTML/SVG DOM. Uses html2canvas
+  // rather than the raw Canvas API because Canvas can only draw what it's
+  // explicitly told to draw — it can't serialize arbitrary HTML/CSS the
+  // way html2canvas (or an SVG foreignObject) can. Resolves null (not
+  // rejects) on any failure — vision is an enhancement, never a
+  // requirement for marking to work.
+  function captureQuestionBox(qNum){
     return new Promise(function(resolve){
       try {
-        var titleEl = document.querySelector('.question-title-' + qNum);
-        var svg = titleEl ? titleEl.querySelector('svg') : null;
-        if (!svg) { resolve(null); return; }
-
-        var vb = (svg.getAttribute('viewBox') || '').split(/\s+/).map(Number);
-        var w = (vb.length === 4 && vb[2]) ? vb[2] : (svg.width && svg.width.baseVal ? svg.width.baseVal.value : 300);
-        var h = (vb.length === 4 && vb[3]) ? vb[3] : (svg.height && svg.height.baseVal ? svg.height.baseVal.value : 300);
-        var scale = Math.min(2, 900 / Math.max(w, h));
-        var cw = Math.round(w * scale), ch = Math.round(h * scale);
-
-        var serialized = new XMLSerializer().serializeToString(svg);
-        var svgDataUri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(serialized)));
-
-        var img = new Image();
-        img.onload = function(){
+        var box = document.getElementById('question-box-' + qNum);
+        if (!box || typeof html2canvas !== 'function') { resolve(null); return; }
+        html2canvas(box, {
+          backgroundColor: '#ffffff',
+          scale: 2,
+          logging: false,
+          ignoreElements: function(el){
+            return el.classList && (el.classList.contains('ai-dim-overlay') || el.classList.contains('ai-annotation-layer'));
+          }
+        }).then(function(canvas){
           try {
-            var canvas = document.createElement('canvas');
-            canvas.width = cw; canvas.height = ch;
-            var ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#ffffff'; // flatten onto white — no transparent PNG to the API
-            ctx.fillRect(0, 0, cw, ch);
-            ctx.drawImage(img, 0, 0, cw, ch);
             var dataUrl = canvas.toDataURL('image/png');
             resolve(dataUrl.replace(/^data:image\/png;base64,/, ''));
           } catch (e) { resolve(null); }
-        };
-        img.onerror = function(){ resolve(null); };
-        img.src = svgDataUri;
+        }).catch(function(){ resolve(null); });
       } catch (e) { resolve(null); }
     });
   }
@@ -6355,15 +6379,18 @@ var MarkingFlow = (function(){
     _studentAnswer = studentAnswer;
     _queue = [];
     _step = 0;
-    fadeOutOptions(qNum);
-    buildRightBox();
 
     var qKeys = Object.keys(window.QUESTION_BANK || {});
     var entry = window.QUESTION_BANK && window.QUESTION_BANK[qKeys[qNum - 1]];
     var questionText = entry ? (entry.question || '') : '';
     var markScheme = entry ? (entry.mark_scheme || []) : [];
 
-    rasterizeDiagram(qNum).then(function(diagramImage){
+    // Capture FIRST, before any visual changes — Claude needs to see the
+    // box exactly as the student answered it (their tick still showing),
+    // not the faded/rebuilt state that follows.
+    captureQuestionBox(qNum).then(function(boxImage){
+      fadeOutOptions(qNum);
+      buildRightBox();
       return fetch('/api/diagnose', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -6374,7 +6401,7 @@ var MarkingFlow = (function(){
           student_answer: studentAnswer,
           correct_answer: correctAnswer,
           mark_scheme: markScheme,
-          diagram_image: diagramImage || undefined
+          question_box_image: boxImage || undefined
         })
       });
     })
@@ -6388,6 +6415,8 @@ var MarkingFlow = (function(){
       enableContinue();
     })
     .catch(function(){
+      if (!document.getElementById('continueBtn')) buildRightBox();
+      fadeOutOptions(qNum);
       _queue = [{ annotation: null, weakness: { title: 'Marking unavailable', body: 'Could not reach AI marking right now.', apply: 'Compare your answer to the correct answer shown.' }, worked_step: null }];
       enableContinue();
     });
