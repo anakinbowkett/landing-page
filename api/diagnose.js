@@ -174,25 +174,32 @@ async function handleDiagnose(req, res) {
 async function handleMark(req, res) {
     // Feature: Phase 2-4 wrong-answer marking flow.
     // Receives the question, student answer, correct answer, mark scheme,
-    // and (new) an optional rasterized PNG of the question's diagram —
-    // Claude Haiku 4.5 has real vision input, so when a diagram is present
-    // it SEES the actual diagram, not just text, and can point annotations
-    // at a specific spot in it (diagram_x/diagram_y), not only at the
-    // answer button. Returns an array of { annotation, weakness,
-    // worked_step } pairs — one pair per mistake — that the client plays
-    // back one trio (annotation + weakness + numbered apply step) at a
-    // time on each Continue press.
+    // and (new) a base64 PNG screenshot of the ENTIRE question box — the
+    // diagram AND the answer options/tickboxes together, captured
+    // client-side via html2canvas (real Canvas can only draw what it's
+    // told to, not screenshot arbitrary DOM/CSS). Claude Haiku 4.5 has
+    // real vision input, so when this image is present it SEES the whole
+    // box as the student left it, not just text, and can point an
+    // annotation at ANY specific spot in it (x/y), not only at the answer
+    // button. Returns an array of { annotation, weakness, worked_step }
+    // pairs — one pair per mistake — that the client plays back one trio
+    // (annotation + weakness + numbered apply step) at a time on each
+    // Continue press.
     //
-    // annotation: what to draw (type: text/underline/circle, text, color,
-    //   optional diagram_x/diagram_y). No `target` field — for the
-    //   answer-button case the client always resolves the wrong-answer
-    //   button itself from the already-known studentAnswer text, since this
-    //   template's answer buttons carry no data-answer attribute to target.
-    //   diagram_x/diagram_y (0-1 fractions of the diagram image, from the
-    //   top-left) are set instead when the mistake is about something
-    //   actually shown in the diagram — only meaningful when diagram_image
-    //   was sent; the client positions the mark against the live SVG's
-    //   bounding box using the same fraction.
+    // annotation: what to draw — type: text/underline/circle/arrow, text,
+    //   color, optional x/y (+ to_x/to_y for arrow). No `target` field —
+    //   for the answer-button case the client always resolves the wrong-
+    //   answer button itself from the already-known studentAnswer text,
+    //   since this template's answer buttons carry no data-answer
+    //   attribute to target. x/y (0-1 fractions of the captured box image,
+    //   from the top-left) are set instead when the mistake is about
+    //   something visible anywhere in the box — only meaningful when
+    //   question_box_image was sent; the client positions the mark
+    //   against the live box's own bounding rect using the same fraction,
+    //   so it's correct regardless of what size the box actually renders
+    //   at (deliberately NOT raw pixel coordinates, which would break the
+    //   moment the box renders at a different size than the captured
+    //   image).
     // weakness:   { title, body, apply } — first-principles, 12-year-old-
     //   reading-level explanation. May be 1-4 entries: one per genuinely
     //   distinct root cause, never artificially split, never so many it
@@ -204,7 +211,7 @@ async function handleMark(req, res) {
     try {
         const {
             question, student_answer, correct_answer,
-            mark_scheme, subject, diagram_image
+            mark_scheme, subject, question_box_image
         } = req.body || {};
 
         if (!question || !student_answer) {
@@ -219,7 +226,7 @@ async function handleMark(req, res) {
         const markSchemeText = Array.isArray(mark_scheme) && mark_scheme.length
             ? mark_scheme.join('\n')
             : 'No mark scheme provided.';
-        const hasDiagram = typeof diagram_image === 'string' && diagram_image.length > 0;
+        const hasImage = typeof question_box_image === 'string' && question_box_image.length > 0;
 
         const systemPrompt =
             'You are explaining to a 12-year-old exactly why they got a GCSE ' + subjectLabel + ' question wrong. '
@@ -240,13 +247,16 @@ async function handleMark(req, res) {
             + 'Specific to THIS question and THIS mistake — never generic. Warm, direct, encouraging tone. '
             + 'Never condescending. Prefer 1-2 weaknesses; only go to 3-4 if the mistake truly has that many '
             + 'genuinely distinct root causes.'
-            + (hasDiagram
-                ? ' You can SEE an image of this question\'s actual diagram — look at it directly. When the '
-                  + 'mistake is about something shown in the diagram (which angle, which side, which point), '
-                  + 'point at the EXACT spot in the image using annotation.diagram_x and annotation.diagram_y '
-                  + '(0 to 1, fraction of the image width/height from the top-left corner) instead of just '
-                  + 'marking the answer button — be precise, look at where that specific feature actually sits '
-                  + 'in the image before giving coordinates.'
+            + (hasImage
+                ? ' You can SEE a real screenshot of the exact question box the student was looking at — the '
+                  + 'diagram AND the answer options/tickboxes together, exactly as they left it. Look at it '
+                  + 'directly before answering. For every weakness, prefer annotating something in this image over '
+                  + 'plain text alone — this is a real, working annotation system, not decoration: circle a wrong '
+                  + 'tickbox, underline the specific number in the diagram that matters, or draw an arrow from one '
+                  + 'part of the image to another to connect a cause to its effect. Give x and y (0 to 1, fraction '
+                  + 'of the image width/height from the top-left corner) for exactly where that feature sits — be '
+                  + 'precise, look at where it actually is before giving coordinates. For type:arrow also give '
+                  + 'to_x/to_y for where the arrow points TO.'
                 : '');
 
         const userPromptText =
@@ -254,11 +264,11 @@ async function handleMark(req, res) {
             + 'Student\'s answer: ' + student_answer + '\n'
             + 'Correct answer: ' + correct_answer + '\n'
             + 'Mark scheme:\n' + markSchemeText
-            + (hasDiagram ? '\n\nThe image attached is this question\'s actual diagram — look at it before answering.' : '');
+            + (hasImage ? '\n\nThe image attached is a real screenshot of this exact question box — look at it before answering.' : '');
 
-        const userContent = hasDiagram
+        const userContent = hasImage
             ? [
-                { type: 'image', source: { type: 'base64', media_type: 'image/png', data: diagram_image } },
+                { type: 'image', source: { type: 'base64', media_type: 'image/png', data: question_box_image } },
                 { type: 'text', text: userPromptText },
               ]
             : userPromptText;
@@ -293,13 +303,15 @@ async function handleMark(req, res) {
                                             properties: {
                                                 type: {
                                                     type: 'string',
-                                                    enum: ['text', 'underline', 'circle'],
-                                                    description: 'text = write a correction note; underline = underline the error; circle = circle the error'
+                                                    enum: ['text', 'underline', 'circle', 'arrow'],
+                                                    description: 'text = write a correction note; underline = underline the error; circle = circle the error; arrow = draw a line from one point to another (e.g. connecting a cause to its effect, or pointing from a note to the exact feature it explains).'
                                                 },
                                                 text: { type: 'string', description: 'The correction note text (max 10 words, handwritten style, simple words a 12-year-old would use). Required for type:text.' },
                                                 color: { type: 'string', description: 'Hex colour. Use #e16280 for errors, #8b5cf6 for corrections.' },
-                                                diagram_x: { type: 'number', description: 'Fraction 0-1 across the diagram image (left to right) — ONLY set if a diagram image was provided AND this mark points at something in the diagram itself, not the answer button.' },
-                                                diagram_y: { type: 'number', description: 'Fraction 0-1 down the diagram image (top to bottom) — pair with diagram_x. Omit both for an answer-button annotation.' }
+                                                x: { type: 'number', description: 'Fraction 0-1 across the question box image (left to right) — ONLY set if the image was provided AND this mark points at something visible in it, not the answer button. For type:arrow, this is the START point.' },
+                                                y: { type: 'number', description: 'Fraction 0-1 down the question box image (top to bottom) — pair with x. Omit x/y for an answer-button annotation.' },
+                                                to_x: { type: 'number', description: 'Fraction 0-1 — ONLY for type:arrow, the END point the arrow points to. Required for type:arrow.' },
+                                                to_y: { type: 'number', description: 'Fraction 0-1 — pair with to_x. Required for type:arrow.' }
                                             },
                                             required: ['type']
                                         },
