@@ -2961,24 +2961,28 @@ body.dark-mode #guideContent .g-paper-head-right { color: #64748b; }
 .marking-continue-btn:active { transform: scale(0.98); }
 .marking-continue-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
 /* Handwritten-on-the-page look: no boxes, no borders, no card background —
-   just Caveat-font text as if a teacher marked it by hand. */
-.weakness-card {
-  padding: 4px 4px 22px; margin-bottom: 2px;
-  font-family: 'Caveat', cursive; font-size: 25px; line-height: 1.45;
+   just Caveat-font text as if a teacher marked it by hand. Deliberately
+   NOT paragraph cards — every explanation is broken into many small
+   steps, each one line, each paired with its own mark on the diagram, so
+   the student never faces a wall of text. */
+.weakness-heading {
+  font-family: 'Caveat', cursive; font-size: 24px; font-weight: 700;
+  color: #111827; margin: 16px 4px 4px; padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+.weakness-heading:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.weakness-step {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 2px 4px; margin-bottom: 1px;
+  font-family: 'Caveat', cursive; font-size: 23px; line-height: 1.35;
   color: #1e293b;
   opacity: 0; transform: translateY(6px);
-  transition: opacity 350ms ease, transform 350ms ease;
+  transition: opacity 300ms ease, transform 300ms ease;
 }
-.weakness-card.revealed { opacity: 1; transform: translateY(0); }
-.weakness-card-num { font-size: 17px; font-weight: 700; color: #8b5cf6; margin-bottom: 0; }
-.weakness-card-title { font-size: 29px; font-weight: 700; color: #111827; margin-bottom: 2px; }
-.weakness-card-body { color: #1e293b; margin-bottom: 8px; }
-.weakness-card-apply {
-  font-size: 23px; color: #374151;
-}
-.weakness-card-apply-label {
-  font-size: 17px; font-weight: 700; color: #8b5cf6;
-  margin-bottom: 0;
+.weakness-step.revealed { opacity: 1; transform: translateY(0); }
+.weakness-step-num {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px; font-weight: 700; color: #8b5cf6; flex-shrink: 0;
 }
 
 /* ── ANNOTATION ON THE WRONG-ANSWER BUTTON ──
@@ -6751,85 +6755,95 @@ var MarkingFlow = (function(){
     })
     .then(function(r){ return r.json(); })
     .then(function(data){
-      if (data && data.pairs && data.pairs.length){
-        _queue = data.pairs;
-      } else {
-        _queue = [{ marks: [], weakness: { title: 'Review needed', body: 'Compare your answer to the correct answer shown.', apply: 'Re-read the mark scheme and try again.' }, worked_step: null }];
+      if (data && data.weaknesses && data.weaknesses.length){
+        _queue = flattenWeaknesses(data.weaknesses);
+      }
+      if (!_queue.length){
+        _queue = [{ weaknessTitle: 'Review needed', stepNumber: 1, text: 'Compare your answer to the correct answer shown, then re-read the mark scheme.', marks: [] }];
       }
       revealFirstAndArm();
     })
     .catch(function(){
       if (!document.getElementById('continueBtn')) buildRightBox();
       fadeOutOptions(qNum);
-      _queue = [{ marks: [], weakness: { title: 'Marking unavailable', body: 'Could not reach AI marking right now.', apply: 'Compare your answer to the correct answer shown.' }, worked_step: null }];
+      _queue = [{ weaknessTitle: 'Marking unavailable', stepNumber: 1, text: 'Could not reach AI marking right now — compare your answer to the correct answer shown.', marks: [] }];
       revealFirstAndArm();
     });
   }
 
-  // The first weakness/application-step trio shows the moment marking
-  // finishes — no Continue press needed for it, since the student already
-  // "asked" for it by submitting a wrong answer. Only a SECOND (or later)
-  // weakness on the same wrong answer needs an actual Continue press.
+  // Turns { weaknesses: [{ title, steps: [{ text, marks }] }] } into one
+  // flat sequence of steps to reveal one Continue press at a time. A
+  // weakness's title is attached only to its FIRST step, so it renders as
+  // a heading exactly once when that weakness's steps begin.
+  function flattenWeaknesses(weaknesses){
+    var queue = [];
+    (weaknesses || []).forEach(function(w){
+      var steps = Array.isArray(w.steps) ? w.steps : [];
+      steps.forEach(function(s, i){
+        queue.push({
+          weaknessTitle: i === 0 ? (w.title || '') : null,
+          stepNumber: i + 1,
+          text: s.text || '',
+          marks: Array.isArray(s.marks) ? s.marks : []
+        });
+      });
+    });
+    return queue;
+  }
+
+  // The first step shows the moment marking finishes — no Continue press
+  // needed for it, since the student already "asked" for it by submitting
+  // a wrong answer. Only a SECOND (or later) step needs an actual press.
   function revealFirstAndArm(){
     var btn = document.getElementById('continueBtn');
     if (btn) btn.disabled = false;
     advanceStep();
   }
 
-  // Each press reveals exactly one matched trio: the mark(s) on the
-  // diagram/question, the weakness card, and its numbered "how to apply
-  // it" step — all from the same pair. A weakness can carry several marks
-  // (e.g. one circle per angle corner) — they're played in a quick
-  // stagger, not all at once, so the student can actually follow each one
-  // landing rather than seeing a single flash of clutter.
+  // Each press reveals exactly ONE small step — one short sentence and
+  // the mark(s) that go with it, never a wall of text. A step's marks
+  // play in a quick stagger, not all at once, so the student can actually
+  // follow each one landing on the diagram as the sentence appears.
   function advanceStep(){
     if (_step >= _queue.length){ showRetry(); return; }
-    var pair = _queue[_step];
+    var item = _queue[_step];
     _step++;
-    var marks = Array.isArray(pair.marks) ? pair.marks : [];
+    var marks = Array.isArray(item.marks) ? item.marks : [];
     marks.forEach(function(mark, i){
       setTimeout(function(){ playAnnotation(_qNum, _studentAnswer, mark); }, i * 500);
     });
-    if (pair.weakness) revealWeaknessCard(_step, pair.weakness);
+    revealStep(item);
     var remaining = _queue.length - _step;
     var btn = document.getElementById('continueBtn');
     if (btn) btn.textContent = remaining > 0 ? 'Next (' + remaining + ' more)' : 'See retry options';
   }
 
-  function revealWeaknessCard(num, weakness){
+  function revealStep(item){
     var panel = document.getElementById('weaknessPanel');
     if (!panel) return;
-    var card = document.createElement('div');
-    card.className = 'weakness-card';
 
-    var numEl = document.createElement('div');
-    numEl.className = 'weakness-card-num';
-    numEl.textContent = 'WEAKNESS ' + num;
-    card.appendChild(numEl);
-
-    var title = document.createElement('div');
-    title.className = 'weakness-card-title';
-    title.textContent = weakness.title || '';
-    card.appendChild(title);
-
-    var body = document.createElement('div');
-    body.className = 'weakness-card-body';
-    body.textContent = weakness.body || '';
-    card.appendChild(body);
-
-    if (weakness.apply){
-      var aw = document.createElement('div');
-      aw.className = 'weakness-card-apply';
-      var al = document.createElement('div');
-      al.className = 'weakness-card-apply-label';
-      al.textContent = 'APPLICATION STEP ' + num;
-      aw.appendChild(al);
-      aw.appendChild(document.createTextNode(weakness.apply));
-      card.appendChild(aw);
+    if (item.weaknessTitle){
+      var heading = document.createElement('div');
+      heading.className = 'weakness-heading';
+      heading.textContent = item.weaknessTitle;
+      panel.appendChild(heading);
     }
-    panel.appendChild(card);
+
+    var stepEl = document.createElement('div');
+    stepEl.className = 'weakness-step';
+
+    var numEl = document.createElement('span');
+    numEl.className = 'weakness-step-num';
+    numEl.textContent = item.stepNumber + '.';
+    stepEl.appendChild(numEl);
+
+    var txt = document.createElement('span');
+    txt.textContent = item.text || '';
+    stepEl.appendChild(txt);
+
+    panel.appendChild(stepEl);
     requestAnimationFrame(function(){
-      requestAnimationFrame(function(){ card.classList.add('revealed'); });
+      requestAnimationFrame(function(){ stepEl.classList.add('revealed'); });
     });
     panel.scrollTop = panel.scrollHeight;
   }
