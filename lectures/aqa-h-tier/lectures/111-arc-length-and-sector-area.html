@@ -6375,6 +6375,108 @@ var MarkingFlow = (function(){
     side.appendChild(rr);
   }
 
+  // Converts one point in an SVG element's own coordinate space to real
+  // screen pixels, using the browser's own SVG geometry (createSVGPoint +
+  // getScreenCTM) rather than any manual math — correct regardless of
+  // viewBox scaling, so it works whatever size the diagram actually
+  // renders at.
+  function svgPointToScreen(el, svgX, svgY){
+    var svgRoot = el.ownerSVGElement || el;
+    var pt = svgRoot.createSVGPoint();
+    pt.x = svgX; pt.y = svgY;
+    var ctm = el.getScreenCTM();
+    if (!ctm) return null;
+    var screenPt = pt.matrixTransform(ctm);
+    return { x: screenPt.x, y: screenPt.y };
+  }
+
+  // Builds a list of the diagram's actual elements — each text label, each
+  // straight edge, each curved edge, each point — with their EXACT
+  // position (0-1 fraction of the question box), read directly from the
+  // real rendered SVG via native browser geometry APIs. This exists so
+  // the marking AI never has to guess a pixel coordinate from a flat
+  // screenshot: instead of "give x/y for where the angle label is" (which
+  // general vision models are genuinely unreliable at — that's a
+  // spatial-grounding task, not a language task), the server can instead
+  // ask "which of these NAMED elements is this step about", which is a
+  // plain classification choice from a known list. The server resolves
+  // whichever id comes back to the EXACT coordinate already computed
+  // here — there is no coordinate-guessing anywhere in that path.
+  function buildDiagramManifest(qNum){
+    var manifest = [];
+    var box = document.getElementById('question-box-' + qNum);
+    if (!box) return manifest;
+    var boxRect = box.getBoundingClientRect();
+    if (!boxRect.width || !boxRect.height) return manifest;
+
+    function toFrac(px, py){
+      return { x: (px - boxRect.left) / boxRect.width, y: (py - boxRect.top) / boxRect.height };
+    }
+    function pushFromSvgPoint(el, svgX, svgY, id, kind, text){
+      var screenPt = svgPointToScreen(el, svgX, svgY);
+      if (!screenPt) return;
+      var f = toFrac(screenPt.x, screenPt.y);
+      if (f.x < -0.05 || f.x > 1.05 || f.y < -0.05 || f.y > 1.05) return;
+      var entry = { id: id, kind: kind, x: f.x, y: f.y };
+      if (text) entry.text = text;
+      manifest.push(entry);
+    }
+
+    var titleEl = document.querySelector('.question-title-' + qNum);
+    var svg = titleEl ? titleEl.querySelector('svg') : null;
+    var n = 0;
+
+    if (svg){
+      svg.querySelectorAll('text').forEach(function(t){
+        try {
+          var x = parseFloat(t.getAttribute('x')), y = parseFloat(t.getAttribute('y'));
+          if (isNaN(x) || isNaN(y)) return;
+          n++;
+          pushFromSvgPoint(t, x, y, 'label_' + n, 'label', (t.textContent || '').trim().slice(0, 20));
+        } catch (e) {}
+      });
+      svg.querySelectorAll('line').forEach(function(l){
+        try {
+          var x1 = parseFloat(l.getAttribute('x1')), y1 = parseFloat(l.getAttribute('y1'));
+          var x2 = parseFloat(l.getAttribute('x2')), y2 = parseFloat(l.getAttribute('y2'));
+          if ([x1,y1,x2,y2].some(isNaN)) return;
+          n++;
+          pushFromSvgPoint(l, (x1 + x2) / 2, (y1 + y2) / 2, 'edge_' + n, 'straight edge');
+        } catch (e) {}
+      });
+      svg.querySelectorAll('path').forEach(function(p){
+        try {
+          var total = p.getTotalLength();
+          if (!total) return;
+          var mid = p.getPointAtLength(total / 2);
+          n++;
+          pushFromSvgPoint(p, mid.x, mid.y, 'path_' + n, 'edge (may be curved)');
+        } catch (e) {}
+      });
+      svg.querySelectorAll('circle').forEach(function(c){
+        try {
+          var cx = parseFloat(c.getAttribute('cx')), cy = parseFloat(c.getAttribute('cy'));
+          if (isNaN(cx) || isNaN(cy)) return;
+          n++;
+          pushFromSvgPoint(c, cx, cy, 'point_' + n, 'point');
+        } catch (e) {}
+      });
+    }
+
+    var qText = titleEl ? titleEl.querySelector('.question-text') : null;
+    if (qText){
+      try {
+        var qr = qText.getBoundingClientRect();
+        if (qr.width && qr.height){
+          var f = toFrac(qr.left + qr.width / 2, qr.top + qr.height / 2);
+          manifest.push({ id: 'question_text', kind: 'the question wording itself (not the diagram)', x: f.x, y: f.y });
+        }
+      } catch (e) {}
+    }
+
+    return manifest;
+  }
+
   // Captures the WHOLE question box (diagram + answer options/tickboxes
   // together, exactly as the student left it) as a base64 PNG (no data:
   // prefix) so it can be sent to Claude's vision input — Claude's Messages
@@ -6419,7 +6521,9 @@ var MarkingFlow = (function(){
 
     // Capture FIRST, before any visual changes — Claude needs to see the
     // box exactly as the student answered it (their tick still showing),
-    // not the faded/rebuilt state that follows.
+    // not the faded/rebuilt state that follows. The element manifest is
+    // read from the live DOM at the same moment, for the same reason.
+    var diagramElements = buildDiagramManifest(qNum);
     captureQuestionBox(qNum).then(function(boxImage){
       fadeOutOptions(qNum);
       buildRightBox();
@@ -6433,7 +6537,8 @@ var MarkingFlow = (function(){
           student_answer: studentAnswer,
           correct_answer: correctAnswer,
           mark_scheme: markScheme,
-          question_box_image: boxImage || undefined
+          question_box_image: boxImage || undefined,
+          diagram_elements: diagramElements.length ? diagramElements : undefined
         })
       });
     })
