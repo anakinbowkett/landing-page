@@ -9,6 +9,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!-- FEATURE: Vision marking — captures the whole question box (diagram +
+     answer options) as a real screenshot for Claude to look at. Raw Canvas
+     can only draw what it's told to draw, not screenshot arbitrary DOM/CSS
+     (checkboxes, pseudo-elements) — html2canvas is the standard, reliable
+     way to do that. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
 <style>
 :root{
@@ -31,8 +37,9 @@ html,body{
   background:var(--bg);
   font-family:Inter,system-ui,Segoe UI,Arial;
   color:#111;
-  padding-top:110px;
-  padding-bottom:60px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
 }
 
 .wrap{
@@ -245,32 +252,50 @@ html,body{
   font-weight: bold;
 }
 
+#mathBgPattern {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+#mathBgPattern svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+  
 .main-container {
   display: flex;
-  height: calc(100vh - 110px);
+  flex: 1;
+  min-height: 0;
   width: 100%;
-  margin-top: 110px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  padding: 0 8px 8px;
+  gap: 0;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 .content-side {
-  width: 66.666%;
+  flex: 2;
   height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: #e0f2fe;
+  overflow: hidden;
+  background: #ffffff;
+  border-radius: 16px 0 0 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-side {
-  width: 33.333%;
+  flex: 1;
   height: 100%;
+  overflow: hidden;
   background: #ffffff;
-  border-left: 1px solid #e5e7eb;
+  border-radius: 0 16px 16px 0;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
 }
 
 .chat-header {
@@ -297,7 +322,7 @@ html,body{
   flex: 1;
   overflow-y: auto;
   padding: 24px;
-  background: #f9fafb;
+  background: #ffffff;
 }
 
 .message {
@@ -352,9 +377,7 @@ html,body{
 }
 
 .chat-input-area {
-  padding: 16px 24px;
-  border-top: 1px solid var(--border);
-  background: white;
+  padding: 16px 14px;
   flex-shrink: 0;
 }
 
@@ -380,47 +403,82 @@ html,body{
 
 .chat-input-wrapper {
   display: flex;
+  align-items: center;
+  background: #f1f3f5;
+  border-radius: 999px;
+  padding: 6px 6px 6px 18px;
   gap: 8px;
-  align-items: flex-end;
+  flex: 1;
+  min-width: 0;
 }
 
 .chat-input {
   flex: 1;
-  padding: 12px 16px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  padding: 0;
+  border: none;
+  background: transparent;
   font-size: 14px;
   font-family: 'Inter', sans-serif;
   resize: none;
-  min-height: 56px;
-  max-height: 120px;
+  height: 28px;
   outline: none;
-  transition: border-color 0.2s;
-  line-height: 1.5;
+  line-height: 28px;
+  color: var(--text-primary);
+  overflow: hidden;
 }
 
-.chat-input:focus {
-  border-color: var(--accent);
-}
+.chat-input::placeholder { color: #9ca3af; }
+.chat-input:focus { border: none; outline: none; }
 
 .chat-send-btn {
-  padding: 12px 20px;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
   background: var(--accent);
   color: white;
   border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, transform 0.1s;
+  padding: 0;
 }
 
-.chat-send-btn:hover {
-  background: #1d6fd1;
+.chat-send-btn:hover  { background: #1d6fd1; }
+.chat-send-btn:active { transform: scale(0.93); }
+.chat-send-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+.chat-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.chat-send-btn:disabled {
-  background: #cbd5e1;
+.chat-nav-btn {
+  width: 44px;
+  height: 48px;
+  flex-shrink: 0;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+}
+
+.chat-nav-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #f0f9ff;
+}
+
+.chat-nav-btn:disabled {
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
@@ -474,7 +532,7 @@ html,body{
 .question-number-label-6 {
   position: absolute;
   top: 16px;
-  right: 16px;
+  left: 16px;
   font-size: 13px;
   font-weight: 600;
   color: #6b7280;
@@ -491,7 +549,7 @@ html,body{
 .mark-counter-6 {
   position: absolute;
   bottom: 32px;
-  left: 32px;
+  right: 32px;
   font-size: 14px;
   font-weight: 600;
   color: #6b7280;
@@ -533,9 +591,40 @@ html,body{
   font-size: 16px !important;
   font-weight: 500;
   color: #111827;
-  text-align: center;
-  margin: 32px 0 28px 0;
+  text-align: left; margin: 32px 0 28px 0;
   line-height: 1.6;
+}
+
+.question-diagram {
+  text-align: center;
+  position: relative;
+}
+.student-draw-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+}
+.student-draw-clear-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 2;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #4b5563;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+.question-text {
+  text-align: left;
+  max-width: 520px;
 }
 
 .answer-container-1,
@@ -547,8 +636,7 @@ html,body{
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin: 0 auto;
-  max-width: 600px;
+  margin: 0; max-width: 460px;
 }
 
 .answer-option-1-1,
@@ -575,19 +663,22 @@ html,body{
 .answer-option-6-2,
 .answer-option-6-3,
 .answer-option-6-4 {
-  padding: 16px 20px !important;
-  border: 2px solid #e5e7eb !important;
-  border-radius: 10px !important;
-  font-size: 15px !important;
+  padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
   font-weight: 450 !important;
   color: #1f2937 !important;
-  background: #ffffff !important;
+  background: transparent !important;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.15s ease;
   text-align: left !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important;
-  line-height: 1.55 !important;
+  line-height: 1.5 !important;
   letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .answer-option-1-1:hover:not(:disabled),
@@ -614,8 +705,7 @@ html,body{
 .answer-option-6-2:hover:not(:disabled),
 .answer-option-6-3:hover:not(:disabled),
 .answer-option-6-4:hover:not(:disabled) {
-  border-color: #1d7fe2 !important;
-  background: #f0f9ff !important;
+  background: #f8fafc !important;
 }
 
 .answer-option-1-1.selected,
@@ -642,9 +732,8 @@ html,body{
 .answer-option-6-2.selected,
 .answer-option-6-3.selected,
 .answer-option-6-4.selected {
-  border-color: #1d7fe2 !important;
-  background: #1d7fe2 !important;
-  color: white !important;
+  background: transparent !important;
+  color: #1f2937 !important;
 }
 
 .answer-option-1-1.correct-answer,
@@ -671,9 +760,57 @@ html,body{
 .answer-option-6-2.correct-answer,
 .answer-option-6-3.correct-answer,
 .answer-option-6-4.correct-answer {
-  border-color: #54d3ab !important;
-  background: #54d3ab !important;
-  color: white !important;
+  background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important;
+}
+
+
+/* Exam-paper tickbox — one rule covers every answer-option-N-M element,
+   however many questions/options exist, instead of duplicating this per
+   question number. */
+[class*="answer-option-"]::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  border: 2.5px solid #000000;
+  border-radius: 3px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+[class*="answer-option-"].selected::before {
+  background: #000000;
+  border-color: #000000;
+}
+[class*="answer-option-"].selected::after {
+  content: '';
+  position: absolute;
+  left: 24.5px;
+  top: 47%;
+  width: 7px;
+  height: 13px;
+  border: solid #ffffff;
+  border-width: 0 3px 3px 0;
+  transform: translateY(-60%) rotate(45deg);
+}
+[class*="answer-option-"].correct-answer::before {
+  background: #54d3ab;
+  border-color: #54d3ab;
+}
+[class*="answer-option-"].correct-answer::after {
+  content: '';
+  position: absolute;
+  left: 24.5px;
+  top: 47%;
+  width: 7px;
+  height: 13px;
+  border: solid #ffffff;
+  border-width: 0 3px 3px 0;
+  transform: translateY(-60%) rotate(45deg);
 }
 
 .submit-button-1,
@@ -736,16 +873,36 @@ html,body{
 }
 .question-box-7.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-7.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-7 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-7 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-7 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-7 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-7.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-7.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-7 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-7 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-7-1, .answer-option-7-2, .answer-option-7-3, .answer-option-7-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-7-1:hover:not(:disabled), .answer-option-7-2:hover:not(:disabled), .answer-option-7-3:hover:not(:disabled), .answer-option-7-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-7-1.selected, .answer-option-7-2.selected, .answer-option-7-3.selected, .answer-option-7-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-7-1.correct-answer, .answer-option-7-2.correct-answer, .answer-option-7-3.correct-answer, .answer-option-7-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-7 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-7 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-7-1, .answer-option-7-2, .answer-option-7-3, .answer-option-7-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-7-1:hover:not(:disabled), .answer-option-7-2:hover:not(:disabled), .answer-option-7-3:hover:not(:disabled), .answer-option-7-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-7-1.selected, .answer-option-7-2.selected, .answer-option-7-3.selected, .answer-option-7-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-7-1.correct-answer, .answer-option-7-2.correct-answer, .answer-option-7-3.correct-answer, .answer-option-7-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-7 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-7:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-7:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -768,16 +925,36 @@ html,body{
 }
 .question-box-8.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-8.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-8 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-8 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-8 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-8 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-8.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-8.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-8 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-8 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-8-1, .answer-option-8-2, .answer-option-8-3, .answer-option-8-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-8-1:hover:not(:disabled), .answer-option-8-2:hover:not(:disabled), .answer-option-8-3:hover:not(:disabled), .answer-option-8-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-8-1.selected, .answer-option-8-2.selected, .answer-option-8-3.selected, .answer-option-8-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-8-1.correct-answer, .answer-option-8-2.correct-answer, .answer-option-8-3.correct-answer, .answer-option-8-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-8 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-8 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-8-1, .answer-option-8-2, .answer-option-8-3, .answer-option-8-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-8-1:hover:not(:disabled), .answer-option-8-2:hover:not(:disabled), .answer-option-8-3:hover:not(:disabled), .answer-option-8-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-8-1.selected, .answer-option-8-2.selected, .answer-option-8-3.selected, .answer-option-8-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-8-1.correct-answer, .answer-option-8-2.correct-answer, .answer-option-8-3.correct-answer, .answer-option-8-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-8 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-8:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-8:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -800,16 +977,36 @@ html,body{
 }
 .question-box-9.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-9.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-9 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-9 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-9 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-9 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-9.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-9.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-9 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-9 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-9-1, .answer-option-9-2, .answer-option-9-3, .answer-option-9-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-9-1:hover:not(:disabled), .answer-option-9-2:hover:not(:disabled), .answer-option-9-3:hover:not(:disabled), .answer-option-9-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-9-1.selected, .answer-option-9-2.selected, .answer-option-9-3.selected, .answer-option-9-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-9-1.correct-answer, .answer-option-9-2.correct-answer, .answer-option-9-3.correct-answer, .answer-option-9-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-9 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-9 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-9-1, .answer-option-9-2, .answer-option-9-3, .answer-option-9-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-9-1:hover:not(:disabled), .answer-option-9-2:hover:not(:disabled), .answer-option-9-3:hover:not(:disabled), .answer-option-9-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-9-1.selected, .answer-option-9-2.selected, .answer-option-9-3.selected, .answer-option-9-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-9-1.correct-answer, .answer-option-9-2.correct-answer, .answer-option-9-3.correct-answer, .answer-option-9-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-9 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-9:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-9:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -832,16 +1029,36 @@ html,body{
 }
 .question-box-10.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-10.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-10 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-10 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-10 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-10 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-10.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-10.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-10 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-10 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-10-1, .answer-option-10-2, .answer-option-10-3, .answer-option-10-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-10-1:hover:not(:disabled), .answer-option-10-2:hover:not(:disabled), .answer-option-10-3:hover:not(:disabled), .answer-option-10-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-10-1.selected, .answer-option-10-2.selected, .answer-option-10-3.selected, .answer-option-10-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-10-1.correct-answer, .answer-option-10-2.correct-answer, .answer-option-10-3.correct-answer, .answer-option-10-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-10 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-10 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-10-1, .answer-option-10-2, .answer-option-10-3, .answer-option-10-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-10-1:hover:not(:disabled), .answer-option-10-2:hover:not(:disabled), .answer-option-10-3:hover:not(:disabled), .answer-option-10-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-10-1.selected, .answer-option-10-2.selected, .answer-option-10-3.selected, .answer-option-10-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-10-1.correct-answer, .answer-option-10-2.correct-answer, .answer-option-10-3.correct-answer, .answer-option-10-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-10 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-10:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-10:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -864,16 +1081,36 @@ html,body{
 }
 .question-box-11.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-11.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-11 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-11 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-11 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-11 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-11.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-11.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-11 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-11 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-11-1, .answer-option-11-2, .answer-option-11-3, .answer-option-11-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-11-1:hover:not(:disabled), .answer-option-11-2:hover:not(:disabled), .answer-option-11-3:hover:not(:disabled), .answer-option-11-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-11-1.selected, .answer-option-11-2.selected, .answer-option-11-3.selected, .answer-option-11-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-11-1.correct-answer, .answer-option-11-2.correct-answer, .answer-option-11-3.correct-answer, .answer-option-11-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-11 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-11 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-11-1, .answer-option-11-2, .answer-option-11-3, .answer-option-11-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-11-1:hover:not(:disabled), .answer-option-11-2:hover:not(:disabled), .answer-option-11-3:hover:not(:disabled), .answer-option-11-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-11-1.selected, .answer-option-11-2.selected, .answer-option-11-3.selected, .answer-option-11-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-11-1.correct-answer, .answer-option-11-2.correct-answer, .answer-option-11-3.correct-answer, .answer-option-11-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-11 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-11:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-11:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -896,16 +1133,36 @@ html,body{
 }
 .question-box-12.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-12.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-12 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-12 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-12 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-12 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-12.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-12.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-12 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-12 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-12-1, .answer-option-12-2, .answer-option-12-3, .answer-option-12-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-12-1:hover:not(:disabled), .answer-option-12-2:hover:not(:disabled), .answer-option-12-3:hover:not(:disabled), .answer-option-12-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-12-1.selected, .answer-option-12-2.selected, .answer-option-12-3.selected, .answer-option-12-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-12-1.correct-answer, .answer-option-12-2.correct-answer, .answer-option-12-3.correct-answer, .answer-option-12-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-12 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-12 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-12-1, .answer-option-12-2, .answer-option-12-3, .answer-option-12-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-12-1:hover:not(:disabled), .answer-option-12-2:hover:not(:disabled), .answer-option-12-3:hover:not(:disabled), .answer-option-12-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-12-1.selected, .answer-option-12-2.selected, .answer-option-12-3.selected, .answer-option-12-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-12-1.correct-answer, .answer-option-12-2.correct-answer, .answer-option-12-3.correct-answer, .answer-option-12-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-12 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-12:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-12:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -928,16 +1185,36 @@ html,body{
 }
 .question-box-13.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-13.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-13 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-13 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-13 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-13 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-13.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-13.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-13 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-13 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-13-1, .answer-option-13-2, .answer-option-13-3, .answer-option-13-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-13-1:hover:not(:disabled), .answer-option-13-2:hover:not(:disabled), .answer-option-13-3:hover:not(:disabled), .answer-option-13-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-13-1.selected, .answer-option-13-2.selected, .answer-option-13-3.selected, .answer-option-13-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-13-1.correct-answer, .answer-option-13-2.correct-answer, .answer-option-13-3.correct-answer, .answer-option-13-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-13 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-13 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-13-1, .answer-option-13-2, .answer-option-13-3, .answer-option-13-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-13-1:hover:not(:disabled), .answer-option-13-2:hover:not(:disabled), .answer-option-13-3:hover:not(:disabled), .answer-option-13-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-13-1.selected, .answer-option-13-2.selected, .answer-option-13-3.selected, .answer-option-13-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-13-1.correct-answer, .answer-option-13-2.correct-answer, .answer-option-13-3.correct-answer, .answer-option-13-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-13 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-13:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-13:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -960,16 +1237,36 @@ html,body{
 }
 .question-box-14.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-14.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-14 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-14 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-14 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-14 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-14.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-14.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-14 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-14 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-14-1, .answer-option-14-2, .answer-option-14-3, .answer-option-14-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-14-1:hover:not(:disabled), .answer-option-14-2:hover:not(:disabled), .answer-option-14-3:hover:not(:disabled), .answer-option-14-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-14-1.selected, .answer-option-14-2.selected, .answer-option-14-3.selected, .answer-option-14-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-14-1.correct-answer, .answer-option-14-2.correct-answer, .answer-option-14-3.correct-answer, .answer-option-14-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-14 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-14 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-14-1, .answer-option-14-2, .answer-option-14-3, .answer-option-14-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-14-1:hover:not(:disabled), .answer-option-14-2:hover:not(:disabled), .answer-option-14-3:hover:not(:disabled), .answer-option-14-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-14-1.selected, .answer-option-14-2.selected, .answer-option-14-3.selected, .answer-option-14-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-14-1.correct-answer, .answer-option-14-2.correct-answer, .answer-option-14-3.correct-answer, .answer-option-14-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-14 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-14:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-14:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -992,16 +1289,36 @@ html,body{
 }
 .question-box-15.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-15.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-15 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-15 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-15 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-15 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-15.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-15.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-15 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-15 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-15-1, .answer-option-15-2, .answer-option-15-3, .answer-option-15-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-15-1:hover:not(:disabled), .answer-option-15-2:hover:not(:disabled), .answer-option-15-3:hover:not(:disabled), .answer-option-15-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-15-1.selected, .answer-option-15-2.selected, .answer-option-15-3.selected, .answer-option-15-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-15-1.correct-answer, .answer-option-15-2.correct-answer, .answer-option-15-3.correct-answer, .answer-option-15-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-15 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-15 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-15-1, .answer-option-15-2, .answer-option-15-3, .answer-option-15-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-15-1:hover:not(:disabled), .answer-option-15-2:hover:not(:disabled), .answer-option-15-3:hover:not(:disabled), .answer-option-15-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-15-1.selected, .answer-option-15-2.selected, .answer-option-15-3.selected, .answer-option-15-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-15-1.correct-answer, .answer-option-15-2.correct-answer, .answer-option-15-3.correct-answer, .answer-option-15-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-15 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-15:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-15:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1024,16 +1341,36 @@ html,body{
 }
 .question-box-16.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-16.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-16 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-16 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-16 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-16 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-16.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-16.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-16 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-16 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-16-1, .answer-option-16-2, .answer-option-16-3, .answer-option-16-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-16-1:hover:not(:disabled), .answer-option-16-2:hover:not(:disabled), .answer-option-16-3:hover:not(:disabled), .answer-option-16-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-16-1.selected, .answer-option-16-2.selected, .answer-option-16-3.selected, .answer-option-16-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-16-1.correct-answer, .answer-option-16-2.correct-answer, .answer-option-16-3.correct-answer, .answer-option-16-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-16 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-16 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-16-1, .answer-option-16-2, .answer-option-16-3, .answer-option-16-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-16-1:hover:not(:disabled), .answer-option-16-2:hover:not(:disabled), .answer-option-16-3:hover:not(:disabled), .answer-option-16-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-16-1.selected, .answer-option-16-2.selected, .answer-option-16-3.selected, .answer-option-16-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-16-1.correct-answer, .answer-option-16-2.correct-answer, .answer-option-16-3.correct-answer, .answer-option-16-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-16 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-16:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-16:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1056,16 +1393,36 @@ html,body{
 }
 .question-box-17.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-17.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-17 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-17 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-17 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-17 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-17.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-17.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-17 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-17 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-17-1, .answer-option-17-2, .answer-option-17-3, .answer-option-17-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-17-1:hover:not(:disabled), .answer-option-17-2:hover:not(:disabled), .answer-option-17-3:hover:not(:disabled), .answer-option-17-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-17-1.selected, .answer-option-17-2.selected, .answer-option-17-3.selected, .answer-option-17-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-17-1.correct-answer, .answer-option-17-2.correct-answer, .answer-option-17-3.correct-answer, .answer-option-17-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-17 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-17 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-17-1, .answer-option-17-2, .answer-option-17-3, .answer-option-17-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-17-1:hover:not(:disabled), .answer-option-17-2:hover:not(:disabled), .answer-option-17-3:hover:not(:disabled), .answer-option-17-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-17-1.selected, .answer-option-17-2.selected, .answer-option-17-3.selected, .answer-option-17-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-17-1.correct-answer, .answer-option-17-2.correct-answer, .answer-option-17-3.correct-answer, .answer-option-17-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-17 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-17:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-17:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1088,16 +1445,36 @@ html,body{
 }
 .question-box-18.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-18.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-18 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-18 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-18 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-18 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-18.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-18.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-18 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-18 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-18-1, .answer-option-18-2, .answer-option-18-3, .answer-option-18-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-18-1:hover:not(:disabled), .answer-option-18-2:hover:not(:disabled), .answer-option-18-3:hover:not(:disabled), .answer-option-18-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-18-1.selected, .answer-option-18-2.selected, .answer-option-18-3.selected, .answer-option-18-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-18-1.correct-answer, .answer-option-18-2.correct-answer, .answer-option-18-3.correct-answer, .answer-option-18-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-18 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-18 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-18-1, .answer-option-18-2, .answer-option-18-3, .answer-option-18-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-18-1:hover:not(:disabled), .answer-option-18-2:hover:not(:disabled), .answer-option-18-3:hover:not(:disabled), .answer-option-18-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-18-1.selected, .answer-option-18-2.selected, .answer-option-18-3.selected, .answer-option-18-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-18-1.correct-answer, .answer-option-18-2.correct-answer, .answer-option-18-3.correct-answer, .answer-option-18-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-18 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-18:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-18:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1120,16 +1497,36 @@ html,body{
 }
 .question-box-19.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-19.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-19 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-19 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-19 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-19 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-19.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-19.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-19 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-19 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-19-1, .answer-option-19-2, .answer-option-19-3, .answer-option-19-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-19-1:hover:not(:disabled), .answer-option-19-2:hover:not(:disabled), .answer-option-19-3:hover:not(:disabled), .answer-option-19-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-19-1.selected, .answer-option-19-2.selected, .answer-option-19-3.selected, .answer-option-19-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-19-1.correct-answer, .answer-option-19-2.correct-answer, .answer-option-19-3.correct-answer, .answer-option-19-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-19 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-19 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-19-1, .answer-option-19-2, .answer-option-19-3, .answer-option-19-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-19-1:hover:not(:disabled), .answer-option-19-2:hover:not(:disabled), .answer-option-19-3:hover:not(:disabled), .answer-option-19-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-19-1.selected, .answer-option-19-2.selected, .answer-option-19-3.selected, .answer-option-19-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-19-1.correct-answer, .answer-option-19-2.correct-answer, .answer-option-19-3.correct-answer, .answer-option-19-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-19 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-19:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-19:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1152,16 +1549,36 @@ html,body{
 }
 .question-box-20.correct { border-color: #54d3ab; background: #f0fdf4; }
 .question-box-20.incorrect-selection { border-color: #e16280; background: #fef2f2; }
-.question-number-label-20 { position: absolute; top: 16px; right: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
-.mark-counter-20 { position: absolute; bottom: 32px; left: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+.question-number-label-20 { position: absolute; top: 16px;
+  left: 16px; font-size: 13px; font-weight: 600; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px; }
+.mark-counter-20 { position: absolute; bottom: 32px;
+  right: 32px; font-size: 14px; font-weight: 600; color: #6b7280; background: #f9fafb; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb; transition: all 0.3s ease; }
 .mark-counter-20.correct { background: #54d3ab !important; color: white !important; border-color: #54d3ab !important; }
 .mark-counter-20.incorrect { background: #e16280 !important; color: white !important; border-color: #e16280 !important; }
-.question-title-20 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: center; margin: 32px 0 28px 0; line-height: 1.6; }
-.answer-container-20 { display: flex; flex-direction: column; gap: 12px; margin: 0 auto; max-width: 600px; }
-.answer-option-20-1, .answer-option-20-2, .answer-option-20-3, .answer-option-20-4 { padding: 16px 20px !important; border: 2px solid #e5e7eb !important; border-radius: 10px !important; font-size: 15px !important; font-weight: 450 !important; color: #1f2937 !important; background: #ffffff !important; cursor: pointer; transition: all 0.2s ease; text-align: left !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", sans-serif !important; line-height: 1.55 !important; letter-spacing: -0.01em !important; }
-.answer-option-20-1:hover:not(:disabled), .answer-option-20-2:hover:not(:disabled), .answer-option-20-3:hover:not(:disabled), .answer-option-20-4:hover:not(:disabled) { border-color: #1d7fe2 !important; background: #f0f9ff !important; }
-.answer-option-20-1.selected, .answer-option-20-2.selected, .answer-option-20-3.selected, .answer-option-20-4.selected { border-color: #1d7fe2 !important; background: #1d7fe2 !important; color: white !important; }
-.answer-option-20-1.correct-answer, .answer-option-20-2.correct-answer, .answer-option-20-3.correct-answer, .answer-option-20-4.correct-answer { border-color: #54d3ab !important; background: #54d3ab !important; color: white !important; }
+.question-title-20 { font-size: 16px !important; font-weight: 500; color: #111827; text-align: left; margin: 32px 0 28px 0; line-height: 1.6; }
+.answer-container-20 { display: flex; flex-direction: column; gap: 12px; margin: 0; max-width: 460px; }
+.answer-option-20-1, .answer-option-20-2, .answer-option-20-3, .answer-option-20-4 { padding: 11px 16px 11px 56px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 450 !important;
+  color: #1f2937 !important;
+  background: transparent !important;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%; }
+.answer-option-20-1:hover:not(:disabled), .answer-option-20-2:hover:not(:disabled), .answer-option-20-3:hover:not(:disabled), .answer-option-20-4:hover:not(:disabled) { background: #f8fafc !important; }
+.answer-option-20-1.selected, .answer-option-20-2.selected, .answer-option-20-3.selected, .answer-option-20-4.selected { background: transparent !important;
+  color: #1f2937 !important; }
+.answer-option-20-1.correct-answer, .answer-option-20-2.correct-answer, .answer-option-20-3.correct-answer, .answer-option-20-4.correct-answer { background: transparent !important;
+  color: #15803d !important;
+  font-weight: 600 !important; }
 .submit-button-20 { margin: 24px auto 0 !important; padding: 12px 32px !important; background: #1d7fe2 !important; color: white !important; border: none !important; border-radius: 8px !important; font-size: 15px !important; font-weight: 600 !important; cursor: pointer; transition: all 0.2s ease; display: block; }
 .submit-button-20:hover { background: #1d6fd1 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29, 127, 226, 0.3); }
 .submit-button-20:disabled { background: #cbd5e1 !important; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.7; }
@@ -1485,55 +1902,41 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
 </head>
 <body>
 
-<div class="lecture-objective-box">
-  <div class="objective-content-wrapper">
-    <h1 class="lecture-objective-title">Product of Prime Factors</h1>
-    <div class="lecture-objective-content">
-      <p style="margin: 0 0 8px 0; font-weight: 600; color: #0b2546;">Lecture Objective:</p>
-      <ul class="lecture-objective-list">
-        <li>Master the full principles of the Product of Prime Factors</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<div class="header-bar-1">
-  <a href="#" class="lectures-back-btn">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-      <polyline points="9 22 9 12 15 12 15 22"></polyline>
-    </svg>
-    <span>Lectures</span>
-  </a>
-  
-  <div class="quiz-progress-container">
-    <div class="quiz-progress-segments" id="progress-segments">
-    </div>
-  </div>
-  
-  <button class="reference-btn" id="referenceBtn">
-  Reference
-</button>
-
-<button class="formula-sheet-btn" id="formulaSheetBtn">
-  Formula Sheet
-</button>
-</div>
-
-<div class="header-bar-2">
-  <div class="format-toggle">
-    <button class="format-btn active" id="multipleChoiceBtn" onclick="switchFormat('multiple-choice')">
-      Multiple Choice
-    </button>
-    <div class="format-divider"></div>
-    <button class="format-btn" id="examFormatBtn" onclick="switchFormat('exam')">
-      Exam Format
-    </button>
-  </div>
+<div id="mathBgPattern" aria-hidden="true">
+<svg xmlns="http://www.w3.org/2000/svg">
+  <defs>
+        <pattern id="mathDoodle" width="260" height="260" patternUnits="userSpaceOnUse">
+  <animateTransform attributeName="patternTransform" type="translate" dur="28s" repeatCount="indefinite"
+    calcMode="spline"
+    keyTimes="0;0.2;0.45;0.7;0.88;1"
+    keySplines="0.42 0 0.58 1;0.42 0 0.58 1;0.42 0 0.58 1;0.42 0 0.58 1;0.42 0 0.58 1"
+    values="0,0; 15,-10; 30,15; 10,30; -15,10; 0,0"/>
+  <text x="10" y="42" font-family="Caveat, cursive" font-size="34" fill="#e6a9c4" transform="rotate(-18 10 42)">π<animateTransform attributeName="transform" type="translate" additive="sum" dur="5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; 12,8; 0,0"/></text>
+  <text x="160" y="32" font-family="Caveat, cursive" font-size="32" fill="#e6a9c4" transform="rotate(12 160 32)">Σ<animateTransform attributeName="transform" type="translate" additive="sum" dur="6.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; -10,10; 0,0"/></text>
+  <text x="65" y="98" font-family="Caveat, cursive" font-size="28" fill="#e6a9c4" transform="rotate(-10 65 98)">√x<animateTransform attributeName="transform" type="translate" additive="sum" dur="4.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; 14,-6; 0,0"/></text>
+  <text x="205" y="120" font-family="Caveat, cursive" font-size="28" fill="#e6a9c4" transform="rotate(20 205 120)">x²<animateTransform attributeName="transform" type="translate" additive="sum" dur="7s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; -13,-9; 0,0"/></text>
+  <text x="20" y="160" font-family="Caveat, cursive" font-size="32" fill="#e6a9c4" transform="rotate(-25 20 160)">½<animateTransform attributeName="transform" type="translate" additive="sum" dur="5.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; 9,11; 0,0"/></text>
+  <path d="M115 158 L137 200 L93 200 Z" fill="none" stroke="#e6a9c4" stroke-width="2" transform="rotate(15 115 179)"><animateTransform attributeName="transform" type="translate" additive="sum" dur="8s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; -11,7; 0,0"/></path>
+  <circle cx="210" cy="185" r="17" fill="none" stroke="#e6a9c4" stroke-width="2"><animateTransform attributeName="transform" type="translate" additive="sum" dur="4s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; -14,-4; 0,0"/></circle>
+  <text x="30" y="232" font-family="Caveat, cursive" font-size="32" fill="#e6a9c4" transform="rotate(8 30 232)">=<animateTransform attributeName="transform" type="translate" additive="sum" dur="6s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; 10,-8; 0,0"/></text>
+  <text x="95" y="236" font-family="Caveat, cursive" font-size="28" fill="#e6a9c4" transform="rotate(-15 95 236)">+<animateTransform attributeName="transform" type="translate" additive="sum" dur="5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; -12,9; 0,0"/></text>
+  <text x="155" y="242" font-family="Caveat, cursive" font-size="32" fill="#e6a9c4" transform="rotate(18 155 242)">÷<animateTransform attributeName="transform" type="translate" additive="sum" dur="7.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; 13,6; 0,0"/></text>
+  <text x="215" y="60" font-family="Caveat, cursive" font-size="28" fill="#e6a9c4" transform="rotate(-12 215 60)">∫<animateTransform attributeName="transform" type="translate" additive="sum" dur="4.8s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.42 0 0.58 1;0.42 0 0.58 1" values="0,0; -9,-11; 0,0"/></text>
+</pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#mathDoodle)"/>
+</svg>
 </div>
 
 <div class="main-container">
   <div class="content-side" id="contentSide">
+
+  <div class="top-progress-bar">
+    <div class="quiz-progress-container">
+      <div class="quiz-progress-segments" id="progress-segments">
+      </div>
+    </div>
+  </div>
 
 
     <!-- QUESTION 1 -->
@@ -1541,8 +1944,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-1">Q1 of 18</div>
   <div class="mark-counter-1" id="mark-counter-1">0/1</div>
   <div class="question-title-1">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 220 140 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">r</text><text x="165" y="115" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">θ</text></svg>
-    True or False: the arc length of a sector is found using the formula (θ/360) × 2πr.
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 220 140 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">r</text><text x="165" y="115" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">θ</text></svg></div>
+    <div class="question-text">True or False: the arc length of a sector is found using the formula (θ/360) × 2πr.</div>
   </div>
   <div class="answer-container-1">
     <button class="answer-option-1-1" onclick="toggleSingleAnswer1('opt1', this)">True</button>
@@ -1556,8 +1959,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-2">Q2 of 18</div>
   <div class="mark-counter-2" id="mark-counter-2">0/1</div>
   <div class="question-title-2">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 220 140 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">8 cm</text><text x="165" y="115" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">90°</text></svg>
-    A sector has radius 8 cm and angle 90°. Which fraction of the full circle does this sector represent?
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 220 140 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">8 cm</text><text x="165" y="115" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">90°</text></svg></div>
+    <div class="question-text">A sector has radius 8 cm and angle 90°. Which fraction of the full circle does this sector represent?</div>
   </div>
   <div class="answer-container-2">
     <button class="answer-option-2-1" onclick="toggleSingleAnswer2('opt1', this)">¼</button>
@@ -1573,8 +1976,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-3">Q3 of 18</div>
   <div class="mark-counter-3" id="mark-counter-3">0/1</div>
   <div class="question-title-3">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 220 140 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="165" y="115" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">90°</text></svg>
-    True or False: a sector with angle 90° is a semicircle.
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 220 140 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="165" y="115" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">90°</text></svg></div>
+    <div class="question-text">True or False: a sector with angle 90° is a semicircle.</div>
   </div>
   <div class="answer-container-3">
     <button class="answer-option-3-1" onclick="toggleSingleAnswer3('opt1', this)">True</button>
@@ -1588,8 +1991,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-4">Q4 of 18</div>
   <div class="mark-counter-4" id="mark-counter-4">0/1</div>
   <div class="question-title-4">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 220 140 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">r</text><text x="165" y="115" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">θ</text></svg>
-    Which formula gives the area of a sector with radius r and angle θ?
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 220 140 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">r</text><text x="165" y="115" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">θ</text></svg></div>
+    <div class="question-text">Which formula gives the area of a sector with radius r and angle θ?</div>
   </div>
   <div class="answer-container-4">
     <button class="answer-option-4-1" onclick="toggleSingleAnswer4('opt1', this)">(θ/360) × 2πr</button>
@@ -1605,8 +2008,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-5">Q5 of 18</div>
   <div class="mark-counter-5" id="mark-counter-5">0/1</div>
   <div class="question-title-5">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 209 100 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">6 cm</text><text x="158" y="110" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">60°</text></svg>
-    A sector has radius 6 cm and angle 60°. Using π = 3.14, work out the arc length to 1 decimal place.
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 209 100 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">6 cm</text><text x="158" y="110" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">60°</text></svg></div>
+    <div class="question-text">A sector has radius 6 cm and angle 60°. Using π = 3.14, work out the arc length to 1 decimal place.</div>
   </div>
   <div class="answer-container-5">
     <button class="answer-option-5-1" onclick="toggleSingleAnswer5('opt1', this)">3.1 cm</button>
@@ -1622,8 +2025,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-6">Q6 of 18</div>
   <div class="mark-counter-6" id="mark-counter-6">0/1</div>
   <div class="question-title-6">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 220 140 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">10 cm</text><text x="165" y="115" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">90°</text></svg>
-    A sector has radius 10 cm and angle 90°. Using π = 3.14, its area is 78.5 cm². True or False?
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 220 140 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">10 cm</text><text x="165" y="115" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">90°</text></svg></div>
+    <div class="question-text">A sector has radius 10 cm and angle 90°. Using π = 3.14, its area is 78.5 cm². True or False?</div>
   </div>
   <div class="answer-container-6">
     <button class="answer-option-6-1" onclick="toggleSingleAnswer6('opt1', this)">True</button>
@@ -1637,8 +2040,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-7">Q7 of 18</div>
   <div class="mark-counter-7" id="mark-counter-7">0/1</div>
   <div class="question-title-7">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 209 180 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">9 cm</text><text x="170" y="122" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">120°</text></svg>
-    A sector has radius 9 cm and angle 120°. Using π = 3.14, work out its area to 1 decimal place.
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 209 180 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">9 cm</text><text x="170" y="122" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">120°</text></svg></div>
+    <div class="question-text">A sector has radius 9 cm and angle 120°. Using π = 3.14, work out its area to 1 decimal place.</div>
   </div>
   <div class="answer-container-7">
     <button class="answer-option-7-1" onclick="toggleSingleAnswer7('opt1', this)">254.3 cm²</button>
@@ -1654,8 +2057,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-8">Q8 of 18</div>
   <div class="mark-counter-8" id="mark-counter-8">0/1</div>
   <div class="question-title-8">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 187 205 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">5 cm</text><text x="173" y="129" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">144°</text></svg>
-    A sector has radius 5 cm and angle 144°. Using π = 3.14, work out its arc length to 1 decimal place.
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 187 205 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">5 cm</text><text x="173" y="129" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">144°</text></svg></div>
+    <div class="question-text">A sector has radius 5 cm and angle 144°. Using π = 3.14, work out its arc length to 1 decimal place.</div>
   </div>
   <div class="answer-container-8">
     <button class="answer-option-8-1" onclick="toggleSingleAnswer8('opt1', this)">12.6 cm</button>
@@ -1671,8 +2074,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-9">Q9 of 18</div>
   <div class="mark-counter-9" id="mark-counter-9">0/1</div>
   <div class="question-title-9">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 180 71 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">12 cm</text><text x="149" y="106" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">30°</text></svg>
-    A sector has radius 12 cm and angle 30°. First work out the fraction of the circle (30/360), then use it to find the arc length in terms of π.
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 180 71 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">12 cm</text><text x="149" y="106" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">30°</text></svg></div>
+    <div class="question-text">A sector has radius 12 cm and angle 30°. First work out the fraction of the circle (30/360), then use it to find the arc length in terms of π.</div>
   </div>
   <div class="answer-container-9">
     <button class="answer-option-9-1" onclick="toggleSingleAnswer9('opt1', this)">π cm</button>
@@ -1688,8 +2091,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-10">Q10 of 18</div>
   <div class="mark-counter-10" id="mark-counter-10">0/1</div>
   <div class="question-title-10">
-    <svg viewBox="0 0 340 90" xmlns="http://www.w3.org/2000/svg"><text x="20" y="45" font-size="15" font-family="Inter,sans-serif" fill="#374151">Sector: radius 4 cm, angle 90°. Working shown: Area = ¼ × π × 4 = π cm²</text></svg>
-    A student works out the area of a sector with radius 4 cm and angle 90°. Their working is shown below. True or False: the method used is correct.
+    <div class="question-diagram"><svg viewBox="0 0 340 90" xmlns="http://www.w3.org/2000/svg"><text x="20" y="45" font-size="15" font-family="Inter,sans-serif" fill="#374151">Sector: radius 4 cm, angle 90°. Working shown: Area = ¼ × π × 4 = π cm²</text></svg></div>
+    <div class="question-text">A student works out the area of a sector with radius 4 cm and angle 90°. Their working is shown below. True or False: the method used is correct.</div>
   </div>
   <div class="answer-container-10">
     <button class="answer-option-10-1" onclick="toggleSingleAnswer10('opt1', this)">True</button>
@@ -1703,8 +2106,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-11">Q11 of 18</div>
   <div class="mark-counter-11" id="mark-counter-11">0/1</div>
   <div class="question-title-11">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 1 1 71 180 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">6 cm</text><text x="170" y="158" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">240°</text></svg>
-    A sector has radius 6 cm and angle 240°. First find the fraction of the circle, then work out the sector area in terms of π.
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 1 1 71 180 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">6 cm</text><text x="170" y="158" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">240°</text></svg></div>
+    <div class="question-text">A sector has radius 6 cm and angle 240°. First find the fraction of the circle, then work out the sector area in terms of π.</div>
   </div>
   <div class="answer-container-11">
     <button class="answer-option-11-1" onclick="toggleSingleAnswer11('opt1', this)">12π cm²</button>
@@ -1720,8 +2123,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-12">Q12 of 18</div>
   <div class="mark-counter-12" id="mark-counter-12">0/1</div>
   <div class="question-title-12">
-    <svg viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 209 180 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">15 cm</text><text x="170" y="122" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#374151">?</text><text x="140" y="230" text-anchor="middle" font-size="15" font-family="Inter,sans-serif" fill="#374151">Arc length = 10π cm</text></svg>
-    A sector has arc length 10π cm and radius 15 cm. First set up the equation (θ/360) × 2π × 15 = 10π, then solve to find θ.
+    <div class="question-diagram"><svg viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 209 180 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">15 cm</text><text x="170" y="122" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#374151">?</text><text x="140" y="230" text-anchor="middle" font-size="15" font-family="Inter,sans-serif" fill="#374151">Arc length = 10π cm</text></svg></div>
+    <div class="question-text">A sector has arc length 10π cm and radius 15 cm. First set up the equation (θ/360) × 2π × 15 = 10π, then solve to find θ.</div>
   </div>
   <div class="answer-container-12">
     <button class="answer-option-12-1" onclick="toggleSingleAnswer12('opt1', this)">90°</button>
@@ -1737,8 +2140,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-13">Q13 of 18</div>
   <div class="mark-counter-13" id="mark-counter-13">0/1</div>
   <div class="question-title-13">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 216 115 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">4 m</text><text x="161" y="112" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">72°</text></svg>
-    A sector-shaped garden bed has radius 4 m and angle 72°. Work out the perimeter of the garden bed, using π = 3.14, giving your answer to 1 decimal place.
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 216 115 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">4 m</text><text x="161" y="112" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">72°</text></svg></div>
+    <div class="question-text">A sector-shaped garden bed has radius 4 m and angle 72°. Work out the perimeter of the garden bed, using π = 3.14, giving your answer to 1 decimal place.</div>
   </div>
   <div class="answer-container-13">
     <button class="answer-option-13-1" onclick="toggleSingleAnswer13('opt1', this)">13.0 m</button>
@@ -1754,8 +2157,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-14">Q14 of 18</div>
   <div class="mark-counter-14" id="mark-counter-14">0/1</div>
   <div class="question-title-14">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 197 83 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">15 cm</text><text x="153" y="108" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">45°</text></svg>
-    A pizza slice is a sector of radius 15 cm with an angle of 45°. Work out the area of the pizza slice, using π = 3.14, to the nearest cm².
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 197 83 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">15 cm</text><text x="153" y="108" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#1d7fe2">45°</text></svg></div>
+    <div class="question-text">A pizza slice is a sector of radius 15 cm with an angle of 45°. Work out the area of the pizza slice, using π = 3.14, to the nearest cm².</div>
   </div>
   <div class="answer-container-14">
     <button class="answer-option-14-1" onclick="toggleSingleAnswer14('opt1', this)">177 cm²</button>
@@ -1771,8 +2174,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-15">Q15 of 18</div>
   <div class="mark-counter-15" id="mark-counter-15">0/1</div>
   <div class="question-title-15">
-    <svg viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 220 140 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">8 cm</text><text x="165" y="115" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#374151">?</text><text x="140" y="230" text-anchor="middle" font-size="15" font-family="Inter,sans-serif" fill="#374151">Area = 50.24 cm²</text></svg>
-    A sector has area 50.24 cm² and radius 8 cm. Using π = 3.14, work out the angle of the sector.
+    <div class="question-diagram"><svg viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 220 140 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="122" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">8 cm</text><text x="165" y="115" text-anchor="middle" font-size="17" font-family="Inter,sans-serif" fill="#374151">?</text><text x="140" y="230" text-anchor="middle" font-size="15" font-family="Inter,sans-serif" fill="#374151">Area = 50.24 cm²</text></svg></div>
+    <div class="question-text">A sector has area 50.24 cm² and radius 8 cm. Using π = 3.14, work out the angle of the sector.</div>
   </div>
   <div class="answer-container-15">
     <button class="answer-option-15-1" onclick="toggleSingleAnswer15('opt1', this)">45°</button>
@@ -1788,8 +2191,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-16">Q16 of 18</div>
   <div class="mark-counter-16" id="mark-counter-16">0/1</div>
   <div class="question-title-16">
-    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 146 105 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="115" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">20 cm</text><text x="150" y="90" text-anchor="middle" font-size="16" font-family="Inter,sans-serif" fill="#1d7fe2">18°</text></svg>
-    A sector has radius 20 cm and angle 18°. Work out the arc length, in terms of π.
+    <div class="question-diagram"><svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"><path d="M 140 140 L 140 60 A 80 80 0 0 1 146 105 Z" fill="none" stroke="#374151" stroke-width="2"/><text x="115" y="100" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1d7fe2">20 cm</text><text x="150" y="90" text-anchor="middle" font-size="16" font-family="Inter,sans-serif" fill="#1d7fe2">18°</text></svg></div>
+    <div class="question-text">A sector has radius 20 cm and angle 18°. Work out the arc length, in terms of π.</div>
   </div>
   <div class="answer-container-16">
     <button class="answer-option-16-1" onclick="toggleSingleAnswer16('opt1', this)">4π cm</button>
@@ -1805,8 +2208,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-17">Q17 of 18</div>
   <div class="mark-counter-17" id="mark-counter-17">0/1</div>
   <div class="question-title-17">
-    <svg viewBox="0 0 340 90" xmlns="http://www.w3.org/2000/svg"><text x="20" y="45" font-size="15" font-family="Inter,sans-serif" fill="#374151">Sector: radius 10 cm, angle 45°. Working shown: Arc = 45/360 × π × 10 = 3.93 cm</text></svg>
-    A student works out the arc length of a sector with radius 10 cm and angle 45°. Their working is shown below. Which of these is the correct arc length, using π = 3.14?
+    <div class="question-diagram"><svg viewBox="0 0 340 90" xmlns="http://www.w3.org/2000/svg"><text x="20" y="45" font-size="15" font-family="Inter,sans-serif" fill="#374151">Sector: radius 10 cm, angle 45°. Working shown: Arc = 45/360 × π × 10 = 3.93 cm</text></svg></div>
+    <div class="question-text">A student works out the arc length of a sector with radius 10 cm and angle 45°. Their working is shown below. Which of these is the correct arc length, using π = 3.14?</div>
   </div>
   <div class="answer-container-17">
     <button class="answer-option-17-1" onclick="toggleSingleAnswer17('opt1', this)">7.85 cm</button>
@@ -1822,8 +2225,8 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   <div class="question-number-label-18">Q18 of 18</div>
   <div class="mark-counter-18" id="mark-counter-18">0/1</div>
   <div class="question-title-18">
-    <svg viewBox="0 0 340 90" xmlns="http://www.w3.org/2000/svg"><text x="20" y="45" font-size="15" font-family="Inter,sans-serif" fill="#374151">Sector: radius 6 cm, angle 60°. Claim: perimeter = 6.28 cm</text></svg>
-    A student claims a sector with radius 6 cm and angle 60° has perimeter 6.28 cm, since that is the arc length. What is the correct perimeter?
+    <div class="question-diagram"><svg viewBox="0 0 340 90" xmlns="http://www.w3.org/2000/svg"><text x="20" y="45" font-size="15" font-family="Inter,sans-serif" fill="#374151">Sector: radius 6 cm, angle 60°. Claim: perimeter = 6.28 cm</text></svg></div>
+    <div class="question-text">A student claims a sector with radius 6 cm and angle 60° has perimeter 6.28 cm, since that is the arc length. What is the correct perimeter?</div>
   </div>
   <div class="answer-container-18">
     <button class="answer-option-18-1" onclick="toggleSingleAnswer18('opt1', this)">6.3 cm</button>
@@ -1835,7 +2238,20 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
 </div>
 
 
-    
+    <!-- ── BOTTOM NAV STRIP ──────────────────────────────── -->
+<div class="nav-strip-zone" id="navStripZone">
+  <div class="nav-strip-bar">
+    <button class="nav-btn" id="nav-connect-btn" onclick="alert('Pair your iPhone — coming soon')" title="Connect iPhone">
+      <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="1" width="10" height="22" rx="3" ry="3"/><circle cx="12" cy="19.5" r="0.9" fill="currentColor"/><line x1="9.5" y1="4" x2="14.5" y2="4" stroke-width="1.5"/></svg></span>
+      <span class="nav-label">Connect</span>
+    </button>
+    <div class="nav-counter" id="question-counter">1 / 20</div>
+    <button class="nav-btn" id="nav-help-btn" onclick="typeof startTutorial === 'function' ? startTutorial() : null" title="Page tour">
+      <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg></span>
+      <span class="nav-label">Help</span>
+    </button>
+  </div>
+</div>
     
     
     
@@ -1849,23 +2265,27 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
   </div>
 
   <div class="chat-side">
-    <div class="chat-header">
-      <div class="chat-title"></div>
-      <div class="chat-subtitle" id="chatSubtitle">Click a question to get help</div>
-    </div>
 
     <div class="chat-messages" id="chatMessages"></div>
 
-    <div class="chat-input-area">
-      <button class="prompts-btn" id="promptsBtn">Prompts</button>
-      
-      <div class="chat-input-wrapper">
-        <textarea id="chatInput" class="chat-input" placeholder="Ask a question..." rows="2"></textarea>
-        <button id="sendBtn" class="chat-send-btn">Execute</button>
+        <div class="chat-input-area">
+      <div class="chat-input-row">
+        <button class="chat-nav-btn" id="nav-prev-btn" onclick="previousQuestion()" title="Previous question">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="chat-nav-btn" id="nav-next-btn" onclick="nextQuestion()" title="Next question">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="chat-input-wrapper">
+          <textarea id="chatInput" class="chat-input" placeholder="Ask a question..." rows="1"></textarea>
+          <button id="sendBtn" class="chat-send-btn" title="Send">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
   
   
@@ -2484,8 +2904,120 @@ body.dark-mode #guideContent .g-paper-head-right { color: #64748b; }
   #guideContent .g-tree-row { flex-direction: column; }
   #guideContent .g-check-box { padding: 20px 16px; }
 }
-</style>
+/* ── TOP PROGRESS BAR ──────────────────────────── */
+.top-progress-bar { flex-shrink: 0; padding: 10px 8px 8px; }
+.quiz-progress-segments { display: flex; width: 100%; height: 100%; gap: 3px; }
+.quiz-segment { height: 100%; transition: all 1s ease-out; position: relative; background-color: transparent; }
 
+/* ── BOTTOM NAV STRIP ──────────────────────────── */
+.nav-strip-zone {
+  position: sticky; bottom: 0; height: 22px;
+  display: flex; align-items: flex-end; justify-content: center;
+  z-index: 10; pointer-events: none; margin-top: auto;
+}
+.nav-strip-zone:hover .nav-strip-bar { transform: translateY(0); opacity: 1; }
+.nav-strip-bar {
+  display: flex; gap: 8px; background: #ffffff;
+  border: 1px solid #e5e7eb; border-bottom: none; border-radius: 14px 14px 0 0;
+  padding: 6px 10px; pointer-events: all;
+  transform: translateY(100%); opacity: 0;
+  transition: transform 200ms ease, opacity 200ms ease;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+}
+.nav-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  min-width: 52px; height: 38px; padding: 0 14px; border: none;
+  background: transparent; border-radius: 10px;
+  font-size: 13px; font-weight: 600; color: #374151;
+  cursor: pointer; transition: background 150ms ease, color 150ms ease; white-space: nowrap;
+}
+.nav-btn:hover { background: #f3f4f6; color: #111827; }
+.nav-btn:disabled { opacity: 0.35; cursor: default; }
+.nav-btn:disabled:hover { background: transparent; }
+.nav-btn svg { flex-shrink: 0; }
+.nav-btn .nav-label { display: none; }
+.nav-btn:hover .nav-label { display: inline; }
+.nav-btn:hover .nav-icon { display: none; }
+.nav-counter { display: flex; align-items: center; font-size: 12px; color: #9ca3af; padding: 0 6px; user-select: none; }
+/* \u2500\u2500 PHASE 2-4: WRONG ANSWER FLOW \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+.weakness-panel {
+  padding: 18px 20px 10px; flex-shrink: 0;
+}
+.weakness-panel-title {
+  font-size: 11px; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; color: #6b7280; margin-bottom: 14px;
+}
+.marking-continue-btn {
+  display: block; width: calc(100% - 12px); margin: 0 6px 10px; padding: 14px;
+  background: #1d7fe2; color: #fff; border: none; border-radius: 10px;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: background 150ms ease, transform 100ms ease;
+}
+.marking-continue-btn:hover { background: #1d6fd1; }
+.marking-continue-btn:active { transform: scale(0.98); }
+.marking-continue-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+/* Handwritten-on-the-page look: no boxes, no borders, no card background —
+   just Caveat-font text as if a teacher marked it by hand. */
+.weakness-card {
+  padding: 4px 4px 22px; margin-bottom: 2px;
+  font-family: 'Caveat', cursive; font-size: 25px; line-height: 1.45;
+  color: #1e293b;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 350ms ease, transform 350ms ease;
+}
+.weakness-card.revealed { opacity: 1; transform: translateY(0); }
+.weakness-card-num { font-size: 17px; font-weight: 700; color: #8b5cf6; margin-bottom: 0; }
+.weakness-card-title { font-size: 29px; font-weight: 700; color: #111827; margin-bottom: 2px; }
+.weakness-card-body { color: #1e293b; margin-bottom: 8px; }
+.weakness-card-apply {
+  font-size: 23px; color: #374151;
+}
+.weakness-card-apply-label {
+  font-size: 17px; font-weight: 700; color: #8b5cf6;
+  margin-bottom: 0;
+}
+
+/* ── ANNOTATION ON THE WRONG-ANSWER BUTTON ──
+   The AI only ever supplies annotation type/text/color — the button itself
+   is always resolved client-side from the already-known studentAnswer text
+   (this template's answer buttons carry no data-answer attribute), same
+   never-trust-AI-for-coordinates rule as the English annotation engine. */
+.ai-dim-overlay{
+  position:absolute; inset:0; background:rgba(255,255,255,0.55); z-index:10;
+  opacity:0; transition:opacity 250ms ease; pointer-events:none;
+}
+.ai-dim-overlay.active{ opacity:1; }
+.ai-annotation-layer{ position:absolute; inset:0; z-index:11; pointer-events:none; }
+.ai-circle{
+  position:absolute; border:3px solid #e16280; border-radius:50%;
+  transform:translate(-50%,-50%) scale(0.6); opacity:0;
+  transition:transform 400ms cubic-bezier(.34,1.56,.64,1), opacity 250ms ease;
+}
+.ai-circle.grown{ transform:translate(-50%,-50%) scale(1); opacity:1; }
+.ai-underline{
+  position:absolute; height:3px; background:#e16280;
+  transform:scaleX(0); transform-origin:left; transition:transform 400ms ease;
+}
+.ai-underline.drawn{ transform:scaleX(1); }
+.ai-text-label{
+  position:absolute; font-family:'Caveat',cursive; font-size:21px; font-weight:600;
+  color:#8b5cf6; max-width:220px; line-height:1.3; transform:translate(-50%,0);
+  opacity:0; transition:opacity 250ms ease;
+}
+.ai-text-label.shown{ opacity:1; }
+
+.retry-btn-row { display: flex; gap: 8px; padding: 10px 14px; flex-shrink: 0; }
+.retry-btn {
+  flex: 1; padding: 10px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid;
+  transition: background 150ms ease;
+}
+.retry-btn-blank { background: #fff; border-color: #e5e7eb; color: #374151; }
+.retry-btn-blank:hover { background: #f9fafb; border-color: #1d7fe2; }
+.retry-btn-working { background: #fff; border-color: #8b5cf6; color: #6d28d9; }
+.retry-btn-working:hover { background: #f5f3ff; }
+
+</style>
 <div class="g-container">
 
 <h1 class="g-title">Arc Length and Sector Area</h1>
@@ -5035,7 +5567,7 @@ return replies; // return the array
     chatInput.value = '';
     
     sendBtn.disabled = true;
-    sendBtn.textContent = 'Thinking...';
+    sendBtn.style.opacity = '0.5';
     
     const responses = await sendToDeepSeek(message);
 const bubbles = Array.isArray(responses) ? responses : [responses];
@@ -5044,7 +5576,7 @@ bubbles.forEach(function(b, idx) {
 });
     
     sendBtn.disabled = false;
-    sendBtn.textContent = 'Execute';
+    sendBtn.style.opacity = '1';
   }
   
   if (sendBtn) {
@@ -5123,30 +5655,6 @@ function injectChatDivider(qNum) {
   msgs.scrollTop = msgs.scrollHeight;
 }
 
-window.notifyWrongAnswer = async function(questionNum, studentAnswer, correctAnswer) {
-  if (!window.currentQuestion) return;
-  var q = window.currentQuestion;
-  var msg = 'The student just answered question ' + questionNum + ' wrong. '
-    + 'The question was: "' + (q.question || '') + '". '
-    + 'The student chose: "' + studentAnswer + '". '
-    + 'The correct answer is: "' + correctAnswer + '". '
-    + 'Tell the student specifically what was wrong about their answer and why, '
-    + 'then give one small hint to help them figure out the right answer. '
-    + 'Do not give the answer away directly.';
-  addMessageToChat('Hmm, let me help with that...', false);
-  var responses = await sendToDeepSeek(msg);
-  var bubbles = Array.isArray(responses) ? responses : [responses];
-  var chatMessages = document.getElementById('chatMessages');
-  if (chatMessages) {
-    var all = chatMessages.querySelectorAll('.message-assistant');
-    var last = all[all.length - 1];
-    if (last) last.remove();
-  }
-  bubbles.forEach(function(b, idx) {
-    setTimeout(function() { addMessageToChat(b, false); }, idx * 600);
-  });
-};
-
 window.setCurrentQuestion = function(questionNumber) {
   console.log('Setting current question to:', questionNumber);
   window.conversationHistory = [];
@@ -5159,11 +5667,6 @@ window.setCurrentQuestion = function(questionNumber) {
   if (questionData && chatSubtitle) {
     chatSubtitle.textContent = 'Q' + questionNumber + ': ' + (questionData.topic || '');
   }
-  document.querySelectorAll('[class^="question-box-"]').forEach(function(box) {
-    box.style.borderColor = '#e5e7eb';
-  });
-  var activeBox = document.getElementById('question-box-' + questionNumber);
-  if (activeBox) activeBox.style.borderColor = '#1d7fe2';
   injectChatDivider(questionNumber);
 };
   
@@ -5172,10 +5675,7 @@ window.setCurrentQuestion = function(questionNumber) {
   }, 1000);
   
   initializeProgressBar();
-  // REMOVED 2026-08 — initializeQuestionNavigation() and the click-to-
-  // select-question wiring that used to sit here both depended on the
-  // duplicate-declared totalQuestionsCount removed above; see that note.
-  // Questions now simply display in order on the page instead.
+  initializeQuestionNavigation();
 
 const formulaBtn = document.getElementById('formulaSheetBtn');
 if (formulaBtn) {
@@ -5619,5 +6119,546 @@ async function submitReport() {
 (function(){var lastText="",bubble;function getSC(c){var sel=window.getSelection();if(!sel||sel.isCollapsed)return"";var el=sel.getRangeAt(0).startContainer;el=(el.nodeType===3)?el.parentElement:el;while(el&&el!==c){var p=el.previousElementSibling;while(p){var t=p.tagName||"";if(/^H[1-4]$/.test(t)||p.classList.contains("g-step-title")||p.classList.contains("g-title")||p.classList.contains("g-section-label"))return(p.innerText||p.textContent||"").trim();p=p.previousElementSibling;}el=el.parentElement;}return"";}function showB(r){if(!bubble||!r)return;bubble.style.display="flex";var bw=bubble.offsetWidth||160;bubble.style.left=Math.max(8,Math.min(r.left+r.width/2-bw/2,window.innerWidth-bw-8))+"px";bubble.style.top=(r.top+window.scrollY-52)+"px";}function hideB(){if(bubble)bubble.style.display="none";lastText="";}function tryShow(){var sel=window.getSelection();if(!sel||sel.isCollapsed){hideB();return;}var t=sel.toString().trim();if(t.length<2){hideB();return;}lastText=t;try{showB(sel.getRangeAt(0).getBoundingClientRect());}catch(e){hideB();}}function attach(c){if(!c)return;c.addEventListener("mouseup",function(){setTimeout(tryShow,20);});c.addEventListener("touchend",function(){setTimeout(tryShow,50);});}function send(c){if(!lastText)return;var gt=typeof getCurrentGuideText==="function"?getCurrentGuideText():"";var sec=getSC(c);var ci=document.getElementById("chatInput");if(!ci)return;var msg='I highlighted this from the guide: "'+lastText+'"';
 if(sec)msg+=" (from the section: "+sec+")";hideB();window.getSelection().removeAllRanges();var m=document.getElementById("referenceModal");if(m&&m.style.display!=="none"){m.style.display="none";document.body.style.overflow="auto";}ci.value=msg;var sb=document.getElementById("sendBtn");if(sb)sb.click();}document.addEventListener("DOMContentLoaded",function(){bubble=document.getElementById("hl-guide-bubble");if(!bubble)return;attach(document.getElementById("guideContent"));attach(document.getElementById("referenceModal"));bubble.addEventListener("mousedown",function(e){e.preventDefault();});bubble.addEventListener("click",function(){var sel=window.getSelection();var c=document.getElementById("guideContent");if(sel&&sel.rangeCount>0){var n=sel.getRangeAt(0).startContainer;var m=document.getElementById("referenceModal");if(m&&m.contains(n))c=m;}send(c);});document.addEventListener("mousedown",function(e){if(bubble&&!bubble.contains(e.target))hideB();});});})();
 </script>
+
+<script>
+// ── NAV FUNCTIONS ──────────────────────────────────────────────────────
+let currentQuestionIndex = 1;
+
+function initializeQuestionNavigation() {
+  const totalQuestionsCount = Object.keys(window.QUESTION_BANK || {}).length || 6;
+  for (let i = 1; i <= totalQuestionsCount; i++) {
+    const questionBox = document.getElementById(`question-box-${i}`);
+    if (questionBox) questionBox.style.display = i === 1 ? 'block' : 'none';
+    const submitBtn = document.getElementById(`submit-button-${i}`);
+    if (submitBtn) submitBtn.disabled = true;
+  }
+  updateNavigationButtons();
+}
+
+function showQuestion(questionNumber) {
+  const totalQuestionsCount = Object.keys(window.QUESTION_BANK || {}).length || 6;
+  if (questionNumber < 1 || questionNumber > totalQuestionsCount) return;
+  for (let i = 1; i <= totalQuestionsCount; i++) {
+    const questionBox = document.getElementById(`question-box-${i}`);
+    if (questionBox) questionBox.style.display = 'none';
+  }
+  const selectedBox = document.getElementById(`question-box-${questionNumber}`);
+  if (selectedBox) {
+    selectedBox.style.display = 'block';
+    setTimeout(() => { selectedBox.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+  }
+  currentQuestionIndex = questionNumber;
+  if (typeof window.setCurrentQuestion === 'function') window.setCurrentQuestion(questionNumber);
+  updateNavigationButtons();
+}
+
+function nextQuestion() {
+  const totalQuestionsCount = Object.keys(window.QUESTION_BANK || {}).length || 6;
+  if (currentQuestionIndex < totalQuestionsCount) showQuestion(currentQuestionIndex + 1);
+}
+
+function previousQuestion() {
+  if (currentQuestionIndex > 1) showQuestion(currentQuestionIndex - 1);
+}
+
+function updateNavigationButtons() {
+  const totalQuestionsCount = Object.keys(window.QUESTION_BANK || {}).length || 6;
+  const prevBtn = document.getElementById('nav-prev-btn');
+  const nextBtn = document.getElementById('nav-next-btn');
+  const counter = document.getElementById('question-counter');
+  if (prevBtn) { prevBtn.disabled = currentQuestionIndex === 1; prevBtn.style.opacity = currentQuestionIndex === 1 ? '0.4' : '1'; }
+  if (nextBtn) { nextBtn.disabled = currentQuestionIndex === totalQuestionsCount; nextBtn.style.opacity = currentQuestionIndex === totalQuestionsCount ? '0.4' : '1'; }
+  if (counter) counter.textContent = `${currentQuestionIndex} / ${totalQuestionsCount}`;
+}
+</script>
+
+<script>
+// PHASE 2-4: WRONG ANSWER MARKING FLOW
+// Hooks into window.notifyWrongAnswer(qNum, studentAnswer, correctAnswer)
+// already called by every submitAnswerN() on a wrong answer.
+// NO layout changes — only adds behaviour on top of existing DOM.
+
+var MarkingFlow = (function(){
+  var _queue = [];
+  var _step = 0;
+  var _qNum = null;
+  var _studentAnswer = null;
+
+  function getChatSide(){ return document.querySelector('.chat-side'); }
+
+  function getAILayer(box){
+    var layer = box.querySelector('.ai-annotation-layer');
+    if (!layer){
+      layer = document.createElement('div');
+      layer.className = 'ai-annotation-layer';
+      box.appendChild(layer);
+    }
+    return layer;
+  }
+
+  // Draws one annotation on the question box. Marks accumulate across
+  // Continue presses — each one lands on the same persistent layer, so a
+  // second weakness's mark appears alongside the first, not replacing it.
+  // Annotations only ever target the diagram/question content — never the
+  // answer options/tickboxes, which are just the answer choices and have
+  // nothing to do with explaining the mistake. x/y (0-1 fractions of the
+  // box, from the top-left) are where Claude looked at the actual
+  // screenshot and pointed at the specific diagram feature or question
+  // text that the weakness is about. If the AI didn't return coordinates
+  // (should not normally happen — the prompt requires them), the mark is
+  // silently skipped rather than falling back to circling an answer
+  // button — the weakness text/apply-step still shows either way.
+  // Deliberately fractions of the box's OWN live rect, not raw pixel
+  // coordinates from the captured image — correct regardless of what size
+  // the box actually renders at.
+  function resolveAnnotationRect(qNum, studentAnswer, annotation, boxRect){
+    if (typeof annotation.x !== 'number' || typeof annotation.y !== 'number') return null;
+    var px = annotation.x * boxRect.width;
+    var py = annotation.y * boxRect.height;
+    var mark = Math.max(20, Math.min(boxRect.width, boxRect.height) * 0.08);
+    return { left: px - mark / 2, top: py - mark / 2, width: mark, height: mark };
+  }
+
+  function playAnnotation(qNum, studentAnswer, annotation){
+    if (!annotation) return;
+    var box = document.getElementById('question-box-' + qNum);
+    if (!box) return;
+    if (!box.style.position) box.style.position = 'relative';
+
+    var dim = box.querySelector('.ai-dim-overlay');
+    if (!dim){
+      dim = document.createElement('div');
+      dim.className = 'ai-dim-overlay';
+      box.insertBefore(dim, box.firstChild);
+    }
+    requestAnimationFrame(function(){ dim.classList.add('active'); });
+
+    var layer = getAILayer(box);
+    var boxRect = box.getBoundingClientRect();
+    var color = annotation.color || '#e16280';
+    var target = resolveAnnotationRect(qNum, studentAnswer, annotation, boxRect);
+
+    if ((annotation.type === 'circle' || annotation.type === 'underline') && target){
+      if (annotation.type === 'circle'){
+        var size = Math.max(target.width, target.height) * 1.3;
+        var circle = document.createElement('div');
+        circle.className = 'ai-circle';
+        circle.style.left = (target.left + target.width / 2) + 'px';
+        circle.style.top = (target.top + target.height / 2) + 'px';
+        circle.style.width = size + 'px';
+        circle.style.height = size + 'px';
+        circle.style.borderColor = color;
+        layer.appendChild(circle);
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){ circle.classList.add('grown'); }); });
+      } else {
+        var underline = document.createElement('div');
+        underline.className = 'ai-underline';
+        underline.style.left = target.left + 'px';
+        underline.style.top = (target.top + target.height + 2) + 'px';
+        underline.style.width = target.width + 'px';
+        underline.style.background = color;
+        layer.appendChild(underline);
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){ underline.classList.add('drawn'); }); });
+      }
+    }
+
+    // Arrow: connects two points (e.g. a wrong tickbox to the diagram
+    // feature that disproves it) — an animated SVG line, dashoffset drawn
+    // from start to end, same technique as the English template's engine.
+    if (annotation.type === 'arrow' && typeof annotation.to_x === 'number' && typeof annotation.to_y === 'number'){
+      var fromX = target ? (target.left + target.width / 2) : boxRect.width / 2;
+      var fromY = target ? (target.top + target.height / 2) : 16;
+      var toX = annotation.to_x * boxRect.width;
+      var toY = annotation.to_y * boxRect.height;
+      var svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svgEl.setAttribute('width', boxRect.width);
+      svgEl.setAttribute('height', boxRect.height);
+      svgEl.style.position = 'absolute'; svgEl.style.left = '0'; svgEl.style.top = '0'; svgEl.style.pointerEvents = 'none';
+      var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', fromX); line.setAttribute('y1', fromY);
+      line.setAttribute('x2', toX); line.setAttribute('y2', toY);
+      line.setAttribute('stroke', color); line.setAttribute('stroke-width', '3'); line.setAttribute('stroke-linecap', 'round');
+      svgEl.appendChild(line);
+      layer.appendChild(svgEl);
+      var length = Math.hypot(toX - fromX, toY - fromY);
+      line.style.strokeDasharray = length;
+      line.style.strokeDashoffset = length;
+      line.style.transition = 'stroke-dashoffset 600ms ease-out';
+      requestAnimationFrame(function(){ line.style.strokeDashoffset = 0; });
+    }
+
+    // Text: types itself out character by character (like the English
+    // template's engine) rather than fading in all at once — reads more
+    // like a teacher writing the note live, not a UI popup appearing.
+    if (annotation.type === 'text' && annotation.text){
+      var tx, ty;
+      if (target){
+        tx = target.left + target.width / 2;
+        ty = target.top - 30;
+      } else {
+        tx = boxRect.width / 2; ty = 16;
+      }
+      var label = document.createElement('div');
+      label.className = 'ai-text-label shown';
+      label.style.left = tx + 'px';
+      label.style.top = Math.max(4, ty) + 'px';
+      label.style.color = color;
+      layer.appendChild(label);
+      var chars = annotation.text.split('');
+      var idx = 0;
+      (function typeChar(){
+        if (idx >= chars.length) return;
+        label.textContent += chars[idx++];
+        setTimeout(typeChar, 35);
+      })();
+    }
+  }
+
+  function fadeOutOptions(qNum){
+    var box = document.getElementById('question-box-' + qNum);
+    if (!box) return;
+    var btns = box.querySelectorAll('[class*="answer-option-' + qNum + '"]');
+    btns.forEach(function(b){
+      b.style.transition = 'opacity 300ms ease, transform 300ms ease';
+      b.style.opacity = '0';
+      b.style.transform = 'translateY(6px)';
+    });
+    var submit = document.getElementById('submit-button-' + qNum);
+    if (submit){ submit.style.transition = 'opacity 300ms ease'; submit.style.opacity = '0'; }
+  }
+
+  function buildRightBox(){
+    var side = getChatSide();
+    if (!side) return;
+    side.innerHTML = '';
+
+    var wp = document.createElement('div');
+    wp.className = 'weakness-panel';
+    wp.id = 'weaknessPanel';
+    var wt = document.createElement('div');
+    wt.className = 'weakness-panel-title';
+    wt.textContent = 'Your weaknesses';
+    wp.appendChild(wt);
+    side.appendChild(wp);
+
+    var body = document.createElement('div');
+    body.id = 'markingBody';
+    body.style.cssText = 'flex:1;overflow-y:auto;padding:0 6px 14px;';
+    side.appendChild(body);
+
+    var btn = document.createElement('button');
+    btn.className = 'marking-continue-btn';
+    btn.id = 'continueBtn';
+    btn.textContent = 'Marking your answer…';
+    btn.disabled = true;
+    body.appendChild(btn);
+    btn.addEventListener('click', advanceStep);
+
+    var rr = document.createElement('div');
+    rr.className = 'retry-btn-row';
+    rr.id = 'retryRow';
+    rr.style.display = 'none';
+    var rb1 = document.createElement('button');
+    rb1.className = 'retry-btn retry-btn-blank';
+    rb1.textContent = 'Retry blank';
+    rb1.addEventListener('click', function(){ retryBlank(_qNum); });
+    var rb2 = document.createElement('button');
+    rb2.className = 'retry-btn retry-btn-working';
+    rb2.textContent = 'Retry with working';
+    rb2.addEventListener('click', function(){ retryWithWorking(_qNum); });
+    rr.appendChild(rb1);
+    rr.appendChild(rb2);
+    side.appendChild(rr);
+  }
+
+  // Captures the WHOLE question box (diagram + answer options/tickboxes
+  // together, exactly as the student left it) as a base64 PNG (no data:
+  // prefix) so it can be sent to Claude's vision input — Claude's Messages
+  // API accepts JPEG/PNG/GIF/WEBP, not raw HTML/SVG DOM. Uses html2canvas
+  // rather than the raw Canvas API because Canvas can only draw what it's
+  // explicitly told to draw — it can't serialize arbitrary HTML/CSS the
+  // way html2canvas (or an SVG foreignObject) can. Resolves null (not
+  // rejects) on any failure — vision is an enhancement, never a
+  // requirement for marking to work.
+  function captureQuestionBox(qNum){
+    return new Promise(function(resolve){
+      try {
+        var box = document.getElementById('question-box-' + qNum);
+        if (!box || typeof html2canvas !== 'function') { resolve(null); return; }
+        html2canvas(box, {
+          backgroundColor: '#ffffff',
+          scale: 2,
+          logging: false,
+          ignoreElements: function(el){
+            return el.classList && (el.classList.contains('ai-dim-overlay') || el.classList.contains('ai-annotation-layer') || el.classList.contains('student-draw-clear-btn'));
+          }
+        }).then(function(canvas){
+          try {
+            var dataUrl = canvas.toDataURL('image/png');
+            resolve(dataUrl.replace(/^data:image\/png;base64,/, ''));
+          } catch (e) { resolve(null); }
+        }).catch(function(){ resolve(null); });
+      } catch (e) { resolve(null); }
+    });
+  }
+
+  function start(qNum, studentAnswer, correctAnswer){
+    _qNum = qNum;
+    _studentAnswer = studentAnswer;
+    _queue = [];
+    _step = 0;
+
+    var qKeys = Object.keys(window.QUESTION_BANK || {});
+    var entry = window.QUESTION_BANK && window.QUESTION_BANK[qKeys[qNum - 1]];
+    var questionText = entry ? (entry.question || '') : '';
+    var markScheme = entry ? (entry.mark_scheme || []) : [];
+
+    // Capture FIRST, before any visual changes — Claude needs to see the
+    // box exactly as the student answered it (their tick still showing),
+    // not the faded/rebuilt state that follows.
+    captureQuestionBox(qNum).then(function(boxImage){
+      fadeOutOptions(qNum);
+      buildRightBox();
+      return fetch('/api/diagnose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'mark',
+          subject: 'maths',
+          question: questionText,
+          student_answer: studentAnswer,
+          correct_answer: correctAnswer,
+          mark_scheme: markScheme,
+          question_box_image: boxImage || undefined
+        })
+      });
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data && data.pairs && data.pairs.length){
+        _queue = data.pairs;
+      } else {
+        _queue = [{ marks: [], weakness: { title: 'Review needed', body: 'Compare your answer to the correct answer shown.', apply: 'Re-read the mark scheme and try again.' }, worked_step: null }];
+      }
+      revealFirstAndArm();
+    })
+    .catch(function(){
+      if (!document.getElementById('continueBtn')) buildRightBox();
+      fadeOutOptions(qNum);
+      _queue = [{ marks: [], weakness: { title: 'Marking unavailable', body: 'Could not reach AI marking right now.', apply: 'Compare your answer to the correct answer shown.' }, worked_step: null }];
+      revealFirstAndArm();
+    });
+  }
+
+  // The first weakness/application-step trio shows the moment marking
+  // finishes — no Continue press needed for it, since the student already
+  // "asked" for it by submitting a wrong answer. Only a SECOND (or later)
+  // weakness on the same wrong answer needs an actual Continue press.
+  function revealFirstAndArm(){
+    var btn = document.getElementById('continueBtn');
+    if (btn) btn.disabled = false;
+    advanceStep();
+  }
+
+  // Each press reveals exactly one matched trio: the mark(s) on the
+  // diagram/question, the weakness card, and its numbered "how to apply
+  // it" step — all from the same pair. A weakness can carry several marks
+  // (e.g. one circle per angle corner) — they're played in a quick
+  // stagger, not all at once, so the student can actually follow each one
+  // landing rather than seeing a single flash of clutter.
+  function advanceStep(){
+    if (_step >= _queue.length){ showRetry(); return; }
+    var pair = _queue[_step];
+    _step++;
+    var marks = Array.isArray(pair.marks) ? pair.marks : [];
+    marks.forEach(function(mark, i){
+      setTimeout(function(){ playAnnotation(_qNum, _studentAnswer, mark); }, i * 500);
+    });
+    if (pair.weakness) revealWeaknessCard(_step, pair.weakness);
+    var remaining = _queue.length - _step;
+    var btn = document.getElementById('continueBtn');
+    if (btn) btn.textContent = remaining > 0 ? 'Next (' + remaining + ' more)' : 'See retry options';
+  }
+
+  function revealWeaknessCard(num, weakness){
+    var panel = document.getElementById('weaknessPanel');
+    if (!panel) return;
+    var card = document.createElement('div');
+    card.className = 'weakness-card';
+
+    var numEl = document.createElement('div');
+    numEl.className = 'weakness-card-num';
+    numEl.textContent = 'WEAKNESS ' + num;
+    card.appendChild(numEl);
+
+    var title = document.createElement('div');
+    title.className = 'weakness-card-title';
+    title.textContent = weakness.title || '';
+    card.appendChild(title);
+
+    var body = document.createElement('div');
+    body.className = 'weakness-card-body';
+    body.textContent = weakness.body || '';
+    card.appendChild(body);
+
+    if (weakness.apply){
+      var aw = document.createElement('div');
+      aw.className = 'weakness-card-apply';
+      var al = document.createElement('div');
+      al.className = 'weakness-card-apply-label';
+      al.textContent = 'APPLICATION STEP ' + num;
+      aw.appendChild(al);
+      aw.appendChild(document.createTextNode(weakness.apply));
+      card.appendChild(aw);
+    }
+    panel.appendChild(card);
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ card.classList.add('revealed'); });
+    });
+    panel.scrollTop = panel.scrollHeight;
+  }
+
+  function showRetry(){
+    var btn = document.getElementById('continueBtn');
+    if (btn) btn.style.display = 'none';
+    var rr = document.getElementById('retryRow');
+    if (rr) rr.style.display = 'flex';
+  }
+
+  function restoreOptions(qNum){
+    var box = document.getElementById('question-box-' + qNum);
+    if (!box) return;
+    var btns = box.querySelectorAll('[class*="answer-option-' + qNum + '"]');
+    btns.forEach(function(b){ b.style.opacity = '1'; b.style.transform = ''; });
+    var submit = document.getElementById('submit-button-' + qNum);
+    if (submit) submit.style.opacity = '1';
+    var dim = box.querySelector('.ai-dim-overlay');
+    if (dim) dim.remove();
+    var layer = box.querySelector('.ai-annotation-layer');
+    if (layer) layer.remove();
+  }
+
+  function restoreChatBox(){
+    var side = getChatSide();
+    if (!side) return;
+    side.innerHTML =
+      '<div class="chat-messages" id="chatMessages"></div>' +
+      '<div class="chat-input-area"><div class="chat-input-row">' +
+      '<button class="chat-nav-btn" id="nav-prev-btn" onclick="previousQuestion()" title="Previous question"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>' +
+      '<button class="chat-nav-btn" id="nav-next-btn" onclick="nextQuestion()" title="Next question"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>' +
+      '<div class="chat-input-wrapper"><textarea id="chatInput" class="chat-input" placeholder="Ask a question..." rows="1"></textarea>' +
+      '<button id="sendBtn" class="chat-send-btn" title="Send"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>' +
+      '</div></div></div>';
+  }
+
+  function retryBlank(qNum){
+    var fn = window['resetQuestion' + qNum];
+    if (typeof fn === 'function') fn();
+    restoreOptions(qNum);
+    restoreChatBox();
+    if (window.clearDiagramDrawing) window.clearDiagramDrawing(qNum);
+  }
+
+  function retryWithWorking(qNum){
+    retryBlank(qNum);
+  }
+
+  window.notifyWrongAnswer = function(qNum, studentAnswer, correctAnswer){
+    start(qNum, studentAnswer, correctAnswer);
+  };
+})();
+</script>
+
+<script>
+// Lets the student draw freehand on top of any question diagram — mouse or
+// touch, desktop-only for now (phone pairing/sync is a separate, already
+// in-progress session; this is just enough to test that drawing-aware
+// marking works end to end). The canvas lives inside .question-diagram,
+// so it's automatically included whenever captureQuestionBox() screenshots
+// the box with html2canvas — no extra wiring needed for a drawing to
+// reach Claude Vision, it's just part of what's on screen.
+(function(){
+  var PEN_COLOR = '#1d4ed8';
+  var PEN_WIDTH = 2.5;
+
+  function setupOne(wrap){
+    if (!wrap.querySelector('svg')) return;
+    if (wrap.querySelector('.student-draw-canvas')) return;
+
+    var rect = wrap.getBoundingClientRect();
+    var canvas = document.createElement('canvas');
+    canvas.className = 'student-draw-canvas';
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.max(1, Math.round(rect.width * dpr));
+    canvas.height = Math.max(1, Math.round(rect.height * dpr));
+    wrap.appendChild(canvas);
+
+    var ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.strokeStyle = PEN_COLOR;
+    ctx.lineWidth = PEN_WIDTH;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    var drawing = false;
+    function pointFromEvent(e){
+      var r = canvas.getBoundingClientRect();
+      var t = e.touches && e.touches[0];
+      var clientX = t ? t.clientX : e.clientX;
+      var clientY = t ? t.clientY : e.clientY;
+      return { x: clientX - r.left, y: clientY - r.top };
+    }
+    function start(e){
+      drawing = true;
+      var p = pointFromEvent(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      e.preventDefault();
+    }
+    function move(e){
+      if (!drawing) return;
+      var p = pointFromEvent(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      e.preventDefault();
+    }
+    function stop(){ drawing = false; }
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', stop);
+    canvas.addEventListener('touchstart', start, { passive: false });
+    canvas.addEventListener('touchmove', move, { passive: false });
+    canvas.addEventListener('touchend', stop);
+
+    canvas._clear = function(){ ctx.clearRect(0, 0, canvas.width, canvas.height); };
+
+    var clearBtn = document.createElement('button');
+    clearBtn.className = 'student-draw-clear-btn';
+    clearBtn.type = 'button';
+    clearBtn.textContent = 'Clear';
+    clearBtn.addEventListener('click', canvas._clear);
+    wrap.appendChild(clearBtn);
+  }
+
+  function setupAll(){
+    document.querySelectorAll('.question-diagram').forEach(setupOne);
+  }
+
+  // Called from MarkingFlow.retryBlank() so a fresh attempt doesn't carry
+  // over the previous attempt's drawing.
+  window.clearDiagramDrawing = function(qNum){
+    var titleEl = document.querySelector('.question-title-' + qNum);
+    var canvas = titleEl ? titleEl.querySelector('.student-draw-canvas') : null;
+    if (canvas && canvas._clear) canvas._clear();
+  };
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', setupAll);
+  } else {
+    setupAll();
+  }
+})();
+</script>
+
 </body>
-</html>
