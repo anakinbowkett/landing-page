@@ -597,6 +597,30 @@ html,body{
 
 .question-diagram {
   text-align: center;
+  position: relative;
+}
+.student-draw-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+}
+.student-draw-clear-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 2;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #4b5563;
+  padding: 3px 8px;
+  cursor: pointer;
 }
 .question-text {
   text-align: left;
@@ -6346,7 +6370,7 @@ var MarkingFlow = (function(){
           scale: 2,
           logging: false,
           ignoreElements: function(el){
-            return el.classList && (el.classList.contains('ai-dim-overlay') || el.classList.contains('ai-annotation-layer'));
+            return el.classList && (el.classList.contains('ai-dim-overlay') || el.classList.contains('ai-annotation-layer') || el.classList.contains('student-draw-clear-btn'));
           }
         }).then(function(canvas){
           try {
@@ -6512,6 +6536,7 @@ var MarkingFlow = (function(){
     if (typeof fn === 'function') fn();
     restoreOptions(qNum);
     restoreChatBox();
+    if (window.clearDiagramDrawing) window.clearDiagramDrawing(qNum);
   }
 
   function retryWithWorking(qNum){
@@ -6521,6 +6546,98 @@ var MarkingFlow = (function(){
   window.notifyWrongAnswer = function(qNum, studentAnswer, correctAnswer){
     start(qNum, studentAnswer, correctAnswer);
   };
+})();
+</script>
+
+<script>
+// Lets the student draw freehand on top of any question diagram — mouse or
+// touch, desktop-only for now (phone pairing/sync is a separate, already
+// in-progress session; this is just enough to test that drawing-aware
+// marking works end to end). The canvas lives inside .question-diagram,
+// so it's automatically included whenever captureQuestionBox() screenshots
+// the box with html2canvas — no extra wiring needed for a drawing to
+// reach Claude Vision, it's just part of what's on screen.
+(function(){
+  var PEN_COLOR = '#1d4ed8';
+  var PEN_WIDTH = 2.5;
+
+  function setupOne(wrap){
+    if (!wrap.querySelector('svg')) return;
+    if (wrap.querySelector('.student-draw-canvas')) return;
+
+    var rect = wrap.getBoundingClientRect();
+    var canvas = document.createElement('canvas');
+    canvas.className = 'student-draw-canvas';
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.max(1, Math.round(rect.width * dpr));
+    canvas.height = Math.max(1, Math.round(rect.height * dpr));
+    wrap.appendChild(canvas);
+
+    var ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.strokeStyle = PEN_COLOR;
+    ctx.lineWidth = PEN_WIDTH;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    var drawing = false;
+    function pointFromEvent(e){
+      var r = canvas.getBoundingClientRect();
+      var t = e.touches && e.touches[0];
+      var clientX = t ? t.clientX : e.clientX;
+      var clientY = t ? t.clientY : e.clientY;
+      return { x: clientX - r.left, y: clientY - r.top };
+    }
+    function start(e){
+      drawing = true;
+      var p = pointFromEvent(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      e.preventDefault();
+    }
+    function move(e){
+      if (!drawing) return;
+      var p = pointFromEvent(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      e.preventDefault();
+    }
+    function stop(){ drawing = false; }
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', stop);
+    canvas.addEventListener('touchstart', start, { passive: false });
+    canvas.addEventListener('touchmove', move, { passive: false });
+    canvas.addEventListener('touchend', stop);
+
+    canvas._clear = function(){ ctx.clearRect(0, 0, canvas.width, canvas.height); };
+
+    var clearBtn = document.createElement('button');
+    clearBtn.className = 'student-draw-clear-btn';
+    clearBtn.type = 'button';
+    clearBtn.textContent = 'Clear';
+    clearBtn.addEventListener('click', canvas._clear);
+    wrap.appendChild(clearBtn);
+  }
+
+  function setupAll(){
+    document.querySelectorAll('.question-diagram').forEach(setupOne);
+  }
+
+  // Called from MarkingFlow.retryBlank() so a fresh attempt doesn't carry
+  // over the previous attempt's drawing.
+  window.clearDiagramDrawing = function(qNum){
+    var titleEl = document.querySelector('.question-title-' + qNum);
+    var canvas = titleEl ? titleEl.querySelector('.student-draw-canvas') : null;
+    if (canvas && canvas._clear) canvas._clear();
+  };
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', setupAll);
+  } else {
+    setupAll();
+  }
 })();
 </script>
 
