@@ -375,6 +375,15 @@ async function handleMark(req, res) {
         const validNumbers = usableEntries.map((el, i) => typeof el.number === 'number' ? el.number : i + 1);
         const numberMap = new Map();
         usableEntries.forEach((el, i) => numberMap.set(validNumbers[i], { x: el.x, y: el.y }));
+        // A marker with no text of its own (an edge, a small symbol) isn't
+        // self-explanatory just from seeing a numbered circle on it — a
+        // tiny square drawn at a corner doesn't visually announce "this
+        // means 90°". Give a short hint per non-text marker so the model
+        // can actually interpret what it's looking at.
+        const markerHints = usableEntries
+            .map((el, i) => el.text ? null : validNumbers[i] + ' = ' + (el.kind || 'a diagram part'))
+            .filter(Boolean)
+            .join('; ');
 
         const systemPrompt =
             'You are explaining to a 12-year-old exactly why they got a GCSE ' + subjectLabel + ' question wrong. '
@@ -419,6 +428,8 @@ async function handleMark(req, res) {
                   + 'Do not guess a number — look at the picture and pick the one that is genuinely closest to '
                   + 'that feature. Never the answer options — no numbered circle sits on them, so none of these '
                   + 'numbers can refer to one.'
+                  + (markerHints ? ' Some markers sit on a small symbol rather than a piece of text, so here is '
+                    + 'what those specific ones actually are: ' + markerHints + '.' : '')
                 : (hasImage
                     ? '\n\nHOW TO TARGET A MARK: no exact element list is available for this diagram, so give x '
                       + 'and y yourself (0 to 1, fraction of the image width/height from the top-left corner) for '
