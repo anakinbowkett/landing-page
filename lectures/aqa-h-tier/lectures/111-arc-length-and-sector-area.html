@@ -6360,12 +6360,27 @@ var MarkingFlow = (function(){
 
     // Text: types itself out character by character (like the English
     // template's engine) rather than fading in all at once — reads more
-    // like a teacher writing the note live, not a UI popup appearing.
+    // like a teacher writing the note live, not a UI popup appearing. A
+    // text label sitting 30px above its target with nothing connecting
+    // them reads as random floating text, not an annotation OF anything —
+    // draw a small rough dot at the real target plus a short leader line
+    // up to the label, so the relationship is visible even at a glance.
     if (annotation.type === 'text' && annotation.text){
       var tx, ty;
       if (target){
         tx = target.left + target.width / 2;
         ty = target.top - 30;
+        var svgLeader = getAnnotationSvg(box, layer, boxRect);
+        var rcLeader = roughGenerator(svgLeader);
+        var anchorX = target.left + target.width / 2, anchorY = target.top + target.height / 2;
+        if (rcLeader){
+          var dotNode = rcLeader.circle(anchorX, anchorY, 7, { stroke: color, fill: color, fillStyle: 'solid', roughness: 1.2 });
+          svgLeader.appendChild(dotNode);
+          var leaderNode = rcLeader.line(anchorX, anchorY, tx, ty + 16, { stroke: color, strokeWidth: 1.5, roughness: 1.4 });
+          svgLeader.appendChild(leaderNode);
+          animateRoughNode(dotNode, 250);
+          animateRoughNode(leaderNode, 350);
+        }
       } else {
         tx = boxRect.width / 2; ty = 16;
       }
@@ -6511,13 +6526,28 @@ var MarkingFlow = (function(){
           pushFromSvgPoint(l, (x1 + x2) / 2, (y1 + y2) / 2, 'edge_' + n, 'straight edge');
         } catch (e) {}
       });
+      // A path's own rendered size tells us roughly what kind of thing it
+      // is: a long path is a real edge (straight or curved); a SHORT one
+      // relative to the whole diagram is much more likely a small symbol —
+      // a right-angle tick/square, an equal-sides tick mark, an arrowhead —
+      // which otherwise has no text label at all (a right angle is drawn
+      // as a little square, never literally written as "90°"), so it was
+      // previously indistinguishable from a real edge and unmatchable to
+      // any mention of "90 degrees" or "right angle" in a step's wording.
       svg.querySelectorAll('path').forEach(function(p){
         try {
           var total = p.getTotalLength();
           if (!total) return;
+          var bbox = p.getBBox();
+          var bboxScreenDiag = Math.hypot(bbox.width, bbox.height); // SVG-local units, fine for a relative size comparison
+          var isSmallSymbol = bboxScreenDiag > 0 && bboxScreenDiag < (svg.viewBox.baseVal.width || 300) * 0.12;
           var mid = p.getPointAtLength(total / 2);
           n++;
-          pushFromSvgPoint(p, mid.x, mid.y, 'path_' + n, 'edge (may be curved)');
+          pushFromSvgPoint(p, mid.x, mid.y, 'path_' + n,
+            isSmallSymbol
+              ? 'a small symbol (likely a right-angle mark showing 90°, or an equal-sides/equal-angles tick mark)'
+              : 'edge (may be curved)'
+          );
         } catch (e) {}
       });
       svg.querySelectorAll('circle').forEach(function(c){
