@@ -557,6 +557,16 @@ async function handleMark(req, res) {
         // field names for the freeform (no-manifest) path. Any mark that
         // still can't be resolved is dropped outright — never drawn on the
         // answer options.
+        // minItems:1 on the marks array is, like every other array-shape
+        // constraint tried so far, not strictly enforced by the model —
+        // live testing produced steps with marks:[] outright. Rather than
+        // let "every step needs a mark" quietly fail, fall back to
+        // workflow 1's keyword matcher (pickBestElements) for any step
+        // that comes out of resolution with zero marks, so the pairing
+        // rule holds even when the model's own placement attempt is
+        // incomplete. usedFallbackIds tracks across the whole response so
+        // repeated fallbacks don't all land on the same element.
+        const usedFallbackIds = new Set();
         const weaknesses = toolUse.input.weaknesses.map(weakness => {
             const steps = Array.isArray(weakness.steps) ? weakness.steps : [];
             weakness.steps = steps.map(step => {
@@ -577,6 +587,14 @@ async function handleMark(req, res) {
                     })
                     .filter(m => typeof m.x === 'number' && typeof m.y === 'number'
                         && (m.type !== 'arrow' || (typeof m.to_x === 'number' && typeof m.to_y === 'number')));
+
+                if (step.marks.length === 0 && hasManifest) {
+                    const fallback = pickBestElements(usableEntries, step.text || '', 1, usedFallbackIds);
+                    if (fallback.length) {
+                        usedFallbackIds.add(fallback[0].id);
+                        step.marks = [{ type: 'circle', color: '#8b5cf6', x: fallback[0].x, y: fallback[0].y }];
+                    }
+                }
                 return step;
             });
             return weakness;
