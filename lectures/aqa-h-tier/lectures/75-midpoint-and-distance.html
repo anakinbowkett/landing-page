@@ -3004,6 +3004,13 @@ body.dark-mode #guideContent .g-paper-head-right { color: #64748b; }
 .ai-dim-overlay.active{ opacity:1; }
 .ai-annotation-layer{ position:absolute; inset:0; z-index:11; pointer-events:none; }
 .ai-annotation-svg{ position:absolute; left:0; top:0; pointer-events:none; overflow:visible; }
+.ai-marker-overlay{ position:absolute; inset:0; z-index:12; pointer-events:none; }
+.ai-marker-dot{
+  position:absolute; transform:translate(-50%,-50%);
+  width:18px; height:18px; border-radius:50%;
+  background:#1d4ed8; color:#fff; font-family:'Inter',system-ui,sans-serif;
+  font-size:11px; font-weight:700; line-height:18px; text-align:center;
+}
 .ai-text-label{
   position:absolute; font-family:'Caveat',cursive; font-size:21px; font-weight:600;
   color:#8b5cf6; max-width:220px; line-height:1.3; transform:translate(-50%,0);
@@ -6850,36 +6857,134 @@ var MarkingFlow = (function(){
       } catch (e) {}
     }
 
+    manifest.forEach(function(entry, i){ entry.number = i + 1; });
     return manifest;
+  }
+
+  // WORKFLOW 2 — visible numbered markers drawn directly onto the diagram
+  // before the screenshot is taken, so Claude points at a number it can
+  // actually SEE next to the real feature, instead of cross-referencing a
+  // disconnected text list against an unmarked picture. Small circled
+  // numbers, temporary — removed again right after capture so the student
+  // never sees them, only the AI's copy of the screenshot does.
+  function drawDiagramMarkers(qNum, diagramElements){
+    var box = document.getElementById('question-box-' + qNum);
+    if (!box) return;
+    var boxRect = box.getBoundingClientRect();
+    var wrap = document.createElement('div');
+    wrap.className = 'ai-marker-overlay';
+    wrap.id = 'ai-marker-overlay-' + qNum;
+    diagramElements.forEach(function(entry){
+      var dot = document.createElement('div');
+      dot.className = 'ai-marker-dot';
+      dot.style.left = (entry.x * boxRect.width) + 'px';
+      dot.style.top = (entry.y * boxRect.height) + 'px';
+      dot.textContent = entry.number;
+      wrap.appendChild(dot);
+    });
+    box.appendChild(wrap);
+  }
+
+  function removeDiagramMarkers(qNum){
+    var el = document.getElementById('ai-marker-overlay-' + qNum);
+    if (el) el.remove();
+  }
+
+  // CRITICAL FIX: html2canvas has a well-documented, longstanding bug
+  // where inline <svg> elements often render as completely BLANK in its
+  // output — confirmed happening here via a real headless-browser test:
+  // the captured screenshot had the question text and answer options but
+  // the entire diagram was missing. This means Claude's vision input has
+  // likely never actually shown it the diagram itself all along, however
+  // good the AI's targeting logic is. Fix: rasterize the SVG to a real
+  // <canvas> ourselves first (serialize -> data URI -> Image -> draw),
+  // then swap that canvas in for the <svg> for the moment of capture only
+  // — html2canvas handles <canvas>/<img> content reliably, just not raw
+  // inline SVG. (Tried html2canvas's own foreignObjectRendering:true
+  // option first — it does fix the blank-SVG problem, but introduces its
+  // own positioning bug, cropping/offsetting the whole capture. This
+  // targeted swap fixes only the actually-broken part.) Resolves null
+  // (not rejects) on any failure — the swap is best-effort, never a
+  // requirement for marking to work.
+  function svgToCanvasElement(svg){
+    return new Promise(function(resolve){
+      try {
+        var rect = svg.getBoundingClientRect();
+        var w = rect.width, h = rect.height;
+        if (!w || !h) { resolve(null); return; }
+        var serialized = new XMLSerializer().serializeToString(svg);
+        var svgDataUri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(serialized)));
+        var img = new Image();
+        img.onload = function(){
+          try {
+            var canvas = document.createElement('canvas');
+            var scale = 2;
+            canvas.width = Math.round(w * scale);
+            canvas.height = Math.round(h * scale);
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
+            var ctx = canvas.getContext('2d');
+            ctx.scale(scale, scale);
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas);
+          } catch (e) { resolve(null); }
+        };
+        img.onerror = function(){ resolve(null); };
+        img.src = svgDataUri;
+      } catch (e) { resolve(null); }
+    });
+  }
+
+  // Swaps the question's diagram <svg> for a rasterized <canvas> in the
+  // same spot, and returns a restore() function that puts the real SVG
+  // back — call restore() right after the html2canvas capture completes,
+  // success or failure, so the live page is never left showing the
+  // rasterized stand-in.
+  function swapSvgForCanvas(qNum){
+    return new Promise(function(resolve){
+      var titleEl = document.querySelector('.question-title-' + qNum);
+      var svg = titleEl ? titleEl.querySelector('svg') : null;
+      if (!svg) { resolve(function restore(){}); return; }
+      svgToCanvasElement(svg).then(function(canvas){
+        if (!canvas) { resolve(function restore(){}); return; }
+        svg.style.display = 'none';
+        svg.parentNode.insertBefore(canvas, svg);
+        resolve(function restore(){
+          canvas.remove();
+          svg.style.display = '';
+        });
+      });
+    });
   }
 
   // Captures the WHOLE question box (diagram + answer options/tickboxes
   // together, exactly as the student left it) as a base64 PNG (no data:
   // prefix) so it can be sent to Claude's vision input — Claude's Messages
-  // API accepts JPEG/PNG/GIF/WEBP, not raw HTML/SVG DOM. Uses html2canvas
-  // rather than the raw Canvas API because Canvas can only draw what it's
-  // explicitly told to draw — it can't serialize arbitrary HTML/CSS the
-  // way html2canvas (or an SVG foreignObject) can. Resolves null (not
-  // rejects) on any failure — vision is an enhancement, never a
+  // API accepts JPEG/PNG/GIF/WEBP, not raw HTML/SVG DOM. Resolves null
+  // (not rejects) on any failure — vision is an enhancement, never a
   // requirement for marking to work.
   function captureQuestionBox(qNum){
     return new Promise(function(resolve){
       try {
         var box = document.getElementById('question-box-' + qNum);
         if (!box || typeof html2canvas !== 'function') { resolve(null); return; }
-        html2canvas(box, {
-          backgroundColor: '#ffffff',
-          scale: 2,
-          logging: false,
-          ignoreElements: function(el){
-            return el.classList && (el.classList.contains('ai-dim-overlay') || el.classList.contains('ai-annotation-layer') || el.classList.contains('student-draw-clear-btn'));
-          }
-        }).then(function(canvas){
-          try {
-            var dataUrl = canvas.toDataURL('image/png');
-            resolve(dataUrl.replace(/^data:image\/png;base64,/, ''));
-          } catch (e) { resolve(null); }
-        }).catch(function(){ resolve(null); });
+        swapSvgForCanvas(qNum).then(function(restore){
+          html2canvas(box, {
+            backgroundColor: '#ffffff',
+            scale: 2,
+            logging: false,
+            foreignObjectRendering: false,
+            ignoreElements: function(el){
+              return el.classList && (el.classList.contains('ai-dim-overlay') || el.classList.contains('ai-annotation-layer') || el.classList.contains('student-draw-clear-btn'));
+            }
+          }).then(function(canvas){
+            restore();
+            try {
+              var dataUrl = canvas.toDataURL('image/png');
+              resolve(dataUrl.replace(/^data:image\/png;base64,/, ''));
+            } catch (e) { resolve(null); }
+          }).catch(function(){ restore(); resolve(null); });
+        });
       } catch (e) { resolve(null); }
     });
   }
@@ -6900,7 +7005,9 @@ var MarkingFlow = (function(){
     // not the faded/rebuilt state that follows. The element manifest is
     // read from the live DOM at the same moment, for the same reason.
     var diagramElements = buildDiagramManifest(qNum);
+    if (diagramElements.length) drawDiagramMarkers(qNum, diagramElements);
     captureQuestionBox(qNum).then(function(boxImage){
+      removeDiagramMarkers(qNum);
       fadeOutOptions(qNum);
       buildRightBox();
       return fetch('/api/diagnose', {
