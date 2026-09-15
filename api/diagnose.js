@@ -186,7 +186,13 @@ async function handleDiagnose(req, res) {
 // near their real target when several steps collided (visible live as a
 // mark landing up near the question-number badge instead of the diagram).
 function deconflictMarks(weaknesses) {
-    const MIN_DIST = 0.08;
+    // Was 0.08 — real testing on a small, tightly-packed diagram (a sector
+    // with r and θ labelled close together) showed this nudging correctly
+    // DIFFERENT, DIFFERENTLY-CHOSEN elements away from each other purely
+    // because the diagram itself is small, even though nothing was
+    // actually stacked. 0.05 still catches genuine same-spot collisions
+    // without punishing a diagram for being compact.
+    const MIN_DIST = 0.05;
     const placed = [];
     weaknesses.forEach(weakness => {
         (weakness.steps || []).forEach(step => {
