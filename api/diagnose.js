@@ -206,6 +206,69 @@ function deconflictMarks(weaknesses) {
     });
 }
 
+// WORKFLOW 1 — deterministic keyword matching. The model never chooses a
+// target at all (not even by name) — it only writes the pedagogical text.
+// This function picks the diagram element(s) a mark should point at purely
+// by matching real words in the step's own text against each element's
+// label, with zero model judgment involved in placement. Removes the exact
+// axis that caused every placement bug so far (the model's selection
+// judgment), at the cost of only working as well as the word-matching does.
+const GREEK_SYNONYMS = {
+    'θ': ['theta', 'angle'], 'π': ['pi'], 'α': ['alpha'], 'β': ['beta'],
+    'φ': ['phi'], 'γ': ['gamma'], '°': ['degree', 'degrees']
+};
+const LETTER_SYNONYMS = {
+    r: ['radius'], d: ['diameter'], h: ['height'], l: ['length'],
+    b: ['base'], w: ['width'], a: ['area'], c: ['circumference', 'centre', 'center']
+};
+
+function buildMatchTokens(entry) {
+    const tokens = new Set();
+    if (entry.text) {
+        const t = entry.text.trim();
+        if (t) tokens.add(t.toLowerCase());
+        if (GREEK_SYNONYMS[t]) GREEK_SYNONYMS[t].forEach(s => tokens.add(s));
+        if (/^[a-zA-Z]$/.test(t) && LETTER_SYNONYMS[t.toLowerCase()]) {
+            LETTER_SYNONYMS[t.toLowerCase()].forEach(s => tokens.add(s));
+        }
+    } else if (entry.kind) {
+        if (/curved/i.test(entry.kind)) ['arc', 'curve', 'curved', 'circumference'].forEach(s => tokens.add(s));
+        else if (/straight/i.test(entry.kind)) ['side', 'line', 'edge', 'straight'].forEach(s => tokens.add(s));
+        else if (/point/i.test(entry.kind)) ['point', 'vertex', 'corner'].forEach(s => tokens.add(s));
+        else if (/wording/i.test(entry.kind) || entry.id === 'question_text') ['question', 'wording', 'statement'].forEach(s => tokens.add(s));
+    }
+    return Array.from(tokens);
+}
+
+function scoreEntryAgainstText(entry, text) {
+    const lower = (text || '').toLowerCase();
+    let score = 0;
+    buildMatchTokens(entry).forEach(tok => {
+        const escaped = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        if (new RegExp('\\b' + escaped + '\\b', 'i').test(lower)) score += tok.length;
+    });
+    return score;
+}
+
+// Picks `count` distinct elements best matching `text`, preferring ones not
+// already used elsewhere in this response so the explanation spreads across
+// the diagram rather than repeatedly landing on one favourite element.
+function pickBestElements(entries, text, count, usedIds) {
+    const scored = entries
+        .map(e => ({ entry: e, score: scoreEntryAgainstText(e, text) }))
+        .sort((a, b) => b.score - a.score);
+    const positive = scored.filter(s => s.score > 0);
+    const pool = positive.length ? positive : scored;
+    const chosen = [];
+    for (let i = 0; i < count; i++) {
+        let pick = pool.find(s => !chosen.includes(s.entry) && !usedIds.has(s.entry.id));
+        if (!pick) pick = pool.find(s => !chosen.includes(s.entry));
+        if (!pick) break;
+        chosen.push(pick.entry);
+    }
+    return chosen;
+}
+
 async function handleMark(req, res) {
     // Feature: Phase 2-4 wrong-answer marking flow.
     // Receives the question, student answer, correct answer, mark scheme,
@@ -293,15 +356,7 @@ async function handleMark(req, res) {
         // genuinely has too few real parts (0-1) to explain a mistake
         // with alone.
         const usableEntries = realDiagramEntries.length >= 2 ? realDiagramEntries : rawEntries;
-        const elementMap = new Map();
-        usableEntries.forEach(el => elementMap.set(el.id, { x: el.x, y: el.y }));
-        const hasManifest = elementMap.size > 0;
-        const manifestDescription = Array.from(elementMap.keys())
-            .map(id => {
-                const el = usableEntries.find(e => e.id === id);
-                return '- ' + id + ': ' + (el.text ? 'the text "' + el.text + '"' : (el.kind || 'a diagram element'));
-            })
-            .join('\n');
+        const hasManifest = usableEntries.length > 0;
 
         const systemPrompt =
             'You are explaining to a 12-year-old exactly why they got a GCSE ' + subjectLabel + ' question wrong. '
@@ -339,18 +394,12 @@ async function handleMark(req, res) {
                   + 'step with no mark is not allowed, because a drawing must always accompany the words.'
                 : '')
             + (hasManifest
-                ? '\n\nHOW TO TARGET A MARK: the diagram has been read directly from its real source, so you have '
-                  + 'an EXACT list of its actual parts below — use this list, do NOT invent a pixel position. '
-                  + 'Every mark must give "element_id" set to exactly one id from this list (for type:arrow, also '
-                  + 'give "to_element_id" for the second point):\n' + manifestDescription + '\n'
-                  + 'Pick whichever element that step.text is actually talking about right now — never the '
-                  + 'answer options (they are deliberately not in this list, so they cannot be picked). Use a '
-                  + 'DIFFERENT element for each step where possible, like a teacher\'s pen moving to a new part '
-                  + 'of the diagram for each new idea, so the explanation visibly builds up across the whole '
-                  + 'diagram rather than repeating the same spot — e.g. for an arc-length mistake: one step picks '
-                  + 'the angle label, the next picks the radius label, the next picks the curved-edge element to '
-                  + 'show what "arc" physically means. Only pick "question_text" when the idea is genuinely about '
-                  + 'the wording of the question, not the diagram.'
+                ? '\n\nHOW MARKS GET PLACED: you do NOT choose where a mark goes — that is worked out automatically '
+                  + 'from the exact words in step.text, matched against the diagram\'s real parts. This means '
+                  + 'step.text MUST actually name the specific thing it is about — say "radius" or "r" when '
+                  + 'talking about the radius, say "angle" or "θ" when talking about the angle, say "arc" or '
+                  + '"curve" when talking about the curved edge — never a vague sentence that could be about '
+                  + 'anything. Being specific in your wording is what makes the drawing land in the right place.'
                 : (hasImage
                     ? '\n\nHOW TO TARGET A MARK: no exact element list is available for this diagram, so give x '
                       + 'and y yourself (0 to 1, fraction of the image width/height from the top-left corner) for '
@@ -428,17 +477,14 @@ async function handleMark(req, res) {
                                                                         text: { type: 'string', description: 'The label text (max 8 words, handwritten style, simple words a 12-year-old would use). Required for type:text.' },
                                                                         color: { type: 'string', description: 'Hex colour. Use #e16280 for errors, #8b5cf6 for corrections/explanation, #54d3ab for confirming something correct.' }
                                                                     },
-                                                                    hasManifest ? {
-                                                                        element_id: { type: 'string', enum: Array.from(elementMap.keys()), description: 'REQUIRED. The exact id (from the list in the instructions) of the diagram/question part this mark is about. Never invent an id not in that list.' },
-                                                                        to_element_id: { type: 'string', enum: Array.from(elementMap.keys()), description: 'ONLY for type:arrow — the id of the second point the arrow points to. Required for type:arrow.' }
-                                                                    } : {
+                                                                    hasManifest ? {} : {
                                                                         x: { type: 'number', description: 'REQUIRED. Fraction 0-1 across the question box image (left to right) — the exact diagram feature or question-text word/number this mark points at. Must NOT land on the answer options/tickboxes. For type:arrow, this is the START point.' },
                                                                         y: { type: 'number', description: 'REQUIRED. Fraction 0-1 down the question box image (top to bottom) — pair with x.' },
                                                                         to_x: { type: 'number', description: 'Fraction 0-1 — ONLY for type:arrow, the END point the arrow points to. Required for type:arrow.' },
                                                                         to_y: { type: 'number', description: 'Fraction 0-1 — pair with to_x. Required for type:arrow.' }
                                                                     }
                                                                 ),
-                                                                required: hasManifest ? ['type', 'element_id'] : ['type', 'x', 'y']
+                                                                required: hasManifest ? ['type'] : ['type', 'x', 'y']
                                                             }
                                                         }
                                                     } : {}
@@ -470,15 +516,17 @@ async function handleMark(req, res) {
         }
 
         // Resolve each mark to a concrete x/y (the client only ever needs
-        // x/y — it doesn't know or care whether a mark came from the
-        // manifest or the freeform fallback). When a manifest was used,
-        // resolve element_id/to_element_id to the EXACT coordinate already
-        // computed client-side — no guessing involved on either end. Also
-        // handles the legacy diagram_x/diagram_y field names Haiku has
-        // been observed to emit from an earlier schema version, for the
-        // freeform fallback path. Any mark that can't be resolved to a
-        // real coordinate is dropped outright — a mark with no confirmed
-        // position must never be drawn on the answer options.
+        // x/y — it doesn't know or care how a mark's position was decided).
+        // WORKFLOW 1: when a manifest is available, the model supplied NO
+        // position at all — pickBestElements() matches the real words in
+        // step.text (plus the mark's own label text, if any) against each
+        // element's own label, purely deterministically. usedIds tracks
+        // matches across the WHOLE response so different steps prefer
+        // different elements rather than all piling onto one favourite.
+        // Falls back to the legacy diagram_x/diagram_y field names for the
+        // freeform (no-manifest) path. Any mark that still can't be
+        // resolved is dropped outright — never drawn on the answer options.
+        const usedElementIds = new Set();
         const weaknesses = toolUse.input.weaknesses.map(weakness => {
             const steps = Array.isArray(weakness.steps) ? weakness.steps : [];
             weakness.steps = steps.map(step => {
@@ -486,11 +534,16 @@ async function handleMark(req, res) {
                 step.marks = marks
                     .map(m => {
                         if (hasManifest) {
-                            const anchor = elementMap.get(m.element_id);
-                            if (anchor) { m.x = anchor.x; m.y = anchor.y; }
-                            if (m.type === 'arrow') {
-                                const target = elementMap.get(m.to_element_id);
-                                if (target) { m.to_x = target.x; m.to_y = target.y; }
+                            const matchText = (step.text || '') + ' ' + (m.text || '');
+                            const need = m.type === 'arrow' ? 2 : 1;
+                            const chosen = pickBestElements(usableEntries, matchText, need, usedElementIds);
+                            if (chosen.length) {
+                                chosen.forEach(c => usedElementIds.add(c.id));
+                                m.x = chosen[0].x; m.y = chosen[0].y;
+                                if (m.type === 'arrow') {
+                                    if (chosen.length >= 2) { m.to_x = chosen[1].x; m.to_y = chosen[1].y; }
+                                    else { m.type = 'circle'; } // couldn't find a genuine second point — degrade rather than invent one
+                                }
                             }
                         }
                         if (typeof m.x !== 'number' && typeof m.diagram_x === 'number') m.x = m.diagram_x;
