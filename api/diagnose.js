@@ -286,14 +286,20 @@ async function handleMark(req, res) {
     // point) with EXACT positions read from the live DOM via browser SVG
     // geometry APIs (getScreenCTM/getPointAtLength), not guessed.
     //
-    // Targeting a mark does NOT ask the model for a pixel coordinate when
-    // a manifest is available — it asks it to pick a NAMED element from a
-    // known list (a classification task) and the server resolves that
-    // name to the exact coordinate already computed client-side. This
-    // exists because general-purpose vision models (Claude included) are
-    // genuinely unreliable at pixel-grounding from a flat screenshot —
-    // that's a different skill from language reasoning — so asking for
-    // raw x/y on a real diagram produced marks floating in empty space.
+    // WORKFLOW 2 (current): targeting a mark does NOT ask the model for a
+    // pixel coordinate when a manifest is available — the client draws
+    // small numbered markers directly onto the screenshot next to each
+    // real diagram feature before capturing it, and the model just says
+    // which VISIBLE NUMBER a step is about (mark_number) — the server
+    // resolves that number to the exact coordinate already computed
+    // client-side. This exists because general-purpose vision models
+    // (Claude included) are genuinely unreliable at pixel-grounding from a
+    // flat screenshot — that's a different skill from language reasoning —
+    // so asking for raw x/y on a real diagram produced marks floating in
+    // empty space. (An earlier workflow asked the model to match words in
+    // its own step text against a disconnected text list of element
+    // names instead of numbers — see pickBestElements() below, kept as
+    // reference while multiple placement strategies are being trialed.)
     // Only when no manifest exists (e.g. no SVG diagram, just prose) does
     // the model fall back to giving x/y itself.
     //
@@ -363,6 +369,12 @@ async function handleMark(req, res) {
         // with alone.
         const usableEntries = realDiagramEntries.length >= 2 ? realDiagramEntries : rawEntries;
         const hasManifest = usableEntries.length > 0;
+        // Workflow 2: numbers matching the markers the client drew onto the
+        // screenshot, one per usable entry. Falls back to a fresh 1..N
+        // sequence if the client didn't send stable numbers for any reason.
+        const validNumbers = usableEntries.map((el, i) => typeof el.number === 'number' ? el.number : i + 1);
+        const numberMap = new Map();
+        usableEntries.forEach((el, i) => numberMap.set(validNumbers[i], { x: el.x, y: el.y }));
 
         const systemPrompt =
             'You are explaining to a 12-year-old exactly why they got a GCSE ' + subjectLabel + ' question wrong. '
@@ -400,12 +412,13 @@ async function handleMark(req, res) {
                   + 'step with no mark is not allowed, because a drawing must always accompany the words.'
                 : '')
             + (hasManifest
-                ? '\n\nHOW MARKS GET PLACED: you do NOT choose where a mark goes — that is worked out automatically '
-                  + 'from the exact words in step.text, matched against the diagram\'s real parts. This means '
-                  + 'step.text MUST actually name the specific thing it is about — say "radius" or "r" when '
-                  + 'talking about the radius, say "angle" or "θ" when talking about the angle, say "arc" or '
-                  + '"curve" when talking about the curved edge — never a vague sentence that could be about '
-                  + 'anything. Being specific in your wording is what makes the drawing land in the right place.'
+                ? '\n\nHOW TO TARGET A MARK: look at the image — it has small blue numbered circles drawn directly '
+                  + 'ON the diagram/question, one next to each real feature you can mark. Every mark must give '
+                  + '"mark_number" set to the number of whichever circle sits next to the thing step.text is '
+                  + 'actually about right now (for type:arrow, also give "to_mark_number" for the second point). '
+                  + 'Do not guess a number — look at the picture and pick the one that is genuinely closest to '
+                  + 'that feature. Never the answer options — no numbered circle sits on them, so none of these '
+                  + 'numbers can refer to one.'
                 : (hasImage
                     ? '\n\nHOW TO TARGET A MARK: no exact element list is available for this diagram, so give x '
                       + 'and y yourself (0 to 1, fraction of the image width/height from the top-left corner) for '
@@ -483,14 +496,17 @@ async function handleMark(req, res) {
                                                                         text: { type: 'string', description: 'The label text (max 8 words, handwritten style, simple words a 12-year-old would use). Required for type:text.' },
                                                                         color: { type: 'string', description: 'Hex colour. Use #e16280 for errors, #8b5cf6 for corrections/explanation, #54d3ab for confirming something correct.' }
                                                                     },
-                                                                    hasManifest ? {} : {
+                                                                    hasManifest ? {
+                                                                        mark_number: { type: 'integer', enum: validNumbers, description: 'REQUIRED. The number of the blue circled marker you SEE in the image, next to the real feature step.text is about. Look at the picture — do not guess.' },
+                                                                        to_mark_number: { type: 'integer', enum: validNumbers, description: 'ONLY for type:arrow — the number of the second marker the arrow points to. Required for type:arrow.' }
+                                                                    } : {
                                                                         x: { type: 'number', description: 'REQUIRED. Fraction 0-1 across the question box image (left to right) — the exact diagram feature or question-text word/number this mark points at. Must NOT land on the answer options/tickboxes. For type:arrow, this is the START point.' },
                                                                         y: { type: 'number', description: 'REQUIRED. Fraction 0-1 down the question box image (top to bottom) — pair with x.' },
                                                                         to_x: { type: 'number', description: 'Fraction 0-1 — ONLY for type:arrow, the END point the arrow points to. Required for type:arrow.' },
                                                                         to_y: { type: 'number', description: 'Fraction 0-1 — pair with to_x. Required for type:arrow.' }
                                                                     }
                                                                 ),
-                                                                required: hasManifest ? ['type'] : ['type', 'x', 'y']
+                                                                required: hasManifest ? ['type', 'mark_number'] : ['type', 'x', 'y']
                                                             }
                                                         }
                                                     } : {}
@@ -523,16 +539,13 @@ async function handleMark(req, res) {
 
         // Resolve each mark to a concrete x/y (the client only ever needs
         // x/y — it doesn't know or care how a mark's position was decided).
-        // WORKFLOW 1: when a manifest is available, the model supplied NO
-        // position at all — pickBestElements() matches the real words in
-        // step.text (plus the mark's own label text, if any) against each
-        // element's own label, purely deterministically. usedIds tracks
-        // matches across the WHOLE response so different steps prefer
-        // different elements rather than all piling onto one favourite.
-        // Falls back to the legacy diagram_x/diagram_y field names for the
-        // freeform (no-manifest) path. Any mark that still can't be
-        // resolved is dropped outright — never drawn on the answer options.
-        const usedElementIds = new Set();
+        // WORKFLOW 2: the model looked at the actual screenshot (with
+        // numbered markers drawn on it) and named a mark_number — resolve
+        // that number to the exact coordinate the client already computed
+        // for that marker. Falls back to the legacy diagram_x/diagram_y
+        // field names for the freeform (no-manifest) path. Any mark that
+        // still can't be resolved is dropped outright — never drawn on the
+        // answer options.
         const weaknesses = toolUse.input.weaknesses.map(weakness => {
             const steps = Array.isArray(weakness.steps) ? weakness.steps : [];
             weakness.steps = steps.map(step => {
@@ -540,16 +553,11 @@ async function handleMark(req, res) {
                 step.marks = marks
                     .map(m => {
                         if (hasManifest) {
-                            const matchText = (step.text || '') + ' ' + (m.text || '');
-                            const need = m.type === 'arrow' ? 2 : 1;
-                            const chosen = pickBestElements(usableEntries, matchText, need, usedElementIds);
-                            if (chosen.length) {
-                                chosen.forEach(c => usedElementIds.add(c.id));
-                                m.x = chosen[0].x; m.y = chosen[0].y;
-                                if (m.type === 'arrow') {
-                                    if (chosen.length >= 2) { m.to_x = chosen[1].x; m.to_y = chosen[1].y; }
-                                    else { m.type = 'circle'; } // couldn't find a genuine second point — degrade rather than invent one
-                                }
+                            const anchor = numberMap.get(m.mark_number);
+                            if (anchor) { m.x = anchor.x; m.y = anchor.y; }
+                            if (m.type === 'arrow') {
+                                const target = numberMap.get(m.to_mark_number);
+                                if (target) { m.to_x = target.x; m.to_y = target.y; }
                             }
                         }
                         if (typeof m.x !== 'number' && typeof m.diagram_x === 'number') m.x = m.diagram_x;
