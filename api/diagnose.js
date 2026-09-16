@@ -171,164 +171,38 @@ async function handleDiagnose(req, res) {
     }
 }
 
-// Prompt-only "don't stack marks" guidance is not reliably followed — the
-// model sometimes picks the same element (often the generic "question_text"
-// fallback) for several steps in a row, producing illegible overlapping
-// marks. Deterministically nudge any mark that lands within MIN_DIST of one
-// already placed earlier in the response, in reading order (weakness → step
-// → mark), rather than trusting the model's spacing alone — same reasoning
-// as computing triangle vertices by trig instead of asking the model to
-// guess pixels. Nudges spiral OUTWARD FROM THE MARK'S OWN ORIGINAL POINT
-// (not wherever the previous nudge landed) — a mark that collides 4-5 times
-// must still end up near what it was actually pointing at, not teleported
-// across the page. An earlier version nudged y-only and wrapped back to the
-// top of the image once it ran past the bottom, which put marks nowhere
-// near their real target when several steps collided (visible live as a
-// mark landing up near the question-number badge instead of the diagram).
-function deconflictMarks(weaknesses) {
-    // Was 0.08 — real testing on a small, tightly-packed diagram (a sector
-    // with r and θ labelled close together) showed this nudging correctly
-    // DIFFERENT, DIFFERENTLY-CHOSEN elements away from each other purely
-    // because the diagram itself is small, even though nothing was
-    // actually stacked. 0.05 still catches genuine same-spot collisions
-    // without punishing a diagram for being compact.
-    const MIN_DIST = 0.05;
-    const placed = [];
-    weaknesses.forEach(weakness => {
-        (weakness.steps || []).forEach(step => {
-            (step.marks || []).forEach(mark => {
-                const baseX = mark.x, baseY = mark.y;
-                let guard = 0;
-                while (guard < 8 && placed.some(p => Math.hypot(p.x - mark.x, p.y - mark.y) < MIN_DIST)) {
-                    guard++;
-                    const radius = MIN_DIST * (0.9 + guard * 0.5);
-                    const angle = guard * 2.4; // ~golden angle so successive nudges don't re-collide with each other
-                    mark.x = Math.max(0.03, Math.min(0.97, baseX + radius * Math.cos(angle)));
-                    mark.y = Math.max(0.03, Math.min(0.97, baseY + radius * Math.sin(angle)));
-                }
-                placed.push({ x: mark.x, y: mark.y });
-            });
-        });
-    });
-}
-
-// WORKFLOW 1 — deterministic keyword matching. The model never chooses a
-// target at all (not even by name) — it only writes the pedagogical text.
-// This function picks the diagram element(s) a mark should point at purely
-// by matching real words in the step's own text against each element's
-// label, with zero model judgment involved in placement. Removes the exact
-// axis that caused every placement bug so far (the model's selection
-// judgment), at the cost of only working as well as the word-matching does.
-const GREEK_SYNONYMS = {
-    'θ': ['theta', 'angle'], 'π': ['pi'], 'α': ['alpha'], 'β': ['beta'],
-    'φ': ['phi'], 'γ': ['gamma'], '°': ['degree', 'degrees']
-};
-const LETTER_SYNONYMS = {
-    r: ['radius'], d: ['diameter'], h: ['height'], l: ['length'],
-    b: ['base'], w: ['width'], a: ['area'], c: ['circumference', 'centre', 'center']
-};
-
-function buildMatchTokens(entry) {
-    const tokens = new Set();
-    if (entry.text) {
-        const t = entry.text.trim();
-        if (t) tokens.add(t.toLowerCase());
-        if (GREEK_SYNONYMS[t]) GREEK_SYNONYMS[t].forEach(s => tokens.add(s));
-        if (/^[a-zA-Z]$/.test(t) && LETTER_SYNONYMS[t.toLowerCase()]) {
-            LETTER_SYNONYMS[t.toLowerCase()].forEach(s => tokens.add(s));
-        }
-    } else if (entry.kind) {
-        if (/curved/i.test(entry.kind)) ['arc', 'curve', 'curved', 'circumference'].forEach(s => tokens.add(s));
-        else if (/straight/i.test(entry.kind)) ['side', 'line', 'edge', 'straight'].forEach(s => tokens.add(s));
-        else if (/point/i.test(entry.kind)) ['point', 'vertex', 'corner'].forEach(s => tokens.add(s));
-        else if (/wording/i.test(entry.kind) || entry.id === 'question_text') ['question', 'wording', 'statement'].forEach(s => tokens.add(s));
-    }
-    return Array.from(tokens);
-}
-
-function scoreEntryAgainstText(entry, text) {
-    const lower = (text || '').toLowerCase();
-    let score = 0;
-    buildMatchTokens(entry).forEach(tok => {
-        const escaped = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        if (new RegExp('\\b' + escaped + '\\b', 'i').test(lower)) score += tok.length;
-    });
-    return score;
-}
-
-// Picks `count` distinct elements best matching `text`, preferring ones not
-// already used elsewhere in this response so the explanation spreads across
-// the diagram rather than repeatedly landing on one favourite element.
-function pickBestElements(entries, text, count, usedIds) {
-    const scored = entries
-        .map(e => ({ entry: e, score: scoreEntryAgainstText(e, text) }))
-        .sort((a, b) => b.score - a.score);
-    const positive = scored.filter(s => s.score > 0);
-    const pool = positive.length ? positive : scored;
-    const chosen = [];
-    for (let i = 0; i < count; i++) {
-        let pick = pool.find(s => !chosen.includes(s.entry) && !usedIds.has(s.entry.id));
-        if (!pick) pick = pool.find(s => !chosen.includes(s.entry));
-        if (!pick) break;
-        chosen.push(pick.entry);
-    }
-    return chosen;
-}
-
 async function handleMark(req, res) {
     // Feature: Phase 2-4 wrong-answer marking flow.
-    // Receives the question, student answer, correct answer, mark scheme,
-    // a base64 PNG screenshot of the ENTIRE question box (diagram +
-    // question text + answer options/tickboxes together, plus anything
-    // the student drew, captured client-side via html2canvas), and —
-    // when the question has an SVG diagram — `diagram_elements`: a list
-    // of that diagram's real parts (each text label, line, curved edge,
-    // point) with EXACT positions read from the live DOM via browser SVG
-    // geometry APIs (getScreenCTM/getPointAtLength), not guessed.
     //
-    // WORKFLOW 2 (current): targeting a mark does NOT ask the model for a
-    // pixel coordinate when a manifest is available — the client draws
-    // small numbered markers directly onto the screenshot next to each
-    // real diagram feature before capturing it, and the model just says
-    // which VISIBLE NUMBER a step is about (mark_number) — the server
-    // resolves that number to the exact coordinate already computed
-    // client-side. This exists because general-purpose vision models
-    // (Claude included) are genuinely unreliable at pixel-grounding from a
-    // flat screenshot — that's a different skill from language reasoning —
-    // so asking for raw x/y on a real diagram produced marks floating in
-    // empty space. (An earlier workflow asked the model to match words in
-    // its own step text against a disconnected text list of element
-    // names instead of numbers — see pickBestElements() below, kept as
-    // reference while multiple placement strategies are being trialed.)
-    // Only when no manifest exists (e.g. no SVG diagram, just prose) does
-    // the model fall back to giving x/y itself.
+    // PIVOT (this version): no live annotation at all. Every earlier version
+    // of this endpoint tried to get Claude to point at a specific pixel/
+    // element on the student's actual diagram — screenshots, numbered
+    // markers, keyword matching, deconfliction passes. All of it was
+    // patching around the same unreliable core: general-purpose vision
+    // models are not good at pixel-grounding, and even structured targeting
+    // still depended on the model's in-the-moment judgment about WHERE to
+    // point, which kept producing wrong or empty picks under real testing.
     //
-    // Response shape: { ok, weaknesses: [{ title, steps: [{ text, marks }] }] }.
+    // The fix is to stop trying to annotate an unpredictable live diagram
+    // and show a pre-built worked example instead — same principle as the
+    // guide-generation system's S5 section (deterministic SVG geometry,
+    // calculated at content-authoring time, never guessed at runtime). This
+    // endpoint's only job now is the plain-text diagnosis: why THIS answer
+    // was wrong, broken into small steps. No image in, no coordinates out.
+    // The worked example itself is static per-question content the client
+    // already has (see WORKED_EXAMPLE_HTML on the question bank entry) —
+    // this endpoint never generates or touches it.
+    //
+    // Response shape: { ok, weaknesses: [{ title, steps: [{ text }] }] }.
     // Deliberately NOT one dense paragraph per weakness — every weakness is
     // broken into as many small steps as it genuinely takes, no min or max
-    // imposed here, and EVERY step must carry at least one mark. A step is
-    // never text-only and a mark is never unexplained: the two always
-    // arrive together. The client reveals one step at a time (one Continue
-    // press each), drawing that step's marks as its text appears, so a
-    // student watches the full explanation build up on the diagram itself
-    // rather than reading one wall of text.
-    //
-    // marks (as returned to the client, after server-side resolution):
-    //   array of { type: text/underline/circle/arrow, text, color, x, y
-    //   (+ to_x/to_y for arrow) } — x/y are always concrete 0-1 fractions
-    //   of the captured box image by the time this returns, regardless of
-    //   whether they came from the manifest or the freeform fallback. The
-    //   client positions each mark against the live box's own bounding
-    //   rect using the same fraction, so it's correct regardless of what
-    //   size the box actually renders at.
+    // imposed here. The client reveals one step at a time (one Continue
+    // press each) so the student never faces a wall of text.
     //
     // Never throws — degrades silently to {ok:false} so the retry buttons
     // always appear even if the AI call fails.
     try {
-        const {
-            question, student_answer, correct_answer,
-            mark_scheme, subject, question_box_image, diagram_elements
-        } = req.body || {};
+        const { question, student_answer, correct_answer, mark_scheme, subject } = req.body || {};
 
         if (!question || !student_answer) {
             return res.status(200).json({ ok: false, weaknesses: [] });
@@ -342,48 +216,6 @@ async function handleMark(req, res) {
         const markSchemeText = Array.isArray(mark_scheme) && mark_scheme.length
             ? mark_scheme.join('\n')
             : 'No mark scheme provided.';
-        const hasImage = typeof question_box_image === 'string' && question_box_image.length > 0;
-
-        // The client reads the diagram's real SVG (via getScreenCTM/
-        // getPointAtLength — actual browser geometry, not a guess) and
-        // sends each element's EXACT position. When this is present, the
-        // model never has to invent a pixel coordinate — it just picks
-        // WHICH named element a step is about, a plain classification
-        // task, and the server resolves the id to the exact coordinate
-        // already computed client-side. This is the fix for marks landing
-        // in empty space: general vision models are not reliable at
-        // pixel-grounding from a flat screenshot, so that step is removed
-        // entirely rather than prompted around.
-        const rawEntries = (Array.isArray(diagram_elements) ? diagram_elements : []).filter(el =>
-            el && typeof el.id === 'string' && typeof el.x === 'number' && typeof el.y === 'number'
-        );
-        const realDiagramEntries = rawEntries.filter(el => el.id !== 'question_text');
-        // Live testing showed the model taking the easy option: given a
-        // choice, it picked the generic "question_text" fallback for
-        // nearly every step instead of engaging with the diagram's real
-        // parts. Once the diagram has 2+ genuine parts to work with,
-        // remove "question_text" from what it's even allowed to pick —
-        // structurally forcing diagram engagement is more reliable than
-        // asking nicely. Only keep it as a fallback when the diagram
-        // genuinely has too few real parts (0-1) to explain a mistake
-        // with alone.
-        const usableEntries = realDiagramEntries.length >= 2 ? realDiagramEntries : rawEntries;
-        const hasManifest = usableEntries.length > 0;
-        // Workflow 2: numbers matching the markers the client drew onto the
-        // screenshot, one per usable entry. Falls back to a fresh 1..N
-        // sequence if the client didn't send stable numbers for any reason.
-        const validNumbers = usableEntries.map((el, i) => typeof el.number === 'number' ? el.number : i + 1);
-        const numberMap = new Map();
-        usableEntries.forEach((el, i) => numberMap.set(validNumbers[i], { x: el.x, y: el.y }));
-        // A marker with no text of its own (an edge, a small symbol) isn't
-        // self-explanatory just from seeing a numbered circle on it — a
-        // tiny square drawn at a corner doesn't visually announce "this
-        // means 90°". Give a short hint per non-text marker so the model
-        // can actually interpret what it's looking at.
-        const markerHints = usableEntries
-            .map((el, i) => el.text ? null : validNumbers[i] + ' = ' + (el.kind || 'a diagram part'))
-            .filter(Boolean)
-            .join('; ');
 
         const systemPrompt =
             'You are explaining to a 12-year-old exactly why they got a GCSE ' + subjectLabel + ' question wrong. '
@@ -397,62 +229,25 @@ async function handleMark(req, res) {
             + 'But do NOT invent extra weaknesses that are not really there: if it is genuinely one simple '
             + 'mistake, give exactly one weakness — never pad the number of weaknesses. '
             + 'Specific to THIS question and THIS mistake — never generic. Warm, direct, encouraging tone. '
-            + 'Never condescending.'
+            + 'Never condescending. A full worked example is shown separately after this, so you do not need to '
+            + 'reproduce the whole method here — focus on diagnosing THIS specific mistake.'
             + '\n\nNEVER WRITE A WALL OF TEXT. This is the most important rule. Every weakness must be broken '
             + 'into a "steps" array — many small steps, never one paragraph. Each step.text is ONE idea only, '
             + 'as short as a sentence really needs to be — often just a fragment, never more than about 12 words. '
             + 'Break it down MORE than a textbook would, not less: if a textbook would show a calculation in one '
             + 'line, split it into the separate small moves a student actually has to make in their head — e.g. '
             + '"identify the two angles you\'re given" is its own step, "add them together" is its own step, '
-            + '"subtract that from 180" is its own step, each with its own mark. There is no minimum and no '
-            + 'maximum number of steps — use exactly as many as it takes to make every single move visible, even '
-            + 'if that is many more steps than a textbook or a teacher would normally write out. The final step '
-            + 'of a weakness should give the concrete action to do differently next time — specific enough for a '
-            + 'a 12-year-old to actually follow, not vague advice like "be more careful".'
-            + (hasImage
-                ? '\n\nYou can SEE a real screenshot of the exact question box the student was looking at — the '
-                  + 'diagram, the question text, AND the answer options/tickboxes together, exactly as they left '
-                  + 'it. The student may also have drawn on the diagram themselves in blue pen (freehand, e.g. '
-                  + 'marking angles, sides, or working) — look for this and take it into account: if their own '
-                  + 'drawing already shows correct understanding of one part, don\'t re-explain that part; if it '
-                  + 'shows a misunderstanding, that IS the mistake to diagnose. Look at the whole image directly '
-                  + 'before answering. '
-                  + 'CRITICAL RULE ON PAIRING: EVERY step must have at least one mark in its "marks" array — a '
-                  + 'step with no mark is not allowed, because a drawing must always accompany the words.'
-                : '')
-            + (hasManifest
-                ? '\n\nHOW TO TARGET A MARK: look at the image — it has small blue numbered circles drawn directly '
-                  + 'ON the diagram/question, one next to each real feature you can mark. Every mark must give '
-                  + '"mark_number" set to the number of whichever circle sits next to the thing step.text is '
-                  + 'actually about right now (for type:arrow, also give "to_mark_number" for the second point). '
-                  + 'Do not guess a number — look at the picture and pick the one that is genuinely closest to '
-                  + 'that feature. Never the answer options — no numbered circle sits on them, so none of these '
-                  + 'numbers can refer to one.'
-                  + (markerHints ? ' Some markers sit on a small symbol rather than a piece of text, so here is '
-                    + 'what those specific ones actually are: ' + markerHints + '.' : '')
-                : (hasImage
-                    ? '\n\nHOW TO TARGET A MARK: no exact element list is available for this diagram, so give x '
-                      + 'and y yourself (0 to 1, fraction of the image width/height from the top-left corner) for '
-                      + 'exactly where that feature sits — be precise, look at where it actually is. Every mark '
-                      + 'must land on the DIAGRAM or the QUESTION TEXT, never on the answer options/tickboxes. '
-                      + 'Never reuse the same x/y (or a spot within about 0.08 of one already used) — spread '
-                      + 'marks out, never cluster them in one small area. For type:arrow also give to_x/to_y for '
-                      + 'where the arrow points TO.'
-                    : ''));
+            + '"subtract that from 180" is its own step. There is no minimum and no maximum number of steps — '
+            + 'use exactly as many as it takes to make every single move visible, even if that is many more steps '
+            + 'than a textbook or a teacher would normally write out. The final step of a weakness should give '
+            + 'the concrete action to do differently next time — specific enough for a 12-year-old to actually '
+            + 'follow, not vague advice like "be more careful".';
 
         const userPromptText =
             'Question: ' + question + '\n'
             + 'Student\'s answer: ' + student_answer + '\n'
             + 'Correct answer: ' + correct_answer + '\n'
-            + 'Mark scheme:\n' + markSchemeText
-            + (hasImage ? '\n\nThe image attached is a real screenshot of this exact question box — look at it before answering.' : '');
-
-        const userContent = hasImage
-            ? [
-                { type: 'image', source: { type: 'base64', media_type: 'image/png', data: question_box_image } },
-                { type: 'text', text: userPromptText },
-              ]
-            : userPromptText;
+            + 'Mark scheme:\n' + markSchemeText;
 
         const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
@@ -463,12 +258,12 @@ async function handleMark(req, res) {
             },
             body: JSON.stringify({
                 model: 'claude-haiku-4-5-20251001',
-                max_tokens: 4096,
+                max_tokens: 2048,
                 system: systemPrompt,
-                messages: [{ role: 'user', content: userContent }],
+                messages: [{ role: 'user', content: userPromptText }],
                 tools: [{
                     name: 'record_marking',
-                    description: 'Record the marking breakdown for each mistake the student made, as a sequence of small paired text+drawing steps.',
+                    description: 'Record the diagnosis of the mistake the student made, as a sequence of small steps.',
                     input_schema: {
                         type: 'object',
                         properties: {
@@ -486,43 +281,10 @@ async function handleMark(req, res) {
                                             minItems: 1,
                                             items: {
                                                 type: 'object',
-                                                properties: Object.assign(
-                                                    {
-                                                        text: { type: 'string', description: 'ONE short idea — a sentence or fragment, max ~12 words. Never a paragraph, never more than one idea.' }
-                                                    },
-                                                    hasImage ? {
-                                                        marks: {
-                                                            type: 'array',
-                                                            description: 'REQUIRED — at least one mark to draw on the DIAGRAM or QUESTION TEXT for this exact step, never on the answer options/tickboxes. The mark must show what this step\'s text is talking about, right now.',
-                                                            minItems: 1,
-                                                            items: {
-                                                                type: 'object',
-                                                                properties: Object.assign(
-                                                                    {
-                                                                        type: {
-                                                                            type: 'string',
-                                                                            enum: ['text', 'underline', 'circle', 'arrow'],
-                                                                            description: 'text = write a short label; underline = underline the error; circle = circle the feature; arrow = draw a line from one point to another (e.g. connecting a cause to its effect).'
-                                                                        },
-                                                                        text: { type: 'string', description: 'The label text (max 8 words, handwritten style, simple words a 12-year-old would use). Required for type:text.' },
-                                                                        color: { type: 'string', description: 'Hex colour. Use #e16280 for errors, #8b5cf6 for corrections/explanation, #54d3ab for confirming something correct.' }
-                                                                    },
-                                                                    hasManifest ? {
-                                                                        mark_number: { type: 'integer', enum: validNumbers, description: 'REQUIRED. The number of the blue circled marker you SEE in the image, next to the real feature step.text is about. Look at the picture — do not guess.' },
-                                                                        to_mark_number: { type: 'integer', enum: validNumbers, description: 'ONLY for type:arrow — the number of the second marker the arrow points to. Required for type:arrow.' }
-                                                                    } : {
-                                                                        x: { type: 'number', description: 'REQUIRED. Fraction 0-1 across the question box image (left to right) — the exact diagram feature or question-text word/number this mark points at. Must NOT land on the answer options/tickboxes. For type:arrow, this is the START point.' },
-                                                                        y: { type: 'number', description: 'REQUIRED. Fraction 0-1 down the question box image (top to bottom) — pair with x.' },
-                                                                        to_x: { type: 'number', description: 'Fraction 0-1 — ONLY for type:arrow, the END point the arrow points to. Required for type:arrow.' },
-                                                                        to_y: { type: 'number', description: 'Fraction 0-1 — pair with to_x. Required for type:arrow.' }
-                                                                    }
-                                                                ),
-                                                                required: hasManifest ? ['type', 'mark_number'] : ['type', 'x', 'y']
-                                                            }
-                                                        }
-                                                    } : {}
-                                                ),
-                                                required: hasImage ? ['text', 'marks'] : ['text']
+                                                properties: {
+                                                    text: { type: 'string', description: 'ONE short idea — a sentence or fragment, max ~12 words. Never a paragraph, never more than one idea.' }
+                                                },
+                                                required: ['text']
                                             }
                                         }
                                     },
@@ -548,61 +310,7 @@ async function handleMark(req, res) {
             return res.status(200).json({ ok: false, weaknesses: [] });
         }
 
-        // Resolve each mark to a concrete x/y (the client only ever needs
-        // x/y — it doesn't know or care how a mark's position was decided).
-        // WORKFLOW 2: the model looked at the actual screenshot (with
-        // numbered markers drawn on it) and named a mark_number — resolve
-        // that number to the exact coordinate the client already computed
-        // for that marker. Falls back to the legacy diagram_x/diagram_y
-        // field names for the freeform (no-manifest) path. Any mark that
-        // still can't be resolved is dropped outright — never drawn on the
-        // answer options.
-        // minItems:1 on the marks array is, like every other array-shape
-        // constraint tried so far, not strictly enforced by the model —
-        // live testing produced steps with marks:[] outright. Rather than
-        // let "every step needs a mark" quietly fail, fall back to
-        // workflow 1's keyword matcher (pickBestElements) for any step
-        // that comes out of resolution with zero marks, so the pairing
-        // rule holds even when the model's own placement attempt is
-        // incomplete. usedFallbackIds tracks across the whole response so
-        // repeated fallbacks don't all land on the same element.
-        const usedFallbackIds = new Set();
-        const weaknesses = toolUse.input.weaknesses.map(weakness => {
-            const steps = Array.isArray(weakness.steps) ? weakness.steps : [];
-            weakness.steps = steps.map(step => {
-                const marks = Array.isArray(step.marks) ? step.marks : [];
-                step.marks = marks
-                    .map(m => {
-                        if (hasManifest) {
-                            const anchor = numberMap.get(m.mark_number);
-                            if (anchor) { m.x = anchor.x; m.y = anchor.y; }
-                            if (m.type === 'arrow') {
-                                const target = numberMap.get(m.to_mark_number);
-                                if (target) { m.to_x = target.x; m.to_y = target.y; }
-                            }
-                        }
-                        if (typeof m.x !== 'number' && typeof m.diagram_x === 'number') m.x = m.diagram_x;
-                        if (typeof m.y !== 'number' && typeof m.diagram_y === 'number') m.y = m.diagram_y;
-                        return m;
-                    })
-                    .filter(m => typeof m.x === 'number' && typeof m.y === 'number'
-                        && (m.type !== 'arrow' || (typeof m.to_x === 'number' && typeof m.to_y === 'number')));
-
-                if (step.marks.length === 0 && hasManifest) {
-                    const fallback = pickBestElements(usableEntries, step.text || '', 1, usedFallbackIds);
-                    if (fallback.length) {
-                        usedFallbackIds.add(fallback[0].id);
-                        step.marks = [{ type: 'circle', color: '#8b5cf6', x: fallback[0].x, y: fallback[0].y }];
-                    }
-                }
-                return step;
-            });
-            return weakness;
-        });
-
-        deconflictMarks(weaknesses);
-
-        return res.status(200).json({ ok: true, weaknesses });
+        return res.status(200).json({ ok: true, weaknesses: toolUse.input.weaknesses });
 
     } catch (error) {
         console.error('Mark error:', error);
