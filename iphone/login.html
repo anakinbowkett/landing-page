@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Montura Learn — Sign In</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --accent: #1d7fe2;
+    --safe-t: env(safe-area-inset-top, 0px);
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    --safe-l: env(safe-area-inset-left, 0px);
+    --safe-r: env(safe-area-inset-right, 0px);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    background: #0a0a0f;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  #app {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: max(20px, var(--safe-t)) max(28px, var(--safe-r)) max(20px, var(--safe-b)) max(28px, var(--safe-l));
+    background: radial-gradient(ellipse at 50% 35%, rgba(29, 127, 226, 0.10), transparent 60%), #0a0a0f;
+  }
+
+  #card {
+    width: 100%;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  #mark {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #mark svg { width: 26px; height: 26px; stroke: #fff; }
+
+  h1 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+  }
+
+  p.sub {
+    margin: -8px 0 4px;
+    font-size: 13.5px;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+  }
+
+  form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  input {
+    width: 100%;
+    height: 48px;
+    min-height: 44px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    font-family: inherit;
+    font-size: 15px;
+    padding: 0 16px;
+  }
+
+  input::placeholder { color: rgba(255, 255, 255, 0.35); }
+  input:focus { outline: none; border-color: var(--accent); }
+
+  #submit-btn {
+    margin-top: 4px;
+    width: 100%;
+    height: 48px;
+    min-height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #fff;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  #submit-btn:active { opacity: 0.85; }
+  #submit-btn:disabled { opacity: 0.55; }
+
+  #error-text {
+    min-height: 16px;
+    font-size: 13px;
+    color: #f36b7f;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="card">
+    <div id="mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+    </div>
+    <h1>Sign in to Montura Learn</h1>
+    <p class="sub">Use the same account you study with on desktop</p>
+
+    <form id="login-form">
+      <input id="email" type="email" placeholder="Email" autocomplete="username" required>
+      <input id="password" type="password" placeholder="Password" autocomplete="current-password" required>
+      <div id="error-text"></div>
+      <button type="submit" id="submit-btn">Sign In</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  var SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+  var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  (async function redirectIfSignedIn() {
+    var result = await sb.auth.getSession();
+    if (result.data && result.data.session) {
+      window.location.href = 'pairing.html';
+    }
+  })();
+
+  var form = document.getElementById('login-form');
+  var submitBtn = document.getElementById('submit-btn');
+  var errorText = document.getElementById('error-text');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Signing In…';
+    errorText.textContent = '';
+
+    var email = document.getElementById('email').value.trim();
+    var password = document.getElementById('password').value;
+
+    var result = await sb.auth.signInWithPassword({ email: email, password: password });
+
+    if (result.error) {
+      errorText.textContent = result.error.message || 'Could not sign in — check your details.';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Sign In';
+      return;
+    }
+
+    window.location.href = 'pairing.html';
+  });
+</script>
+
+</body>
+</html>

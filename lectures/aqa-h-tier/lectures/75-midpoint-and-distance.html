@@ -2252,7 +2252,7 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
     <!-- ── BOTTOM NAV STRIP ──────────────────────────────── -->
 <div class="nav-strip-zone" id="navStripZone">
   <div class="nav-strip-bar">
-    <button class="nav-btn" id="nav-connect-btn" onclick="alert('Pair your iPhone — coming soon')" title="Connect iPhone">
+    <button class="nav-btn" id="nav-connect-btn" title="Connect iPhone">
       <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="1" width="10" height="22" rx="3" ry="3"/><circle cx="12" cy="19.5" r="0.9" fill="currentColor"/><line x1="9.5" y1="4" x2="14.5" y2="4" stroke-width="1.5"/></svg></span>
       <span class="nav-label">Connect</span>
     </button>
@@ -7291,6 +7291,18 @@ var MarkingFlow = (function(){
     setupAll();
   }
 })();
+</script>
+
+
+<!-- Draw-on-iPhone pairing (desktop side) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/shared/phone-pair.js"></script>
+<script>
+MonturaPhonePair.init({
+  lectureSlug: '75-midpoint-and-distance',
+  triggerId: 'nav-connect-btn',
+  getQnum: function () { return currentQuestionIndex; }
+});
 </script>
 
 </body>

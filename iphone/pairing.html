@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Montura Learn — Pair</title>
+<title>Montura Learn — Connect</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0a0a0f">
+<meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --accent: #1d7fe2;
@@ -33,202 +34,104 @@
     margin: 0;
     height: 100%;
     width: 100%;
-    background: #0a0a0f;
+    background: #000000;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     overflow: hidden;
     overscroll-behavior: none;
     touch-action: none;
   }
 
-  #app {
+  .screen {
     position: fixed;
     inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: max(20px, var(--safe-t)) max(28px, var(--safe-r)) max(20px, var(--safe-b)) max(28px, var(--safe-l));
-    background:
-      radial-gradient(ellipse at 50% 40%, rgba(29, 127, 226, 0.10), transparent 60%),
-      #0a0a0f;
-  }
-
-  /* ---------- Status pill ---------- */
-
-  #status-pill {
-    position: absolute;
-    top: max(18px, var(--safe-t));
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 16px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  #status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
-    animation: pulseDot 1.4s ease-in-out infinite;
-  }
-
-  #app.connected #status-dot {
-    background: var(--ok);
-    animation: none;
-  }
-
-  @keyframes pulseDot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.7); }
-  }
-
-  #status-text {
-    font-size: 13px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.65);
-    letter-spacing: 0.01em;
-  }
-
-  /* ---------- Scan stage ---------- */
-
-  #scan-stage {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 22px;
-  }
-
-  #scan-frame {
-    position: relative;
-    width: min(46vh, 320px);
-    height: min(46vh, 320px);
-    border-radius: 28px;
-  }
-
-  .corner {
-    position: absolute;
-    width: 34px;
-    height: 34px;
-    border: 3px solid var(--accent);
-    transition: border-color 300ms ease;
-  }
-
-  #app.connected .corner { border-color: var(--ok); }
-
-  .corner.tl { top: 0; left: 0; border-right: none; border-bottom: none; border-top-left-radius: 16px; }
-  .corner.tr { top: 0; right: 0; border-left: none; border-bottom: none; border-top-right-radius: 16px; }
-  .corner.bl { bottom: 0; left: 0; border-right: none; border-top: none; border-bottom-left-radius: 16px; }
-  .corner.br { bottom: 0; right: 0; border-left: none; border-top: none; border-bottom-right-radius: 16px; }
-
-  #scan-line {
-    position: absolute;
-    left: 10%;
-    right: 10%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    box-shadow: 0 0 10px rgba(29, 127, 226, 0.8);
-    animation: sweep 2.2s ease-in-out infinite;
-  }
-
-  #app.connected #scan-line { display: none; }
-
-  @keyframes sweep {
-    0%   { top: 8%; opacity: 0; }
-    10%  { opacity: 1; }
-    50%  { top: 92%; opacity: 1; }
-    60%  { opacity: 0; }
-    100% { top: 8%; opacity: 0; }
-  }
-
-  #connected-check {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transform: scale(0.7);
-    transition: opacity 260ms ease, transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  #app.connected #connected-check {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  #connected-check svg {
-    width: 76px;
-    height: 76px;
-    stroke: var(--ok);
-  }
-
-  #scan-copy {
-    text-align: center;
-  }
-
-  #scan-copy h1 {
-    margin: 0 0 6px;
-    font-size: 19px;
-    font-weight: 600;
-    color: #ffffff;
-  }
-
-  #scan-copy p {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.5);
-    max-width: 280px;
-  }
-
-  #continue-btn {
-    margin-top: 4px;
-    height: 48px;
-    min-height: 44px;
-    padding: 0 30px;
-    border: none;
-    border-radius: 24px;
-    background: var(--ok);
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: 600;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(8px);
-    transition: opacity 260ms ease, transform 260ms ease;
-  }
-
-  #app.connected #continue-btn {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
-  }
-
-  #continue-btn:active { transform: scale(0.95); }
-
-  /* ---------- Landscape lock ---------- */
-
-  #rotate-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 999;
     display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 18px;
-    background: #0a0a0f;
-    color: #ffffff;
+    gap: 22px;
+    padding: max(20px, var(--safe-t)) max(28px, var(--safe-r)) max(20px, var(--safe-b)) max(28px, var(--safe-l));
     text-align: center;
-    padding: 24px;
   }
 
-  #rotate-overlay svg {
+  .screen.active { display: flex; }
+
+  /* ---------- Connecting ---------- */
+
+  #screen-connecting {
+    background: radial-gradient(ellipse at 50% 40%, rgba(29, 127, 226, 0.12), transparent 60%), #0a0a0f;
+  }
+
+  .spinner-ring {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.12);
+    border-top-color: var(--accent);
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #screen-connecting h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  #screen-connecting p {
+    margin: 0;
+    font-size: 13.5px;
+    color: rgba(255, 255, 255, 0.45);
+    max-width: 260px;
+  }
+
+  /* ---------- Accept (dimmed black, shows the question) ---------- */
+
+  #screen-accept {
+    background: #000000;
+  }
+
+  #accept-qnum {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  #accept-title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    max-width: 300px;
+  }
+
+  #accept-btn {
+    margin-top: 10px;
+    height: 52px;
+    min-height: 44px;
+    padding: 0 48px;
+    border: none;
+    border-radius: 26px;
+    background: var(--accent);
+    color: #fff;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(29, 127, 226, 0.4);
+  }
+
+  #accept-btn:active { transform: scale(0.95); }
+
+  /* ---------- Rotate ---------- */
+
+  #screen-rotate {
+    background: #0a0a0f;
+  }
+
+  #screen-rotate svg {
     width: 56px;
     height: 56px;
     stroke: #ffffff;
@@ -240,7 +143,7 @@
     50% { transform: rotate(-90deg); }
   }
 
-  #rotate-overlay p {
+  #screen-rotate p {
     margin: 0;
     font-size: 15px;
     font-weight: 500;
@@ -248,68 +151,218 @@
     max-width: 240px;
   }
 
-  @media (orientation: portrait) {
-    #rotate-overlay { display: flex; }
-    #app { display: none; }
+  /* ---------- Guide (2-step infographic) ---------- */
+
+  #screen-guide {
+    background: radial-gradient(ellipse at 50% 30%, rgba(29, 127, 226, 0.10), transparent 60%), #0a0a0f;
+  }
+
+  #screen-guide h1 {
+    margin: 0 0 4px;
+    font-size: 19px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .guide-list {
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .guide-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 14px 16px;
+    text-align: left;
+  }
+
+  .guide-num {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .guide-item span {
+    font-size: 14px;
+    color: #fff;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  #start-drawing-btn {
+    margin-top: 6px;
+    height: 50px;
+    min-height: 44px;
+    padding: 0 34px;
+    border: none;
+    border-radius: 25px;
+    background: var(--ok);
+    color: #fff;
+    font-family: inherit;
+    font-size: 15.5px;
+    font-weight: 700;
+  }
+
+  #start-drawing-btn:active { transform: scale(0.95); }
+
+  /* ---------- Error ---------- */
+
+  #screen-error {
+    background: #0a0a0f;
+  }
+
+  #screen-error p {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 260px;
   }
 </style>
 </head>
 <body>
 
-<div id="app">
-  <div id="status-pill">
-    <span id="status-dot"></span>
-    <span id="status-text">Searching for desktop&hellip;</span>
-  </div>
-
-  <div id="scan-stage">
-    <div id="scan-frame">
-      <div class="corner tl"></div>
-      <div class="corner tr"></div>
-      <div class="corner bl"></div>
-      <div class="corner br"></div>
-      <div id="scan-line"></div>
-      <div id="connected-check">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M8 12.5l2.5 2.5L16 9.5"/>
-        </svg>
-      </div>
-    </div>
-
-    <div id="scan-copy">
-      <h1 id="scan-title">Point at the QR code</h1>
-      <p id="scan-subtitle">Open the lecture on your desktop and scan the code shown on screen</p>
-    </div>
-
-    <button id="continue-btn">Continue</button>
-  </div>
+<div class="screen active" id="screen-connecting">
+  <div class="spinner-ring"></div>
+  <h1>Connecting to your lecture&hellip;</h1>
+  <p>Keep your desktop open on the question you need to draw</p>
 </div>
 
-<div id="rotate-overlay">
+<div class="screen" id="screen-accept">
+  <div id="accept-qnum">Question loading</div>
+  <h1 id="accept-title">Ready to draw</h1>
+  <button id="accept-btn">Accept</button>
+</div>
+
+<div class="screen" id="screen-rotate">
   <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <rect x="7" y="2" width="10" height="20" rx="2"/>
     <line x1="12" y1="18" x2="12.01" y2="18"/>
   </svg>
-  <p>Turn your phone sideways to pair</p>
+  <p>Turn your phone sideways to continue</p>
+</div>
+
+<div class="screen" id="screen-guide">
+  <h1>You're connected</h1>
+  <div class="guide-list">
+    <div class="guide-item"><span class="guide-num">1</span><span>Draw your working out here — it appears on your desktop automatically.</span></div>
+    <div class="guide-item"><span class="guide-num">2</span><span>Tap Submit when you're happy with your answer.</span></div>
+  </div>
+  <button id="start-drawing-btn">Start Drawing</button>
+</div>
+
+<div class="screen" id="screen-error">
+  <p id="error-text">Sign in again to connect to your lecture.</p>
 </div>
 
 <script>
-  // Static design only — camera scanning and Supabase pairing are wired in a later step.
-  // Tapping the frame simulates a successful scan so both states can be reviewed on-device.
   (function () {
-    var app = document.getElementById('app');
-    var frame = document.getElementById('scan-frame');
-    var statusText = document.getElementById('status-text');
-    var scanTitle = document.getElementById('scan-title');
-    var scanSubtitle = document.getElementById('scan-subtitle');
+    var SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
 
-    frame.addEventListener('click', function () {
-      if (app.classList.contains('connected')) return;
-      app.classList.add('connected');
-      statusText.textContent = 'Connected';
-      scanTitle.textContent = 'Connected';
-      scanSubtitle.textContent = 'Paired with your desktop — ready to draw';
+    var screens = {};
+    document.querySelectorAll('.screen').forEach(function (el) { screens[el.id] = el; });
+
+    function showScreen(id) {
+      Object.keys(screens).forEach(function (k) { screens[k].classList.remove('active'); });
+      screens[id].classList.add('active');
+    }
+
+    function showError(message) {
+      document.getElementById('error-text').textContent = message;
+      showScreen('screen-error');
+    }
+
+    function formatLectureName(slug) {
+      if (!slug) return 'Your lecture';
+      return slug.replace(/^\d+-/, '').replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+    }
+
+    function isLandscape() {
+      return window.matchMedia('(orientation: landscape)').matches;
+    }
+
+    var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    var channel = null;
+    var openInterval = null;
+    var pairedLectureSlug = '';
+    var pairedQnum = 1;
+
+    async function start() {
+      var sessionResult = await sb.auth.getSession();
+      var session = sessionResult.data && sessionResult.data.session;
+
+      if (!session) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      var studentId = session.user.id;
+      channel = sb.channel('montura-pair-' + studentId);
+
+      channel.on('broadcast', { event: 'pair_ack' }, function (msg) {
+        clearInterval(openInterval);
+        var payload = msg.payload || {};
+        pairedLectureSlug = payload.lectureSlug || '';
+        pairedQnum = payload.qnum || 1;
+
+        document.getElementById('accept-qnum').textContent = 'Question ' + pairedQnum;
+        document.getElementById('accept-title').textContent = formatLectureName(pairedLectureSlug);
+        showScreen('screen-accept');
+      });
+
+      channel.subscribe(function (status) {
+        if (status === 'SUBSCRIBED') {
+          openInterval = setInterval(function () {
+            channel.send({ type: 'broadcast', event: 'phone_opened', payload: {} });
+          }, 1200);
+          channel.send({ type: 'broadcast', event: 'phone_opened', payload: {} });
+        }
+      });
+    }
+
+    document.getElementById('accept-btn').addEventListener('click', function () {
+      if (channel) {
+        channel.send({ type: 'broadcast', event: 'phone_ready', payload: {} });
+      }
+      proceedToGuide();
+    });
+
+    function proceedToGuide() {
+      if (isLandscape()) {
+        showScreen('screen-guide');
+      } else {
+        showScreen('screen-rotate');
+      }
+    }
+
+    window.matchMedia('(orientation: landscape)').addEventListener('change', function (e) {
+      if (e.matches && screens['screen-rotate'].classList.contains('active')) {
+        showScreen('screen-guide');
+      }
+    });
+
+    document.getElementById('start-drawing-btn').addEventListener('click', function () {
+      var params = new URLSearchParams({ lecture: pairedLectureSlug, q: pairedQnum });
+      window.location.href = 'draw.html?' + params.toString();
+    });
+
+    start().catch(function () {
+      showError('Could not connect — check your internet connection and try again.');
     });
   })();
 </script>
