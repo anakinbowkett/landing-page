@@ -21,7 +21,13 @@
     --safe-b: env(safe-area-inset-bottom, 0px);
   }
 
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
 
   html, body {
     margin: 0;
@@ -32,8 +38,6 @@
     overflow: hidden;
     overscroll-behavior: none;
     touch-action: none;
-    -webkit-user-select: none;
-    user-select: none;
   }
 
   #app {
