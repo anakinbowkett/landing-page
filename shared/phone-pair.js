@@ -1,17 +1,21 @@
-/* Montura Learn — desktop "draw on your phone" pairing widget.
+/* Montura Learn — desktop "draw on your phone" pairing + live mirror widget.
    Include supabase-js before this file, then call:
      MonturaPhonePair.init({
        lectureSlug: 'slug',
-       triggerId: 'nav-connect-btn',           // optional — existing button to wire up
+       triggerId: 'nav-connect-btn',                 // existing button to wire up
        getQnum: function () { return currentQuestionIndex; },
-       onSubmit: function (qnum, imageDataUrl) { ... }   // called when the phone submits a drawing
+       getDiagramSvg: function () {                  // returns the current question's <svg>...</svg> markup
+         var el = document.querySelector('#question-box-' + currentQuestionIndex + ' .question-diagram svg');
+         return el ? el.outerHTML : '';
+       },
+       mirrorContainerId: 'mp-draw-required-1'        // element that gets replaced with the live phone mirror
      });
    Pairing is account-based (no QR/camera): the phone and desktop both know the
    signed-in student's id and find each other on a Supabase Realtime channel
-   named after it — see iphone/pairing.html and iphone/draw.html for the other
-   side of this handshake. The channel is kept open after the modal is closed
-   so a drawing submitted later (after the student has gone back to studying)
-   still reaches onSubmit. */
+   named after it. This file listens in the background from page load (not
+   only while its modal is open) so a phone opening the app is always caught,
+   including reconnects — see iphone/pairing.html and iphone/draw.html for the
+   other side of this handshake. */
 (function () {
   var SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
   var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
@@ -87,11 +91,40 @@
     while (host.firstChild) document.body.appendChild(host.firstChild);
   }
 
+  function parseViewBox(svgString) {
+    var m = /viewBox\s*=\s*"([^"]+)"/i.exec(svgString || '');
+    if (!m) return { w: 400, h: 300 };
+    var parts = m[1].trim().split(/\s+/).map(Number);
+    return { w: parts[2] || 400, h: parts[3] || 300 };
+  }
+
+  // "meet" (contain) mapping between an element's own pixel box and a
+  // viewBox's internal units — same math on both ends of the wire is what
+  // keeps a stroke drawn on the phone lining up with the diagram on desktop
+  // even though the two screens are completely different sizes/shapes.
+  function makeTransform(el, vb) {
+    function metrics() {
+      var rect = el.getBoundingClientRect();
+      var scale = Math.min(rect.width / vb.w, rect.height / vb.h) || 1;
+      return {
+        scale: scale,
+        offsetX: (rect.width - vb.w * scale) / 2,
+        offsetY: (rect.height - vb.h * scale) / 2
+      };
+    }
+    return {
+      toPixel: function (vx, vy) {
+        var m = metrics();
+        return { x: vx * m.scale + m.offsetX, y: vy * m.scale + m.offsetY };
+      }
+    };
+  }
+
   function init(opts) {
     opts = opts || {};
     var lectureSlug = opts.lectureSlug || '';
     var getQnum = opts.getQnum || function () { return 1; };
-    var onSubmit = opts.onSubmit || function () {};
+    var getDiagramSvg = opts.getDiagramSvg || function () { return ''; };
 
     injectStyles();
     injectMarkup();
@@ -116,15 +149,67 @@
 
     var sb = null;
     var channel = null;
-    var channelReady = null; // promise, resolved once subscribed — lets onSubmit work even if the modal was never reopened
+    var channelReady = null;
+    var lastShownStep = stepOpen;
+
+    // ---- live mirror: renders the same diagram + streamed strokes inline ----
+    var mirrorEl = opts.mirrorContainerId ? document.getElementById(opts.mirrorContainerId) : null;
+    var mirrorCanvas = null;
+    var mirrorCtx = null;
+    var mirrorTransform = null;
+    var mirrorLastPoint = null;
+    var lastDiagramSvg = '';
+
+    function sizeMirrorCanvas() {
+      if (!mirrorCanvas) return;
+      var dpr = window.devicePixelRatio || 1;
+      var rect = mirrorCanvas.getBoundingClientRect();
+      mirrorCanvas.width = rect.width * dpr;
+      mirrorCanvas.height = rect.height * dpr;
+      mirrorCtx = mirrorCanvas.getContext('2d');
+      mirrorCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      mirrorCtx.lineCap = 'round';
+      mirrorCtx.lineJoin = 'round';
+    }
+
+    function activateMirror(diagramSvg) {
+      if (!mirrorEl) return;
+      lastDiagramSvg = diagramSvg || '';
+      var vb = parseViewBox(diagramSvg);
+
+      mirrorEl.innerHTML = ''
+        + '<div id="mp-mirror-box" style="position:relative;width:100%;aspect-ratio:' + vb.w + '/' + vb.h + ';margin:0 auto;background:#fff;border-radius:10px;overflow:hidden;border:1px solid #e5e7eb;">'
+        + (diagramSvg || '')
+        + '<canvas id="mp-mirror-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>'
+        + '<div style="position:absolute;top:8px;right:10px;font-size:11px;font-weight:700;color:#10b981;background:#ecfdf5;padding:3px 8px;border-radius:999px;">LIVE FROM PHONE</div>'
+        + '<div id="mp-mirror-submitted" style="display:none;position:absolute;bottom:8px;left:10px;font-size:11px;font-weight:700;color:#fff;background:#10b981;padding:3px 10px;border-radius:999px;">&#10003; Submitted</div>'
+        + '</div>';
+
+      var box = document.getElementById('mp-mirror-box');
+      var svgEl = box.querySelector('svg');
+      if (svgEl) { svgEl.style.width = '100%'; svgEl.style.height = '100%'; svgEl.style.position = 'absolute'; svgEl.style.inset = '0'; }
+
+      mirrorCanvas = document.getElementById('mp-mirror-canvas');
+      sizeMirrorCanvas();
+      mirrorTransform = makeTransform(mirrorCanvas, vb);
+    }
+
+    window.addEventListener('resize', function () {
+      if (mirrorCanvas) { sizeMirrorCanvas(); }
+    });
 
     function showStep(el) {
       [stepOpen, stepAccept, stepGuide].forEach(function (s) { s.style.display = 'none'; });
       el.style.display = 'flex';
+      lastShownStep = el;
     }
 
     function markConnected() {
       triggerBtn.style.color = '#10b981';
+    }
+
+    function revealOverlay() {
+      overlay.classList.add('open');
     }
 
     function ensureChannel() {
@@ -142,22 +227,61 @@
         channel = sb.channel('montura-pair-' + studentId);
 
         channel.on('broadcast', { event: 'phone_opened' }, function () {
+          lastDiagramSvg = getDiagramSvg();
           channel.send({
             type: 'broadcast',
             event: 'pair_ack',
-            payload: { lectureSlug: lectureSlug, qnum: getQnum() }
+            payload: { lectureSlug: lectureSlug, qnum: getQnum(), diagramSvg: lastDiagramSvg }
           });
+          revealOverlay();
           showStep(stepAccept);
         });
 
         channel.on('broadcast', { event: 'phone_ready' }, function () {
           markConnected();
+          revealOverlay();
           showStep(stepGuide);
+          activateMirror(lastDiagramSvg);
+        });
+
+        channel.on('broadcast', { event: 'stroke_start' }, function (msg) {
+          if (!mirrorCtx) return;
+          var p = msg.payload || {};
+          mirrorCtx.globalCompositeOperation = p.erase ? 'destination-out' : 'source-over';
+          mirrorCtx.strokeStyle = p.color || '#1c1c1e';
+          mirrorCtx.lineWidth = p.width || 3.5;
+          mirrorLastPoint = null;
+        });
+
+        channel.on('broadcast', { event: 'stroke_point' }, function (msg) {
+          if (!mirrorCtx || !mirrorTransform) return;
+          var p = msg.payload || {};
+          var pt = mirrorTransform.toPixel(p.x, p.y);
+          if (mirrorLastPoint) {
+            mirrorCtx.beginPath();
+            mirrorCtx.moveTo(mirrorLastPoint.x, mirrorLastPoint.y);
+            mirrorCtx.lineTo(pt.x, pt.y);
+            mirrorCtx.stroke();
+          }
+          mirrorLastPoint = pt;
+        });
+
+        channel.on('broadcast', { event: 'stroke_end' }, function () {
+          mirrorLastPoint = null;
+        });
+
+        channel.on('broadcast', { event: 'clear_canvas' }, function () {
+          if (mirrorCtx && mirrorCanvas) mirrorCtx.clearRect(0, 0, mirrorCanvas.width, mirrorCanvas.height);
         });
 
         channel.on('broadcast', { event: 'submit' }, function (msg) {
           var payload = msg.payload || {};
-          onSubmit(payload.qnum, payload.imageDataUrl);
+          if (opts.onSubmit) opts.onSubmit(payload.qnum, payload.imageDataUrl);
+          var badge = document.getElementById('mp-mirror-submitted');
+          if (badge) {
+            badge.style.display = 'block';
+            setTimeout(function () { badge.style.display = 'none'; }, 3000);
+          }
         });
 
         await new Promise(function (resolve) {
@@ -169,11 +293,31 @@
         return channel;
       })();
 
+      // A failed attempt (e.g. not signed in yet at page load) must not be
+      // cached forever — clear it so the next call actually retries instead
+      // of replaying the same stale rejection.
+      channelReady.catch(function () { channelReady = null; });
+
       return channelReady;
     }
 
+    // Listen from the moment the page loads, not just while the modal is
+    // open — this is what lets a phone reconnect be caught automatically.
+    ensureChannel().catch(function () {});
+
     async function openModal() {
       overlay.classList.add('open');
+
+      if (channelReady) {
+        try {
+          await channelReady;
+          showStep(lastShownStep);
+          return;
+        } catch (err) {
+          // fall through to re-attempt below
+        }
+      }
+
       showStep(stepOpen);
       openStatus.textContent = 'Checking you’re signed in…';
 

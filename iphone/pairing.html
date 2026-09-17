@@ -301,6 +301,7 @@
     var openInterval = null;
     var pairedLectureSlug = '';
     var pairedQnum = 1;
+    var pairedDiagramSvg = '';
 
     async function start() {
       var sessionResult = await sb.auth.getSession();
@@ -319,6 +320,7 @@
         var payload = msg.payload || {};
         pairedLectureSlug = payload.lectureSlug || '';
         pairedQnum = payload.qnum || 1;
+        pairedDiagramSvg = payload.diagramSvg || '';
 
         document.getElementById('accept-qnum').textContent = 'Question ' + pairedQnum;
         document.getElementById('accept-title').textContent = formatLectureName(pairedLectureSlug);
@@ -357,6 +359,9 @@
     });
 
     document.getElementById('start-drawing-btn').addEventListener('click', function () {
+      try {
+        sessionStorage.setItem('mp-diagram-svg', pairedDiagramSvg);
+      } catch (e) {}
       var params = new URLSearchParams({ lecture: pairedLectureSlug, q: pairedQnum });
       window.location.href = 'draw.html?' + params.toString();
     });

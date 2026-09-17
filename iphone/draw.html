@@ -338,6 +338,7 @@
     var params = new URLSearchParams(window.location.search);
     var qnum = parseInt(params.get('q'), 10) || 1;
     var channel = null;
+    var channelSubscribed = false;
 
     (async function initSync() {
       var sessionResult = await sb.auth.getSession();
@@ -347,8 +348,35 @@
         return;
       }
       channel = sb.channel('montura-pair-' + session.user.id);
-      channel.subscribe();
+      channel.subscribe(function (status) {
+        if (status === 'SUBSCRIBED') channelSubscribed = true;
+      });
     })();
+
+    // ---- diagram handoff from pairing.html: same SVG the desktop question
+    // shows, so strokes drawn here line up on both screens ----
+    var diagramSvgString = '';
+    try { diagramSvgString = sessionStorage.getItem('mp-diagram-svg') || ''; } catch (e) {}
+
+    function parseViewBox(svgString) {
+      var m = /viewBox\s*=\s*"([^"]+)"/i.exec(svgString || '');
+      if (!m) return { w: 400, h: 300 };
+      var parts = m[1].trim().split(/\s+/).map(Number);
+      return { w: parts[2] || 400, h: parts[3] || 300 };
+    }
+
+    var diagramViewBox = parseViewBox(diagramSvgString);
+
+    if (diagramSvgString) {
+      var oldSvg = document.getElementById('diagram-svg');
+      var wrapper = document.createElement('div');
+      wrapper.innerHTML = diagramSvgString;
+      var newSvg = wrapper.firstChild;
+      newSvg.id = 'diagram-svg';
+      newSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+      oldSvg.replaceWith(newSvg);
+      document.getElementById('diagram-placeholder-label').style.display = 'none';
+    }
 
     var canvas = document.getElementById('draw-canvas');
     var ctx = canvas.getContext('2d');
@@ -360,6 +388,24 @@
     var penColors = { black: '#1c1c1e', red: '#e0344c', blue: '#1d7fe2' };
     var penWidth = 3.5;
     var eraserWidth = 26;
+
+    // Same "meet" (contain) mapping used on the desktop mirror — converts a
+    // pixel point on this canvas to the diagram's own coordinate space so it
+    // broadcasts in units that make sense regardless of screen size.
+    function toViewBoxPoint(px, py) {
+      var rect = canvas.getBoundingClientRect();
+      var scale = Math.min(rect.width / diagramViewBox.w, rect.height / diagramViewBox.h) || 1;
+      var offsetX = (rect.width - diagramViewBox.w * scale) / 2;
+      var offsetY = (rect.height - diagramViewBox.h * scale) / 2;
+      return { x: (px - offsetX) / scale, y: (py - offsetY) / scale };
+    }
+
+    var lastBroadcastAt = 0;
+
+    function broadcastStroke(event, payload) {
+      if (!channel || !channelSubscribed) return;
+      channel.send({ type: 'broadcast', event: event, payload: payload || {} });
+    }
 
     function resizeCanvas() {
       var dpr = window.devicePixelRatio || 1;
@@ -385,6 +431,15 @@
       lastX = p.x;
       lastY = p.y;
       canvas.setPointerCapture(e.pointerId);
+
+      broadcastStroke('stroke_start', {
+        color: penColors[currentTool] || penColors.black,
+        width: currentTool === 'eraser' ? eraserWidth : penWidth,
+        erase: currentTool === 'eraser'
+      });
+      var vp = toViewBoxPoint(p.x, p.y);
+      broadcastStroke('stroke_point', vp);
+      lastBroadcastAt = Date.now();
     }
 
     function moveStroke(e) {
@@ -407,10 +462,19 @@
 
       lastX = p.x;
       lastY = p.y;
+
+      var now = Date.now();
+      if (now - lastBroadcastAt >= 40) {
+        var vp = toViewBoxPoint(p.x, p.y);
+        broadcastStroke('stroke_point', vp);
+        lastBroadcastAt = now;
+      }
     }
 
     function endStroke() {
+      if (!drawing) return;
       drawing = false;
+      broadcastStroke('stroke_end', {});
     }
 
     canvas.addEventListener('pointerdown', startStroke);
@@ -432,6 +496,7 @@
         if (tool === 'clear') {
           if (btn.classList.contains('confirming')) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            broadcastStroke('clear_canvas', {});
             btn.classList.remove('confirming');
             clearTimeout(clearConfirmTimeout);
           } else {
@@ -459,7 +524,7 @@
       var self = this;
       setTimeout(function () { self.style.transform = ''; }, 150);
 
-      if (!channel) return;
+      if (!channel || !channelSubscribed) return;
       var dataUrl = canvas.toDataURL('image/png');
       channel.send({
         type: 'broadcast',

@@ -1963,10 +1963,6 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
     <div style="font-size:13px;font-weight:700;color:#1d7fe2;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Answer on your phone</div>
     <div style="font-size:13.5px;color:#4b5563;margin-bottom:12px;">This question can only be answered by drawing your working out on your iPhone.</div>
     <button onclick="document.getElementById('nav-connect-btn').click()" style="height:40px;padding:0 18px;border:none;border-radius:20px;background:#1d7fe2;color:#fff;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;">Connect iPhone</button>
-    <div id="mp-answer-preview-1" style="display:none;margin-top:14px;">
-      <img id="mp-answer-img-1" style="max-width:100%;border-radius:8px;border:1px solid #e5e7eb;">
-      <div style="margin-top:8px;font-size:13px;font-weight:700;color:#10b981;">&#10003; Answer received from your phone</div>
-    </div>
   </div>
 </div>
 
@@ -6917,18 +6913,17 @@ var MarkingFlow = (function(){
 
 <!-- Draw-on-iPhone pairing (desktop side) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/shared/phone-pair.js"></script>
+<script src="/shared/phone-pair.js?v=3"></script>
 <script>
 MonturaPhonePair.init({
   lectureSlug: '103-angles-in-polygons',
   triggerId: 'nav-connect-btn',
   getQnum: function () { return currentQuestionIndex; },
-  onSubmit: function (qnum, imageDataUrl) {
-    if (qnum === 1) {
-      document.getElementById('mp-answer-img-1').src = imageDataUrl;
-      document.getElementById('mp-answer-preview-1').style.display = 'block';
-    }
-  }
+  getDiagramSvg: function () {
+    var el = document.querySelector('#question-box-' + currentQuestionIndex + ' .question-diagram svg');
+    return el ? el.outerHTML : '';
+  },
+  mirrorContainerId: 'mp-draw-required-1'
 });
 </script>
 
