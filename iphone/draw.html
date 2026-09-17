@@ -336,6 +336,16 @@
     var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     var params = new URLSearchParams(window.location.search);
+
+    // Reaching this page without ?lecture=&q= means it wasn't opened through
+    // the pairing handshake (e.g. a stale Home Screen bookmark pointing
+    // straight at draw.html) — send it through pairing.html instead, since
+    // that's what actually tells the desktop the phone is here.
+    if (!params.has('q') || !params.has('lecture')) {
+      window.location.href = 'pairing.html';
+      return;
+    }
+
     var qnum = parseInt(params.get('q'), 10) || 1;
     var channel = null;
     var channelSubscribed = false;
