@@ -18,9 +18,9 @@
     --pen-black: #1c1c1e;
     --pen-red: #e0344c;
     --pen-blue: #1d7fe2;
-    --bar-height: 92px;
     --safe-l: env(safe-area-inset-left, 0px);
     --safe-r: env(safe-area-inset-right, 0px);
+    --safe-t: env(safe-area-inset-top, 0px);
     --safe-b: env(safe-area-inset-bottom, 0px);
   }
 
@@ -43,19 +43,109 @@
     touch-action: none;
   }
 
-  /* ---------- App shell ---------- */
-
   #app {
     position: fixed;
     inset: 0;
+  }
+
+  /* ---------- Mode select (shown once, at the start of the question) ---------- */
+
+  #mode-select {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+  }
+
+  .mode-panel {
+    flex: 1;
+    border: none;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-family: inherit;
+    position: relative;
+    overflow: hidden;
   }
+
+  #pick-sketch { background: #f8fafc; }
+  #pick-write { background: #fdfdfd; border-left: 1px solid #e5e7eb; }
+
+  .mode-panel:active { background: #eff6ff; }
+
+  .mode-doodle-icon {
+    width: 30px;
+    height: 30px;
+    opacity: 0.55;
+    position: absolute;
+  }
+
+  .mode-label {
+    font-size: 17px;
+    font-weight: 700;
+    color: #111827;
+    z-index: 1;
+  }
+
+  .mode-sub {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #6b7280;
+    z-index: 1;
+  }
+
+  .ruled-line-preview {
+    width: 60%;
+    height: 1.5px;
+    background: #cbd5e1;
+  }
+
+  /* ---------- Swipe strip: switches Sketch <-> Write once a mode is picked ---------- */
+
+  #swipe-strip {
+    position: absolute;
+    top: max(10px, var(--safe-t));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    touch-action: none;
+  }
+
+  #swipe-strip.visible { display: flex; }
+
+  .swipe-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #d1d5db;
+    transition: background 150ms ease, transform 150ms ease;
+  }
+
+  .swipe-dot.active {
+    background: var(--accent);
+    transform: scale(1.25);
+  }
+
+  /* ---------- Mode views ---------- */
+
+  .mode-view {
+    position: absolute;
+    inset: 0;
+    display: none;
+  }
+
+  .mode-view.active { display: block; }
 
   #stage {
     position: relative;
-    flex: 1;
-    min-height: 0;
+    width: 100%;
+    height: 100%;
     background: #ffffff;
     overflow: hidden;
   }
@@ -75,7 +165,6 @@
     touch-action: none;
   }
 
-  /* subtle centred hint, disappears once a real diagram is wired in */
   #diagram-placeholder-label {
     position: absolute;
     top: 18px;
@@ -104,6 +193,7 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 200ms ease, transform 200ms ease;
+    z-index: 40;
   }
 
   #sent-toast.show {
@@ -111,32 +201,97 @@
     transform: translateX(-50%) translateY(0);
   }
 
-  /* ---------- Toolbar ---------- */
+  /* ---------- Write Space ---------- */
 
-  #toolbar {
-    flex: 0 0 auto;
-    height: calc(var(--bar-height) + var(--safe-b));
-    padding: 0 max(18px, var(--safe-r)) var(--safe-b) max(18px, var(--safe-l));
-    background: rgba(248, 249, 251, 0.92);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  #write-stage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    padding: 20px max(90px, calc(90px + var(--safe-r))) 20px max(20px, var(--safe-l));
+  }
+
+  #write-options-list {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
     gap: 12px;
   }
 
-  #tool-group {
+  .write-option-btn {
+    width: 100%;
+    min-height: 54px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+    color: #111827;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 18px;
+    transition: border-color 150ms ease, background 150ms ease, transform 100ms ease;
+  }
+
+  .write-option-btn:active { transform: scale(0.98); }
+
+  .write-option-btn.selected {
+    border-color: var(--accent);
+    background: #eff6ff;
+    color: var(--accent);
+  }
+
+  #write-lines-canvas-wrap {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(to bottom, transparent, transparent 43px, #dbe3ee 44px);
+  }
+
+  #write-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+
+  /* ---------- Compact tool cluster (bottom-right, pops out on tap) ---------- */
+
+  #tool-cluster {
+    position: absolute;
+    right: max(16px, var(--safe-r));
+    bottom: max(16px, var(--safe-b));
+    z-index: 25;
     display: flex;
     align-items: center;
     gap: 10px;
   }
 
+  #tool-tray {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-width 220ms ease, opacity 180ms ease;
+  }
+
+  #tool-tray.open {
+    max-width: 320px;
+    opacity: 1;
+  }
+
   .tool-btn {
     position: relative;
-    width: 48px;
-    height: 48px;
+    flex: 0 0 auto;
+    width: 46px;
+    height: 46px;
     min-width: 44px;
     min-height: 44px;
     border-radius: 50%;
@@ -158,8 +313,8 @@
   }
 
   .pen-dot {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
   }
 
@@ -169,53 +324,53 @@
 
   .tool-btn[data-tool="eraser"] svg,
   .tool-btn[data-tool="clear"] svg {
-    width: 20px;
-    height: 20px;
+    width: 19px;
+    height: 19px;
     stroke: #4b5563;
   }
 
   .tool-btn[data-tool="clear"].confirming {
     background: var(--pen-red);
-    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08), inset 0 0 0 1.5px rgba(0, 0, 0, 0.07);
   }
 
   .tool-btn[data-tool="clear"].confirming svg { stroke: #ffffff; }
 
-  .toolbar-divider {
-    width: 1px;
-    height: 28px;
-    background: rgba(0, 0, 0, 0.1);
-    margin: 0 4px;
+  #tools-toggle {
+    flex: 0 0 auto;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(16, 24, 40, 0.15), inset 0 0 0 1.5px rgba(0, 0, 0, 0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
+
+  #tools-toggle svg { width: 21px; height: 21px; stroke: #4b5563; }
+  #tools-toggle:active { transform: scale(0.93); }
+  #tools-toggle.open { box-shadow: 0 2px 10px rgba(16, 24, 40, 0.15), 0 0 0 2.5px var(--accent); }
 
   #submit-btn {
     flex: 0 0 auto;
-    height: 48px;
-    min-height: 44px;
-    padding: 0 26px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
     border: none;
-    border-radius: 24px;
     background: var(--accent);
     color: #ffffff;
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: 600;
-    display: flex;
+    display: none;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 14px rgba(29, 127, 226, 0.35);
-    transition: transform 120ms ease, box-shadow 120ms ease;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(29, 127, 226, 0.4);
+    transition: transform 120ms ease, opacity 150ms ease;
   }
 
-  #submit-btn:active {
-    transform: scale(0.95);
-    box-shadow: 0 2px 8px rgba(29, 127, 226, 0.3);
-  }
-
-  #submit-btn svg {
-    width: 18px;
-    height: 18px;
-  }
+  #submit-btn.visible { display: flex; }
+  #submit-btn:disabled { opacity: 0.4; }
+  #submit-btn:active:not(:disabled) { transform: scale(0.92); }
+  #submit-btn svg { width: 22px; height: 22px; }
 
   /* ---------- Landscape lock ---------- */
 
@@ -263,62 +418,67 @@
 <body>
 
 <div id="app">
-  <div id="stage">
-    <svg id="diagram-svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet">
-      <polygon points="70,240 320,240 320,80" fill="none" stroke="#1c1c1e" stroke-width="2.5" stroke-linejoin="round"/>
-      <path d="M 300 240 L 300 220 L 320 220" fill="none" stroke="#1c1c1e" stroke-width="2"/>
-      <path d="M 100 240 A 30 30 0 0 1 91 222" fill="none" stroke="#1d7fe2" stroke-width="2"/>
-      <path d="M 300 92 A 28 28 0 0 1 308 118" fill="none" stroke="#1d7fe2" stroke-width="2"/>
-      <text x="58" y="252" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#1c1c1e">A</text>
-      <text x="326" y="252" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#1c1c1e">B</text>
-      <text x="326" y="76" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#1c1c1e">C</text>
-      <text x="88" y="228" font-family="Inter, sans-serif" font-size="13" fill="#1d7fe2">55°</text>
-      <text x="284" y="112" font-family="Inter, sans-serif" font-size="13" fill="#1d7fe2">35°</text>
-      <text x="190" y="200" font-family="Crimson Text, Georgia, serif" font-size="16" fill="#4b5563">8 cm</text>
-    </svg>
 
-    <canvas id="draw-canvas"></canvas>
+  <div id="mode-select">
+    <button class="mode-panel" id="pick-sketch">
+      <svg class="mode-doodle-icon" style="top:18%;left:22%;transform:rotate(-12deg);" viewBox="0 0 24 24" fill="none" stroke="#1d7fe2" stroke-width="1.6"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+      <svg class="mode-doodle-icon" style="bottom:22%;right:20%;transform:rotate(8deg);" viewBox="0 0 24 24" fill="none" stroke="#1d7fe2" stroke-width="1.6"><path d="M3 12c3-4 6 4 9 0s6-4 9 0" stroke-linecap="round"/></svg>
+      <div class="mode-label">Sketch Space</div>
+      <div class="mode-sub">Diagram &amp; working out</div>
+    </button>
+    <button class="mode-panel" id="pick-write">
+      <div class="ruled-line-preview" style="margin-bottom:-4px;"></div>
+      <div class="ruled-line-preview"></div>
+      <div class="ruled-line-preview" style="margin-top:-4px;width:40%;"></div>
+      <div class="mode-label" style="margin-top:10px;">Write Space</div>
+      <div class="mode-sub">Your answer</div>
+    </button>
+  </div>
 
-    <div id="diagram-placeholder-label">Diagram loads here</div>
+  <div id="swipe-strip">
+    <span class="swipe-dot" data-mode="sketch"></span>
+    <span class="swipe-dot" data-mode="write"></span>
+  </div>
+
+  <div class="mode-view" id="sketch-view">
+    <div id="stage">
+      <svg id="diagram-svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet">
+        <polygon points="70,240 320,240 320,80" fill="none" stroke="#1c1c1e" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M 300 240 L 300 220 L 320 220" fill="none" stroke="#1c1c1e" stroke-width="2"/>
+        <text x="58" y="252" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#1c1c1e">A</text>
+        <text x="326" y="252" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#1c1c1e">B</text>
+        <text x="326" y="76" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#1c1c1e">C</text>
+      </svg>
+      <canvas id="draw-canvas"></canvas>
+      <div id="diagram-placeholder-label">Diagram loads here</div>
+    </div>
+  </div>
+
+  <div class="mode-view" id="write-view">
+    <div id="write-stage"></div>
     <div id="sent-toast">Sent to your desktop &#10003;</div>
   </div>
 
-  <div id="toolbar">
-    <div id="tool-group">
-      <button class="tool-btn selected" data-tool="black" style="--sel-color:#1c1c1e" aria-label="Black pen">
-        <span class="pen-dot"></span>
-      </button>
-      <button class="tool-btn" data-tool="red" style="--sel-color:#e0344c" aria-label="Red pen">
-        <span class="pen-dot"></span>
-      </button>
-      <button class="tool-btn" data-tool="blue" style="--sel-color:#1d7fe2" aria-label="Blue pen">
-        <span class="pen-dot"></span>
-      </button>
+  <div id="tool-cluster">
+    <div id="tool-tray">
+      <button class="tool-btn selected" data-tool="black" style="--sel-color:#1c1c1e" aria-label="Black pen"><span class="pen-dot"></span></button>
+      <button class="tool-btn" data-tool="red" style="--sel-color:#e0344c" aria-label="Red pen"><span class="pen-dot"></span></button>
+      <button class="tool-btn" data-tool="blue" style="--sel-color:#1d7fe2" aria-label="Blue pen"><span class="pen-dot"></span></button>
       <button class="tool-btn" data-tool="eraser" aria-label="Eraser">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 13l-8.5 8.5a2 2 0 0 1-2.8 0L3 17.8a2 2 0 0 1 0-2.8L13 5"/>
-          <path d="M14 4l6 6"/>
-          <path d="M6 21h15"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13l-8.5 8.5a2 2 0 0 1-2.8 0L3 17.8a2 2 0 0 1 0-2.8L13 5"/><path d="M14 4l6 6"/><path d="M6 21h15"/></svg>
       </button>
-      <div class="toolbar-divider"></div>
       <button class="tool-btn" id="clear-btn" data-tool="clear" aria-label="Clear drawing">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 6h18"/>
-          <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/>
-          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
       </button>
     </div>
-
-    <button id="submit-btn">
-      Submit
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M5 12h14"/>
-        <path d="M13 6l6 6-6 6"/>
-      </svg>
+    <button id="tools-toggle" aria-label="Drawing tools">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+    </button>
+    <button id="submit-btn" aria-label="Submit answer" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
     </button>
   </div>
+
 </div>
 
 <div id="rotate-overlay">
@@ -358,15 +518,30 @@
         return;
       }
       channel = sb.channel('montura-pair-' + session.user.id);
+
+      channel.on('broadcast', { event: 'answer_select' }, function (msg) {
+        var p = msg.payload || {};
+        if (p.qnum === qnum) applyRemoteSelect(p.index);
+      });
+
       channel.subscribe(function (status) {
         if (status === 'SUBSCRIBED') channelSubscribed = true;
       });
     })();
 
-    // ---- diagram handoff from pairing.html: same SVG the desktop question
-    // shows, so strokes drawn here line up on both screens ----
+    function broadcast(event, payload) {
+      if (!channel || !channelSubscribed) return;
+      channel.send({ type: 'broadcast', event: event, payload: payload || {} });
+    }
+
+    // ---- handoff from pairing.html: same diagram + same answer options the
+    // desktop question already has ----
     var diagramSvgString = '';
-    try { diagramSvgString = sessionStorage.getItem('mp-diagram-svg') || ''; } catch (e) {}
+    var answerOptionsHtml = '';
+    try {
+      diagramSvgString = sessionStorage.getItem('mp-diagram-svg') || '';
+      answerOptionsHtml = sessionStorage.getItem('mp-answer-options') || '';
+    } catch (e) {}
 
     function parseViewBox(svgString) {
       var m = /viewBox\s*=\s*"([^"]+)"/i.exec(svgString || '');
@@ -388,6 +563,18 @@
       document.getElementById('diagram-placeholder-label').style.display = 'none';
     }
 
+    var optionTexts = [];
+    if (answerOptionsHtml) {
+      var tmp = document.createElement('div');
+      tmp.innerHTML = answerOptionsHtml;
+      optionTexts = Array.prototype.map.call(tmp.querySelectorAll('button'), function (b) {
+        return b.textContent.trim();
+      });
+    }
+    var hasFixedOptions = optionTexts.length > 0;
+
+    // ============ Sketch Space: diagram + free drawing, mirrors live ============
+
     var canvas = document.getElementById('draw-canvas');
     var ctx = canvas.getContext('2d');
     var stage = document.getElementById('stage');
@@ -398,23 +585,14 @@
     var penColors = { black: '#1c1c1e', red: '#e0344c', blue: '#1d7fe2' };
     var penWidth = 3.5;
     var eraserWidth = 26;
+    var lastBroadcastAt = 0;
 
-    // Same "meet" (contain) mapping used on the desktop mirror — converts a
-    // pixel point on this canvas to the diagram's own coordinate space so it
-    // broadcasts in units that make sense regardless of screen size.
-    function toViewBoxPoint(px, py) {
-      var rect = canvas.getBoundingClientRect();
+    function toViewBoxPoint(px, py, rectEl) {
+      var rect = rectEl.getBoundingClientRect();
       var scale = Math.min(rect.width / diagramViewBox.w, rect.height / diagramViewBox.h) || 1;
       var offsetX = (rect.width - diagramViewBox.w * scale) / 2;
       var offsetY = (rect.height - diagramViewBox.h * scale) / 2;
       return { x: (px - offsetX) / scale, y: (py - offsetY) / scale };
-    }
-
-    var lastBroadcastAt = 0;
-
-    function broadcastStroke(event, payload) {
-      if (!channel || !channelSubscribed) return;
-      channel.send({ type: 'broadcast', event: event, payload: payload || {} });
     }
 
     function resizeCanvas() {
@@ -429,32 +607,31 @@
       ctx.lineJoin = 'round';
     }
 
-    function pointFromEvent(e) {
-      var rect = canvas.getBoundingClientRect();
+    function pointFromEvent(e, canvasEl) {
+      var rect = canvasEl.getBoundingClientRect();
       return { x: e.clientX - rect.left, y: e.clientY - rect.top };
     }
 
     function startStroke(e) {
       if (currentTool === 'clear') return;
       drawing = true;
-      var p = pointFromEvent(e);
+      var p = pointFromEvent(e, canvas);
       lastX = p.x;
       lastY = p.y;
       canvas.setPointerCapture(e.pointerId);
 
-      broadcastStroke('stroke_start', {
+      broadcast('stroke_start', {
         color: penColors[currentTool] || penColors.black,
         width: currentTool === 'eraser' ? eraserWidth : penWidth,
         erase: currentTool === 'eraser'
       });
-      var vp = toViewBoxPoint(p.x, p.y);
-      broadcastStroke('stroke_point', vp);
+      broadcast('stroke_point', toViewBoxPoint(p.x, p.y, canvas));
       lastBroadcastAt = Date.now();
     }
 
     function moveStroke(e) {
       if (!drawing) return;
-      var p = pointFromEvent(e);
+      var p = pointFromEvent(e, canvas);
 
       ctx.beginPath();
       ctx.moveTo(lastX, lastY);
@@ -475,8 +652,7 @@
 
       var now = Date.now();
       if (now - lastBroadcastAt >= 40) {
-        var vp = toViewBoxPoint(p.x, p.y);
-        broadcastStroke('stroke_point', vp);
+        broadcast('stroke_point', toViewBoxPoint(p.x, p.y, canvas));
         lastBroadcastAt = now;
       }
     }
@@ -484,7 +660,7 @@
     function endStroke() {
       if (!drawing) return;
       drawing = false;
-      broadcastStroke('stroke_end', {});
+      broadcast('stroke_end', {});
     }
 
     canvas.addEventListener('pointerdown', startStroke);
@@ -506,14 +682,12 @@
         if (tool === 'clear') {
           if (btn.classList.contains('confirming')) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            broadcastStroke('clear_canvas', {});
+            broadcast('clear_canvas', {});
             btn.classList.remove('confirming');
             clearTimeout(clearConfirmTimeout);
           } else {
             btn.classList.add('confirming');
-            clearConfirmTimeout = setTimeout(function () {
-              btn.classList.remove('confirming');
-            }, 2200);
+            clearConfirmTimeout = setTimeout(function () { btn.classList.remove('confirming'); }, 2200);
           }
           return;
         }
@@ -529,22 +703,155 @@
       });
     });
 
-    document.getElementById('submit-btn').addEventListener('click', function () {
-      this.style.transform = 'scale(0.9)';
-      var self = this;
-      setTimeout(function () { self.style.transform = ''; }, 150);
+    var toolsToggle = document.getElementById('tools-toggle');
+    var toolTray = document.getElementById('tool-tray');
+    toolsToggle.addEventListener('click', function () {
+      toolTray.classList.toggle('open');
+      toolsToggle.classList.toggle('open');
+    });
 
-      if (!channel || !channelSubscribed) return;
-      var dataUrl = canvas.toDataURL('image/png');
-      channel.send({
-        type: 'broadcast',
-        event: 'submit',
-        payload: { qnum: qnum, imageDataUrl: dataUrl }
+    // ============ Write Space: mirrored answer options OR ruled handwriting ============
+
+    var writeStage = document.getElementById('write-stage');
+    var submitBtn = document.getElementById('submit-btn');
+    var selectedIndex = -1;
+    var applyingRemote = false;
+
+    function selectOption(index, fromRemote) {
+      selectedIndex = index;
+      writeStage.querySelectorAll('.write-option-btn').forEach(function (b, i) {
+        b.classList.toggle('selected', i === index);
       });
+      submitBtn.disabled = false;
+      if (!fromRemote) broadcast('answer_select', { qnum: qnum, index: index });
+    }
+
+    function applyRemoteSelect(index) {
+      if (index == null || index < 0) return;
+      applyingRemote = true;
+      selectOption(index, true);
+      applyingRemote = false;
+    }
+
+    var writeCanvas = null, writeCtx = null, writeDrawing = false, writeLastX = 0, writeLastY = 0;
+
+    function buildWriteStage() {
+      if (hasFixedOptions) {
+        var list = document.createElement('div');
+        list.id = 'write-options-list';
+        optionTexts.forEach(function (text, i) {
+          var btn = document.createElement('button');
+          btn.className = 'write-option-btn';
+          btn.type = 'button';
+          btn.textContent = text;
+          btn.addEventListener('click', function () { selectOption(i, false); });
+          list.appendChild(btn);
+        });
+        writeStage.appendChild(list);
+      } else {
+        var wrap = document.createElement('div');
+        wrap.id = 'write-lines-canvas-wrap';
+        var wc = document.createElement('canvas');
+        wc.id = 'write-canvas';
+        wrap.appendChild(wc);
+        writeStage.appendChild(wrap);
+        writeCanvas = wc;
+        writeCtx = wc.getContext('2d');
+        submitBtn.disabled = false;
+        sizeWriteCanvas();
+
+        wc.addEventListener('pointerdown', function (e) {
+          writeDrawing = true;
+          var p = pointFromEvent(e, wc);
+          writeLastX = p.x; writeLastY = p.y;
+          wc.setPointerCapture(e.pointerId);
+        });
+        wc.addEventListener('pointermove', function (e) {
+          if (!writeDrawing) return;
+          var p = pointFromEvent(e, wc);
+          writeCtx.beginPath();
+          writeCtx.moveTo(writeLastX, writeLastY);
+          writeCtx.lineTo(p.x, p.y);
+          writeCtx.strokeStyle = '#1c1c1e';
+          writeCtx.lineWidth = 3;
+          writeCtx.lineCap = 'round';
+          writeCtx.stroke();
+          writeLastX = p.x; writeLastY = p.y;
+        });
+        wc.addEventListener('pointerup', function () { writeDrawing = false; });
+        wc.addEventListener('pointercancel', function () { writeDrawing = false; });
+        window.addEventListener('resize', sizeWriteCanvas);
+      }
+    }
+
+    function sizeWriteCanvas() {
+      if (!writeCanvas) return;
+      var dpr = window.devicePixelRatio || 1;
+      var rect = writeCanvas.getBoundingClientRect();
+      writeCanvas.width = rect.width * dpr;
+      writeCanvas.height = rect.height * dpr;
+      writeCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    submitBtn.addEventListener('click', function () {
+      if (submitBtn.disabled) return;
+      submitBtn.style.transform = 'scale(0.9)';
+      setTimeout(function () { submitBtn.style.transform = ''; }, 150);
+
+      if (hasFixedOptions) {
+        broadcast('answer_submit', { qnum: qnum });
+      } else if (writeCanvas) {
+        broadcast('submit', { qnum: qnum, imageDataUrl: writeCanvas.toDataURL('image/png') });
+      }
 
       var toast = document.getElementById('sent-toast');
       toast.classList.add('show');
       setTimeout(function () { toast.classList.remove('show'); }, 2200);
+    });
+
+    // ============ Mode select + swipe switching ============
+
+    var currentMode = null;
+    var sketchView = document.getElementById('sketch-view');
+    var writeView = document.getElementById('write-view');
+    var modeSelect = document.getElementById('mode-select');
+    var swipeStrip = document.getElementById('swipe-strip');
+
+    function setMode(mode) {
+      currentMode = mode;
+      sketchView.classList.toggle('active', mode === 'sketch');
+      writeView.classList.toggle('active', mode === 'write');
+      toolsToggle.style.display = (mode === 'write' && hasFixedOptions) ? 'none' : 'flex';
+      toolTray.style.display = (mode === 'write' && hasFixedOptions) ? 'none' : 'flex';
+      submitBtn.classList.toggle('visible', mode === 'write');
+      swipeStrip.querySelectorAll('.swipe-dot').forEach(function (d) {
+        d.classList.toggle('active', d.getAttribute('data-mode') === mode);
+      });
+      if (mode === 'sketch') resizeCanvas();
+      if (mode === 'write' && writeCanvas) sizeWriteCanvas();
+    }
+
+    function pickMode(mode) {
+      modeSelect.style.display = 'none';
+      swipeStrip.classList.add('visible');
+      buildWriteStage();
+      setMode(mode);
+    }
+
+    document.getElementById('pick-sketch').addEventListener('click', function () { pickMode('sketch'); });
+    document.getElementById('pick-write').addEventListener('click', function () { pickMode('write'); });
+
+    // Swipe only recognised starting from the top strip, so it never fights
+    // with an actual drawing stroke happening lower down on the canvas.
+    var swipeStartX = null;
+    swipeStrip.addEventListener('pointerdown', function (e) { swipeStartX = e.clientX; });
+    swipeStrip.addEventListener('pointerup', function (e) {
+      if (swipeStartX == null || !currentMode) return;
+      var dx = e.clientX - swipeStartX;
+      swipeStartX = null;
+      if (Math.abs(dx) < 40) return;
+      if (dx < 0 && currentMode === 'sketch') setMode('write');
+      if (dx > 0 && currentMode === 'write') setMode('sketch');
     });
   })();
 </script>

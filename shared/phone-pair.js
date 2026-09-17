@@ -1,21 +1,32 @@
-/* Montura Learn — desktop "draw on your phone" pairing + live mirror widget.
+/* Montura Learn — desktop "draw on your phone" pairing + live sync widget.
    Include supabase-js before this file, then call:
      MonturaPhonePair.init({
        lectureSlug: 'slug',
        triggerId: 'nav-connect-btn',                 // existing button to wire up
        getQnum: function () { return currentQuestionIndex; },
-       getDiagramSvg: function () {                  // returns the current question's <svg>...</svg> markup
+       getDiagramSvg: function () {                  // the current question's <svg>...</svg>, sent to the phone
          var el = document.querySelector('#question-box-' + currentQuestionIndex + ' .question-diagram svg');
          return el ? el.outerHTML : '';
        },
-       mirrorContainerId: 'mp-draw-required-1'        // element that gets replaced with the live phone mirror
+       getAnswerOptionsHtml: function () {            // the current question's answer buttons, sent to the phone
+         var el = document.querySelector('#question-box-' + currentQuestionIndex + ' [class^="answer-container-"]');
+         return el ? el.outerHTML : '';
+       }
      });
    Pairing is account-based (no QR/camera): the phone and desktop both know the
    signed-in student's id and find each other on a Supabase Realtime channel
    named after it. This file listens in the background from page load (not
    only while its modal is open) so a phone opening the app is always caught,
-   including reconnects — see iphone/pairing.html and iphone/draw.html for the
-   other side of this handshake. */
+   including reconnects.
+
+   Two things stay in sync live, in both directions:
+   - drawn strokes (Sketch Space on the phone) render straight onto the
+     existing diagram already on the page — no second copy of it anywhere
+   - answer selections (Write Space on the phone) mirror the real
+     toggleSingleAnswerN/submitAnswerN functions already on this page, so a
+     tap on either device shows up on the other and grades exactly the way
+     it always has.
+   See iphone/pairing.html and iphone/draw.html for the other side. */
 (function () {
   var SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
   var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
@@ -71,8 +82,8 @@
     + '<div class="mp-icon-circle mp-ok"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg></div>'
     + '<h2>You\'re connected</h2>'
     + '<div class="mp-guide-list">'
-    + '<div class="mp-guide-item"><span class="mp-guide-num">1</span><span>Draw your working out on your phone — it appears here automatically.</span></div>'
-    + '<div class="mp-guide-item"><span class="mp-guide-num">2</span><span>Tap Submit on your phone when you\'re happy with your answer.</span></div>'
+    + '<div class="mp-guide-item"><span class="mp-guide-num">1</span><span>Sketch Space draws straight onto the diagram here, live.</span></div>'
+    + '<div class="mp-guide-item"><span class="mp-guide-num">2</span><span>Write Space is the real answer — it submits here too.</span></div>'
     + '</div>'
     + '<button id="mp-done-btn">Got it</button>'
     + '</div>'
@@ -125,6 +136,7 @@
     var lectureSlug = opts.lectureSlug || '';
     var getQnum = opts.getQnum || function () { return 1; };
     var getDiagramSvg = opts.getDiagramSvg || function () { return ''; };
+    var getAnswerOptionsHtml = opts.getAnswerOptionsHtml || function () { return ''; };
 
     injectStyles();
     injectMarkup();
@@ -151,52 +163,66 @@
     var channel = null;
     var channelReady = null;
     var lastShownStep = stepOpen;
+    var pairedQnum = null;
 
-    // ---- live mirror: renders the same diagram + streamed strokes inline ----
-    var mirrorEl = opts.mirrorContainerId ? document.getElementById(opts.mirrorContainerId) : null;
-    var mirrorCanvas = null;
-    var mirrorCtx = null;
-    var mirrorTransform = null;
-    var mirrorLastPoint = null;
-    var lastDiagramSvg = '';
+    // ---- live drawing overlay: a transparent canvas laid straight onto the
+    // question's own existing diagram, no second copy of it anywhere ----
+    var liveCanvas = null;
+    var liveCtx = null;
+    var liveTransform = null;
+    var liveLastPoint = null;
 
-    function sizeMirrorCanvas() {
-      if (!mirrorCanvas) return;
-      var dpr = window.devicePixelRatio || 1;
-      var rect = mirrorCanvas.getBoundingClientRect();
-      mirrorCanvas.width = rect.width * dpr;
-      mirrorCanvas.height = rect.height * dpr;
-      mirrorCtx = mirrorCanvas.getContext('2d');
-      mirrorCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      mirrorCtx.lineCap = 'round';
-      mirrorCtx.lineJoin = 'round';
+    // The desktop already has its own mouse/touch drawing canvas sitting on
+    // every diagram (.student-draw-canvas, from a separate in-progress
+    // feature) — reused here rather than stacking a second canvas on top,
+    // so the phone and a mouse draw onto the exact same surface.
+    function activateLiveOverlay(qnum, diagramSvg) {
+      pairedQnum = qnum;
+      var qBox = document.getElementById('question-box-' + qnum);
+      var diagramContainer = qBox && qBox.querySelector('.question-diagram');
+      if (!diagramContainer) return;
+
+      liveCanvas = diagramContainer.querySelector('.student-draw-canvas');
+      if (!liveCanvas) return;
+
+      liveCtx = liveCanvas.getContext('2d');
+      liveTransform = makeTransform(liveCanvas, parseViewBox(diagramSvg));
     }
 
-    function activateMirror(diagramSvg) {
-      if (!mirrorEl) return;
-      lastDiagramSvg = diagramSvg || '';
-      var vb = parseViewBox(diagramSvg);
+    // ---- answer sync: a tap on either device applies the real
+    // toggleSingleAnswerN function here, so grading stays exactly as-is ----
+    var applyingRemoteAnswer = false;
 
-      mirrorEl.innerHTML = ''
-        + '<div id="mp-mirror-box" style="position:relative;width:100%;aspect-ratio:' + vb.w + '/' + vb.h + ';margin:0 auto;background:#fff;border-radius:10px;overflow:hidden;border:1px solid #e5e7eb;">'
-        + (diagramSvg || '')
-        + '<canvas id="mp-mirror-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>'
-        + '<div style="position:absolute;top:8px;right:10px;font-size:11px;font-weight:700;color:#10b981;background:#ecfdf5;padding:3px 8px;border-radius:999px;">LIVE FROM PHONE</div>'
-        + '<div id="mp-mirror-submitted" style="display:none;position:absolute;bottom:8px;left:10px;font-size:11px;font-weight:700;color:#fff;background:#10b981;padding:3px 10px;border-radius:999px;">&#10003; Submitted</div>'
-        + '</div>';
-
-      var box = document.getElementById('mp-mirror-box');
-      var svgEl = box.querySelector('svg');
-      if (svgEl) { svgEl.style.width = '100%'; svgEl.style.height = '100%'; svgEl.style.position = 'absolute'; svgEl.style.inset = '0'; }
-
-      mirrorCanvas = document.getElementById('mp-mirror-canvas');
-      sizeMirrorCanvas();
-      mirrorTransform = makeTransform(mirrorCanvas, vb);
+    function optionButtons(qnum) {
+      var box = document.getElementById('question-box-' + qnum);
+      return box ? Array.prototype.slice.call(box.querySelectorAll('[class^="answer-option-"]')) : [];
     }
 
-    window.addEventListener('resize', function () {
-      if (mirrorCanvas) { sizeMirrorCanvas(); }
-    });
+    document.addEventListener('click', function (e) {
+      if (applyingRemoteAnswer || !pairedQnum) return;
+      var btn = e.target.closest && e.target.closest('[class^="answer-option-"]');
+      if (!btn) return;
+      var box = document.getElementById('question-box-' + pairedQnum);
+      if (!box || !box.contains(btn)) return;
+      var index = optionButtons(pairedQnum).indexOf(btn);
+      if (index === -1 || !channel) return;
+      channel.send({ type: 'broadcast', event: 'answer_select', payload: { qnum: pairedQnum, index: index } });
+    }, true);
+
+    function applyRemoteSelect(qnum, index) {
+      var buttons = optionButtons(qnum);
+      var btn = buttons[index];
+      var toggleFn = window['toggleSingleAnswer' + qnum];
+      if (!btn || typeof toggleFn !== 'function') return;
+      applyingRemoteAnswer = true;
+      toggleFn(null, btn);
+      applyingRemoteAnswer = false;
+    }
+
+    function applyRemoteSubmit(qnum) {
+      var submitFn = window['submitAnswer' + qnum];
+      if (typeof submitFn === 'function') submitFn();
+    }
 
     function showStep(el) {
       [stepOpen, stepAccept, stepGuide].forEach(function (s) { s.style.display = 'none'; });
@@ -227,11 +253,16 @@
         channel = sb.channel('montura-pair-' + studentId);
 
         channel.on('broadcast', { event: 'phone_opened' }, function () {
-          lastDiagramSvg = getDiagramSvg();
+          var qnum = getQnum();
           channel.send({
             type: 'broadcast',
             event: 'pair_ack',
-            payload: { lectureSlug: lectureSlug, qnum: getQnum(), diagramSvg: lastDiagramSvg }
+            payload: {
+              lectureSlug: lectureSlug,
+              qnum: qnum,
+              diagramSvg: getDiagramSvg(),
+              answerOptionsHtml: getAnswerOptionsHtml()
+            }
           });
           revealOverlay();
           showStep(stepAccept);
@@ -241,47 +272,52 @@
           markConnected();
           revealOverlay();
           showStep(stepGuide);
-          activateMirror(lastDiagramSvg);
+          activateLiveOverlay(getQnum(), getDiagramSvg());
         });
 
         channel.on('broadcast', { event: 'stroke_start' }, function (msg) {
-          if (!mirrorCtx) return;
+          if (!liveCtx) return;
           var p = msg.payload || {};
-          mirrorCtx.globalCompositeOperation = p.erase ? 'destination-out' : 'source-over';
-          mirrorCtx.strokeStyle = p.color || '#1c1c1e';
-          mirrorCtx.lineWidth = p.width || 3.5;
-          mirrorLastPoint = null;
+          liveCtx.globalCompositeOperation = p.erase ? 'destination-out' : 'source-over';
+          liveCtx.strokeStyle = p.color || '#1c1c1e';
+          liveCtx.lineWidth = p.width || 3.5;
+          liveLastPoint = null;
         });
 
         channel.on('broadcast', { event: 'stroke_point' }, function (msg) {
-          if (!mirrorCtx || !mirrorTransform) return;
+          if (!liveCtx || !liveTransform) return;
           var p = msg.payload || {};
-          var pt = mirrorTransform.toPixel(p.x, p.y);
-          if (mirrorLastPoint) {
-            mirrorCtx.beginPath();
-            mirrorCtx.moveTo(mirrorLastPoint.x, mirrorLastPoint.y);
-            mirrorCtx.lineTo(pt.x, pt.y);
-            mirrorCtx.stroke();
+          var pt = liveTransform.toPixel(p.x, p.y);
+          if (liveLastPoint) {
+            liveCtx.beginPath();
+            liveCtx.moveTo(liveLastPoint.x, liveLastPoint.y);
+            liveCtx.lineTo(pt.x, pt.y);
+            liveCtx.stroke();
           }
-          mirrorLastPoint = pt;
+          liveLastPoint = pt;
         });
 
         channel.on('broadcast', { event: 'stroke_end' }, function () {
-          mirrorLastPoint = null;
+          liveLastPoint = null;
         });
 
         channel.on('broadcast', { event: 'clear_canvas' }, function () {
-          if (mirrorCtx && mirrorCanvas) mirrorCtx.clearRect(0, 0, mirrorCanvas.width, mirrorCanvas.height);
+          if (liveCanvas && liveCanvas._clear) liveCanvas._clear();
+        });
+
+        channel.on('broadcast', { event: 'answer_select' }, function (msg) {
+          var p = msg.payload || {};
+          applyRemoteSelect(p.qnum, p.index);
+        });
+
+        channel.on('broadcast', { event: 'answer_submit' }, function (msg) {
+          var p = msg.payload || {};
+          applyRemoteSubmit(p.qnum);
         });
 
         channel.on('broadcast', { event: 'submit' }, function (msg) {
           var payload = msg.payload || {};
           if (opts.onSubmit) opts.onSubmit(payload.qnum, payload.imageDataUrl);
-          var badge = document.getElementById('mp-mirror-submitted');
-          if (badge) {
-            badge.style.display = 'block';
-            setTimeout(function () { badge.style.display = 'none'; }, 3000);
-          }
         });
 
         await new Promise(function (resolve) {

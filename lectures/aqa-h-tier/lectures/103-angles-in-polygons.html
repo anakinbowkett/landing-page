@@ -6923,7 +6923,10 @@ MonturaPhonePair.init({
     var el = document.querySelector('#question-box-' + currentQuestionIndex + ' .question-diagram svg');
     return el ? el.outerHTML : '';
   },
-  mirrorContainerId: 'mp-draw-required-1'
+  getAnswerOptionsHtml: function () {
+    var el = document.querySelector('#question-box-' + currentQuestionIndex + ' [class^="answer-container-"]');
+    return el ? el.outerHTML : '';
+  }
 });
 </script>
 
