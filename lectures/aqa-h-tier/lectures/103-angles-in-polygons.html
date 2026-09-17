@@ -1954,11 +1954,20 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
     <div class="question-diagram"><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><polygon points="160,40 226.6,88.4 201.2,166.6 118.8,166.6 93.4,88.4" fill="none" stroke="#374151" stroke-width="2"/><path d="M240,80 A18,18 0 0 1 228,100" fill="none" stroke="#1d7fe2" stroke-width="1.5"/><path d="M210,178 A18,18 0 0 1 190,178" fill="none" stroke="#1d7fe2" stroke-width="1.5"/></svg></div>
     <div class="question-text">The diagram shows a pentagon with its exterior angles marked around the outside. True or False: the exterior angles of any polygon always add up to 360°.</div>
   </div>
-  <div class="answer-container-1">
+  <div class="answer-container-1" style="display:none;">
     <button class="answer-option-1-1" onclick="toggleSingleAnswer1('opt1', this)">True</button>
     <button class="answer-option-1-2" onclick="toggleSingleAnswer1('opt2', this)">False</button>
   </div>
-  <button class="submit-button-1" id="submit-button-1" onclick="submitAnswer1()" disabled>Submit</button>
+  <button class="submit-button-1" id="submit-button-1" onclick="submitAnswer1()" disabled style="display:none;">Submit</button>
+  <div id="mp-draw-required-1" style="margin-top:14px;padding:16px;border:1.5px dashed #93c5fd;border-radius:12px;background:#eff6ff;text-align:center;">
+    <div style="font-size:13px;font-weight:700;color:#1d7fe2;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Answer on your phone</div>
+    <div style="font-size:13.5px;color:#4b5563;margin-bottom:12px;">This question can only be answered by drawing your working out on your iPhone.</div>
+    <button onclick="document.getElementById('nav-connect-btn').click()" style="height:40px;padding:0 18px;border:none;border-radius:20px;background:#1d7fe2;color:#fff;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;">Connect iPhone</button>
+    <div id="mp-answer-preview-1" style="display:none;margin-top:14px;">
+      <img id="mp-answer-img-1" style="max-width:100%;border-radius:8px;border:1px solid #e5e7eb;">
+      <div style="margin-top:8px;font-size:13px;font-weight:700;color:#10b981;">&#10003; Answer received from your phone</div>
+    </div>
+  </div>
 </div>
 
 <!-- QUESTION 2 -->
@@ -2921,7 +2930,7 @@ body.dark-mode :is(#guideContent, .worked-example-panel) .g-paper-head-right { c
   display: flex; gap: 8px; background: #ffffff;
   border: 1px solid #e5e7eb; border-bottom: none; border-radius: 14px 14px 0 0;
   padding: 6px 10px; pointer-events: all;
-  transform: translateY(100%); opacity: 0;
+  transform: translateY(0); opacity: 1;
   transition: transform 200ms ease, opacity 200ms ease;
   box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
 }
@@ -6913,7 +6922,13 @@ var MarkingFlow = (function(){
 MonturaPhonePair.init({
   lectureSlug: '103-angles-in-polygons',
   triggerId: 'nav-connect-btn',
-  getQnum: function () { return currentQuestionIndex; }
+  getQnum: function () { return currentQuestionIndex; },
+  onSubmit: function (qnum, imageDataUrl) {
+    if (qnum === 1) {
+      document.getElementById('mp-answer-img-1').src = imageDataUrl;
+      document.getElementById('mp-answer-preview-1').style.display = 'block';
+    }
+  }
 });
 </script>
 

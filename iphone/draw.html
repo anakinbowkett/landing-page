@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --accent: #1d7fe2;
@@ -86,6 +87,28 @@
     text-transform: uppercase;
     color: #c7cdd6;
     pointer-events: none;
+  }
+
+  #sent-toast {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: #10b981;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 9px 18px;
+    border-radius: 999px;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+
+  #sent-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 
   /* ---------- Toolbar ---------- */
@@ -257,6 +280,7 @@
     <canvas id="draw-canvas"></canvas>
 
     <div id="diagram-placeholder-label">Diagram loads here</div>
+    <div id="sent-toast">Sent to your desktop &#10003;</div>
   </div>
 
   <div id="toolbar">
@@ -306,8 +330,26 @@
 </div>
 
 <script>
-  // Static design only — drawing is local to this page, nothing here talks to Supabase or the API yet.
   (function () {
+    var SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
+    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
+    var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    var params = new URLSearchParams(window.location.search);
+    var qnum = parseInt(params.get('q'), 10) || 1;
+    var channel = null;
+
+    (async function initSync() {
+      var sessionResult = await sb.auth.getSession();
+      var session = sessionResult.data && sessionResult.data.session;
+      if (!session) {
+        window.location.href = 'login.html';
+        return;
+      }
+      channel = sb.channel('montura-pair-' + session.user.id);
+      channel.subscribe();
+    })();
+
     var canvas = document.getElementById('draw-canvas');
     var ctx = canvas.getContext('2d');
     var stage = document.getElementById('stage');
@@ -413,10 +455,21 @@
     });
 
     document.getElementById('submit-btn').addEventListener('click', function () {
-      // Wiring (Supabase submit + marking flow) comes later — visual feedback only for now.
       this.style.transform = 'scale(0.9)';
       var self = this;
       setTimeout(function () { self.style.transform = ''; }, 150);
+
+      if (!channel) return;
+      var dataUrl = canvas.toDataURL('image/png');
+      channel.send({
+        type: 'broadcast',
+        event: 'submit',
+        payload: { qnum: qnum, imageDataUrl: dataUrl }
+      });
+
+      var toast = document.getElementById('sent-toast');
+      toast.classList.add('show');
+      setTimeout(function () { toast.classList.remove('show'); }, 2200);
     });
   })();
 </script>

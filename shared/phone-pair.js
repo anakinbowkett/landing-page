@@ -1,9 +1,17 @@
 /* Montura Learn — desktop "draw on your phone" pairing widget.
    Include supabase-js before this file, then call:
-     MonturaPhonePair.init({ lectureSlug: 'slug', getQnum: function () { return currentQuestionIndex; } });
+     MonturaPhonePair.init({
+       lectureSlug: 'slug',
+       triggerId: 'nav-connect-btn',           // optional — existing button to wire up
+       getQnum: function () { return currentQuestionIndex; },
+       onSubmit: function (qnum, imageDataUrl) { ... }   // called when the phone submits a drawing
+     });
    Pairing is account-based (no QR/camera): the phone and desktop both know the
    signed-in student's id and find each other on a Supabase Realtime channel
-   named after it — see iphone/pairing.html for the other side of this handshake. */
+   named after it — see iphone/pairing.html and iphone/draw.html for the other
+   side of this handshake. The channel is kept open after the modal is closed
+   so a drawing submitted later (after the student has gone back to studying)
+   still reaches onSubmit. */
 (function () {
   var SUPABASE_URL = 'https://bdoesoqpjhpxkwsjauwo.supabase.co';
   var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkb2Vzb3FwamhweGt3c2phdXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0ODUzODIsImV4cCI6MjA4MTA2MTM4Mn0.R2fgp-wqasPtn86gVcoM2RPpSMc-66_77F6VX-DzG-s';
@@ -83,6 +91,7 @@
     opts = opts || {};
     var lectureSlug = opts.lectureSlug || '';
     var getQnum = opts.getQnum || function () { return 1; };
+    var onSubmit = opts.onSubmit || function () {};
 
     injectStyles();
     injectMarkup();
@@ -107,17 +116,60 @@
 
     var sb = null;
     var channel = null;
+    var channelReady = null; // promise, resolved once subscribed — lets onSubmit work even if the modal was never reopened
 
     function showStep(el) {
       [stepOpen, stepAccept, stepGuide].forEach(function (s) { s.style.display = 'none'; });
       el.style.display = 'flex';
     }
 
-    function teardownChannel() {
-      if (channel && sb) {
-        sb.removeChannel(channel);
-        channel = null;
-      }
+    function markConnected() {
+      triggerBtn.style.color = '#10b981';
+    }
+
+    function ensureChannel() {
+      if (channelReady) return channelReady;
+
+      channelReady = (async function () {
+        if (!window.supabase) throw new Error('supabase-js not loaded');
+        if (!sb) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        var sessionResult = await sb.auth.getSession();
+        var session = sessionResult.data && sessionResult.data.session;
+        if (!session) throw new Error('not signed in');
+
+        var studentId = session.user.id;
+        channel = sb.channel('montura-pair-' + studentId);
+
+        channel.on('broadcast', { event: 'phone_opened' }, function () {
+          channel.send({
+            type: 'broadcast',
+            event: 'pair_ack',
+            payload: { lectureSlug: lectureSlug, qnum: getQnum() }
+          });
+          showStep(stepAccept);
+        });
+
+        channel.on('broadcast', { event: 'phone_ready' }, function () {
+          markConnected();
+          showStep(stepGuide);
+        });
+
+        channel.on('broadcast', { event: 'submit' }, function (msg) {
+          var payload = msg.payload || {};
+          onSubmit(payload.qnum, payload.imageDataUrl);
+        });
+
+        await new Promise(function (resolve) {
+          channel.subscribe(function (status) {
+            if (status === 'SUBSCRIBED') resolve();
+          });
+        });
+
+        return channel;
+      })();
+
+      return channelReady;
     }
 
     async function openModal() {
@@ -125,45 +177,18 @@
       showStep(stepOpen);
       openStatus.textContent = 'Checking you’re signed in…';
 
-      if (!window.supabase) {
-        openStatus.textContent = 'Something went wrong loading — please reload the page.';
-        return;
+      try {
+        await ensureChannel();
+        openStatus.textContent = 'Waiting for your phone…';
+      } catch (err) {
+        openStatus.textContent = (err && err.message === 'not signed in')
+          ? 'Sign in to monturalearn.co.uk on this browser first, then try again.'
+          : 'Something went wrong loading — please reload the page.';
       }
-
-      if (!sb) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-      var sessionResult = await sb.auth.getSession();
-      var session = sessionResult.data && sessionResult.data.session;
-
-      if (!session) {
-        openStatus.textContent = 'Sign in to monturalearn.co.uk on this browser first, then try again.';
-        return;
-      }
-
-      openStatus.textContent = 'Waiting for your phone…';
-
-      var studentId = session.user.id;
-      channel = sb.channel('montura-pair-' + studentId);
-
-      channel.on('broadcast', { event: 'phone_opened' }, function () {
-        channel.send({
-          type: 'broadcast',
-          event: 'pair_ack',
-          payload: { lectureSlug: lectureSlug, qnum: getQnum() }
-        });
-        showStep(stepAccept);
-      });
-
-      channel.on('broadcast', { event: 'phone_ready' }, function () {
-        showStep(stepGuide);
-      });
-
-      channel.subscribe();
     }
 
     function closeModal() {
       overlay.classList.remove('open');
-      teardownChannel();
     }
 
     triggerBtn.addEventListener('click', openModal);
