@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Montura Learn — Draw</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffffff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #1d7fe2;
+    --pen-black: #1c1c1e;
+    --pen-red: #e0344c;
+    --pen-blue: #1d7fe2;
+    --bar-height: 92px;
+    --safe-l: env(safe-area-inset-left, 0px);
+    --safe-r: env(safe-area-inset-right, 0px);
+    --safe-b: env(safe-area-inset-bottom, 0px);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    background: #ffffff;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* ---------- App shell ---------- */
+
+  #app {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #stage {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  #diagram-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  #draw-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+
+  /* subtle centred hint, disappears once a real diagram is wired in */
+  #diagram-placeholder-label {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #c7cdd6;
+    pointer-events: none;
+  }
+
+  /* ---------- Toolbar ---------- */
+
+  #toolbar {
+    flex: 0 0 auto;
+    height: calc(var(--bar-height) + var(--safe-b));
+    padding: 0 max(18px, var(--safe-r)) var(--safe-b) max(18px, var(--safe-l));
+    background: rgba(248, 249, 251, 0.92);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  #tool-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tool-btn {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08), inset 0 0 0 1.5px rgba(0, 0, 0, 0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+
+  .tool-btn:active { transform: scale(0.92); }
+
+  .tool-btn.selected {
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08), 0 0 0 2.5px var(--sel-color, var(--accent));
+    transform: scale(1.06);
+  }
+
+  .pen-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+  }
+
+  .tool-btn[data-tool="black"] .pen-dot { background: var(--pen-black); }
+  .tool-btn[data-tool="red"] .pen-dot   { background: var(--pen-red); }
+  .tool-btn[data-tool="blue"] .pen-dot  { background: var(--pen-blue); }
+
+  .tool-btn[data-tool="eraser"] svg,
+  .tool-btn[data-tool="clear"] svg {
+    width: 20px;
+    height: 20px;
+    stroke: #4b5563;
+  }
+
+  .tool-btn[data-tool="clear"].confirming {
+    background: var(--pen-red);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08), inset 0 0 0 1.5px rgba(0, 0, 0, 0.07);
+  }
+
+  .tool-btn[data-tool="clear"].confirming svg { stroke: #ffffff; }
+
+  .toolbar-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(0, 0, 0, 0.1);
+    margin: 0 4px;
+  }
+
+  #submit-btn {
+    flex: 0 0 auto;
+    height: 48px;
+    min-height: 44px;
+    padding: 0 26px;
+    border: none;
+    border-radius: 24px;
+    background: var(--accent);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(29, 127, 226, 0.35);
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+
+  #submit-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(29, 127, 226, 0.3);
+  }
+
+  #submit-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* ---------- Landscape lock ---------- */
+
+  #rotate-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    background: #0a0a0f;
+    color: #ffffff;
+    text-align: center;
+    padding: 24px;
+  }
+
+  #rotate-overlay svg {
+    width: 56px;
+    height: 56px;
+    stroke: #ffffff;
+    animation: rotateHint 1.6s ease-in-out infinite;
+  }
+
+  @keyframes rotateHint {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-90deg); }
+  }
+
+  #rotate-overlay p {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.75);
+    max-width: 240px;
+  }
+
+  @media (orientation: portrait) {
+    #rotate-overlay { display: flex; }
+    #app { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="stage">
+    <svg id="diagram-svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet">
+      <polygon points="70,240 320,240 320,80" fill="none" stroke="#1c1c1e" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M 300 240 L 300 220 L 320 220" fill="none" stroke="#1c1c1e" stroke-width="2"/>
+      <path d="M 100 240 A 30 30 0 0 1 91 222" fill="none" stroke="#1d7fe2" stroke-width="2"/>
+      <path d="M 300 92 A 28 28 0 0 1 308 118" fill="none" stroke="#1d7fe2" stroke-width="2"/>
+      <text x="58" y="252" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#1c1c1e">A</text>
+      <text x="326" y="252" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#1c1c1e">B</text>
+      <text x="326" y="76" font-family="Inter, sans-serif" font-size="15" font-weight="600" fill="#1c1c1e">C</text>
+      <text x="88" y="228" font-family="Inter, sans-serif" font-size="13" fill="#1d7fe2">55°</text>
+      <text x="284" y="112" font-family="Inter, sans-serif" font-size="13" fill="#1d7fe2">35°</text>
+      <text x="190" y="200" font-family="Crimson Text, Georgia, serif" font-size="16" fill="#4b5563">8 cm</text>
+    </svg>
+
+    <canvas id="draw-canvas"></canvas>
+
+    <div id="diagram-placeholder-label">Diagram loads here</div>
+  </div>
+
+  <div id="toolbar">
+    <div id="tool-group">
+      <button class="tool-btn selected" data-tool="black" style="--sel-color:#1c1c1e" aria-label="Black pen">
+        <span class="pen-dot"></span>
+      </button>
+      <button class="tool-btn" data-tool="red" style="--sel-color:#e0344c" aria-label="Red pen">
+        <span class="pen-dot"></span>
+      </button>
+      <button class="tool-btn" data-tool="blue" style="--sel-color:#1d7fe2" aria-label="Blue pen">
+        <span class="pen-dot"></span>
+      </button>
+      <button class="tool-btn" data-tool="eraser" aria-label="Eraser">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13l-8.5 8.5a2 2 0 0 1-2.8 0L3 17.8a2 2 0 0 1 0-2.8L13 5"/>
+          <path d="M14 4l6 6"/>
+          <path d="M6 21h15"/>
+        </svg>
+      </button>
+      <div class="toolbar-divider"></div>
+      <button class="tool-btn" id="clear-btn" data-tool="clear" aria-label="Clear drawing">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18"/>
+          <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/>
+          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+        </svg>
+      </button>
+    </div>
+
+    <button id="submit-btn">
+      Submit
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14"/>
+        <path d="M13 6l6 6-6 6"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<div id="rotate-overlay">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="7" y="2" width="10" height="20" rx="2"/>
+    <line x1="12" y1="18" x2="12.01" y2="18"/>
+  </svg>
+  <p>Turn your phone sideways to keep drawing</p>
+</div>
+
+<script>
+  // Static design only — drawing is local to this page, nothing here talks to Supabase or the API yet.
+  (function () {
+    var canvas = document.getElementById('draw-canvas');
+    var ctx = canvas.getContext('2d');
+    var stage = document.getElementById('stage');
+    var currentTool = 'black';
+    var drawing = false;
+    var lastX = 0, lastY = 0;
+
+    var penColors = { black: '#1c1c1e', red: '#e0344c', blue: '#1d7fe2' };
+    var penWidth = 3.5;
+    var eraserWidth = 26;
+
+    function resizeCanvas() {
+      var dpr = window.devicePixelRatio || 1;
+      var rect = stage.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    }
+
+    function pointFromEvent(e) {
+      var rect = canvas.getBoundingClientRect();
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    }
+
+    function startStroke(e) {
+      if (currentTool === 'clear') return;
+      drawing = true;
+      var p = pointFromEvent(e);
+      lastX = p.x;
+      lastY = p.y;
+      canvas.setPointerCapture(e.pointerId);
+    }
+
+    function moveStroke(e) {
+      if (!drawing) return;
+      var p = pointFromEvent(e);
+
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(p.x, p.y);
+
+      if (currentTool === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = eraserWidth;
+      } else {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = penColors[currentTool] || penColors.black;
+        ctx.lineWidth = penWidth;
+      }
+      ctx.stroke();
+
+      lastX = p.x;
+      lastY = p.y;
+    }
+
+    function endStroke() {
+      drawing = false;
+    }
+
+    canvas.addEventListener('pointerdown', startStroke);
+    canvas.addEventListener('pointermove', moveStroke);
+    canvas.addEventListener('pointerup', endStroke);
+    canvas.addEventListener('pointercancel', endStroke);
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    var toolButtons = document.querySelectorAll('.tool-btn[data-tool]');
+    var clearBtn = document.getElementById('clear-btn');
+    var clearConfirmTimeout = null;
+
+    toolButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var tool = btn.getAttribute('data-tool');
+
+        if (tool === 'clear') {
+          if (btn.classList.contains('confirming')) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            btn.classList.remove('confirming');
+            clearTimeout(clearConfirmTimeout);
+          } else {
+            btn.classList.add('confirming');
+            clearConfirmTimeout = setTimeout(function () {
+              btn.classList.remove('confirming');
+            }, 2200);
+          }
+          return;
+        }
+
+        clearBtn.classList.remove('confirming');
+        clearTimeout(clearConfirmTimeout);
+
+        currentTool = tool;
+        toolButtons.forEach(function (b) {
+          if (b.getAttribute('data-tool') !== 'clear') b.classList.remove('selected');
+        });
+        btn.classList.add('selected');
+      });
+    });
+
+    document.getElementById('submit-btn').addEventListener('click', function () {
+      // Wiring (Supabase submit + marking flow) comes later — visual feedback only for now.
+      this.style.transform = 'scale(0.9)';
+      var self = this;
+      setTimeout(function () { self.style.transform = ''; }, 150);
+    });
+  })();
+</script>
+
+</body>
+</html>

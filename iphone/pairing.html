@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Montura Learn — Pair</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #1d7fe2;
+    --ok: #34c77b;
+    --safe-l: env(safe-area-inset-left, 0px);
+    --safe-r: env(safe-area-inset-right, 0px);
+    --safe-t: env(safe-area-inset-top, 0px);
+    --safe-b: env(safe-area-inset-bottom, 0px);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    background: #0a0a0f;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  #app {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: max(20px, var(--safe-t)) max(28px, var(--safe-r)) max(20px, var(--safe-b)) max(28px, var(--safe-l));
+    background:
+      radial-gradient(ellipse at 50% 40%, rgba(29, 127, 226, 0.10), transparent 60%),
+      #0a0a0f;
+  }
+
+  /* ---------- Status pill ---------- */
+
+  #status-pill {
+    position: absolute;
+    top: max(18px, var(--safe-t));
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  #status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulseDot 1.4s ease-in-out infinite;
+  }
+
+  #app.connected #status-dot {
+    background: var(--ok);
+    animation: none;
+  }
+
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  #status-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: 0.01em;
+  }
+
+  /* ---------- Scan stage ---------- */
+
+  #scan-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+
+  #scan-frame {
+    position: relative;
+    width: min(46vh, 320px);
+    height: min(46vh, 320px);
+    border-radius: 28px;
+  }
+
+  .corner {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    border: 3px solid var(--accent);
+    transition: border-color 300ms ease;
+  }
+
+  #app.connected .corner { border-color: var(--ok); }
+
+  .corner.tl { top: 0; left: 0; border-right: none; border-bottom: none; border-top-left-radius: 16px; }
+  .corner.tr { top: 0; right: 0; border-left: none; border-bottom: none; border-top-right-radius: 16px; }
+  .corner.bl { bottom: 0; left: 0; border-right: none; border-top: none; border-bottom-left-radius: 16px; }
+  .corner.br { bottom: 0; right: 0; border-left: none; border-top: none; border-bottom-right-radius: 16px; }
+
+  #scan-line {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    box-shadow: 0 0 10px rgba(29, 127, 226, 0.8);
+    animation: sweep 2.2s ease-in-out infinite;
+  }
+
+  #app.connected #scan-line { display: none; }
+
+  @keyframes sweep {
+    0%   { top: 8%; opacity: 0; }
+    10%  { opacity: 1; }
+    50%  { top: 92%; opacity: 1; }
+    60%  { opacity: 0; }
+    100% { top: 8%; opacity: 0; }
+  }
+
+  #connected-check {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity 260ms ease, transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  #app.connected #connected-check {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  #connected-check svg {
+    width: 76px;
+    height: 76px;
+    stroke: var(--ok);
+  }
+
+  #scan-copy {
+    text-align: center;
+  }
+
+  #scan-copy h1 {
+    margin: 0 0 6px;
+    font-size: 19px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  #scan-copy p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.5);
+    max-width: 280px;
+  }
+
+  #continue-btn {
+    margin-top: 4px;
+    height: 48px;
+    min-height: 44px;
+    padding: 0 30px;
+    border: none;
+    border-radius: 24px;
+    background: var(--ok);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition: opacity 260ms ease, transform 260ms ease;
+  }
+
+  #app.connected #continue-btn {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  #continue-btn:active { transform: scale(0.95); }
+
+  /* ---------- Landscape lock ---------- */
+
+  #rotate-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    background: #0a0a0f;
+    color: #ffffff;
+    text-align: center;
+    padding: 24px;
+  }
+
+  #rotate-overlay svg {
+    width: 56px;
+    height: 56px;
+    stroke: #ffffff;
+    animation: rotateHint 1.6s ease-in-out infinite;
+  }
+
+  @keyframes rotateHint {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-90deg); }
+  }
+
+  #rotate-overlay p {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.75);
+    max-width: 240px;
+  }
+
+  @media (orientation: portrait) {
+    #rotate-overlay { display: flex; }
+    #app { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="status-pill">
+    <span id="status-dot"></span>
+    <span id="status-text">Searching for desktop&hellip;</span>
+  </div>
+
+  <div id="scan-stage">
+    <div id="scan-frame">
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+      <div id="scan-line"></div>
+      <div id="connected-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 12.5l2.5 2.5L16 9.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <div id="scan-copy">
+      <h1 id="scan-title">Point at the QR code</h1>
+      <p id="scan-subtitle">Open the lecture on your desktop and scan the code shown on screen</p>
+    </div>
+
+    <button id="continue-btn">Continue</button>
+  </div>
+</div>
+
+<div id="rotate-overlay">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="7" y="2" width="10" height="20" rx="2"/>
+    <line x1="12" y1="18" x2="12.01" y2="18"/>
+  </svg>
+  <p>Turn your phone sideways to pair</p>
+</div>
+
+<script>
+  // Static design only — camera scanning and Supabase pairing are wired in a later step.
+  // Tapping the frame simulates a successful scan so both states can be reviewed on-device.
+  (function () {
+    var app = document.getElementById('app');
+    var frame = document.getElementById('scan-frame');
+    var statusText = document.getElementById('status-text');
+    var scanTitle = document.getElementById('scan-title');
+    var scanSubtitle = document.getElementById('scan-subtitle');
+
+    frame.addEventListener('click', function () {
+      if (app.classList.contains('connected')) return;
+      app.classList.add('connected');
+      statusText.textContent = 'Connected';
+      scanTitle.textContent = 'Connected';
+      scanSubtitle.textContent = 'Paired with your desktop — ready to draw';
+    });
+  })();
+</script>
+
+</body>
+</html>
