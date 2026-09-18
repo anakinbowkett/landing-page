@@ -182,10 +182,11 @@
       var diagramContainer = qBox && qBox.querySelector('.question-diagram');
       if (!diagramContainer) return;
 
-      // "Draw on your iPhone" hint only makes sense before a phone is
-      // actually connected — hide it once it's live.
-      var hint = qBox.querySelector('.mp-draw-hint');
-      if (hint) hint.style.display = 'none';
+      // The "Answer on your phone" box only makes sense before a phone is
+      // actually connected — hide it once it's live. The small grey hint
+      // next to the diagram stays up permanently, connected or not.
+      var connectBox = document.getElementById('mp-draw-required-' + qnum);
+      if (connectBox) connectBox.style.display = 'none';
 
       liveCanvas = diagramContainer.querySelector('.student-draw-canvas');
       if (!liveCanvas) return;

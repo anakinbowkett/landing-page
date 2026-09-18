@@ -1959,6 +1959,11 @@ body.dark-mode .g-report-success-text { color: #cbd5e1; }
     <button class="answer-option-1-2" onclick="toggleSingleAnswer1('opt2', this)">False</button>
   </div>
   <button class="submit-button-1" id="submit-button-1" onclick="submitAnswer1()" disabled style="display:none;">Submit</button>
+  <div id="mp-draw-required-1" style="margin-top:14px;padding:16px;border:1.5px dashed #93c5fd;border-radius:12px;background:#eff6ff;text-align:center;">
+    <div style="font-size:13px;font-weight:700;color:#1d7fe2;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Answer on your phone</div>
+    <div style="font-size:13.5px;color:#4b5563;margin-bottom:12px;">This question can only be answered by drawing your working out on your iPhone.</div>
+    <button onclick="document.getElementById('nav-connect-btn').click()" style="height:40px;padding:0 18px;border:none;border-radius:20px;background:#1d7fe2;color:#fff;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;">Connect iPhone</button>
+  </div>
 </div>
 
 <!-- QUESTION 2 -->
@@ -6876,13 +6881,6 @@ var MarkingFlow = (function(){
     canvas.addEventListener('touchend', stop);
 
     canvas._clear = function(){ ctx.clearRect(0, 0, canvas.width, canvas.height); };
-
-    var clearBtn = document.createElement('button');
-    clearBtn.className = 'student-draw-clear-btn';
-    clearBtn.type = 'button';
-    clearBtn.textContent = 'Clear';
-    clearBtn.addEventListener('click', canvas._clear);
-    wrap.appendChild(clearBtn);
   }
 
   function setupAll(){
@@ -6908,7 +6906,7 @@ var MarkingFlow = (function(){
 
 <!-- Draw-on-iPhone pairing (desktop side) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/shared/phone-pair.js?v=5"></script>
+<script src="/shared/phone-pair.js?v=6"></script>
 <script>
 MonturaPhonePair.init({
   lectureSlug: '103-angles-in-polygons',
