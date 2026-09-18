@@ -613,6 +613,7 @@
 
     function startStroke(e) {
       if (currentTool === 'clear') return;
+      e.preventDefault();
       drawing = true;
       var p = pointFromEvent(e, canvas);
       lastX = p.x;
@@ -630,6 +631,7 @@
 
     function moveStroke(e) {
       if (!drawing) return;
+      e.preventDefault();
       var p = pointFromEvent(e, canvas);
 
       ctx.beginPath();
@@ -666,6 +668,14 @@
     canvas.addEventListener('pointermove', moveStroke);
     canvas.addEventListener('pointerup', endStroke);
     canvas.addEventListener('pointercancel', endStroke);
+
+    // Belt-and-suspenders against iOS's text-selection magnifier loupe: on
+    // some iOS versions it still shows up on a press-and-hold even with
+    // user-select/touch-callout disabled and pointer events pre-vented —
+    // intercepting the raw touch events is what reliably kills it.
+    function preventTouch(e) { e.preventDefault(); }
+    canvas.addEventListener('touchstart', preventTouch, { passive: false });
+    canvas.addEventListener('touchmove', preventTouch, { passive: false });
 
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
@@ -760,6 +770,7 @@
         sizeWriteCanvas();
 
         wc.addEventListener('pointerdown', function (e) {
+          e.preventDefault();
           writeDrawing = true;
           var p = pointFromEvent(e, wc);
           writeLastX = p.x; writeLastY = p.y;
@@ -767,6 +778,7 @@
         });
         wc.addEventListener('pointermove', function (e) {
           if (!writeDrawing) return;
+          e.preventDefault();
           var p = pointFromEvent(e, wc);
           writeCtx.beginPath();
           writeCtx.moveTo(writeLastX, writeLastY);
@@ -779,6 +791,8 @@
         });
         wc.addEventListener('pointerup', function () { writeDrawing = false; });
         wc.addEventListener('pointercancel', function () { writeDrawing = false; });
+        wc.addEventListener('touchstart', preventTouch, { passive: false });
+        wc.addEventListener('touchmove', preventTouch, { passive: false });
         window.addEventListener('resize', sizeWriteCanvas);
       }
     }
