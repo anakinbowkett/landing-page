@@ -8,5 +8,19 @@
   "rewrites": [
     { "source": "/creator-consent", "destination": "/creator-consent.html" },
     { "source": "/creator-contract", "destination": "/creator-contract.html" }
+  ],
+  "headers": [
+    {
+      "source": "/iphone/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/shared/phone-pair.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    }
   ]
 }
