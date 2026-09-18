@@ -250,8 +250,13 @@
         if (!session) throw new Error('not signed in');
 
         var studentId = session.user.id;
+        var connectedOnce = false;
         channel = sb.channel('montura-pair-' + studentId);
 
+        // The phone now announces itself continuously (not just once), so
+        // this page will keep hearing phone_opened for as long as it's
+        // open — only pop the modal for the first one, otherwise it would
+        // re-blur the screen every couple of seconds forever.
         channel.on('broadcast', { event: 'phone_opened' }, function () {
           var qnum = getQnum();
           channel.send({
@@ -264,15 +269,21 @@
               answerOptionsHtml: getAnswerOptionsHtml()
             }
           });
-          revealOverlay();
-          showStep(stepAccept);
+          if (!connectedOnce) {
+            revealOverlay();
+            showStep(stepAccept);
+          }
         });
 
         channel.on('broadcast', { event: 'phone_ready' }, function () {
+          var wasConnected = connectedOnce;
+          connectedOnce = true;
           markConnected();
-          revealOverlay();
-          showStep(stepGuide);
           activateLiveOverlay(getQnum(), getDiagramSvg());
+          if (!wasConnected) {
+            revealOverlay();
+            showStep(stepGuide);
+          }
         });
 
         channel.on('broadcast', { event: 'stroke_start' }, function (msg) {

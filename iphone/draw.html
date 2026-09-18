@@ -507,8 +507,18 @@
     }
 
     var qnum = parseInt(params.get('q'), 10) || 1;
+    var lectureSlug = params.get('lecture') || '';
     var channel = null;
     var channelSubscribed = false;
+
+    function goToQuestion(newLectureSlug, newQnum, diagramSvg, answerOptionsHtml) {
+      try {
+        sessionStorage.setItem('mp-diagram-svg', diagramSvg || '');
+        sessionStorage.setItem('mp-answer-options', answerOptionsHtml || '');
+      } catch (e) {}
+      var p = new URLSearchParams({ lecture: newLectureSlug, q: newQnum });
+      window.location.href = 'draw.html?' + p.toString();
+    }
 
     (async function initSync() {
       var sessionResult = await sb.auth.getSession();
@@ -524,8 +534,27 @@
         if (p.qnum === qnum) applyRemoteSelect(p.index);
       });
 
+      // A fresh lecture page on desktop is a brand new connection that has
+      // no idea the phone already paired earlier — it still needs to hear
+      // phone_opened to find us, and getting a pair_ack for a different
+      // question here means the student moved on, so just follow along.
+      channel.on('broadcast', { event: 'pair_ack' }, function (msg) {
+        var p = msg.payload || {};
+        if (p.lectureSlug !== lectureSlug || p.qnum !== qnum) {
+          goToQuestion(p.lectureSlug, p.qnum, p.diagramSvg, p.answerOptionsHtml);
+        } else {
+          // Same question — this is just a fresh desktop page (e.g. a
+          // reload) finding us again; confirm we're already here.
+          channel.send({ type: 'broadcast', event: 'phone_ready', payload: {} });
+        }
+      });
+
       channel.subscribe(function (status) {
-        if (status === 'SUBSCRIBED') channelSubscribed = true;
+        if (status !== 'SUBSCRIBED') return;
+        channelSubscribed = true;
+        setInterval(function () {
+          channel.send({ type: 'broadcast', event: 'phone_opened', payload: {} });
+        }, 1200);
       });
     })();
 
