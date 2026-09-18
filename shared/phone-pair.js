@@ -182,6 +182,11 @@
       var diagramContainer = qBox && qBox.querySelector('.question-diagram');
       if (!diagramContainer) return;
 
+      // "Draw on your iPhone" hint only makes sense before a phone is
+      // actually connected — hide it once it's live.
+      var hint = qBox.querySelector('.mp-draw-hint');
+      if (hint) hint.style.display = 'none';
+
       liveCanvas = diagramContainer.querySelector('.student-draw-canvas');
       if (!liveCanvas) return;
 

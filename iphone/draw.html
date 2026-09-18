@@ -178,29 +178,6 @@
     pointer-events: none;
   }
 
-  #sent-toast {
-    position: absolute;
-    top: 18px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-10px);
-    background: #10b981;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 9px 18px;
-    border-radius: 999px;
-    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 200ms ease, transform 200ms ease;
-    z-index: 40;
-  }
-
-  #sent-toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-
   /* ---------- Write Space ---------- */
 
   #write-stage {
@@ -450,7 +427,6 @@
 
   <div class="mode-view" id="write-view">
     <div id="write-stage"></div>
-    <div id="sent-toast">Sent to your desktop &#10003;</div>
   </div>
 
   <div id="tool-cluster">
@@ -826,10 +802,6 @@
       } else if (writeCanvas) {
         broadcast('submit', { qnum: qnum, imageDataUrl: writeCanvas.toDataURL('image/png') });
       }
-
-      var toast = document.getElementById('sent-toast');
-      toast.classList.add('show');
-      setTimeout(function () { toast.classList.remove('show'); }, 2200);
     });
 
     // ============ Mode select + swipe switching ============
