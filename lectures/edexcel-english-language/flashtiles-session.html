@@ -370,11 +370,21 @@ body.dark-mode .session-complete-badge { background: #1a2540; }
     }
 
     // ── FETCH — read-only, no algorithm involved ──
+    // Questions are Pro-only — Supabase checks the student's plan — so the
+    // request has to carry the signed-in student's own token, not the anon key.
+    function studentToken() {
+        try {
+            const raw = localStorage.getItem('sb-bdoesoqpjhpxkwsjauwo-auth-token');
+            const s = raw ? JSON.parse(raw) : null;
+            return s?.access_token || SUPABASE_KEY;
+        } catch (e) { return SUPABASE_KEY; }
+    }
+
     async function fetchQuestions() {
         const params = slugs.map(s => encodeURIComponent(s)).join(',');
         const url = `${SUPABASE_URL}/rest/v1/questions?lecture_slug=in.(${params})&select=lecture_slug,question_index,skill_tag,question_type,correct_answer,marks_available,prompt_text&order=lecture_slug.asc,question_index.asc`;
         const resp = await fetch(url, {
-            headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+            headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${studentToken()}` }
         });
         if (!resp.ok) throw new Error(`Supabase returned ${resp.status}`);
         const rows = await resp.json();

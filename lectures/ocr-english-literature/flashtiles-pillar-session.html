@@ -428,7 +428,7 @@ async function loadQuestions(slugs) {
             const res = await fetch(url, {
                 headers: {
                     'apikey': SUPABASE_KEY,
-                    'Authorization': 'Bearer ' + SUPABASE_KEY
+                    'Authorization': 'Bearer ' + getJWT()
                 }
             });
             const rows = await res.json();
