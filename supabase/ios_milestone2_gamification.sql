@@ -658,7 +658,7 @@ $$;
 
 -- Call when a study session finishes. Works out today's streak on the server
 -- (UK time), using a free weekly freeze or a held freeze for one missed day,
--- ignoring outage days, and awarding milestone badges.
+-- ignoring outage days, awarding milestone badges and the +10 streak bonus.
 create or replace function public.record_study_day()
 returns jsonb
 language plpgsql security definer set search_path = public as $$
@@ -671,6 +671,8 @@ declare
   v_missed_day date;
   v_new integer;
   v_freeze_used boolean := false;
+  v_extended boolean := false;
+  v_bonus integer := 0;
   v_badges integer[];
 begin
   if v_user is null then raise exception 'Not signed in' using errcode = '28000'; end if;
@@ -698,13 +700,16 @@ begin
 
       if v_missed = 0 then
         v_new := s.current_streak + 1;
+        v_extended := true;
       elsif v_missed = 1 and s.freeze_used_week is distinct from _week_start(v_missed_day) then
         v_new := s.current_streak + 1;         -- free weekly freeze
+        v_extended := true;
         s.freeze_used_week := _week_start(v_missed_day);
         s.freeze_saved_on := v_missed_day;
         v_freeze_used := true;
       elsif v_missed = 1 and s.freezes_held > 0 then
         v_new := s.current_streak + 1;         -- a held (bought) freeze
+        v_extended := true;
         s.freezes_held := s.freezes_held - 1;
         s.freeze_saved_on := v_missed_day;
         v_freeze_used := true;
@@ -733,7 +738,14 @@ begin
   perform set_config('montura.trusted', 'off', true);
   v_badges := _award_streak_badges(v_user, v_new);
 
-  return _streak_status(v_user) || jsonb_build_object('freeze_used', v_freeze_used, 'new_badges', v_badges);
+  -- Streak-extension bonus: +10 Enigma each time the streak goes up by a day.
+  if v_extended then
+    v_bonus := 10;
+    perform _change_enigma(v_user, v_bonus, 'streak_bonus');
+  end if;
+
+  return _streak_status(v_user)
+      || jsonb_build_object('freeze_used', v_freeze_used, 'new_badges', v_badges, 'streak_bonus', v_bonus);
 end;
 $$;
 

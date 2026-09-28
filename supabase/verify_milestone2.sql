@@ -106,9 +106,15 @@ begin
   update user_streaks
      set current_streak = 10, last_login_date = _uk_today() - 2, freeze_used_week = null, freezes_held = 0
    where user_id = test_user;
-  n := (record_study_day() ->> 'streak')::int;
+  r := record_study_day();
+  n := (r ->> 'streak')::int;
   report := report || case when n = 11 then 'pass' else 'FAIL' end
                    || ': missed 1 day, free freeze -> streak 11 (got ' || n || E')\n';
+  report := report || case when (r ->> 'streak_bonus')::int = 10 then 'pass' else 'FAIL' end
+                   || E': streak went up -> +10 streak bonus\n';
+  n := (record_study_day() ->> 'streak_bonus')::int;
+  report := report || case when n = 0 then 'pass' else 'FAIL' end
+                   || E': second session the same day -> no extra bonus\n';
 
   -- Streak: missed day, freeze already used -> repair offered, costs 200
   perform set_config('montura.trusted', 'on', true);
@@ -129,8 +135,8 @@ begin
   report := report || case when n = 11 then 'pass' else 'FAIL' end
                    || ': after repair, today counts -> 11 (got ' || n || E')\n';
   select enigma_balance::int into n from user_profiles where id = test_user;
-  report := report || case when n = 300 then 'pass' else 'FAIL' end
-                   || ': repair cost 200 Enigma (500 -> ' || n || E')\n';
+  report := report || case when n = 310 then 'pass' else 'FAIL' end
+                   || ': repair cost 200, then +10 streak bonus (500 -> 200 off -> +10 = ' || n || E')\n';
 
   -- Badges
   perform _award_streak_badges(test_user, 30);
