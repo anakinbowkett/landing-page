@@ -15,10 +15,9 @@ update public.user_profiles
    set enigma_balance = round(enigma_balance / 100.0)
  where enigma_balance > 0;
 
--- 2. PROPOSED (confirm with MonturaL before running): lifetime Enigma starts at
---    the converted balance, the best record of past earnings.
-update public.user_profiles
-   set enigma_lifetime = greatest(enigma_lifetime, coalesce(enigma_balance, 0)::int);
+-- 2. Lifetime Enigma is NOT seeded from the old balance (MonturaL, 2026-09-29):
+--    every existing student starts at level 1 (enigma_lifetime = 0) and keeps
+--    their converted balance to spend.
 
 -- 3. Students can no longer change enigma_balance, or their streak, directly.
 --    Only the server functions (montura.trusted) and server code can.
